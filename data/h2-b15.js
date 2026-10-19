@@ -1,0 +1,118 @@
+/* ===== HSK2 Bài 15: 我想再去一次中国 ===== */
+LD2[15]={t:"我想再去一次中国",tp:"Wǒ xiǎng zài qù yí cì Zhōngguó",vi:"Em muốn đi Trung Quốc một lần nữa",gpNote:GPN,
+goals:["Nghe hiểu và thảo luận được kế hoạch du lịch.","Nghe hiểu và dùng bổ ngữ động lượng (số + 次) để nói động tác xảy ra mấy lần, kể cả khi có tân ngữ.","Dùng câu chữ 有 (2): 有 ＋ số lượng để nói đã đạt đến một con số nhất định (有一年没回国了)."],
+texts:[
+{ctx:"Trong lớp học, các bạn học sinh đang làm bài thi.",a:"h2-15-1",l:[
+["王一飞","考试就要开始了，请大家写上姓名，写好后就可以做题了。","Kǎoshì jiù yào kāishǐ le, qǐng dàjiā xiěshàng xìngmíng, xiěhǎo hòu jiù kěyǐ zuò tí le.","Sắp bắt đầu vào giờ thi rồi, mời các em viết họ tên mình vào, viết xong là có thể làm bài."],
+["白家月","老师，我做完了。","Lǎoshī, wǒ zuòwán le.","(…) Thưa cô, em làm xong rồi ạ."],
+["陈天中","老师，我也做完了。","Lǎoshī, wǒ yě zuòwán le.","Thưa cô, em cũng làm xong rồi ạ."],
+["王一飞","……对了，你们考完试想做什么？","……Duìle, nǐmen kǎowán shì xiǎng zuò shénme?","(…) Đúng rồi, thi xong các em muốn làm gì?"],
+["白家月","我很想去中国，虽然去过一次，但是很想再去一次。","Wǒ hěn xiǎng qù Zhōngguó, suīrán qùguo yí cì, dànshì hěn xiǎng zài qù yí cì.","Em rất muốn đi Trung Quốc, tuy đã từng đi một lần rồi nhưng em rất muốn đi thêm một lần nữa."],
+["王一飞","不错，到中国后你就可以经常说中文了。","Búcuò, dào Zhōngguó hòu nǐ jiù kěyǐ jīngcháng shuō Zhōngwén le.","Tốt lắm, sau khi đến Trung Quốc em có thể thường xuyên nói tiếng Trung Quốc rồi."]]},
+{ctx:"Trong quán cà phê, Lý Văn và Bạch Gia Nguyệt đang trò chuyện.",a:"h2-15-2",l:[
+["白家月","考完试了，我现在可以出国旅游了。","Kǎowán shì le, wǒ xiànzài kěyǐ chūguó lǚyóu le.","Thi xong rồi, bây giờ mình có thể đi du lịch nước ngoài được rồi."],
+["李文","你要去哪儿？","Nǐ yào qù nǎr?","Bạn định đi đâu?"],
+["白家月","我要再去一次北京。","Wǒ yào zài qù yí cì Běijīng.","Mình muốn đi Bắc Kinh một lần nữa."],
+["李文","为什么还去北京？","Wèi shénme hái qù Běijīng?","Tại sao vẫn đi Bắc Kinh?"],
+["白家月","因为我想再吃一次烤鸭，再喝一次奶茶，再去北京大学看一次电影……","Yīnwèi wǒ xiǎng zài chī yí cì kǎoyā, zài hē yí cì nǎichá, zài qù Běijīng Dàxué kàn yí cì diànyǐng……","Vì mình muốn ăn vịt quay một lần nữa, uống trà sữa một lần nữa, muốn đến Đại học Bắc Kinh xem phim một lần nữa…"],
+["李文","你想做的事情很多啊！","Nǐ xiǎng zuò de shìqing hěn duō a!","Những việc bạn muốn làm nhiều thật đấy!"],
+["白家月","是啊，你看，我还在网上买好颐和园的门票了呢。","Shì a, nǐ kàn, wǒ hái zài wǎngshang mǎihǎo Yíhé Yuán de ménpiào le ne.","Đúng vậy, bạn xem này, mình còn mua sẵn vé vào cổng Di Hòa Viên trên mạng rồi đây này."],
+["李文","我的高中同学就在颐和园上班，可以让他给你好好介绍介绍。","Wǒ de gāozhōng tóngxué jiù zài Yíhé Yuán shàngbān, kěyǐ ràng tā gěi nǐ hǎohǎo jièshào jièshào.","Bạn học thời phổ thông trung học của mình đang làm việc ngay tại Di Hòa Viên, có thể bảo cậu ấy giới thiệu thật kỹ cho bạn."],
+["白家月","太好了！出门旅游，多个朋友多条路。","Tài hǎo le! Chūmén lǚyóu, duō ge péngyou duō tiáo lù.","Tuyệt quá! Đi du lịch, thêm một người bạn là thêm một con đường."]]},
+{ctx:"Trong quán cà phê, Lý Văn và Bạch Gia Nguyệt đang trò chuyện.",a:"h2-15-3",l:[
+["白家月","李文，你有一年没回国了吧？","Lǐ Wén, nǐ yǒu yì nián méi huí guó le ba?","Lý Văn, bạn cũng cả năm rồi chưa về nước lần nào nhỉ?"],
+["李文","不到一年。我六月的时候回去了一次。","Bú dào yì nián. Wǒ Liùyuè de shíhou huíqùle yí cì.","Chưa đến một năm đâu. Hồi tháng Sáu mình có về một lần mà."],
+["白家月","我怎么忘了？还是我送你去的机场呢。","Wǒ zěnme wàng le? Hái shì wǒ sòng nǐ qù de jīchǎng ne.","Sao mình lại quên mất nhỉ? Chính là mình tiễn bạn ra sân bay mà."],
+["李文","是啊。","Shì a.","Đúng rồi."],
+["白家月","我记得你那次的机票很便宜。","Wǒ jìde nǐ nà cì de jīpiào hěn piányi.","Mình nhớ lần đó vé máy bay của bạn rẻ lắm."],
+["李文","没错，可能因为那个时候去北京的人不多吧。","Méi cuò, kěnéng yīnwèi nàge shíhou qù Běijīng de rén bù duō ba.","Đúng vậy, chắc do dạo đó không có nhiều người đi Bắc Kinh chăng."],
+["白家月","这次的机票虽然有点儿贵，但想到就要飞北京了，我还是很高兴的。","Zhè cì de jīpiào suīrán yǒudiǎnr guì, dàn xiǎngdào jiù yào fēi Běijīng le, wǒ háishi hěn gāoxìng de.","Vé máy bay lần này tuy hơi đắt một chút, nhưng cứ nghĩ đến việc sắp được bay đến Bắc Kinh là mình vẫn thấy rất háo hức."]]},
+{ctx:"Trong phòng, Lý Văn đang viết nhật ký.",a:"h2-15-4",l:[
+["李文","我六月的时候回过一次北京，现在有半年多没回去了，我有点儿想家。","Wǒ Liùyuè de shíhou huíguo yí cì Běijīng, xiànzài yǒu bàn nián duō méi huíqù le, wǒ yǒudiǎnr xiǎng jiā.","Hồi tháng Sáu tôi từng về Bắc Kinh một lần, đến nay đã hơn nửa năm chưa về rồi, tôi thấy hơi nhớ nhà."],
+["李文","就要过年了，我要回家过年。","Jiù yào guònián le, wǒ yào huí jiā guònián.","Năm mới sắp đến rồi, tôi phải về nhà đón Tết thôi."],
+["李文","家月这次也要去北京，我们都是星期五的飞机。","Jiāyuè zhè cì yě yào qù Běijīng, wǒmen dōu shì Xīngqīwǔ de fēijī.","Lần này Gia Nguyệt cũng đi Bắc Kinh, chúng tôi đều đi chuyến bay ngày thứ Sáu."],
+["李文","家月说我们好像小鸟，一起飞到北京，再一起飞回这里。","Jiāyuè shuō wǒmen hǎoxiàng xiǎoniǎo, yìqǐ fēidào Běijīng, zài yìqǐ fēihuí zhèlǐ.","Gia Nguyệt nói chúng tôi giống như đôi chim nhỏ vậy, cùng nhau bay đến Bắc Kinh rồi lại cùng nhau bay trở về đây."]]}],
+words:[["姓名","xìngmíng","danh từ","họ tên",0],
+["出国","chūguó","động từ","ra nước ngoài, xuất ngoại",1],["门票","ménpiào","danh từ","vé vào cửa",1],["高中","gāozhōng","danh từ","cấp ba, trung học phổ thông",1],["出门","chūmén","động từ","ra ngoài, rời nhà",1],["路","lù","danh từ","con đường",1],["颐和园","Yíhé Yuán","danh từ riêng","Di Hòa Viên (ở Bắc Kinh)",1],
+["机场","jīchǎng","danh từ","sân bay",2],["机票","jīpiào","danh từ","vé máy bay",2],["飞","fēi","động từ","bay",2],
+["好像","hǎoxiàng","động từ","dường như, giống như, hình như",3],["鸟","niǎo","danh từ","con chim",3]],
+gp:[
+{h:"1. Bổ ngữ động lượng (1): V ＋ số ＋ 次",b:`<span class="fm">Động từ ＋ (过 / 了) ＋ số ＋ 次<small>V + (guo / le) + số + cì</small></span><p>“Số + 次” đặt <b>sau động từ</b>, cho biết động tác xảy ra mấy lần. Tân ngữ là <b>tên người</b> hoặc <b>địa danh</b> thì đặt trước hay sau 一次 đều được.</p><ul><li>${Z("我想去中国，虽然去过一次，但是很想再去一次。","Wǒ xiǎng qù Zhōngguó, suīrán qùguo yí cì, dànshì hěn xiǎng zài qù yí cì.")}</li><li>${Z("安妮去过一次北京。","Ānnī qùguo yí cì Běijīng.")} (= 安妮去过北京一次。)</li><li>${Z("李文见了杨同乐两次。","Lǐ Wén jiànle Yáng Tónglè liǎng cì.")} (= 李文见了两次杨同乐。)</li></ul><p class="warn">⚠️ Lỗi hay gặp: đặt số lần trước động từ như tiếng Việt “một lần đi” ✗ 我一次去过北京; nói ✗ 两个次 (次 là lượng từ, không thêm 个).</p>`},
+{h:"2. Bổ ngữ động lượng (2): vị trí tân ngữ",b:`<span class="fm">V ＋ số ＋ 次 ＋ tân ngữ sự vật<br>V ＋ đại từ ＋ số ＋ 次<small>sự vật đứng sau 次; đại từ đứng trước 次</small></span><ul><li>${Z("因为我想再吃一次烤鸭，再喝一次奶茶。","Yīnwèi wǒ xiǎng zài chī yí cì kǎoyā, zài hē yí cì nǎichá.")}</li><li>${Z("我想找他一次。","Wǒ xiǎng zhǎo tā yí cì.")} Tôi muốn tìm anh ấy một lần.</li><li>${Z("安妮来过这儿两次。","Ānnī láiguo zhèr liǎng cì.")}</li></ul><p><b>Tóm tắt:</b> sự vật (烤鸭, 奶茶) → sau 次; đại từ (他, 这儿) → trước 次; tên người, địa danh → trước hoặc sau đều được.</p><p class="warn">⚠️ Lỗi hay gặp: ✗ 我想找一次他 (đại từ phải đứng trước 一次); ✗ 我想吃烤鸭一次 (sự vật phải đứng sau 一次).</p>`},
+{h:"3. Câu chữ 有 (2): 有 ＋ số lượng",b:`<span class="fm">有 ＋ cụm số lượng<small>yǒu + số lượng: đạt đến con số đó</small></span><ul><li>${Z("你有一年没回国了吧？","Nǐ yǒu yì nián méi huí guó le ba?")} Bạn chưa về nước cũng được một năm rồi nhỉ?</li><li>${Z("你女儿今年有10岁了吗？","Nǐ nǚ'ér jīnnián yǒu shí suì le ma?")} Con gái anh năm nay đã được 10 tuổi chưa?</li><li>${Z("我有一个月没给家里打电话了。","Wǒ yǒu yí ge yuè méi gěi jiāli dǎ diànhuà le.")}</li></ul><p>Phủ định: ${Z("没有","méiyǒu")} / ${Z("不到","bú dào")}: ${Z("不到一年。","Bú dào yì nián.")}</p><p class="warn">⚠️ Lỗi hay gặp: dịch “đã một năm chưa về” thành ✗ 你一年有没回国了. 有 đứng <b>ngay trước</b> cụm số lượng: 有一年没回国了.</p>`},
+{h:"4. Mẹo dùng từ: 再 + V + 一次; 多个朋友多条路",b:`<p>${Z("我要再去一次北京。","Wǒ yào zài qù yí cì Běijīng.")} 再 ＋ V ＋ 一次 = làm thêm một lần nữa (chưa xảy ra).</p><p>${Z("出门旅游，多个朋友多条路。","Chūmén lǚyóu, duō ge péngyou duō tiáo lù.")} Tục ngữ: thêm một người bạn là thêm một con đường. Ở đây 多 là động từ “thêm”.</p><p>${Z("我们都是星期五的飞机。","Wǒmen dōu shì Xīngqīwǔ de fēijī.")} 星期五的飞机 = chuyến bay ngày thứ Sáu.</p>`}],
+gq:[
+{q:"“An Ni đã đi Bắc Kinh một lần.” nói là:",o:["安妮去过一次北京。|Ānnī qùguo yí cì Běijīng.","安妮一次去过北京。|Ānnī yí cì qùguo Běijīng.","安妮去过北京一个次。|Ānnī qùguo Běijīng yí ge cì."],e:"V + 过 + 一次 + địa danh; không nói 一个次."},
+{q:"“Lý Văn đã gặp Dương Đồng Lạc hai lần.” Câu nào ĐÚNG?",o:["李文见了杨同乐两次。|Lǐ Wén jiànle Yáng Tónglè liǎng cì.","李文两次见了杨同乐。|Lǐ Wén liǎng cì jiànle Yáng Tónglè.","李文见两次了杨同乐。|Lǐ Wén jiàn liǎng cì le Yáng Tónglè."],e:"Tên người có thể đứng trước 两次."},
+{q:"“Tôi muốn tìm anh ấy một lần.” nói là:",o:["我想找他一次。|Wǒ xiǎng zhǎo tā yí cì.","我想找一次他。|Wǒ xiǎng zhǎo yí cì tā.","我想一次找他。|Wǒ xiǎng yí cì zhǎo tā."],e:"Đại từ (他) đứng trước 一次."},
+{q:"“Mình muốn ăn vịt quay thêm một lần nữa.” nói là:",o:["我想再吃一次烤鸭。|Wǒ xiǎng zài chī yí cì kǎoyā.","我想再吃烤鸭一次。|Wǒ xiǎng zài chī kǎoyā yí cì.","我想一次再吃烤鸭。|Wǒ xiǎng yí cì zài chī kǎoyā."],e:"Tân ngữ sự vật (烤鸭) đứng sau 一次."},
+{q:"“Bạn chưa về nước cũng được một năm rồi nhỉ?” nói là:",o:["你有一年没回国了吧？|Nǐ yǒu yì nián méi huí guó le ba?","你一年有没回国了吧？|Nǐ yì nián yǒu méi huí guó le ba?","你没回国有一年吧？|Nǐ méi huí guó yǒu yì nián ba?"],e:"有 + số lượng + 没 + V + 了."},
+{q:"“Con gái anh năm nay đã được 10 tuổi chưa?” nói là:",o:["你女儿今年有10岁了吗？|Nǐ nǚ'ér jīnnián yǒu shí suì le ma?","你女儿今年10岁有了吗？|Nǐ nǚ'ér jīnnián shí suì yǒu le ma?","你女儿有今年10岁了吗？|Nǐ nǚ'ér yǒu jīnnián shí suì le ma?"],e:"有 đứng ngay trước 10岁."},
+{q:"“Hồi tháng Sáu mình có về một lần.” nói là:",o:["我六月的时候回去了一次。|Wǒ Liùyuè de shíhou huíqùle yí cì.","我六月的时候一次回去了。|Wǒ Liùyuè de shíhou yí cì huíqù le.","我一次六月的时候回去了。|Wǒ yí cì Liùyuè de shíhou huíqù le."],e:"V + 了 + 一次."},
+{q:"Điền từ: 你看，那只小____多漂亮啊！",o:["鸟|niǎo","机票|jīpiào","姓名|xìngmíng"],e:"鸟: con chim."},
+{q:"Điền từ: 你买的是什么时候的____？——明天早上的，下午就到北京了。",o:["机票|jīpiào","门票|ménpiào","出国|chūguó"],e:"机票: vé máy bay."}],
+dt:[["考试就要开始了。","Kǎoshì jiù yào kāishǐ le."],["请大家写上姓名。","Qǐng dàjiā xiěshàng xìngmíng."],["老师，我做完了。","Lǎoshī, wǒ zuòwán le."],["虽然去过一次，但是很想再去一次。","Suīrán qùguo yí cì, dànshì hěn xiǎng zài qù yí cì."],["我现在可以出国旅游了。","Wǒ xiànzài kěyǐ chūguó lǚyóu le."],["我要再去一次北京。","Wǒ yào zài qù yí cì Běijīng."],["你有一年没回国了吧？","Nǐ yǒu yì nián méi huí guó le ba?"],["我六月的时候回去了一次。","Wǒ Liùyuè de shíhou huíqùle yí cì."],["我记得你那次的机票很便宜。","Wǒ jìde nǐ nà cì de jīpiào hěn piányi."],["我们都是星期五的飞机。","Wǒmen dōu shì Xīngqīwǔ de fēijī."]],
+tsort:[
+{t:["老师","，","我","做完","了","。"],ok:["老师，我做完了。"],p:"Lǎoshī, wǒ zuòwán le.",e:"V + 完: làm xong."},
+{t:["我","要","再","去","一次","北京","。"],ok:["我要再去一次北京。"],p:"Wǒ yào zài qù yí cì Běijīng.",e:"再 + V + 一次 + địa danh."},
+{t:["你","要","去","哪儿","？"],ok:["你要去哪儿？"],p:"Nǐ yào qù nǎr?",e:"Câu hỏi nơi chốn."},
+{t:["李文","，","你","有","一年","没","回国","了","吧","？"],ok:["李文，你有一年没回国了吧？"],p:"Lǐ Wén, nǐ yǒu yì nián méi huí guó le ba?",e:"有 + số lượng."},
+{t:["我","六月的时候","回去了","一次","。"],ok:["我六月的时候回去了一次。"],p:"Wǒ Liùyuè de shíhou huíqùle yí cì.",e:"V + 了 + 一次."}],
+tlis:[
+{a:"对了，你们考完试想做什么？",o:["我很想去中国。|Wǒ hěn xiǎng qù Zhōngguó.","老师，我也做完了。|Lǎoshī, wǒ yě zuòwán le.","是啊。|Shì a."]},
+{a:"你要去哪儿？",o:["我要再去一次北京。|Wǒ yào zài qù yí cì Běijīng.","不到一年。|Bú dào yì nián.","太好了！|Tài hǎo le!"]},
+{a:"李文，你有一年没回国了吧？",o:["不到一年。我六月的时候回去了一次。|Bú dào yì nián. Wǒ Liùyuè de shíhou huíqùle yí cì.","我要再去一次北京。|Wǒ yào zài qù yí cì Běijīng.","老师，我做完了。|Lǎoshī, wǒ zuòwán le."]},
+{a:"我很想去中国，虽然去过一次，但是很想再去一次。",qz:"白家月去过几次中国？",qp:"Bái Jiāyuè qùguo jǐ cì Zhōngguó?",o:["一次|yí cì","两次|liǎng cì","七次|qī cì"]},
+{a:"这次的机票虽然有点儿贵，但想到就要飞北京了，我还是很高兴的。",qz:"白家月这次买的机票怎么样？",qp:"Bái Jiāyuè zhè cì mǎi de jīpiào zěnmeyàng?",o:["有点儿贵|yǒudiǎnr guì","很便宜|hěn piányi","很贵|hěn guì"]}],
+sit:[
+{title:"Tình huống 1 · Thi xong muốn làm gì?",ctx:"Trong giờ thi, cô Vương nhắc lớp viết họ tên; làm bài xong cô hỏi chuyện các em.",turns:[
+{w:"王一飞",vi:"Nói sắp bắt đầu thi, mời cả lớp viết họ tên, viết xong thì làm bài.",h:[["考试","kǎoshì"],["就要开始了","jiù yào kāishǐ le"],["请大家写上姓名","qǐng dàjiā xiěshàng xìngmíng"],["写好后","xiěhǎo hòu"],["就可以做题了","jiù kěyǐ zuò tí le"]],r:["考试就要开始了，请大家写上姓名，写好后就可以做题了。","Kǎoshì jiù yào kāishǐ le, qǐng dàjiā xiěshàng xìngmíng, xiěhǎo hòu jiù kěyǐ zuò tí le.","Sắp thi rồi, các em viết họ tên vào, viết xong là làm bài được."]},
+{w:"白家月",vi:"Báo cô em làm xong rồi.",h:[["老师","lǎoshī"],["我做完了","wǒ zuòwán le"]],r:["老师，我做完了。","Lǎoshī, wǒ zuòwán le.","Thưa cô, em làm xong rồi ạ."]},
+{w:"陈天中",vi:"Báo cô em cũng làm xong rồi.",h:[["老师","lǎoshī"],["我也做完了","wǒ yě zuòwán le"]],r:["老师，我也做完了。","Lǎoshī, wǒ yě zuòwán le.","Thưa cô, em cũng xong rồi ạ."]},
+{w:"王一飞",vi:"Hỏi thi xong các em muốn làm gì.",h:[["对了","duìle"],["你们","nǐmen"],["考完试","kǎowán shì"],["想做什么","xiǎng zuò shénme"]],r:["对了，你们考完试想做什么？","Duìle, nǐmen kǎowán shì xiǎng zuò shénme?","À này, thi xong các em muốn làm gì?"]},
+{w:"白家月",vi:"Nói rất muốn đi Trung Quốc; tuy đã đi một lần nhưng muốn đi thêm lần nữa (次).",h:[["我很想去中国","wǒ hěn xiǎng qù Zhōngguó"],["虽然","suīrán"],["去过一次","qùguo yí cì"],["但是","dànshì"],["很想再去一次","hěn xiǎng zài qù yí cì"]],r:["我很想去中国，虽然去过一次，但是很想再去一次。","Wǒ hěn xiǎng qù Zhōngguó, suīrán qùguo yí cì, dànshì hěn xiǎng zài qù yí cì.","Em rất muốn đi Trung Quốc, tuy đi một lần rồi nhưng muốn đi lần nữa."]},
+{w:"王一飞",vi:"Khen; đến Trung Quốc thì có thể thường xuyên nói tiếng Trung.",h:[["不错","búcuò"],["到中国后","dào Zhōngguó hòu"],["你就可以","nǐ jiù kěyǐ"],["经常说中文了","jīngcháng shuō Zhōngwén le"]],r:["不错，到中国后你就可以经常说中文了。","Búcuò, dào Zhōngguó hòu nǐ jiù kěyǐ jīngcháng shuō Zhōngwén le.","Hay đấy, đến Trung Quốc em sẽ được nói tiếng Trung thường xuyên."]}]},
+{title:"Tình huống 2 · Kế hoạch đi Bắc Kinh",ctx:"Ở quán cà phê, Gia Nguyệt kể với Lý Văn kế hoạch du lịch.",turns:[
+{w:"白家月",vi:"Nói thi xong rồi, giờ có thể đi du lịch nước ngoài.",h:[["考完试了","kǎowán shì le"],["我现在","wǒ xiànzài"],["可以","kěyǐ"],["出国旅游了","chūguó lǚyóu le"]],r:["考完试了，我现在可以出国旅游了。","Kǎowán shì le, wǒ xiànzài kěyǐ chūguó lǚyóu le.","Thi xong rồi, giờ mình đi du lịch nước ngoài được rồi."]},
+{w:"李文",vi:"Hỏi định đi đâu.",h:[["你","nǐ"],["要去哪儿","yào qù nǎr"]],r:["你要去哪儿？","Nǐ yào qù nǎr?","Bạn định đi đâu?"]},
+{w:"白家月",vi:"Nói muốn đi Bắc Kinh thêm một lần nữa (再……一次).",h:[["我要","wǒ yào"],["再去一次","zài qù yí cì"],["北京","Běijīng"]],r:["我要再去一次北京。","Wǒ yào zài qù yí cì Běijīng.","Mình muốn đi Bắc Kinh lần nữa."]},
+{w:"李文",vi:"Hỏi sao vẫn đi Bắc Kinh.",h:[["为什么","wèi shénme"],["还去北京","hái qù Běijīng"]],r:["为什么还去北京？","Wèi shénme hái qù Běijīng?","Sao vẫn đi Bắc Kinh?"]},
+{w:"白家月",vi:"Giải thích: muốn ăn vịt quay lần nữa, uống trà sữa lần nữa (tân ngữ sau 次).",h:[["因为我想","yīnwèi wǒ xiǎng"],["再吃一次烤鸭","zài chī yí cì kǎoyā"],["再喝一次奶茶","zài hē yí cì nǎichá"]],r:["因为我想再吃一次烤鸭，再喝一次奶茶。","Yīnwèi wǒ xiǎng zài chī yí cì kǎoyā, zài hē yí cì nǎichá.","Vì mình muốn ăn vịt quay lần nữa, uống trà sữa lần nữa."]},
+{w:"李文",vi:"Nói bạn muốn làm nhiều việc thật.",h:[["你想做的事情","nǐ xiǎng zuò de shìqing"],["很多啊","hěn duō a"]],r:["你想做的事情很多啊！","Nǐ xiǎng zuò de shìqing hěn duō a!","Bạn muốn làm nhiều việc thật đấy!"]},
+{w:"白家月",vi:"Khoe đã mua sẵn vé vào Di Hòa Viên trên mạng.",h:[["是啊，你看","shì a, nǐ kàn"],["我还在网上","wǒ hái zài wǎngshang"],["买好","mǎihǎo"],["颐和园的门票了呢","Yíhé Yuán de ménpiào le ne"]],r:["是啊，你看，我还在网上买好颐和园的门票了呢。","Shì a, nǐ kàn, wǒ hái zài wǎngshang mǎihǎo Yíhé Yuán de ménpiào le ne.","Đúng thế, bạn xem, mình còn mua sẵn vé Di Hòa Viên trên mạng rồi."]},
+{w:"李文",vi:"Nói bạn cấp ba của mình làm ở Di Hòa Viên, có thể nhờ giới thiệu kỹ.",h:[["我的高中同学","wǒ de gāozhōng tóngxué"],["就在颐和园上班","jiù zài Yíhé Yuán shàngbān"],["可以让他","kěyǐ ràng tā"],["给你好好介绍介绍","gěi nǐ hǎohǎo jièshào jièshào"]],r:["我的高中同学就在颐和园上班，可以让他给你好好介绍介绍。","Wǒ de gāozhōng tóngxué jiù zài Yíhé Yuán shàngbān, kěyǐ ràng tā gěi nǐ hǎohǎo jièshào jièshào.","Bạn cấp ba của mình làm ở Di Hòa Viên, nhờ cậu ấy giới thiệu kỹ cho bạn."]},
+{w:"白家月",vi:"Mừng: đi du lịch, thêm một người bạn thêm một con đường.",h:[["太好了","tài hǎo le"],["出门旅游","chūmén lǚyóu"],["多个朋友","duō ge péngyou"],["多条路","duō tiáo lù"]],r:["太好了！出门旅游，多个朋友多条路。","Tài hǎo le! Chūmén lǚyóu, duō ge péngyou duō tiáo lù.","Tuyệt quá! Đi du lịch, thêm bạn thêm đường."]}]},
+{title:"Tình huống 3 · Bao lâu chưa về nước?",ctx:"Gia Nguyệt hỏi Lý Văn chuyện về nước.",turns:[
+{w:"白家月",vi:"Hỏi Lý Văn đã một năm chưa về nước nhỉ (有 + số lượng).",h:[["李文","Lǐ Wén"],["你有一年","nǐ yǒu yì nián"],["没回国了吧","méi huí guó le ba"]],r:["李文，你有一年没回国了吧？","Lǐ Wén, nǐ yǒu yì nián méi huí guó le ba?","Lý Văn, bạn chưa về nước cũng được một năm rồi nhỉ?"]},
+{w:"李文",vi:"Nói chưa đến một năm, tháng Sáu có về một lần.",h:[["不到一年","bú dào yì nián"],["我六月的时候","wǒ Liùyuè de shíhou"],["回去了一次","huíqùle yí cì"]],r:["不到一年。我六月的时候回去了一次。","Bú dào yì nián. Wǒ Liùyuè de shíhou huíqùle yí cì.","Chưa đến một năm. Tháng Sáu mình có về một lần."]},
+{w:"白家月",vi:"Tự trách quên mất; chính mình tiễn bạn ra sân bay mà.",h:[["我怎么忘了","wǒ zěnme wàng le"],["还是我","hái shì wǒ"],["送你去的机场呢","sòng nǐ qù de jīchǎng ne"]],r:["我怎么忘了？还是我送你去的机场呢。","Wǒ zěnme wàng le? Hái shì wǒ sòng nǐ qù de jīchǎng ne.","Sao mình quên nhỉ? Chính mình tiễn bạn ra sân bay mà."]},
+{w:"李文",vi:"Xác nhận.",h:[["是啊","shì a"]],r:["是啊。","Shì a.","Đúng rồi."]},
+{w:"白家月",vi:"Nhớ lần đó vé máy bay của bạn rất rẻ.",h:[["我记得","wǒ jìde"],["你那次的机票","nǐ nà cì de jīpiào"],["很便宜","hěn piányi"]],r:["我记得你那次的机票很便宜。","Wǒ jìde nǐ nà cì de jīpiào hěn piányi.","Mình nhớ lần đó vé máy bay của bạn rẻ lắm."]},
+{w:"李文",vi:"Nói đúng; có lẽ vì lúc đó ít người đi Bắc Kinh.",h:[["没错","méi cuò"],["可能因为","kěnéng yīnwèi"],["那个时候","nàge shíhou"],["去北京的人不多吧","qù Běijīng de rén bù duō ba"]],r:["没错，可能因为那个时候去北京的人不多吧。","Méi cuò, kěnéng yīnwèi nàge shíhou qù Běijīng de rén bù duō ba.","Đúng vậy, chắc lúc đó ít người đi Bắc Kinh."]},
+{w:"白家月",vi:"Nói vé lần này tuy hơi đắt nhưng nghĩ sắp bay Bắc Kinh vẫn rất vui.",h:[["这次的机票","zhè cì de jīpiào"],["虽然有点儿贵","suīrán yǒudiǎnr guì"],["但想到","dàn xiǎngdào"],["就要飞北京了","jiù yào fēi Běijīng le"],["我还是很高兴的","wǒ háishi hěn gāoxìng de"]],r:["这次的机票虽然有点儿贵，但想到就要飞北京了，我还是很高兴的。","Zhè cì de jīpiào suīrán yǒudiǎnr guì, dàn xiǎngdào jiù yào fēi Běijīng le, wǒ háishi hěn gāoxìng de.","Vé lần này tuy hơi đắt, nhưng nghĩ sắp bay Bắc Kinh mình vẫn vui lắm."]}]},
+{title:"Tình huống 4 · Vận dụng: kể chuyện đi Trung Quốc với đồng nghiệp",ctx:"Giờ nghỉ trưa, bạn và Tiểu Vương (đồng nghiệp người Trung Quốc) nói chuyện du lịch.",turns:[
+{w:"小王",vi:"Hỏi bạn đã đi Trung Quốc chưa.",h:[["你","nǐ"],["去过中国吗","qùguo Zhōngguó ma"]],r:["你去过中国吗？","Nǐ qùguo Zhōngguó ma?","Cậu đi Trung Quốc chưa?"]},
+{w:"我",vi:"Nói đã đi Bắc Kinh một lần (次).",h:[["去过","qùguo"],["我去过一次北京","wǒ qùguo yí cì Běijīng"]],r:["去过，我去过一次北京。","Qùguo, wǒ qùguo yí cì Běijīng.","Đi rồi, mình đi Bắc Kinh một lần."]},
+{w:"小王",vi:"Hỏi bạn thấy Bắc Kinh thế nào.",h:[["你觉得","nǐ juéde"],["北京","Běijīng"],["怎么样","zěnmeyàng"]],r:["你觉得北京怎么样？","Nǐ juéde Běijīng zěnmeyàng?","Cậu thấy Bắc Kinh thế nào?"]},
+{w:"我",vi:"Khen ăn ngon, chơi vui; muốn ăn vịt quay thêm lần nữa.",h:[["很不错","hěn búcuò"],["吃得好，玩得好","chī de hǎo, wán de hǎo"],["我想","wǒ xiǎng"],["再吃一次烤鸭","zài chī yí cì kǎoyā"]],r:["很不错，吃得好，玩得好。我想再吃一次烤鸭。","Hěn búcuò, chī de hǎo, wán de hǎo. Wǒ xiǎng zài chī yí cì kǎoyā.","Hay lắm, ăn ngon, chơi vui. Mình muốn ăn vịt quay lần nữa."]},
+{w:"小王",vi:"Hỏi bạn chưa đi Bắc Kinh cũng được một năm rồi nhỉ (有).",h:[["你","nǐ"],["有一年","yǒu yì nián"],["没去北京了吧","méi qù Běijīng le ba"]],r:["你有一年没去北京了吧？","Nǐ yǒu yì nián méi qù Běijīng le ba?","Cậu chưa đi Bắc Kinh cũng được một năm rồi nhỉ?"]},
+{w:"我",vi:"Nói có hai năm rồi; năm nay muốn đi thêm lần nữa.",h:[["有两年了","yǒu liǎng nián le"],["今年","jīnnián"],["我想","wǒ xiǎng"],["再去一次","zài qù yí cì"]],r:["有两年了。今年我想再去一次。","Yǒu liǎng nián le. Jīnnián wǒ xiǎng zài qù yí cì.","Được hai năm rồi. Năm nay mình muốn đi lần nữa."]},
+{w:"小王",vi:"Nói nhà mình ở Bắc Kinh, có thể giới thiệu kỹ cho bạn.",h:[["我家","wǒ jiā"],["就在北京","jiù zài Běijīng"],["可以给你","kěyǐ gěi nǐ"],["好好介绍介绍","hǎohǎo jièshào jièshào"]],r:["我家就在北京，可以给你好好介绍介绍。","Wǒ jiā jiù zài Běijīng, kěyǐ gěi nǐ hǎohǎo jièshào jièshào.","Nhà mình ở Bắc Kinh, mình giới thiệu kỹ cho cậu."]},
+{w:"我",vi:"Mừng: đi du lịch, thêm bạn thêm đường.",h:[["太好了","tài hǎo le"],["出门旅游","chūmén lǚyóu"],["多个朋友","duō ge péngyou"],["多条路","duō tiáo lù"]],r:["太好了！出门旅游，多个朋友多条路。","Tài hǎo le! Chūmén lǚyóu, duō ge péngyou duō tiáo lù.","Tuyệt quá! Đi du lịch, thêm bạn thêm đường."]}]}]};
+/* Bài tập Ngữ pháp · Mẫu câu (3 dạng) */
+GXD["2-15"]={so:[
+{t:["安妮|Ānnī","去过|qùguo","一次|yí cì","北京|Běijīng"],ok:["安妮去过一次北京"],f:"安妮去过一次北京。",p:"Ānnī qùguo yí cì Běijīng.",e:"V + 过 + 一次 + địa danh."},
+{t:["李文|Lǐ Wén","见了|jiànle","杨同乐|Yáng Tónglè","两次|liǎng cì"],ok:["李文见了杨同乐两次","李文见了两次杨同乐"],f:"李文见了杨同乐两次。",p:"Lǐ Wén jiànle Yáng Tónglè liǎng cì.",e:"Tên người đứng trước hoặc sau 两次 đều được."},
+{t:["我|wǒ","想|xiǎng","再吃|zài chī","一次|yí cì","烤鸭|kǎoyā"],ok:["我想再吃一次烤鸭"],f:"我想再吃一次烤鸭。",p:"Wǒ xiǎng zài chī yí cì kǎoyā.",e:"Tân ngữ sự vật đứng sau 一次."},
+{t:["我|wǒ","想|xiǎng","找|zhǎo","他|tā","一次|yí cì"],ok:["我想找他一次"],f:"我想找他一次。",p:"Wǒ xiǎng zhǎo tā yí cì.",e:"Đại từ đứng trước 一次."},
+{t:["你|nǐ","有|yǒu","一年|yì nián","没|méi","回国了|huí guó le","吧|ba"],ok:["你有一年没回国了吧"],f:"你有一年没回国了吧？",p:"Nǐ yǒu yì nián méi huí guó le ba?",e:"有 + số lượng."}],
+tr:[
+{vi:"Em rất muốn đi Trung Quốc, tuy đã đi một lần nhưng rất muốn đi thêm một lần nữa.",a:["我很想去中国虽然去过一次但是很想再去一次","我很想去中国虽然去过一次但很想再去一次","我很想去中国虽然去过一次中国但是很想再去一次"],r:["我很想去中国，虽然去过一次，但是很想再去一次。","Wǒ hěn xiǎng qù Zhōngguó, suīrán qùguo yí cì, dànshì hěn xiǎng zài qù yí cì."]},
+{vi:"Mình muốn đi Bắc Kinh một lần nữa.",a:["我要再去一次北京","我想再去一次北京","我要再去北京一次","我想再去北京一次"],r:["我要再去一次北京。","Wǒ yào zài qù yí cì Běijīng."]},
+{vi:"An Ni đã đến đây hai lần.",a:["安妮来过这儿两次","安妮来过这里两次"],r:["安妮来过这儿两次。","Ānnī láiguo zhèr liǎng cì."]},
+{vi:"Tôi đã một tháng chưa gọi điện về nhà.",a:["我有一个月没给家里打电话了","我一个月没给家里打电话了","我有一个月没给家打电话了"],r:["我有一个月没给家里打电话了。","Wǒ yǒu yí ge yuè méi gěi jiāli dǎ diànhuà le."]},
+{vi:"Chúng tôi đều đi chuyến bay ngày thứ Sáu.",a:["我们都是星期五的飞机","我们都坐星期五的飞机"],r:["我们都是星期五的飞机。","Wǒmen dōu shì Xīngqīwǔ de fēijī."]}],
+pc:[
+{img:"h2b15a",req:"Các bạn nhỏ thích đá bóng. Hãy nói mỗi tuần các bạn đá bóng mấy lần (dùng bổ ngữ động lượng 次).",kw:[{l:"次",m:[["次","ci"]]}],r:[["他们喜欢踢球，每个星期踢两次。","Tāmen xǐhuan tī qiú, měi ge xīngqī tī liǎng cì.","Các bạn thích đá bóng, mỗi tuần đá hai lần."],["他们每个星期踢三次足球。","Tāmen měi ge xīngqī tī sān cì zúqiú.","Mỗi tuần các bạn đá bóng ba lần."]]},
+{img:"h2b15b",req:"Đây là lớp cấp ba của một người bạn. Hãy hỏi lớp bạn ấy có được 50 người không (dùng 有 + số lượng).",kw:[{l:"有",m:[["有","you"]]}],r:[["你的高中同学有50个人吗？","Nǐ de gāozhōng tóngxué yǒu wǔshí ge rén ma?","Bạn học cấp ba của cậu có được 50 người không?"],["你们高中班有50个人吗？","Nǐmen gāozhōng bān yǒu wǔshí ge rén ma?","Lớp cấp ba của các cậu có được 50 người không?"]]}]};
+var TKP=Object.assign(window.TKP||{},{"老师":"lǎoshī","我":"wǒ","做完":"zuòwán","了":"le","要":"yào","再":"zài","去":"qù","一次":"yí cì","北京":"Běijīng","你":"nǐ","哪儿":"nǎr","李文":"Lǐ Wén","有":"yǒu","一年":"yì nián","没":"méi","回国":"huí guó","吧":"ba","六月的时候":"Liùyuè de shíhou","回去了":"huíqùle"});

@@ -1,0 +1,115 @@
+/* ===== HSK2 Bài 13: 我们爱上中文课 ===== */
+LD2[13]={t:"我们爱上中文课",tp:"Wǒmen ài shàng Zhōngwén kè",vi:"Chúng tôi yêu thích môn tiếng Trung Quốc",gpNote:GPN,
+goals:["Nghe hiểu và dùng câu so sánh để nói rõ khác biệt cụ thể: A 比 B ＋ tính từ ＋ số lượng.","Nghe hiểu và dùng câu so sánh để nói khác biệt nhỏ: A 比 B ＋ tính từ ＋ 一点儿 / 一些.","Dùng câu có hai tân ngữ với 拿 / 送 / 卖 ＋ 给 để nói việc cho, tặng, bán."],
+texts:[
+{ctx:"Trong lớp học, Bạch Gia Nguyệt và Trần Thiên Trung đang trò chuyện.",a:"h2-13-1",l:[
+["白家月","时间过得真快啊！新年就要到了。","Shíjiān guò de zhēn kuài a! Xīnnián jiù yào dào le.","Thời gian trôi nhanh thật đấy! Sắp đến năm mới rồi."],
+["陈天中","这一年王老师教我们中文，每天工作都很累。","Zhè yì nián Wáng lǎoshī jiāo wǒmen Zhōngwén, měi tiān gōngzuò dōu hěn lèi.","Một năm nay, cô Vương dạy chúng ta tiếng Trung Quốc, ngày nào làm việc cũng đều rất mệt."],
+["白家月","是啊，她教得很好。因为她，我们都非常爱上中文课。","Shì a, tā jiāo de hěn hǎo. Yīnwèi tā, wǒmen dōu fēicháng ài shàng Zhōngwén kè.","Đúng vậy, cô dạy rất hay. Nhờ có cô mà chúng ta ai cũng yêu thích môn tiếng Trung Quốc."],
+["陈天中","我们给她准备个新年礼物吧。你觉得送给她什么好呢？","Wǒmen gěi tā zhǔnbèi ge xīnnián lǐwù ba. Nǐ juéde sòng gěi tā shénme hǎo ne?","Chúng ta hãy chuẩn bị một món quà năm mới tặng cô nhé. Bạn thấy tặng cô quà gì thì hợp nhỉ?"],
+["白家月","王老师喜欢花，就送给她花吧。","Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba.","Cô Vương thích hoa đấy, cứ tặng hoa cho cô đi."],
+["陈天中","那我们去花店看看，现在买花的人多，希望花店还有漂亮的花。","Nà wǒmen qù huādiàn kànkan, xiànzài mǎi huā de rén duō, xīwàng huādiàn hái yǒu piàoliang de huā.","Vậy chúng ta ra cửa hàng hoa xem thử. Bây giờ người mua hoa rất đông, hy vọng ở đó vẫn còn hoa đẹp."]]},
+{ctx:"Trong lớp học, cô Vương Nhất Phi đang giảng bài.",a:"h2-13-2",l:[
+["白家月","王老师，今天的词比昨天多了十个。","Wáng lǎoshī, jīntiān de cí bǐ zuótiān duōle shí ge.","Cô Vương ơi, từ mới của ngày hôm nay nhiều hơn hôm qua mười từ ạ."],
+["王一飞","是啊！你们都学会了吗？","Shì a! Nǐmen dōu xuéhuì le ma?","Đúng vậy! Các em đã nắm được hết chưa?"],
+["安妮","学会了，没有问题。","Xuéhuì le, méiyǒu wèntí.","Dạ, chúng em đã nắm được rồi ạ, không có vấn đề gì đâu cô."],
+["王一飞","好。现在我来说，你们在本子上面写。","Hǎo. Xiànzài wǒ lái shuō, nǐmen zài běnzi shàngmiàn xiě.","Tốt. Bây giờ cô sẽ đọc, các em viết vào vở nhé."],
+["王一飞","同学们，“洗手间”的“间”字写错了，它的里面是“日”，不是“口”。","Tóngxuémen, “xǐshǒujiān” de “jiān” zì xiěcuò le, tā de lǐmiàn shì “rì”, bú shì “kǒu”.","(…) Các em ơi, chữ “间” trong từ “洗手间” viết sai rồi, bên trong nó là chữ “日” chứ không phải chữ “口” đâu nhé."],
+["白家月","“日”比“口”多一笔，写“口”就是“问题”的“问”了。","“Rì” bǐ “kǒu” duō yì bǐ, xiě “kǒu” jiù shì “wèntí” de “wèn” le.","Chữ “日” nhiều hơn chữ “口” một nét, nếu viết thành “口” thì sẽ thành chữ “问” trong từ “问题” rồi ạ."],
+["王一飞","没错，你说得很对。","Méi cuò, nǐ shuō de hěn duì.","Đúng rồi, em nói rất chính xác."]]},
+{ctx:"Trong lớp học, Annie và Bạch Gia Nguyệt đang trò chuyện.",a:"h2-13-3",l:[
+["安妮","家月，你觉得这个本子怎么样？","Jiāyuè, nǐ juéde zhège běnzi zěnmeyàng?","Gia Nguyệt, bạn thấy cuốn vở này thế nào?"],
+["白家月","很漂亮，多少钱一个？","Hěn piàoliang, duōshao qián yí gè?","Rất đẹp. Bao nhiêu tiền một cuốn vậy?"],
+["安妮","比我们一起买的那个本子贵一点儿。","Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.","Đắt hơn cuốn hôm trước mà chúng ta cùng đi mua một chút."],
+["白家月","这么漂亮的本子，不可能贵一点儿吧？","Zhème piàoliang de běnzi, bù kěnéng guì yìdiǎnr ba?","Cuốn vở đẹp thế này, không thể chỉ đắt hơn một chút nhỉ?"],
+["安妮","我是上网买的，真没那么贵。我买了两个，送你一个。","Wǒ shì shàngwǎng mǎi de, zhēn méi nàme guì. Wǒ mǎile liǎng gè, sòng nǐ yí gè.","Mình mua trên mạng đấy, thật sự không đắt đến thế đâu. Mình mua hai cuốn, tặng bạn một cuốn này."],
+["白家月","谢谢！那我送给你什么呢？","Xièxie! Nà wǒ sòng gěi nǐ shénme ne?","Cảm ơn nhé! Vậy mình nên tặng lại bạn cái gì đây?"],
+["安妮","咖啡杯吧，我最喜欢喝咖啡了。","Kāfēibēi ba, wǒ zuì xǐhuan hē kāfēi le.","Tặng cốc uống cà phê đi, mình thích uống cà phê nhất."],
+["白家月","好，那样我们就都有新年礼物了！","Hǎo, nàyàng wǒmen jiù dōu yǒu xīnnián lǐwù le!","Được, như vậy là chúng ta ai cũng đều có quà năm mới rồi!"]]},
+{ctx:"Trong phòng, Bạch Gia Nguyệt đang viết nhật ký.",a:"h2-13-4",l:[
+["白家月","新年就要到了，安妮送给我一个新本子。","Xīnnián jiù yào dào le, Ānnī sòng gěi wǒ yí gè xīn běnzi.","Sắp sang năm mới rồi, Annie tặng tôi một cuốn vở mới."],
+["白家月","她告诉我是在网上买的，比我的本子贵一点儿。","Tā gàosu wǒ shì zài wǎngshang mǎi de, bǐ wǒ de běnzi guì yìdiǎnr.","Bạn ấy kể với tôi là mua ở trên mạng, đắt hơn cuốn vở của tôi một chút."],
+["白家月","我们班同学也送了王老师漂亮的花，希望她高高兴兴地过个新年。","Wǒmen bān tóngxué yě sòngle Wáng lǎoshī piàoliang de huā, xīwàng tā gāogāoxìngxìng de guò ge xīnnián.","Các bạn lớp tôi cũng tặng cô Vương bó hoa đẹp, hy vọng cô sẽ đón một năm mới thật vui vẻ."]]}],
+words:[["新年","xīnnián","danh từ","năm mới",0],["教","jiāo","động từ","dạy",0],["花","huā","danh từ","hoa",0],["希望","xīwàng","động từ","hy vọng, mong muốn",0],
+["上面","shàngmiàn","danh từ","phía trên, bên trên",1],["洗手间","xǐshǒujiān","danh từ","nhà vệ sinh",1],["里面","lǐmiàn","danh từ","bên trong",1],["笔","bǐ","lượng từ","nét, nét bút",1],
+["可能","kěnéng","động từ","có thể, có lẽ",2],["上网","shàngwǎng","động từ","lên mạng",2],["那样","nàyàng","đại từ","như vậy, thế kia",2],
+["告诉","gàosu","động từ","nói cho biết, kể",3],["班","bān","danh từ","lớp",3]],
+gp:[
+{h:"1. Câu có hai tân ngữ (2): 拿 / 送 / 卖 ＋ 给",b:`<span class="fm">Chủ ngữ ＋ 拿 / 送 / 卖 ＋ 给 ＋ người ＋ vật<small>… ná / sòng / mài + gěi + O₁ (người) + O₂ (vật)</small></span><p>Tân ngữ thứ nhất chỉ <b>người</b>, tân ngữ thứ hai chỉ <b>sự vật</b>.</p><ul><li>${Z("王老师喜欢花，就送给她花吧。","Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba.")}</li><li>${Z("她拿给我一杯水。","Tā ná gěi wǒ yì bēi shuǐ.")} Cô ấy đưa cho tôi một cốc nước.</li><li>${Z("他卖给我一本中文书。","Tā mài gěi wǒ yì běn Zhōngwén shū.")} Anh ấy bán cho tôi một quyển sách tiếng Trung.</li></ul><p class="warn">⚠️ Lỗi hay gặp: đảo theo tiếng Việt “tặng hoa cho cô” ✗ 送花给她 trong mẫu này hoặc ✗ 送给花她. Trong mẫu 送给, người đứng <b>ngay sau 给</b>, vật đứng cuối: 送给她花.</p>`},
+{h:"2. Câu so sánh (7): A 比 B ＋ tính từ ＋ số lượng",b:`<span class="fm">A ＋ 比 ＋ B ＋ tính từ ＋ số lượng<small>A + bǐ + B + adj + số + lượng từ</small></span><p>Cụm số lượng đặt <b>sau tính từ</b> để nói rõ khác nhau bao nhiêu.</p><ul><li>${Z("今天的词比昨天多了十个。","Jīntiān de cí bǐ zuótiān duōle shí ge.")} Từ hôm nay nhiều hơn hôm qua mười từ.</li><li>${Z("姐姐比我大三岁。","Jiějie bǐ wǒ dà sān suì.")} Chị lớn hơn tôi ba tuổi.</li><li>${Z("坐飞机比坐火车快五个多小时。","Zuò fēijī bǐ zuò huǒchē kuài wǔ ge duō xiǎoshí.")}</li></ul><p class="warn">⚠️ Lỗi hay gặp: đặt số lượng trước tính từ như tiếng Việt nói nhanh ✗ 姐姐比我三岁大; quên 比 ✗ 姐姐大我三岁 (khẩu ngữ có thể nghe thấy nhưng HSK 2 dùng mẫu có 比).</p>`},
+{h:"3. Câu so sánh (8): A 比 B ＋ tính từ ＋ 一点儿 / 一些",b:`<span class="fm">A ＋ 比 ＋ B ＋ tính từ ＋ 一点儿 / 一些<small>… + yìdiǎnr / yìxiē</small></span><p>Khác nhau <b>không nhiều</b>.</p><ul><li>${Z("比我们一起买的那个本子贵一点儿。","Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.")}</li><li>${Z("姐姐比我高一点儿。","Jiějie bǐ wǒ gāo yìdiǎnr.")} Chị cao hơn tôi một chút.</li><li>${Z("那间教室比这间大一些。","Nà jiān jiàoshì bǐ zhè jiān dà yìxiē.")}</li></ul><p><b>So sánh cả bài:</b> 多了 / 得多 (khác nhiều, Bài 12) ↔ 一点儿 / 一些 (khác ít) ↔ số lượng cụ thể (十个, 三岁).</p><p class="warn">⚠️ Lỗi hay gặp: ✗ 姐姐比我有点儿高. 有点儿 đứng <b>trước</b> tính từ và không dùng trong câu 比; trong câu 比 dùng 一点儿 <b>sau</b> tính từ.</p>`},
+{h:"4. Mẹo dùng từ: 上网 / 网上, 上楼 / 楼上; 咖啡杯",b:`<p>Động từ đứng trước là hành động, đứng sau là nơi chốn:</p><ul><li>${Z("上网","shàngwǎng")} = lên mạng (hành động) ↔ ${Z("网上","wǎngshang")} = trên mạng (nơi chốn): ${Z("我是上网买的。","Wǒ shì shàngwǎng mǎi de.")} / ${Z("她是在网上买的。","Tā shì zài wǎngshang mǎi de.")}</li><li>${Z("上楼","shàng lóu")} = lên lầu ↔ ${Z("楼上","lóu shàng")} = trên lầu; ${Z("下楼","xià lóu")} ↔ ${Z("楼下","lóu xià")}.</li></ul><p>${Z("咖啡","kāfēi")} ＋ ${Z("杯子","bēizi")} → ${Z("咖啡杯","kāfēibēi")} cốc cà phê. ${Z("“日”比“口”多一笔。","“Rì” bǐ “kǒu” duō yì bǐ.")} 笔 là lượng từ đếm nét chữ.</p>`}],
+gq:[
+{q:"“Cô Vương thích hoa, cứ tặng hoa cho cô đi.” nói là:",o:["王老师喜欢花，就送给她花吧。|Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba.","王老师喜欢花，就送给花她吧。|Wáng lǎoshī xǐhuan huā, jiù sòng gěi huā tā ba.","王老师喜欢花，就她送给花吧。|Wáng lǎoshī xǐhuan huā, jiù tā sòng gěi huā ba."],e:"送给 + người + vật."},
+{q:"“Cô ấy đưa cho tôi một cốc nước.” nói là:",o:["她拿给我一杯水。|Tā ná gěi wǒ yì bēi shuǐ.","她拿一杯水我给。|Tā ná yì bēi shuǐ wǒ gěi.","她给拿我一杯水。|Tā gěi ná wǒ yì bēi shuǐ."],e:"拿给 + người + vật."},
+{q:"“Từ mới hôm nay nhiều hơn hôm qua mười từ.” nói là:",o:["今天的词比昨天多了十个。|Jīntiān de cí bǐ zuótiān duōle shí ge.","今天的词比昨天十个多了。|Jīntiān de cí bǐ zuótiān shí ge duō le.","今天的词多了十个比昨天。|Jīntiān de cí duōle shí ge bǐ zuótiān."],e:"Số lượng đặt sau tính từ."},
+{q:"“Chị lớn hơn tôi ba tuổi.” nói là:",o:["姐姐比我大三岁。|Jiějie bǐ wǒ dà sān suì.","姐姐比我三岁大。|Jiějie bǐ wǒ sān suì dà.","姐姐三岁比我大。|Jiějie sān suì bǐ wǒ dà."],e:"A 比 B + tính từ + số lượng."},
+{q:"“Chị cao hơn tôi một chút.” nói là:",o:["姐姐比我高一点儿。|Jiějie bǐ wǒ gāo yìdiǎnr.","姐姐比我有点儿高。|Jiějie bǐ wǒ yǒudiǎnr gāo.","姐姐比我一点儿高。|Jiějie bǐ wǒ yìdiǎnr gāo."],e:"一点儿 đặt sau tính từ; không dùng 有点儿 trong câu 比."},
+{q:"“Đắt hơn cuốn vở chúng ta cùng mua một chút.” nói là:",o:["比我们一起买的那个本子贵一点儿。|Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.","比我们一起买的那个本子贵多了。|Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì duō le.","比我们一起买的那个本子很贵。|Bǐ wǒmen yìqǐ mǎi de nàge běnzi hěn guì."],e:"Khác ít: 一点儿. Câu B nghĩa là đắt hơn nhiều."},
+{q:"“Mình mua trên mạng đấy.” (nhấn mạnh hành động lên mạng) nói là:",o:["我是上网买的。|Wǒ shì shàngwǎng mǎi de.","我是网上买的上。|Wǒ shì wǎngshang mǎi de shàng.","我是买的上网。|Wǒ shì mǎi de shàngwǎng."],e:"是……的 + 上网 (hành động)."},
+{q:"Điền từ: 教室的门开着，但是____没有人。",o:["里面|lǐmiàn","上网|shàngwǎng","告诉|gàosu"],e:"里面: bên trong."},
+{q:"Điền từ: 小李呢？我找她有点儿事。——____去洗手间了。",o:["可能|kěnéng","班|bān","那样|nàyàng"],e:"可能: có lẽ."}],
+dt:[["时间过得真快啊！","Shíjiān guò de zhēn kuài a!"],["新年就要到了。","Xīnnián jiù yào dào le."],["王老师教我们中文。","Wáng lǎoshī jiāo wǒmen Zhōngwén."],["王老师喜欢花，就送给她花吧。","Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba."],["今天的词比昨天多了十个。","Jīntiān de cí bǐ zuótiān duōle shí ge."],["你们在本子上面写。","Nǐmen zài běnzi shàngmiàn xiě."],["比我们一起买的那个本子贵一点儿。","Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr."],["我是上网买的。","Wǒ shì shàngwǎng mǎi de."],["姐姐比我大三岁。","Jiějie bǐ wǒ dà sān suì."],["她拿给我一杯水。","Tā ná gěi wǒ yì bēi shuǐ."]],
+tsort:[
+{t:["新年","就要","到","了","。"],ok:["新年就要到了。"],p:"Xīnnián jiù yào dào le.",e:"就要……了: sắp…"},
+{t:["王老师","教","我们","中文","，"],ok:["王老师教我们中文，"],p:"Wáng lǎoshī jiāo wǒmen Zhōngwén,",e:"教 + người + môn học."},
+{t:["今天的词","比","昨天","多了","十个","。"],ok:["今天的词比昨天多了十个。"],p:"Jīntiān de cí bǐ zuótiān duōle shí ge.",e:"A 比 B + tính từ + số lượng."},
+{t:["你们","在","本子","上面","写","。"],ok:["你们在本子上面写。"],p:"Nǐmen zài běnzi shàngmiàn xiě.",e:"在 + nơi chốn + động từ."},
+{t:["我","是","上网","买","的","。"],ok:["我是上网买的。"],p:"Wǒ shì shàngwǎng mǎi de.",e:"是……的 nhấn mạnh cách thức."}],
+tlis:[
+{a:"你觉得送给她什么好呢？",o:["王老师喜欢花，就送给她花吧。|Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba.","学会了，没有问题。|Xuéhuì le, méiyǒu wèntí.","很漂亮，多少钱一个？|Hěn piàoliang, duōshao qián yí gè?"]},
+{a:"是啊！你们都学会了吗？",o:["学会了，没有问题。|Xuéhuì le, méiyǒu wèntí.","咖啡杯吧。|Kāfēibēi ba.","时间过得真快啊！|Shíjiān guò de zhēn kuài a!"]},
+{a:"家月，你觉得这个本子怎么样？",o:["很漂亮，多少钱一个？|Hěn piàoliang, duōshao qián yí gè?","没错，你说得很对。|Méi cuò, nǐ shuō de hěn duì.","那我们去花店看看。|Nà wǒmen qù huādiàn kànkan."]},
+{a:"王老师，今天的词比昨天多了十个。",qz:"今天的词比昨天多多少？",qp:"Jīntiān de cí bǐ zuótiān duō duōshao?",o:["十个|shí ge","四个|sì ge","七个|qī ge"]},
+{a:"我是上网买的，真没那么贵。我买了两个，送你一个。",qz:"这个本子是在哪儿买的？",qp:"Zhège běnzi shì zài nǎr mǎi de?",o:["网上|wǎngshang","商店|shāngdiàn","超市|chāoshì"]}],
+sit:[
+{title:"Tình huống 1 · Chuẩn bị quà năm mới cho cô",ctx:"Sắp đến năm mới, Gia Nguyệt và Thiên Trung bàn chuyện tặng quà cô Vương.",turns:[
+{w:"白家月",vi:"Nói thời gian trôi nhanh quá, sắp năm mới rồi.",h:[["时间","shíjiān"],["过得真快啊","guò de zhēn kuài a"],["新年","xīnnián"],["就要到了","jiù yào dào le"]],r:["时间过得真快啊！新年就要到了。","Shíjiān guò de zhēn kuài a! Xīnnián jiù yào dào le.","Thời gian trôi nhanh thật! Sắp năm mới rồi."]},
+{w:"陈天中",vi:"Nói cả năm nay cô Vương dạy tiếng Trung, ngày nào cũng mệt.",h:[["这一年","zhè yì nián"],["王老师","Wáng lǎoshī"],["教我们中文","jiāo wǒmen Zhōngwén"],["每天工作","měi tiān gōngzuò"],["都很累","dōu hěn lèi"]],r:["这一年王老师教我们中文，每天工作都很累。","Zhè yì nián Wáng lǎoshī jiāo wǒmen Zhōngwén, měi tiān gōngzuò dōu hěn lèi.","Cả năm nay cô Vương dạy bọn mình tiếng Trung, ngày nào cũng mệt."]},
+{w:"白家月",vi:"Khen cô dạy hay; nhờ cô mà ai cũng thích học tiếng Trung.",h:[["是啊","shì a"],["她教得很好","tā jiāo de hěn hǎo"],["因为她","yīnwèi tā"],["我们都","wǒmen dōu"],["非常爱上中文课","fēicháng ài shàng Zhōngwén kè"]],r:["是啊，她教得很好。因为她，我们都非常爱上中文课。","Shì a, tā jiāo de hěn hǎo. Yīnwèi tā, wǒmen dōu fēicháng ài shàng Zhōngwén kè.","Đúng vậy, cô dạy rất hay. Nhờ cô mà ai cũng thích học tiếng Trung."]},
+{w:"陈天中",vi:"Đề nghị chuẩn bị quà năm mới cho cô; hỏi tặng gì thì hay.",h:[["我们","wǒmen"],["给她准备个","gěi tā zhǔnbèi ge"],["新年礼物吧","xīnnián lǐwù ba"],["你觉得","nǐ juéde"],["送给她什么好呢","sòng gěi tā shénme hǎo ne"]],r:["我们给她准备个新年礼物吧。你觉得送给她什么好呢？","Wǒmen gěi tā zhǔnbèi ge xīnnián lǐwù ba. Nǐ juéde sòng gěi tā shénme hǎo ne?","Mình chuẩn bị quà năm mới cho cô đi. Bạn thấy tặng cô gì thì hay?"]},
+{w:"白家月",vi:"Nói cô thích hoa, tặng hoa cho cô (送给 + người + vật).",h:[["王老师","Wáng lǎoshī"],["喜欢花","xǐhuan huā"],["就","jiù"],["送给她花吧","sòng gěi tā huā ba"]],r:["王老师喜欢花，就送给她花吧。","Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba.","Cô Vương thích hoa, tặng hoa cho cô đi."]},
+{w:"陈天中",vi:"Rủ đi tiệm hoa; giờ nhiều người mua, mong vẫn còn hoa đẹp.",h:[["那我们","nà wǒmen"],["去花店看看","qù huādiàn kànkan"],["现在买花的人多","xiànzài mǎi huā de rén duō"],["希望","xīwàng"],["花店还有漂亮的花","huādiàn hái yǒu piàoliang de huā"]],r:["那我们去花店看看，现在买花的人多，希望花店还有漂亮的花。","Nà wǒmen qù huādiàn kànkan, xiànzài mǎi huā de rén duō, xīwàng huādiàn hái yǒu piàoliang de huā.","Vậy ra tiệm hoa xem, giờ nhiều người mua, mong vẫn còn hoa đẹp."]}]},
+{title:"Tình huống 2 · Trong giờ học chữ Hán",ctx:"Cô Vương dạy từ mới và chữa lỗi viết chữ.",turns:[
+{w:"白家月",vi:"Nói từ mới hôm nay nhiều hơn hôm qua mười từ.",h:[["王老师","Wáng lǎoshī"],["今天的词","jīntiān de cí"],["比昨天","bǐ zuótiān"],["多了十个","duōle shí ge"]],r:["王老师，今天的词比昨天多了十个。","Wáng lǎoshī, jīntiān de cí bǐ zuótiān duōle shí ge.","Cô ơi, từ hôm nay nhiều hơn hôm qua mười từ ạ."]},
+{w:"王一飞",vi:"Xác nhận; hỏi các em học thuộc hết chưa.",h:[["是啊","shì a"],["你们","nǐmen"],["都学会了吗","dōu xuéhuì le ma"]],r:["是啊！你们都学会了吗？","Shì a! Nǐmen dōu xuéhuì le ma?","Đúng vậy! Các em học được hết chưa?"]},
+{w:"安妮",vi:"Nói học được rồi, không có vấn đề gì.",h:[["学会了","xuéhuì le"],["没有问题","méiyǒu wèntí"]],r:["学会了，没有问题。","Xuéhuì le, méiyǒu wèntí.","Học được rồi ạ, không có vấn đề gì."]},
+{w:"王一飞",vi:"Bảo cô đọc, các em viết vào vở.",h:[["好","hǎo"],["现在我来说","xiànzài wǒ lái shuō"],["你们","nǐmen"],["在本子上面写","zài běnzi shàngmiàn xiě"]],r:["好。现在我来说，你们在本子上面写。","Hǎo. Xiànzài wǒ lái shuō, nǐmen zài běnzi shàngmiàn xiě.","Tốt. Giờ cô đọc, các em viết vào vở."]},
+{w:"王一飞",vi:"Nhắc chữ 间 trong 洗手间 viết sai: bên trong là 日, không phải 口.",h:[["同学们","tóngxuémen"],["洗手间的间字","xǐshǒujiān de jiān zì"],["写错了","xiěcuò le"],["它的里面是日","tā de lǐmiàn shì rì"],["不是口","bú shì kǒu"]],r:["同学们，“洗手间”的“间”字写错了，它的里面是“日”，不是“口”。","Tóngxuémen, “xǐshǒujiān” de “jiān” zì xiěcuò le, tā de lǐmiàn shì “rì”, bú shì “kǒu”.","Các em ơi, chữ 间 trong 洗手间 viết sai rồi, bên trong là 日, không phải 口."]},
+{w:"白家月",vi:"Giải thích: 日 nhiều hơn 口 một nét, viết 口 thành chữ 问.",h:[["日比口","rì bǐ kǒu"],["多一笔","duō yì bǐ"],["写口","xiě kǒu"],["就是问题的问了","jiù shì wèntí de wèn le"]],r:["“日”比“口”多一笔，写“口”就是“问题”的“问”了。","“Rì” bǐ “kǒu” duō yì bǐ, xiě “kǒu” jiù shì “wèntí” de “wèn” le.","日 nhiều hơn 口 một nét, viết 口 là thành chữ 问 rồi ạ."]},
+{w:"王一飞",vi:"Khen em nói đúng.",h:[["没错","méi cuò"],["你说得很对","nǐ shuō de hěn duì"]],r:["没错，你说得很对。","Méi cuò, nǐ shuō de hěn duì.","Đúng rồi, em nói rất đúng."]}]},
+{title:"Tình huống 3 · Tặng quà cho nhau",ctx:"Annie khoe cuốn vở mới với Gia Nguyệt.",turns:[
+{w:"安妮",vi:"Hỏi Gia Nguyệt thấy cuốn vở này thế nào.",h:[["家月","Jiāyuè"],["你觉得","nǐ juéde"],["这个本子","zhège běnzi"],["怎么样","zěnmeyàng"]],r:["家月，你觉得这个本子怎么样？","Jiāyuè, nǐ juéde zhège běnzi zěnmeyàng?","Gia Nguyệt, bạn thấy cuốn vở này thế nào?"]},
+{w:"白家月",vi:"Khen đẹp, hỏi bao nhiêu tiền một cuốn.",h:[["很漂亮","hěn piàoliang"],["多少钱","duōshao qián"],["一个","yí gè"]],r:["很漂亮，多少钱一个？","Hěn piàoliang, duōshao qián yí gè?","Đẹp lắm, bao nhiêu tiền một cuốn?"]},
+{w:"安妮",vi:"Nói đắt hơn cuốn hai người cùng mua một chút (一点儿).",h:[["比","bǐ"],["我们一起买的","wǒmen yìqǐ mǎi de"],["那个本子","nàge běnzi"],["贵一点儿","guì yìdiǎnr"]],r:["比我们一起买的那个本子贵一点儿。","Bǐ wǒmen yìqǐ mǎi de nàge běnzi guì yìdiǎnr.","Đắt hơn cuốn bọn mình cùng mua một chút."]},
+{w:"白家月",vi:"Nghi ngờ: vở đẹp thế này, chắc không chỉ đắt hơn một chút.",h:[["这么漂亮的本子","zhème piàoliang de běnzi"],["不可能","bù kěnéng"],["贵一点儿吧","guì yìdiǎnr ba"]],r:["这么漂亮的本子，不可能贵一点儿吧？","Zhème piàoliang de běnzi, bù kěnéng guì yìdiǎnr ba?","Vở đẹp thế này, không thể chỉ đắt hơn chút đâu nhỉ?"]},
+{w:"安妮",vi:"Nói mua trên mạng, thật không đắt thế; mua hai cuốn, tặng bạn một.",h:[["我是上网买的","wǒ shì shàngwǎng mǎi de"],["真没那么贵","zhēn méi nàme guì"],["我买了两个","wǒ mǎile liǎng gè"],["送你一个","sòng nǐ yí gè"]],r:["我是上网买的，真没那么贵。我买了两个，送你一个。","Wǒ shì shàngwǎng mǎi de, zhēn méi nàme guì. Wǒ mǎile liǎng gè, sòng nǐ yí gè.","Mình mua trên mạng, thật không đắt thế. Mình mua hai cuốn, tặng bạn một."]},
+{w:"白家月",vi:"Cảm ơn; hỏi nên tặng lại bạn gì.",h:[["谢谢","xièxie"],["那我","nà wǒ"],["送给你什么呢","sòng gěi nǐ shénme ne"]],r:["谢谢！那我送给你什么呢？","Xièxie! Nà wǒ sòng gěi nǐ shénme ne?","Cảm ơn nhé! Vậy mình tặng bạn gì đây?"]},
+{w:"安妮",vi:"Bảo tặng cốc cà phê, vì mình thích uống cà phê nhất.",h:[["咖啡杯吧","kāfēibēi ba"],["我最喜欢","wǒ zuì xǐhuan"],["喝咖啡了","hē kāfēi le"]],r:["咖啡杯吧，我最喜欢喝咖啡了。","Kāfēibēi ba, wǒ zuì xǐhuan hē kāfēi le.","Cốc cà phê đi, mình thích uống cà phê nhất."]},
+{w:"白家月",vi:"Đồng ý: thế là ai cũng có quà năm mới.",h:[["好","hǎo"],["那样","nàyàng"],["我们就都有","wǒmen jiù dōu yǒu"],["新年礼物了","xīnnián lǐwù le"]],r:["好，那样我们就都有新年礼物了！","Hǎo, nàyàng wǒmen jiù dōu yǒu xīnnián lǐwù le!","Được, thế là ai cũng có quà năm mới rồi!"]}]},
+{title:"Tình huống 4 · Vận dụng: quà Tết cho cô giáo lớp tiếng Trung",ctx:"Sắp Tết. Bạn và Tiểu Vương (đồng nghiệp người Trung Quốc, cùng học lớp tiếng Trung buổi tối ở công ty) bàn chuyện tặng quà cô giáo.",turns:[
+{w:"我",vi:"Nói sắp năm mới rồi, đề nghị chuẩn bị quà năm mới cho cô.",h:[["新年","xīnnián"],["就要到了","jiù yào dào le"],["我们","wǒmen"],["给老师准备个","gěi lǎoshī zhǔnbèi ge"],["新年礼物吧","xīnnián lǐwù ba"]],r:["新年就要到了，我们给老师准备个新年礼物吧。","Xīnnián jiù yào dào le, wǒmen gěi lǎoshī zhǔnbèi ge xīnnián lǐwù ba.","Sắp năm mới rồi, mình chuẩn bị quà năm mới cho cô nhé."]},
+{w:"小王",vi:"Đồng ý; nói cô dạy rất hay, hỏi tặng gì.",h:[["好啊","hǎo a"],["老师教得很好","lǎoshī jiāo de hěn hǎo"],["送给她","sòng gěi tā"],["什么好呢","shénme hǎo ne"]],r:["好啊，老师教得很好。送给她什么好呢？","Hǎo a, lǎoshī jiāo de hěn hǎo. Sòng gěi tā shénme hǎo ne?","Được đấy, cô dạy rất hay. Tặng cô gì thì hay nhỉ?"]},
+{w:"我",vi:"Nói cô thích hoa, tặng hoa cho cô (送给 + người + vật).",h:[["老师喜欢花","lǎoshī xǐhuan huā"],["就","jiù"],["送给她花吧","sòng gěi tā huā ba"]],r:["老师喜欢花，就送给她花吧。","Lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba.","Cô thích hoa, mình tặng hoa cho cô đi."]},
+{w:"小王",vi:"Nói hoa ở tiệm hoa cạnh công ty đắt hơn trên mạng một chút (一点儿).",h:[["公司旁边的花店","gōngsī pángbiān de huādiàn"],["比网上","bǐ wǎngshang"],["贵一点儿","guì yìdiǎnr"]],r:["公司旁边的花店比网上贵一点儿。","Gōngsī pángbiān de huādiàn bǐ wǎngshang guì yìdiǎnr.","Tiệm hoa cạnh công ty đắt hơn trên mạng một chút."]},
+{w:"我",vi:"Nói không sao, rủ ra tiệm hoa xem; mong vẫn còn hoa đẹp (希望).",h:[["没关系","méi guānxi"],["我们去花店看看","wǒmen qù huādiàn kànkan"],["希望","xīwàng"],["还有漂亮的花","hái yǒu piàoliang de huā"]],r:["没关系，我们去花店看看，希望还有漂亮的花。","Méi guānxi, wǒmen qù huādiàn kànkan, xīwàng hái yǒu piàoliang de huā.","Không sao, mình ra tiệm xem, mong vẫn còn hoa đẹp."]},
+{w:"小王",vi:"Hỏi lớp mình có bao nhiêu người.",h:[["我们班","wǒmen bān"],["有多少人","yǒu duōshao rén"]],r:["我们班有多少人？","Wǒmen bān yǒu duōshao rén?","Lớp mình có bao nhiêu người?"]},
+{w:"我",vi:"Nói mười hai người, nhiều hơn lớp năm ngoái ba người (số lượng).",h:[["十二个人","shí'èr ge rén"],["比去年","bǐ qùnián"],["多了三个","duōle sān ge"]],r:["十二个人，比去年多了三个。","Shí'èr ge rén, bǐ qùnián duōle sān ge.","Mười hai người, nhiều hơn năm ngoái ba người."]},
+{w:"小王",vi:"Chúc: mong cô đón năm mới thật vui vẻ (高高兴兴地).",h:[["那","nà"],["希望老师","xīwàng lǎoshī"],["高高兴兴地","gāogāoxìngxìng de"],["过个新年","guò ge xīnnián"]],r:["那希望老师高高兴兴地过个新年！","Nà xīwàng lǎoshī gāogāoxìngxìng de guò ge xīnnián!","Mong cô đón năm mới thật vui vẻ!"]}]}]};
+/* Bài tập Ngữ pháp · Mẫu câu (3 dạng) */
+GXD["2-13"]={so:[
+{t:["就|jiù","送给|sòng gěi","她|tā","花|huā","吧|ba"],ok:["就送给她花吧"],f:"就送给她花吧。",p:"Jiù sòng gěi tā huā ba.",e:"送给 + người + vật."},
+{t:["她|tā","拿给|ná gěi","我|wǒ","一杯水|yì bēi shuǐ"],ok:["她拿给我一杯水","我拿给她一杯水"],f:"她拿给我一杯水。",p:"Tā ná gěi wǒ yì bēi shuǐ.",e:"拿给 + người + vật."},
+{t:["今天的词|jīntiān de cí","比|bǐ","昨天|zuótiān","多了|duōle","十个|shí ge"],ok:["今天的词比昨天多了十个"],f:"今天的词比昨天多了十个。",p:"Jīntiān de cí bǐ zuótiān duōle shí ge.",e:"Số lượng đặt sau tính từ."},
+{t:["姐姐|jiějie","比|bǐ","我|wǒ","大|dà","三岁|sān suì"],ok:["姐姐比我大三岁"],f:"姐姐比我大三岁。",p:"Jiějie bǐ wǒ dà sān suì.",e:"A 比 B + tính từ + số lượng."},
+{t:["那间教室|nà jiān jiàoshì","比|bǐ","这间|zhè jiān","大|dà","一些|yìxiē"],ok:["那间教室比这间大一些"],f:"那间教室比这间大一些。",p:"Nà jiān jiàoshì bǐ zhè jiān dà yìxiē.",e:"A 比 B + tính từ + 一些: khác ít."}],
+tr:[
+{vi:"Cô Vương thích hoa, cứ tặng hoa cho cô đi.",a:["王老师喜欢花就送给她花吧","王老师喜欢花就送她花吧","王老师喜欢花就送给王老师花吧"],r:["王老师喜欢花，就送给她花吧。","Wáng lǎoshī xǐhuan huā, jiù sòng gěi tā huā ba."]},
+{vi:"Anh ấy bán cho tôi một quyển sách tiếng Trung.",a:["他卖给我一本中文书","他卖给我一本汉语书"],r:["他卖给我一本中文书。","Tā mài gěi wǒ yì běn Zhōngwén shū."]},
+{vi:"Chị lớn hơn tôi ba tuổi.",a:["姐姐比我大三岁"],r:["姐姐比我大三岁。","Jiějie bǐ wǒ dà sān suì."]},
+{vi:"Chị cao hơn tôi một chút.",a:["姐姐比我高一点儿","姐姐比我高一些","姐姐比我高一点"],r:["姐姐比我高一点儿。","Jiějie bǐ wǒ gāo yìdiǎnr."]},
+{vi:"Chữ “日” nhiều hơn chữ “口” một nét.",a:["日比口多一笔","日字比口字多一笔"],r:["“日”比“口”多一笔。","“Rì” bǐ “kǒu” duō yì bǐ."]}],
+pc:[
+{img:"h2b13a",req:"Hai anh em cầm máy bay đồ chơi; anh trai lớn hơn bạn nhỏ vài tuổi. Hãy giới thiệu anh trai (dùng 比 + tính từ + số lượng).",kw:[{l:"比",m:[["比","bi"]]},{l:"岁",m:[["岁","sui"]]}],r:[["哥哥比我大三岁，我喜欢跟他玩。","Gēge bǐ wǒ dà sān suì, wǒ xǐhuan gēn tā wán.","Anh trai lớn hơn tôi ba tuổi, tôi thích chơi với anh."],["哥哥比弟弟高多了。","Gēge bǐ dìdi gāo duō le.","Anh trai cao hơn em trai nhiều."]]},
+{img:"h2b13b",req:"Hai vợ chồng đang bơi, người vợ ở phía trước một chút. Hãy so sánh hai người (dùng V得 + 比 …… 一点儿).",kw:[{l:"比",m:[["比","bi"]]},{l:"一点儿 / 一些",m:[["一点儿","yidianr"],["一点","yidian"],["一些","yixie"]]}],r:[["妻子游得比丈夫快一点儿。","Qīzi yóu de bǐ zhàngfu kuài yìdiǎnr.","Vợ bơi nhanh hơn chồng một chút."],["妻子游泳比丈夫游得快一些。","Qīzi yóuyǒng bǐ zhàngfu yóu de kuài yìxiē.","Vợ bơi nhanh hơn chồng một chút."]]}]};
+var TKP=Object.assign(window.TKP||{},{"新年":"xīnnián","就要":"jiù yào","到":"dào","了":"le","王老师":"Wáng lǎoshī","教":"jiāo","我们":"wǒmen","中文":"Zhōngwén","今天的词":"jīntiān de cí","比":"bǐ","昨天":"zuótiān","多了":"duōle","十个":"shí ge","你们":"nǐmen","在":"zài","本子":"běnzi","上面":"shàngmiàn","写":"xiě","我":"wǒ","是":"shì","上网":"shàngwǎng","买":"mǎi","的":"de"});

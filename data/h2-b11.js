@@ -1,0 +1,117 @@
+/* ===== HSK2 Bài 11: 我最喜欢吃中国菜 ===== */
+LD2[11]={t:"我最喜欢吃中国菜",tp:"Wǒ zuì xǐhuan chī Zhōngguó cài",vi:"Em thích ăn món Trung Quốc nhất",gpNote:GPN,
+goals:["Nghe hiểu và miêu tả được tình trạng sức khỏe: đau đầu, không khỏe, đi bệnh viện, mua thuốc.","Dùng trợ từ động thái 着 để nói động tác, trạng thái đang được duy trì.","Dùng phó từ 最 để nói một người, một vật hơn tất cả những cái cùng loại."],
+texts:[
+{ctx:"Trong lớp học, Vương Nhất Phi và Bạch Gia Nguyệt đang trò chuyện.",a:"h2-11-1",l:[
+["王一飞","家月，都下课了，你怎么还不回家？","Jiāyuè, dōu xiàkè le, nǐ zěnme hái bù huí jiā?","Gia Nguyệt, đã tan học rồi, sao em vẫn chưa về nhà?"],
+["白家月","我头疼，不太舒服。","Wǒ tóu téng, bú tài shūfu.","Em bị đau đầu, không được khoẻ lắm."],
+["王一飞","你这几天经常头疼，去医院看看吧。","Nǐ zhè jǐ tiān jīngcháng tóu téng, qù yīyuàn kànkan ba.","Mấy ngày nay em thường xuyên đau đầu, hay là đi bệnh viện khám thử xem."],
+["白家月","我想休息一下，现在不能动，一动就疼。","Wǒ xiǎng xiūxi yíxià, xiànzài bù néng dòng, yí dòng jiù téng.","Em muốn nghỉ ngơi một lát, bây giờ không cử động được, cứ đi lại là đau."],
+["王一飞","那你在这儿坐着，我去开车，一会儿送你去医院。","Nà nǐ zài zhèr zuòzhe, wǒ qù kāichē, yíhuìr sòng nǐ qù yīyuàn.","Vậy em cứ ngồi ở đây nhé, cô đi lấy xe, lát nữa sẽ đưa em đến bệnh viện."],
+["白家月","谢谢王老师。","Xièxie Wáng lǎoshī.","Cảm ơn cô Vương ạ."]]},
+{ctx:"Trong xe, Vương Nhất Phi đang trò chuyện với Bạch Gia Nguyệt thì Lý Văn gọi điện đến.",a:"h2-11-2",l:[
+["王一飞","现在路上车多，还下着雪，我开慢一点儿。","Xiànzài lùshang chē duō, hái xiàzhe xuě, wǒ kāi màn yìdiǎnr.","Bây giờ rất nhiều xe cộ trên đường, lại còn đang có tuyết rơi nên cô lái chậm một chút."],
+["白家月","没问题，现在头没那么疼了。","Méi wèntí, xiànzài tóu méi nàme téng le.","Không sao đâu ạ, bây giờ đầu em không còn đau như vừa nãy nữa rồi."],
+["王一飞","好。李文来电话了，你帮我接一下。","Hǎo. Lǐ Wén lái diànhuà le, nǐ bāng wǒ jiē yíxià.","Được rồi. Lý Văn gọi điện thoại đến kìa, em nghe máy hộ cô một chút."],
+["白家月","喂，李文，王老师开着车呢，你找她有事吗？","Wèi, Lǐ Wén, Wáng lǎoshī kāizhe chē ne, nǐ zhǎo tā yǒu shì ma?","A lô, Lý Văn à, cô Vương đang lái xe, bạn tìm cô có việc gì không?"],
+["李文","没什么事。今天雪这么大，你们开车去哪儿啊？","Méi shénme shì. Jīntiān xuě zhème dà, nǐmen kāichē qù nǎr a?","Không có việc gì quan trọng đâu. Hôm nay tuyết rơi dày thế này, hai người lái xe đi đâu vậy?"],
+["白家月","去医院，我头有点儿疼。","Qù yīyuàn, wǒ tóu yǒudiǎnr téng.","Đi bệnh viện, mình hơi đau đầu."],
+["李文","那我一会儿去看看你。","Nà wǒ yíhuìr qù kànkan nǐ.","Vậy lát nữa mình sẽ đi thăm bạn."]]},
+{ctx:"Trong phòng, Lý Văn đến thăm Bạch Gia Nguyệt.",a:"h2-11-3",l:[
+["白家月","李文，快请进！","Lǐ Wén, kuài qǐng jìn!","Lý Văn, mau vào đi!"],
+["李文","家月，你怎么样了？头还疼吗？","Jiāyuè, nǐ zěnmeyàng le? Tóu hái téng ma?","Gia Nguyệt, bạn thế nào rồi? Còn đau đầu không?"],
+["白家月","不那么疼了。医生开了一些药，吃完就好多了。","Bú nàme téng le. Yīshēng kāile yìxiē yào, chīwán jiù hǎoduō le.","Không đau như trước nữa rồi. Bác sĩ đã kê một ít thuốc, uống xong thấy khoẻ hơn nhiều rồi."],
+["李文","那就好！","Nà jiù hǎo!","Vậy thì tốt rồi!"],
+["王一飞","家月，你想不想吃点儿东西？","Jiāyuè, nǐ xiǎng bu xiǎng chī diǎnr dōngxi?","Gia Nguyệt, em có muốn ăn chút gì không?"],
+["李文","吃点儿吧，身体不舒服时更要好好吃饭。","Chī diǎnr ba, shēntǐ bù shūfu shí gèng yào hǎohǎo chī fàn.","Ăn một chút đi, khi cơ thể không khoẻ thì càng phải ăn uống đầy đủ."],
+["白家月","吃点儿什么呢？","Chī diǎnr shénme ne?","Ăn chút gì bây giờ ạ?"],
+["王一飞","你最喜欢吃中国菜，我做几个中国菜吧。","Nǐ zuì xǐhuan chī Zhōngguó cài, wǒ zuò jǐ ge Zhōngguó cài ba.","Em thích ăn món Trung Quốc nhất, cô nấu mấy món Trung Quốc nhé."],
+["白家月","好的，谢谢王老师。","Hǎo de, xièxie Wáng lǎoshī.","Vâng ạ, cảm ơn cô Vương."]]},
+{ctx:"Trong phòng, Bạch Gia Nguyệt đang viết nhật ký.",a:"h2-11-4",l:[
+["白家月","我这几天经常头疼，从药店买了点儿药，没去医院。","Wǒ zhè jǐ tiān jīngcháng tóu téng, cóng yàodiàn mǎile diǎnr yào, méi qù yīyuàn.","Mấy ngày nay tôi thường xuyên bị đau đầu, đã mua một ít thuốc từ hiệu thuốc về mà không đi bệnh viện."],
+["白家月","今天下课后，王老师看我不舒服，就送我去医院了。","Jīntiān xiàkè hòu, Wáng lǎoshī kàn wǒ bù shūfu, jiù sòng wǒ qù yīyuàn le.","Hôm nay sau khi tan học, cô Vương thấy tôi không được khoẻ nên đã đưa tôi đến bệnh viện."],
+["白家月","从医院回来，李文也来看我了。","Cóng yīyuàn huílái, Lǐ Wén yě lái kàn wǒ le.","Sau khi từ bệnh viện về, Lý Văn cũng đến thăm tôi."],
+["白家月","现在他们都回去了，我也要睡觉了。","Xiànzài tāmen dōu huíqù le, wǒ yě yào shuìjiào le.","Bây giờ họ đều về cả rồi, tôi cũng phải đi ngủ đây."]]}],
+words:[["头","tóu","danh từ","đầu",0],["疼","téng","tính từ","đau, nhức",0],["经常","jīngcháng","phó từ","thường xuyên",0],["动","dòng","động từ","di chuyển, cử động",0],["着","zhe","trợ từ","(sau động từ / tính từ) chỉ sự duy trì",0],
+["路上","lùshang","danh từ","trên đường",1],["慢","màn","tính từ","chậm",1],
+["进","jìn","động từ","vào",2],["药","yào","danh từ","thuốc",2],["身体","shēntǐ","danh từ","cơ thể, sức khoẻ",2],["时","shí","danh từ","khi, lúc",2],["最","zuì","phó từ","nhất",2],
+["药店","yàodiàn","danh từ","hiệu thuốc, nhà thuốc",3]],
+gp:[
+{h:"1. Trợ từ động thái 着 (1)",b:`<span class="fm">Động từ ＋ 着<small>V + zhe</small></span><p>着 đứng sau động từ, cho biết động tác hoặc trạng thái <b>đang được duy trì</b>. Phủ định: <b>没(有)</b> ＋ động từ ＋ 着.</p><ul><li>${Z("那你在这儿坐着。","Nà nǐ zài zhèr zuòzhe.")} Vậy em cứ ngồi ở đây.</li><li>${Z("教室的门开着。","Jiàoshì de mén kāizhe.")} Cửa lớp học đang mở.</li><li>${Z("教室的门没开着。","Jiàoshì de mén méi kāizhe.")} Cửa lớp học không mở.</li></ul><p class="warn">⚠️ Lỗi hay gặp: phủ định bằng 不 ✗ 教室的门不开着; thấy “đang” trong tiếng Việt là dịch 在 cho mọi trường hợp ✗ 门在开 (cửa đang mở là trạng thái → dùng 开着).</p>`},
+{h:"2. Trợ từ động thái 着 (2): có tân ngữ, câu hỏi",b:`<span class="fm">Động từ ＋ 着 ＋ tân ngữ<small>V + zhe + O</small></span><ul><li>${Z("现在路上车多，还下着雪，我开慢一点儿。","Xiànzài lùshang chē duō, hái xiàzhe xuě, wǒ kāi màn yìdiǎnr.")}</li><li>${Z("她穿着白色的裤子。","Tā chuānzhe báisè de kùzi.")} Cô ấy mặc quần trắng.</li><li>${Z("陈天中没拿着咖啡。","Chén Tiānzhōng méi názhe kāfēi.")}</li></ul><p>Ba cách hỏi: thêm 吗; thêm 没有 ở cuối; động từ ＋ 没 ＋ động từ ＋ 着.</p><ul><li>${Z("教室的门开着吗？","Jiàoshì de mén kāizhe ma?")}</li><li>${Z("白家月坐着没有？","Bái Jiāyuè zuòzhe méiyǒu?")}</li><li>${Z("她拿没拿着手机？","Tā ná méi názhe shǒujī?")}</li></ul><p class="warn">⚠️ Lỗi hay gặp: đặt tân ngữ trước 着 ✗ 她穿白色的裤子着. Tân ngữ luôn đứng <b>sau</b> 着.</p>`},
+{h:"3. Phó từ chỉ mức độ 最",b:`<span class="fm">最 ＋ tính từ / động từ tâm lý<small>zuì + adj / 喜欢, 想…</small></span><ul><li>${Z("你最喜欢吃中国菜。","Nǐ zuì xǐhuan chī Zhōngguó cài.")} Em thích ăn món Trung Quốc nhất.</li><li>${Z("在我们家，爸爸最高。","Zài wǒmen jiā, bàba zuì gāo.")} Ở nhà chúng tôi, bố cao nhất.</li><li>${Z("你们班谁说中文说得最好？","Nǐmen bān shéi shuō Zhōngwén shuō de zuì hǎo?")}</li></ul><p class="warn">⚠️ Lỗi hay gặp: đặt 最 ở cuối như chữ “nhất” trong tiếng Việt ✗ 我喜欢吃中国菜最 / ✗ 爸爸高最. 最 luôn đứng <b>trước</b> tính từ / động từ.</p>`},
+{h:"4. Mẹo dùng từ: 开 (药), 没什么事",b:`<p>${Z("医生开了一些药。","Yīshēng kāile yìxiē yào.")} Ở đây 开 nghĩa là “kê (đơn thuốc)”, không phải “mở” hay “lái”.</p><p>${Z("没什么事。","Méi shénme shì.")} = 没有重要的事: không có việc gì quan trọng. Dùng khi người khác hỏi “có việc gì không?”.</p>`}],
+gq:[
+{q:"“Vậy em cứ ngồi ở đây.” nói là:",o:["那你在这儿坐着。|Nà nǐ zài zhèr zuòzhe.","那你坐着在这儿。|Nà nǐ zuòzhe zài zhèr.","那你在这儿着坐。|Nà nǐ zài zhèr zhe zuò."],e:"Động từ + 着."},
+{q:"“Cửa lớp học không mở.” nói là:",o:["教室的门没开着。|Jiàoshì de mén méi kāizhe.","教室的门不开着。|Jiàoshì de mén bù kāizhe.","教室的门开着没。|Jiàoshì de mén kāizhe méi."],e:"Phủ định của V着 là 没(有) + V着."},
+{q:"“Cô ấy mặc quần trắng.” nói là:",o:["她穿着白色的裤子。|Tā chuānzhe báisè de kùzi.","她穿白色的裤子着。|Tā chuān báisè de kùzi zhe.","她着穿白色的裤子。|Tā zhe chuān báisè de kùzi."],e:"Tân ngữ đứng sau 着."},
+{q:"Hỏi: “Cô ấy có đang cầm điện thoại không?”",o:["她拿没拿着手机？|Tā ná méi názhe shǒujī?","她拿着没拿手机？|Tā názhe méi ná shǒujī?","她不拿着手机吗？|Tā bù názhe shǒujī ma?"],e:"Động từ + 没 + động từ + 着."},
+{q:"“Cô Vương đang lái xe.” (trả lời điện thoại) nói là:",o:["王老师开着车呢。|Wáng lǎoshī kāizhe chē ne.","王老师开车着呢。|Wáng lǎoshī kāichē zhe ne.","王老师着开车呢。|Wáng lǎoshī zhe kāichē ne."],e:"开着车: 着 đứng sau động từ 开, trước tân ngữ 车."},
+{q:"“Ở nhà chúng tôi, bố cao nhất.” nói là:",o:["在我们家，爸爸最高。|Zài wǒmen jiā, bàba zuì gāo.","在我们家，爸爸高最。|Zài wǒmen jiā, bàba gāo zuì.","在我们家，最爸爸高。|Zài wǒmen jiā, zuì bàba gāo."],e:"最 đứng trước tính từ."},
+{q:"“Em thích ăn món Trung Quốc nhất.” nói là:",o:["我最喜欢吃中国菜。|Wǒ zuì xǐhuan chī Zhōngguó cài.","我喜欢吃中国菜最。|Wǒ xǐhuan chī Zhōngguó cài zuì.","我喜欢最吃中国菜。|Wǒ xǐhuan zuì chī Zhōngguó cài."],e:"最 + động từ tâm lý (喜欢)."},
+{q:"Điền từ: ____车多人多，你慢点儿开。",o:["路上|lùshang","身体|shēntǐ","时|shí"],e:"路上: trên đường."},
+{q:"Điền từ: 他今天____不舒服，所以没来上课。",o:["身体|shēntǐ","经常|jīngcháng","慢|màn"],e:"身体不舒服: không khỏe."}],
+dt:[["我头疼，不太舒服。","Wǒ tóu téng, bú tài shūfu."],["你这几天经常头疼，去医院看看吧。","Nǐ zhè jǐ tiān jīngcháng tóu téng, qù yīyuàn kànkan ba."],["那你在这儿坐着。","Nà nǐ zài zhèr zuòzhe."],["现在路上车多，还下着雪。","Xiànzài lùshang chē duō, hái xiàzhe xuě."],["王老师开着车呢。","Wáng lǎoshī kāizhe chē ne."],["李文，快请进！","Lǐ Wén, kuài qǐng jìn!"],["医生开了一些药。","Yīshēng kāile yìxiē yào."],["你最喜欢吃中国菜。","Nǐ zuì xǐhuan chī Zhōngguó cài."],["教室的门开着。","Jiàoshì de mén kāizhe."],["在我们家，爸爸最高。","Zài wǒmen jiā, bàba zuì gāo."]],
+tsort:[
+{t:["我","头","疼","，","不太","舒服","。"],ok:["我头疼，不太舒服。"],p:"Wǒ tóu téng, bú tài shūfu.",e:"Chủ ngữ + cụm chủ vị (头疼)."},
+{t:["那","你","在这儿","坐着","。"],ok:["那你在这儿坐着。"],p:"Nà nǐ zài zhèr zuòzhe.",e:"Động từ + 着."},
+{t:["王老师","开着","车","呢","。"],ok:["王老师开着车呢。"],p:"Wáng lǎoshī kāizhe chē ne.",e:"V着 + tân ngữ + 呢."},
+{t:["你","最","喜欢","吃","中国菜","。"],ok:["你最喜欢吃中国菜。","我最喜欢吃中国菜。"],p:"Nǐ zuì xǐhuan chī Zhōngguó cài.",e:"最 + 喜欢."},
+{t:["医生","开了","一些","药","。"],ok:["医生开了一些药。"],p:"Yīshēng kāile yìxiē yào.",e:"开药: kê thuốc."}],
+tlis:[
+{a:"家月，都下课了，你怎么还不回家？",o:["我头疼，不太舒服。|Wǒ tóu téng, bú tài shūfu.","没什么事。|Méi shénme shì.","那就好！|Nà jiù hǎo!"]},
+{a:"喂，李文，王老师开着车呢，你找她有事吗？",o:["没什么事。|Méi shénme shì.","我头疼。|Wǒ tóu téng.","快请进！|Kuài qǐng jìn!"]},
+{a:"家月，你怎么样了？头还疼吗？",o:["不那么疼了。|Bú nàme téng le.","谢谢王老师。|Xièxie Wáng lǎoshī.","我开慢一点儿。|Wǒ kāi màn yìdiǎnr."]},
+{a:"现在路上车多，还下着雪，我开慢一点儿。",qz:"今天天气怎么样？",qp:"Jīntiān tiānqì zěnmeyàng?",o:["下雪|xià xuě","下雨|xià yǔ","很好|hěn hǎo"]},
+{a:"我这几天经常头疼，从药店买了点儿药，没去医院。",qz:"白家月是在哪儿买的药？",qp:"Bái Jiāyuè shì zài nǎr mǎi de yào?",o:["药店|yàodiàn","医院|yīyuàn","商店|shāngdiàn"]}],
+sit:[
+{title:"Tình huống 1 · Đau đầu sau giờ học",ctx:"Tan học, Gia Nguyệt vẫn ngồi trong lớp. Cô Vương hỏi thăm.",turns:[
+{w:"王一飞",vi:"Hỏi đã tan học rồi sao em vẫn chưa về.",h:[["家月","Jiāyuè"],["都下课了","dōu xiàkè le"],["你怎么","nǐ zěnme"],["还不回家","hái bù huí jiā"]],r:["家月，都下课了，你怎么还不回家？","Jiāyuè, dōu xiàkè le, nǐ zěnme hái bù huí jiā?","Gia Nguyệt, tan học rồi, sao em chưa về?"]},
+{w:"白家月",vi:"Nói em đau đầu, không khỏe lắm.",h:[["我","wǒ"],["头疼","tóu téng"],["不太舒服","bú tài shūfu"]],r:["我头疼，不太舒服。","Wǒ tóu téng, bú tài shūfu.","Em đau đầu, không khỏe lắm."]},
+{w:"王一飞",vi:"Nói mấy hôm nay em hay đau đầu, khuyên đi bệnh viện khám.",h:[["你这几天","nǐ zhè jǐ tiān"],["经常头疼","jīngcháng tóu téng"],["去医院","qù yīyuàn"],["看看吧","kànkan ba"]],r:["你这几天经常头疼，去医院看看吧。","Nǐ zhè jǐ tiān jīngcháng tóu téng, qù yīyuàn kànkan ba.","Mấy hôm nay em hay đau đầu, đi bệnh viện khám xem."]},
+{w:"白家月",vi:"Nói muốn nghỉ một lát, giờ không cử động được, cứ động là đau.",h:[["我想休息一下","wǒ xiǎng xiūxi yíxià"],["现在不能动","xiànzài bù néng dòng"],["一动就疼","yí dòng jiù téng"]],r:["我想休息一下，现在不能动，一动就疼。","Wǒ xiǎng xiūxi yíxià, xiànzài bù néng dòng, yí dòng jiù téng.","Em muốn nghỉ chút, giờ không cử động được, động là đau."]},
+{w:"王一飞",vi:"Bảo em cứ ngồi đây (着), cô đi lấy xe, lát đưa em đi viện.",h:[["那你","nà nǐ"],["在这儿坐着","zài zhèr zuòzhe"],["我去开车","wǒ qù kāichē"],["一会儿","yíhuìr"],["送你去医院","sòng nǐ qù yīyuàn"]],r:["那你在这儿坐着，我去开车，一会儿送你去医院。","Nà nǐ zài zhèr zuòzhe, wǒ qù kāichē, yíhuìr sòng nǐ qù yīyuàn.","Em cứ ngồi đây, cô đi lấy xe, lát đưa em đi viện."]},
+{w:"白家月",vi:"Cảm ơn cô Vương.",h:[["谢谢","xièxie"],["王老师","Wáng lǎoshī"]],r:["谢谢王老师。","Xièxie Wáng lǎoshī.","Em cảm ơn cô Vương."]}]},
+{title:"Tình huống 2 · Nghe điện thoại hộ",ctx:"Trên đường đến bệnh viện, trời đang có tuyết. Lý Văn gọi điện cho cô Vương.",turns:[
+{w:"王一飞",vi:"Nói đường đông xe, lại đang có tuyết, cô lái chậm một chút (着).",h:[["现在","xiànzài"],["路上车多","lùshang chē duō"],["还下着雪","hái xiàzhe xuě"],["我开慢一点儿","wǒ kāi màn yìdiǎnr"]],r:["现在路上车多，还下着雪，我开慢一点儿。","Xiànzài lùshang chē duō, hái xiàzhe xuě, wǒ kāi màn yìdiǎnr.","Đường đông xe, lại đang có tuyết, cô lái chậm chút."]},
+{w:"白家月",vi:"Nói không sao, giờ đầu không đau như lúc nãy.",h:[["没问题","méi wèntí"],["现在","xiànzài"],["头没那么疼了","tóu méi nàme téng le"]],r:["没问题，现在头没那么疼了。","Méi wèntí, xiànzài tóu méi nàme téng le.","Không sao ạ, giờ đầu em đỡ đau rồi."]},
+{w:"王一飞",vi:"Nói Lý Văn gọi đến, nhờ em nghe máy hộ.",h:[["好","hǎo"],["李文来电话了","Lǐ Wén lái diànhuà le"],["你帮我","nǐ bāng wǒ"],["接一下","jiē yíxià"]],r:["好。李文来电话了，你帮我接一下。","Hǎo. Lǐ Wén lái diànhuà le, nǐ bāng wǒ jiē yíxià.","Ừ. Lý Văn gọi đấy, em nghe máy hộ cô."]},
+{w:"白家月",vi:"Nghe máy: cô Vương đang lái xe, bạn tìm cô có việc gì không.",h:[["喂","wèi"],["李文","Lǐ Wén"],["王老师开着车呢","Wáng lǎoshī kāizhe chē ne"],["你找她有事吗","nǐ zhǎo tā yǒu shì ma"]],r:["喂，李文，王老师开着车呢，你找她有事吗？","Wèi, Lǐ Wén, Wáng lǎoshī kāizhe chē ne, nǐ zhǎo tā yǒu shì ma?","A lô, Lý Văn, cô Vương đang lái xe, bạn tìm cô có việc gì không?"]},
+{w:"李文",vi:"Nói không có gì; hỏi tuyết to thế này hai người lái xe đi đâu.",h:[["没什么事","méi shénme shì"],["今天雪这么大","jīntiān xuě zhème dà"],["你们开车","nǐmen kāichē"],["去哪儿啊","qù nǎr a"]],r:["没什么事。今天雪这么大，你们开车去哪儿啊？","Méi shénme shì. Jīntiān xuě zhème dà, nǐmen kāichē qù nǎr a?","Không có gì. Tuyết to thế này, hai người lái xe đi đâu thế?"]},
+{w:"白家月",vi:"Nói đi bệnh viện, mình hơi đau đầu.",h:[["去医院","qù yīyuàn"],["我头","wǒ tóu"],["有点儿疼","yǒudiǎnr téng"]],r:["去医院，我头有点儿疼。","Qù yīyuàn, wǒ tóu yǒudiǎnr téng.","Đi bệnh viện, mình hơi đau đầu."]},
+{w:"李文",vi:"Nói lát nữa sẽ đến thăm.",h:[["那我","nà wǒ"],["一会儿","yíhuìr"],["去看看你","qù kànkan nǐ"]],r:["那我一会儿去看看你。","Nà wǒ yíhuìr qù kànkan nǐ.","Vậy lát mình đến thăm bạn."]}]},
+{title:"Tình huống 3 · Đến thăm bạn ốm",ctx:"Lý Văn đến thăm Gia Nguyệt, cô Vương cũng ở đó.",turns:[
+{w:"白家月",vi:"Mời Lý Văn vào.",h:[["李文","Lǐ Wén"],["快请进","kuài qǐng jìn"]],r:["李文，快请进！","Lǐ Wén, kuài qǐng jìn!","Lý Văn, vào đi!"]},
+{w:"李文",vi:"Hỏi bạn thế nào rồi, còn đau đầu không.",h:[["家月","Jiāyuè"],["你怎么样了","nǐ zěnmeyàng le"],["头还疼吗","tóu hái téng ma"]],r:["家月，你怎么样了？头还疼吗？","Jiāyuè, nǐ zěnmeyàng le? Tóu hái téng ma?","Gia Nguyệt, bạn sao rồi? Còn đau đầu không?"]},
+{w:"白家月",vi:"Nói đỡ đau rồi; bác sĩ kê ít thuốc, uống xong đỡ nhiều.",h:[["不那么疼了","bú nàme téng le"],["医生","yīshēng"],["开了一些药","kāile yìxiē yào"],["吃完","chīwán"],["就好多了","jiù hǎoduō le"]],r:["不那么疼了。医生开了一些药，吃完就好多了。","Bú nàme téng le. Yīshēng kāile yìxiē yào, chīwán jiù hǎoduō le.","Đỡ đau rồi. Bác sĩ kê ít thuốc, uống xong đỡ nhiều."]},
+{w:"王一飞",vi:"Hỏi em có muốn ăn chút gì không.",h:[["家月","Jiāyuè"],["你想不想","nǐ xiǎng bu xiǎng"],["吃点儿东西","chī diǎnr dōngxi"]],r:["家月，你想不想吃点儿东西？","Jiāyuè, nǐ xiǎng bu xiǎng chī diǎnr dōngxi?","Gia Nguyệt, em có muốn ăn chút gì không?"]},
+{w:"李文",vi:"Khuyên ăn chút đi, khi người không khỏe càng phải ăn uống đầy đủ.",h:[["吃点儿吧","chī diǎnr ba"],["身体不舒服时","shēntǐ bù shūfu shí"],["更要","gèng yào"],["好好吃饭","hǎohǎo chī fàn"]],r:["吃点儿吧，身体不舒服时更要好好吃饭。","Chī diǎnr ba, shēntǐ bù shūfu shí gèng yào hǎohǎo chī fàn.","Ăn chút đi, lúc ốm càng phải ăn uống đầy đủ."]},
+{w:"白家月",vi:"Hỏi ăn gì bây giờ.",h:[["吃点儿","chī diǎnr"],["什么呢","shénme ne"]],r:["吃点儿什么呢？","Chī diǎnr shénme ne?","Ăn gì bây giờ ạ?"]},
+{w:"王一飞",vi:"Nói em thích món Trung Quốc nhất, cô nấu vài món (最).",h:[["你","nǐ"],["最喜欢","zuì xǐhuan"],["吃中国菜","chī Zhōngguó cài"],["我做几个","wǒ zuò jǐ ge"],["中国菜吧","Zhōngguó cài ba"]],r:["你最喜欢吃中国菜，我做几个中国菜吧。","Nǐ zuì xǐhuan chī Zhōngguó cài, wǒ zuò jǐ ge Zhōngguó cài ba.","Em thích món Trung nhất, cô nấu vài món Trung nhé."]},
+{w:"白家月",vi:"Đồng ý, cảm ơn cô.",h:[["好的","hǎo de"],["谢谢王老师","xièxie Wáng lǎoshī"]],r:["好的，谢谢王老师。","Hǎo de, xièxie Wáng lǎoshī.","Vâng ạ, em cảm ơn cô."]}]},
+{title:"Tình huống 4 · Vận dụng: đồng nghiệp bị ốm",ctx:"Hết giờ làm, Tiểu Vương (đồng nghiệp người Trung Quốc) vẫn ngồi ở bàn, trông mệt. Bạn hỏi thăm.",turns:[
+{w:"我",vi:"Hỏi tan làm rồi sao cậu chưa về.",h:[["小王","Xiǎo Wáng"],["都下班了","dōu xiàbān le"],["你怎么","nǐ zěnme"],["还不回家","hái bù huí jiā"]],r:["小王，都下班了，你怎么还不回家？","Xiǎo Wáng, dōu xiàbān le, nǐ zěnme hái bù huí jiā?","Tiểu Vương, tan làm rồi, sao cậu chưa về?"]},
+{w:"小王",vi:"Nói đau đầu, không khỏe lắm.",h:[["我","wǒ"],["头疼","tóu téng"],["不太舒服","bú tài shūfu"]],r:["我头疼，不太舒服。","Wǒ tóu téng, bú tài shūfu.","Mình đau đầu, không khỏe lắm."]},
+{w:"我",vi:"Nói mấy hôm nay cậu hay đau đầu, khuyên đi bệnh viện.",h:[["你这几天","nǐ zhè jǐ tiān"],["经常头疼","jīngcháng tóu téng"],["去医院看看吧","qù yīyuàn kànkan ba"]],r:["你这几天经常头疼，去医院看看吧。","Nǐ zhè jǐ tiān jīngcháng tóu téng, qù yīyuàn kànkan ba.","Mấy hôm nay cậu hay đau đầu, đi viện khám đi."]},
+{w:"小王",vi:"Nói không có gì đâu, đã mua ít thuốc ở hiệu thuốc.",h:[["没什么事","méi shénme shì"],["我","wǒ"],["从药店","cóng yàodiàn"],["买了点儿药","mǎile diǎnr yào"]],r:["没什么事，我从药店买了点儿药。","Méi shénme shì, wǒ cóng yàodiàn mǎile diǎnr yào.","Không sao đâu, mình mua ít thuốc ở hiệu thuốc rồi."]},
+{w:"我",vi:"Bảo cậu cứ ngồi đây (着), mình đi lấy xe đưa cậu về.",h:[["那你","nà nǐ"],["在这儿坐着","zài zhèr zuòzhe"],["我去开车","wǒ qù kāichē"],["送你回家","sòng nǐ huí jiā"]],r:["那你在这儿坐着，我去开车，送你回家。","Nà nǐ zài zhèr zuòzhe, wǒ qù kāichē, sòng nǐ huí jiā.","Vậy cậu cứ ngồi đây, mình đi lấy xe đưa cậu về."]},
+{w:"小王",vi:"Cảm ơn.",h:[["谢谢你","xièxie nǐ"]],r:["谢谢你！","Xièxie nǐ!","Cảm ơn cậu!"]},
+{w:"我",vi:"Dặn ốm thì càng phải ăn uống đầy đủ; hỏi cậu thích ăn gì nhất (最).",h:[["身体不舒服时","shēntǐ bù shūfu shí"],["更要好好吃饭","gèng yào hǎohǎo chī fàn"],["你最喜欢","nǐ zuì xǐhuan"],["吃什么","chī shénme"]],r:["身体不舒服时更要好好吃饭。你最喜欢吃什么？","Shēntǐ bù shūfu shí gèng yào hǎohǎo chī fàn. Nǐ zuì xǐhuan chī shénme?","Ốm thì càng phải ăn uống đầy đủ. Cậu thích ăn gì nhất?"]},
+{w:"小王",vi:"Nói thích ăn món Trung Quốc nhất.",h:[["我","wǒ"],["最喜欢","zuì xǐhuan"],["吃中国菜","chī Zhōngguó cài"]],r:["我最喜欢吃中国菜。","Wǒ zuì xǐhuan chī Zhōngguó cài.","Mình thích ăn món Trung Quốc nhất."]}]}]};
+/* Bài tập Ngữ pháp · Mẫu câu (3 dạng) */
+GXD["2-11"]={so:[
+{t:["那|nà","你|nǐ","在这儿|zài zhèr","坐着|zuòzhe"],ok:["那你在这儿坐着"],f:"那你在这儿坐着。",p:"Nà nǐ zài zhèr zuòzhe.",e:"Động từ + 着: duy trì trạng thái."},
+{t:["教室的门|jiàoshì de mén","没|méi","开着|kāizhe"],ok:["教室的门没开着"],f:"教室的门没开着。",p:"Jiàoshì de mén méi kāizhe.",e:"Phủ định: 没 + V着."},
+{t:["她|tā","穿着|chuānzhe","白色的|báisè de","裤子|kùzi"],ok:["她穿着白色的裤子"],f:"她穿着白色的裤子。",p:"Tā chuānzhe báisè de kùzi.",e:"Tân ngữ đứng sau 着."},
+{t:["她|tā","拿|ná","没|méi","拿着|názhe","手机|shǒujī"],ok:["她拿没拿着手机"],f:"她拿没拿着手机？",p:"Tā ná méi názhe shǒujī?",e:"Câu hỏi: V + 没 + V着."},
+{t:["你|nǐ","最|zuì","喜欢|xǐhuan","吃|chī","中国菜|Zhōngguó cài"],ok:["你最喜欢吃中国菜"],f:"你最喜欢吃中国菜。",p:"Nǐ zuì xǐhuan chī Zhōngguó cài.",e:"最 đứng trước 喜欢."}],
+tr:[
+{vi:"Bây giờ trên đường nhiều xe, lại đang có tuyết rơi, tôi lái chậm một chút.",a:["现在路上车多还下着雪我开慢一点儿","现在路上车很多还下着雪我开慢一点儿","现在路上车多还下着雪我开慢点儿","路上车多还下着雪我开慢一点儿"],r:["现在路上车多，还下着雪，我开慢一点儿。","Xiànzài lùshang chē duō, hái xiàzhe xuě, wǒ kāi màn yìdiǎnr."]},
+{vi:"Cửa lớp học đang mở.",a:["教室的门开着","教室的门开着呢"],r:["教室的门开着。","Jiàoshì de mén kāizhe."]},
+{vi:"Cô Vương đang lái xe.",a:["王老师开着车呢","王老师开着车","王老师在开车呢","王老师在开车","王老师正在开车"],r:["王老师开着车呢。","Wáng lǎoshī kāizhe chē ne."]},
+{vi:"Ở nhà chúng tôi, bố cao nhất.",a:["在我们家爸爸最高","我们家爸爸最高","在我们家里爸爸最高"],r:["在我们家，爸爸最高。","Zài wǒmen jiā, bàba zuì gāo."]},
+{vi:"Khi cơ thể không khỏe thì càng phải ăn uống đầy đủ.",a:["身体不舒服时更要好好吃饭","身体不舒服的时候更要好好吃饭"],r:["身体不舒服时更要好好吃饭。","Shēntǐ bù shūfu shí gèng yào hǎohǎo chī fàn."]}],
+pc:[
+{img:"h2b11a",req:"Đây là hiệu thuốc gần nhà bạn nhất. Hãy giới thiệu nơi này (dùng 最 và 药店).",kw:[{l:"最",m:[["最","zui"]]},{l:"药店",m:[["药店","yaodian"]]}],r:[["这是离我家最近的药店，我不舒服时就来这儿买药。","Zhè shì lí wǒ jiā zuì jìn de yàodiàn, wǒ bù shūfu shí jiù lái zhèr mǎi yào.","Đây là hiệu thuốc gần nhà tôi nhất, lúc không khỏe tôi đến đây mua thuốc."]]},
+{img:"h2b11b",req:"Phim đã chiếu xong, cô bé vẫn ngồi trong rạp. Hãy miêu tả (dùng 着).",kw:[{l:"着",m:[["着","zhe"]]}],r:[["看完电影，她还在那里坐着。","Kànwán diànyǐng, tā hái zài nàlǐ zuòzhe.","Xem phim xong, cô bé vẫn ngồi ở đó."],["电影看完了，她还坐着呢。","Diànyǐng kànwán le, tā hái zuòzhe ne.","Phim hết rồi mà cô bé vẫn đang ngồi."]]}]};
+var TKP=Object.assign(window.TKP||{},{"我":"wǒ","头":"tóu","疼":"téng","不太":"bú tài","舒服":"shūfu","那":"nà","你":"nǐ","在这儿":"zài zhèr","坐着":"zuòzhe","王老师":"Wáng lǎoshī","开着":"kāizhe","车":"chē","呢":"ne","最":"zuì","喜欢":"xǐhuan","吃":"chī","中国菜":"Zhōngguó cài","医生":"yīshēng","开了":"kāile","一些":"yìxiē","药":"yào"});
