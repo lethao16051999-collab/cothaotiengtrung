@@ -1,0 +1,118 @@
+/* ===== HSK2 Bài 10: 就要考试了 ===== */
+LD2[10]={t:"就要考试了",tp:"Jiù yào kǎoshì le",vi:"Sắp thi rồi",gpNote:GPN,
+goals:["Nghe hiểu 4 đoạn hội thoại, đoạn văn về chuyện khai giảng, ôn thi, đi thi của hai con.","Dùng câu có cụm chủ vị làm vị ngữ để miêu tả người, sự vật, tình huống.","Dùng câu hỏi lựa chọn (是) A 还是 B.","Dùng 要 / 快 / 快要 / 就要 …… 了 để nói việc sắp xảy ra."],
+texts:[
+{ctx:"Trong phòng, Lưu Minh đang chuẩn bị đồ giúp Lưu Tiểu Minh.",a:"h2-10-1",l:[
+["刘明","小明，你们明天开学，你准备好了吗？","Xiǎomíng, nǐmen míngtiān kāixué, nǐ zhǔnbèi hǎo le ma?","Tiểu Minh, ngày mai khai giảng rồi, con đã chuẩn bị xong chưa?"],
+["刘小明","明天就开学啊？爸爸，我的书包你看见了吗？","Míngtiān jiù kāixué a? Bàba, wǒ de shūbāo nǐ kànjiànle ma?","Ngày mai khai giảng ạ? Bố ơi, bố có thấy cặp sách của con không?"],
+["刘明","书包在门后面。","Shūbāo zài mén hòumiàn.","Nó ở phía sau cửa."],
+["刘小明","书在哪儿呢？笔呢？","Shū zài nǎr ne? Bǐ ne?","Sách ở đâu nhỉ? Cả bút nữa?"],
+["刘明","书在床上，笔在桌子上。","Shū zài chuáng shang, bǐ zài zhuōzi shang.","Sách ở trên giường, bút ở trên bàn."],
+["刘小明","太好了！现在都准备好了。","Tài hǎo le! Xiànzài dōu zhǔnbèi hǎo le.","May quá! Bây giờ đã chuẩn bị xong rồi."],
+["刘明","这次爸爸帮你，下次你自己准备，好不好？","Zhè cì bàba bāng nǐ, xià cì nǐ zìjǐ zhǔnbèi, hǎo bu hǎo?","Lần này bố đã giúp con. Lần sau con phải tự chuẩn bị nhé, được không?"],
+["刘小明","好！","Hǎo!","Vâng ạ!"]]},
+{ctx:"Trong phòng, Vương Nhất Tuyết và Lưu Tiểu Tuyết đang nói về việc học.",a:"h2-10-2",l:[
+["王一雪","小雪，你在做什么呢？","Xiǎoxuě, nǐ zài zuò shénme ne?","Tiểu Tuyết, con đang làm gì vậy?"],
+["刘小雪","明天考试，我在看书呢。","Míngtiān kǎoshì, wǒ zài kàn shū ne.","Ngày mai con thi, nên con đang học bài."],
+["王一雪","这些词要好好看看。","Zhèxiē cí yào hǎohǎo kànkan.","Con nên xem lại những từ này thật kỹ nhé."],
+["刘小雪","我看过了，意思也都懂了。","Wǒ kànguo le, yìsi yě dōu dǒng le.","Con đã xem rồi, cũng đã hiểu hết nghĩa của chúng rồi."],
+["王一雪","你的本子呢？本子上做错的题也要看一看。","Nǐ de běnzi ne? Běnzi shang zuòcuò de tí yě yào kàn yi kàn.","Vở của con đâu? Những câu làm sai trong vở con cũng cần xem lại nhé."],
+["刘小雪","妈妈，是您准备考试还是我准备考试？","Māma, shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?","Mẹ ơi, là mẹ chuẩn bị thi hay là con chuẩn bị thi vậy?"]]},
+{ctx:"Trong phòng khách, Vương Nhất Tuyết đang trò chuyện với các con.",a:"h2-10-3",l:[
+["刘小雪","妈妈，我回来了！","Māma, wǒ huílái le!","Mẹ ơi, con về rồi!"],
+["王一雪","我买了奶茶，就在桌子上，自己去拿吧。","Wǒ mǎile nǎichá, jiù zài zhuōzi shang, zìjǐ qù ná ba.","Mẹ đã mua trà sữa, để ngay trên bàn, con tự đi lấy nhé."],
+["刘小雪","谢谢妈妈！","Xièxie māma!","Cảm ơn mẹ!"],
+["王一雪","今天考试考得怎么样？","Jīntiān kǎoshì kǎo de zěnmeyàng?","Hôm nay con thi thế nào?"],
+["刘小雪","我觉得比上次好。","Wǒ juéde bǐ shàng cì hǎo.","Con thấy tốt hơn lần trước."],
+["王一雪","真不错！饭菜快要做好了，你叫弟弟一起去洗手吧。","Zhēn búcuò! Fàncài kuàiyào zuòhǎo le, nǐ jiào dìdi yìqǐ qù xǐshǒu ba.","Thật tuyệt! Cơm sắp nấu xong rồi. Con gọi em trai cùng đi rửa tay nhé."],
+["刘小明","妈妈，我是第一名，姐姐还没洗完呢。","Māma, wǒ shì dì-yī míng, jiějie hái méi xǐwán ne.","(…) Mẹ ơi, con xong nhanh nhất, chị vẫn chưa rửa tay xong."],
+["王一雪","你洗得真快啊！","Nǐ xǐ de zhēn kuài a!","Con rửa tay nhanh thật đấy!"]]},
+{ctx:"Trong phòng, Lưu Tiểu Tuyết đang viết nhật ký.",a:"h2-10-4",l:[
+["刘小雪","快要开学了，爸爸帮弟弟准备书包、本子和笔。","Kuàiyào kāixué le, bàba bāng dìdi zhǔnbèi shūbāo, běnzi hé bǐ.","Sắp khai giảng rồi, bố giúp em trai chuẩn bị cặp sách, vở và bút."],
+["刘小雪","我就要考试了，妈妈让我看书、看做错的题。","Wǒ jiù yào kǎoshì le, māma ràng wǒ kàn shū, kàn zuòcuò de tí.","Tôi sắp thi, mẹ bảo tôi học bài và xem lại những câu làm sai."],
+["刘小雪","我们上学，爸爸、妈妈比我们还忙。","Wǒmen shàngxué, bàba, māma bǐ wǒmen hái máng.","Chúng tôi đi học, nhưng bố mẹ còn bận hơn cả chúng tôi."],
+["刘小雪","我问他们：“是我和弟弟上学还是你们上学？”","Wǒ wèn tāmen: “Shì wǒ hé dìdi shàngxué háishi nǐmen shàngxué?”","Tôi hỏi bố mẹ rằng: “Là em trai và con đi học hay là bố mẹ đi học vậy?”"],
+["刘小雪","我问完，他们都笑了。","Wǒ wènwán, tāmen dōu xiào le.","Tôi hỏi xong, cả hai đều bật cười."]]}],
+words:[["开学","kāixué","động từ","khai giảng",0],["门","mén","danh từ","cửa",0],["后面","hòumiàn","danh từ","phía sau, đằng sau",0],["笔","bǐ","danh từ","bút, viết",0],["帮","bāng","động từ","giúp, giúp đỡ",0],
+["考试","kǎoshì","động từ / danh từ","thi, kiểm tra; kỳ thi",1],["词","cí","danh từ","từ",1],["本子","běnzi","danh từ","vở, tập ghi chép",1],["错","cuò","tính từ","sai, nhầm",1],["题","tí","danh từ","câu hỏi, bài tập, đề",1],["还是","háishi","liên từ","hay, hay là (câu hỏi lựa chọn)",1],
+["考","kǎo","động từ","thi, kiểm tra",2],["快要","kuàiyào","phó từ","sắp, sắp sửa",2],
+["笑","xiào","động từ","cười",3]],
+gp:[
+{h:"1. Câu có cụm chủ vị làm vị ngữ",b:`<span class="fm">Chủ ngữ ＋ [chủ ngữ nhỏ ＋ vị ngữ nhỏ]<small>S + (s + P)</small></span><p>Cụm chủ vị đứng sau chủ ngữ để giải thích, miêu tả chủ ngữ. Chủ ngữ nhỏ thường là một phần của chủ ngữ lớn hoặc liên quan đến nó.</p><ul><li>${Z("我的书包你看见了吗？","Wǒ de shūbāo nǐ kànjiànle ma?")} Cặp sách của con, bố có thấy không?</li><li>${Z("弟弟手很小。","Dìdi shǒu hěn xiǎo.")} Em trai tay rất nhỏ.</li><li>${Z("这件事他知道。","Zhè jiàn shì tā zhīdào.")} Chuyện này anh ấy biết.</li></ul><p class="warn">⚠️ Lỗi hay gặp: thêm 是 vào giữa theo kiểu “Lưu Minh là công việc rất bận” ✗ 刘明是工作很忙. Đúng: 刘明工作很忙。</p>`},
+{h:"2. Câu hỏi lựa chọn: (是) A 还是 B",b:`<span class="fm">(是) ＋ A ＋ 还是 ＋ B ？<small>(shì) A háishi B?</small></span><ul><li>${Z("妈妈，是您准备考试还是我准备考试？","Māma, shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?")}</li><li>${Z("你更喜欢打篮球、踢足球还是游泳？","Nǐ gèng xǐhuan dǎ lánqiú, tī zúqiú háishi yóuyǒng?")}</li><li>${Z("我们什么时候去看电影？今天还是明天？","Wǒmen shénme shíhou qù kàn diànyǐng? Jīntiān háishi míngtiān?")}</li></ul><p>Câu hỏi với 还是 <b>không thêm 吗</b> ở cuối.</p><p class="warn">⚠️ Lỗi hay gặp: thêm 吗 ✗ 你喝奶茶还是咖啡吗？; dùng 或者 trong câu hỏi ✗ 你喝奶茶或者咖啡？ (或者 dùng trong câu trần thuật).</p>`},
+{h:"3. 要 / 快 / 快要 / 就要 …… 了: sắp …",b:`<span class="fm">(要 / 快 / 快要 / 就要) ＋ động từ / tính từ ＋ 了<small>… yào / kuài / kuàiyào / jiù yào … le</small></span><ul><li>${Z("饭菜快要做好了。","Fàncài kuàiyào zuòhǎo le.")} Cơm sắp nấu xong rồi.</li><li>${Z("火车快开了。","Huǒchē kuài kāi le.")} Tàu sắp chạy rồi.</li><li>${Z("我们下星期就要考试了。","Wǒmen xià xīngqī jiù yào kǎoshì le.")} Tuần sau chúng tôi thi rồi.</li></ul><p>Nếu trong câu có <b>từ chỉ thời gian</b> (明天, 下星期…) thì thường dùng 就要……了.</p><p class="warn">⚠️ Lỗi hay gặp: có từ chỉ thời gian mà dùng 快要 ✗ 我们下星期快要考试了; quên 了 ở cuối ✗ 火车快开.</p>`},
+{h:"4. Mẹo dùng từ: 呢 nhắc / hỏi; hai cách dùng 还是",b:`<p>${Z("书在哪儿呢？笔呢？","Shū zài nǎr ne? Bǐ ne?")} 呢 ở đây mang ngữ khí nhắc nhở hoặc truy hỏi (…đâu nhỉ?).</p><p>还是 trong câu hỏi: “hay là” để <b>lựa chọn</b> (Bài 10). Còn ${Z("还是去咖啡店吧。","Háishi qù kāfēidiàn ba.")} (Bài 2, Bài 9): 还是……吧 là <b>đề nghị</b> “hay là … đi”.</p>`}],
+gq:[
+{q:"“Cặp sách của con, bố có thấy không?” nói là:",o:["我的书包你看见了吗？|Wǒ de shūbāo nǐ kànjiànle ma?","我的书包是你看见了吗？|Wǒ de shūbāo shì nǐ kànjiànle ma?","你看见了吗我的书包？|Nǐ kànjiànle ma wǒ de shūbāo?"],e:"Câu có cụm chủ vị làm vị ngữ, không thêm 是."},
+{q:"“Lưu Minh công việc rất bận.” nói là:",o:["刘明工作很忙。|Liú Míng gōngzuò hěn máng.","刘明是工作很忙。|Liú Míng shì gōngzuò hěn máng.","刘明很工作忙。|Liú Míng hěn gōngzuò máng."],e:"Chủ ngữ + cụm chủ vị (工作很忙)."},
+{q:"Hỏi: “Chúng ta đi xem phim hôm nay hay ngày mai?”",o:["我们今天还是明天去看电影？|Wǒmen jīntiān háishi míngtiān qù kàn diànyǐng?","我们今天还是明天去看电影吗？|Wǒmen jīntiān háishi míngtiān qù kàn diànyǐng ma?","我们今天或者明天去看电影？|Wǒmen jīntiān huòzhě míngtiān qù kàn diànyǐng?"],e:"Câu hỏi lựa chọn dùng 还是, không thêm 吗."},
+{q:"“Là mẹ chuẩn bị thi hay là con chuẩn bị thi?”",o:["是您准备考试还是我准备考试？|Shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?","是您准备考试还是我准备考试吗？|Shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì ma?","您准备考试是还是我准备考试？|Nín zhǔnbèi kǎoshì shì háishi wǒ zhǔnbèi kǎoshì?"],e:"(是) A 还是 B."},
+{q:"“Cơm sắp nấu xong rồi.” nói là:",o:["饭菜快要做好了。|Fàncài kuàiyào zuòhǎo le.","饭菜快要做好。|Fàncài kuàiyào zuòhǎo.","饭菜做好快要了。|Fàncài zuòhǎo kuàiyào le."],e:"快要 + động từ + 了; không bỏ 了."},
+{q:"“Tuần sau chúng tôi thi rồi.” nói là:",o:["我们下星期就要考试了。|Wǒmen xià xīngqī jiù yào kǎoshì le.","我们下星期快要考试了。|Wǒmen xià xīngqī kuàiyào kǎoshì le.","我们下星期就要考试。|Wǒmen xià xīngqī jiù yào kǎoshì."],e:"Có từ chỉ thời gian → dùng 就要……了."},
+{q:"Điền từ: 看到生日礼物，儿子高兴地____了。",o:["笑|xiào","错|cuò","帮|bāng"],e:"笑: cười."},
+{q:"Điền từ: 不好意思，你能____我叫一下白家月吗？",o:["帮|bāng","考试|kǎoshì","后面|hòumiàn"],e:"帮: giúp."},
+{q:"Điền từ: 这个字写____了，左边是“口”，不是“日”。",o:["错|cuò","笑|xiào","后面|hòumiàn"],e:"错: sai."}],
+dt:[["小明，你们明天开学。","Xiǎomíng, nǐmen míngtiān kāixué."],["我的书包你看见了吗？","Wǒ de shūbāo nǐ kànjiànle ma?"],["书包在门后面。","Shūbāo zài mén hòumiàn."],["书在床上，笔在桌子上。","Shū zài chuáng shang, bǐ zài zhuōzi shang."],["明天考试，我在看书呢。","Míngtiān kǎoshì, wǒ zài kàn shū ne."],["这些词要好好看看。","Zhèxiē cí yào hǎohǎo kànkan."],["是您准备考试还是我准备考试？","Shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?"],["今天考试考得怎么样？","Jīntiān kǎoshì kǎo de zěnmeyàng?"],["饭菜快要做好了。","Fàncài kuàiyào zuòhǎo le."],["我们下星期就要考试了。","Wǒmen xià xīngqī jiù yào kǎoshì le."]],
+tsort:[
+{t:["我的","书包","你","看见","了","吗","？"],ok:["我的书包你看见了吗？"],p:"Wǒ de shūbāo nǐ kànjiànle ma?",e:"Câu có cụm chủ vị làm vị ngữ."},
+{t:["书包","在","门","后面","。"],ok:["书包在门后面。"],p:"Shūbāo zài mén hòumiàn.",e:"Danh từ + 在 + nơi chốn."},
+{t:["这些","词","要","好好","看看","。"],ok:["这些词要好好看看。"],p:"Zhèxiē cí yào hǎohǎo kànkan.",e:"要 + 好好 + động từ lặp lại."},
+{t:["今天","考试","考得","怎么样","？"],ok:["今天考试考得怎么样？"],p:"Jīntiān kǎoshì kǎo de zěnmeyàng?",e:"Bổ ngữ trạng thái: 考得怎么样."},
+{t:["饭菜","快要","做好","了","。"],ok:["饭菜快要做好了。"],p:"Fàncài kuàiyào zuòhǎo le.",e:"快要……了: sắp…"}],
+tlis:[
+{a:"爸爸，我的书包你看见了吗？",o:["书包在门后面。|Shūbāo zài mén hòumiàn.","书在床上。|Shū zài chuáng shang.","饭菜快要做好了。|Fàncài kuàiyào zuòhǎo le."]},
+{a:"小雪，你在做什么呢？",o:["明天考试，我在看书呢。|Míngtiān kǎoshì, wǒ zài kàn shū ne.","我觉得比上次好。|Wǒ juéde bǐ shàng cì hǎo.","书包在门后面。|Shūbāo zài mén hòumiàn."]},
+{a:"今天考试考得怎么样？",o:["我觉得比上次好。|Wǒ juéde bǐ shàng cì hǎo.","我看过了。|Wǒ kànguo le.","太好了！|Tài hǎo le!"]},
+{a:"书在床上，笔在桌子上。",qz:"笔在哪儿？",qp:"Bǐ zài nǎr?",o:["桌子上|zhuōzi shang","床上|chuáng shang","门后面|mén hòumiàn"]},
+{a:"你的本子呢？本子上做错的题也要看一看。",qz:"做错的题在哪儿？",qp:"Zuòcuò de tí zài nǎr?",o:["本子上|běnzi shang","书上|shū shang","书包里|shūbāo li"]}],
+sit:[
+{title:"Tình huống 1 · Chuẩn bị ngày khai giảng",ctx:"Tối trước ngày khai giảng, bố giúp Tiểu Minh tìm đồ.",turns:[
+{w:"刘明",vi:"Nhắc con mai khai giảng, hỏi đã chuẩn bị xong chưa.",h:[["小明","Xiǎomíng"],["你们明天开学","nǐmen míngtiān kāixué"],["你","nǐ"],["准备好了吗","zhǔnbèi hǎo le ma"]],r:["小明，你们明天开学，你准备好了吗？","Xiǎomíng, nǐmen míngtiān kāixué, nǐ zhǔnbèi hǎo le ma?","Tiểu Minh, mai khai giảng rồi, con chuẩn bị xong chưa?"]},
+{w:"刘小明",vi:"Ngạc nhiên mai đã khai giảng; hỏi bố có thấy cặp sách không (câu chủ vị làm vị ngữ).",h:[["明天就开学啊","míngtiān jiù kāixué a"],["爸爸","bàba"],["我的书包","wǒ de shūbāo"],["你看见了吗","nǐ kànjiànle ma"]],r:["明天就开学啊？爸爸，我的书包你看见了吗？","Míngtiān jiù kāixué a? Bàba, wǒ de shūbāo nǐ kànjiànle ma?","Mai khai giảng ạ? Bố ơi, bố thấy cặp sách của con không?"]},
+{w:"刘明",vi:"Nói cặp ở sau cửa.",h:[["书包","shūbāo"],["在门后面","zài mén hòumiàn"]],r:["书包在门后面。","Shūbāo zài mén hòumiàn.","Cặp ở sau cửa."]},
+{w:"刘小明",vi:"Hỏi sách đâu, bút đâu.",h:[["书在哪儿呢","shū zài nǎr ne"],["笔呢","bǐ ne"]],r:["书在哪儿呢？笔呢？","Shū zài nǎr ne? Bǐ ne?","Sách đâu nhỉ? Bút đâu?"]},
+{w:"刘明",vi:"Nói sách trên giường, bút trên bàn.",h:[["书在床上","shū zài chuáng shang"],["笔在桌子上","bǐ zài zhuōzi shang"]],r:["书在床上，笔在桌子上。","Shū zài chuáng shang, bǐ zài zhuōzi shang.","Sách trên giường, bút trên bàn."]},
+{w:"刘小明",vi:"Mừng rỡ: giờ chuẩn bị xong hết rồi.",h:[["太好了","tài hǎo le"],["现在","xiànzài"],["都准备好了","dōu zhǔnbèi hǎo le"]],r:["太好了！现在都准备好了。","Tài hǎo le! Xiànzài dōu zhǔnbèi hǎo le.","May quá! Giờ chuẩn bị xong hết rồi."]},
+{w:"刘明",vi:"Dặn: lần này bố giúp, lần sau con tự chuẩn bị nhé.",h:[["这次","zhè cì"],["爸爸帮你","bàba bāng nǐ"],["下次","xià cì"],["你自己准备","nǐ zìjǐ zhǔnbèi"],["好不好","hǎo bu hǎo"]],r:["这次爸爸帮你，下次你自己准备，好不好？","Zhè cì bàba bāng nǐ, xià cì nǐ zìjǐ zhǔnbèi, hǎo bu hǎo?","Lần này bố giúp, lần sau con tự chuẩn bị nhé?"]},
+{w:"刘小明",vi:"Đồng ý.",h:[["好","hǎo"]],r:["好！","Hǎo!","Vâng ạ!"]}]},
+{title:"Tình huống 2 · Ôn thi",ctx:"Tối trước hôm thi, mẹ vào phòng Tiểu Tuyết.",turns:[
+{w:"王一雪",vi:"Hỏi con đang làm gì.",h:[["小雪","Xiǎoxuě"],["你在做什么呢","nǐ zài zuò shénme ne"]],r:["小雪，你在做什么呢？","Xiǎoxuě, nǐ zài zuò shénme ne?","Tiểu Tuyết, con đang làm gì đấy?"]},
+{w:"刘小雪",vi:"Nói mai thi, con đang học bài.",h:[["明天考试","míngtiān kǎoshì"],["我","wǒ"],["在看书呢","zài kàn shū ne"]],r:["明天考试，我在看书呢。","Míngtiān kǎoshì, wǒ zài kàn shū ne.","Mai con thi, con đang học bài."]},
+{w:"王一雪",vi:"Dặn con xem kỹ những từ này.",h:[["这些词","zhèxiē cí"],["要","yào"],["好好看看","hǎohǎo kànkan"]],r:["这些词要好好看看。","Zhèxiē cí yào hǎohǎo kànkan.","Những từ này phải xem kỹ nhé."]},
+{w:"刘小雪",vi:"Nói đã xem rồi, nghĩa cũng hiểu hết rồi.",h:[["我看过了","wǒ kànguo le"],["意思","yìsi"],["也都懂了","yě dōu dǒng le"]],r:["我看过了，意思也都懂了。","Wǒ kànguo le, yìsi yě dōu dǒng le.","Con xem rồi, nghĩa cũng hiểu hết rồi."]},
+{w:"王一雪",vi:"Hỏi vở đâu; dặn xem cả những câu làm sai trong vở.",h:[["你的本子呢","nǐ de běnzi ne"],["本子上","běnzi shang"],["做错的题","zuòcuò de tí"],["也要看一看","yě yào kàn yi kàn"]],r:["你的本子呢？本子上做错的题也要看一看。","Nǐ de běnzi ne? Běnzi shang zuòcuò de tí yě yào kàn yi kàn.","Vở con đâu? Câu làm sai trong vở cũng phải xem lại."]},
+{w:"刘小雪",vi:"Trêu mẹ: mẹ chuẩn bị thi hay con chuẩn bị thi (还是).",h:[["妈妈","māma"],["是您准备考试","shì nín zhǔnbèi kǎoshì"],["还是","háishi"],["我准备考试","wǒ zhǔnbèi kǎoshì"]],r:["妈妈，是您准备考试还是我准备考试？","Māma, shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?","Mẹ ơi, mẹ thi hay con thi vậy?"]}]},
+{title:"Tình huống 3 · Đi thi về",ctx:"Tiểu Tuyết đi thi về, mẹ đang nấu cơm.",turns:[
+{w:"刘小雪",vi:"Báo mẹ con về rồi.",h:[["妈妈","māma"],["我回来了","wǒ huílái le"]],r:["妈妈，我回来了！","Māma, wǒ huílái le!","Mẹ ơi, con về rồi!"]},
+{w:"王一雪",vi:"Nói đã mua trà sữa, để trên bàn, con tự đi lấy.",h:[["我买了奶茶","wǒ mǎile nǎichá"],["就在桌子上","jiù zài zhuōzi shang"],["自己去拿吧","zìjǐ qù ná ba"]],r:["我买了奶茶，就在桌子上，自己去拿吧。","Wǒ mǎile nǎichá, jiù zài zhuōzi shang, zìjǐ qù ná ba.","Mẹ mua trà sữa, để trên bàn, con tự lấy nhé."]},
+{w:"刘小雪",vi:"Cảm ơn mẹ.",h:[["谢谢妈妈","xièxie māma"]],r:["谢谢妈妈！","Xièxie māma!","Con cảm ơn mẹ!"]},
+{w:"王一雪",vi:"Hỏi hôm nay thi thế nào.",h:[["今天","jīntiān"],["考试","kǎoshì"],["考得怎么样","kǎo de zěnmeyàng"]],r:["今天考试考得怎么样？","Jīntiān kǎoshì kǎo de zěnmeyàng?","Hôm nay thi thế nào?"]},
+{w:"刘小雪",vi:"Nói thấy tốt hơn lần trước.",h:[["我觉得","wǒ juéde"],["比上次","bǐ shàng cì"],["好","hǎo"]],r:["我觉得比上次好。","Wǒ juéde bǐ shàng cì hǎo.","Con thấy tốt hơn lần trước."]},
+{w:"王一雪",vi:"Khen; nói cơm sắp xong, bảo con gọi em đi rửa tay (快要……了).",h:[["真不错","zhēn búcuò"],["饭菜","fàncài"],["快要做好了","kuàiyào zuòhǎo le"],["你叫弟弟","nǐ jiào dìdi"],["一起去洗手吧","yìqǐ qù xǐshǒu ba"]],r:["真不错！饭菜快要做好了，你叫弟弟一起去洗手吧。","Zhēn búcuò! Fàncài kuàiyào zuòhǎo le, nǐ jiào dìdi yìqǐ qù xǐshǒu ba.","Giỏi lắm! Cơm sắp xong rồi, con gọi em cùng đi rửa tay nhé."]},
+{w:"刘小明",vi:"Khoe mình xong nhất, chị vẫn chưa rửa xong.",h:[["妈妈","māma"],["我是第一名","wǒ shì dì-yī míng"],["姐姐","jiějie"],["还没洗完呢","hái méi xǐwán ne"]],r:["妈妈，我是第一名，姐姐还没洗完呢。","Māma, wǒ shì dì-yī míng, jiějie hái méi xǐwán ne.","Mẹ ơi, con nhất, chị vẫn chưa rửa xong."]},
+{w:"王一雪",vi:"Khen con rửa nhanh thật.",h:[["你","nǐ"],["洗得","xǐ de"],["真快啊","zhēn kuài a"]],r:["你洗得真快啊！","Nǐ xǐ de zhēn kuài a!","Con rửa nhanh thật đấy!"]}]},
+{title:"Tình huống 4 · Vận dụng: sắp thi HSK",ctx:"Giờ nghỉ trưa ở công ty, bạn đang ôn bài thi tiếng Trung. Tiểu Vương (đồng nghiệp người Trung Quốc) đi qua.",turns:[
+{w:"小王",vi:"Hỏi bạn đang làm gì đấy.",h:[["你","nǐ"],["在做什么呢","zài zuò shénme ne"]],r:["你在做什么呢？","Nǐ zài zuò shénme ne?","Cậu đang làm gì đấy?"]},
+{w:"我",vi:"Nói tuần sau thi rồi, mình đang học bài (就要……了).",h:[["我们下星期","wǒmen xià xīngqī"],["就要考试了","jiù yào kǎoshì le"],["我","wǒ"],["在看书呢","zài kàn shū ne"]],r:["我们下星期就要考试了，我在看书呢。","Wǒmen xià xīngqī jiù yào kǎoshì le, wǒ zài kàn shū ne.","Tuần sau bọn mình thi rồi, mình đang học bài."]},
+{w:"小王",vi:"Hỏi thi vào thứ Bảy hay Chủ nhật (还是).",h:[["是","shì"],["星期六考","xīngqīliù kǎo"],["还是","háishi"],["星期天考","xīngqītiān kǎo"]],r:["是星期六考还是星期天考？","Shì xīngqīliù kǎo háishi xīngqītiān kǎo?","Thi thứ Bảy hay Chủ nhật?"]},
+{w:"我",vi:"Nói thi thứ Bảy; những từ này đã xem rồi, nghĩa cũng hiểu hết.",h:[["星期六考","xīngqīliù kǎo"],["这些词","zhèxiē cí"],["我都看过了","wǒ dōu kànguo le"],["意思也都懂了","yìsi yě dōu dǒng le"]],r:["星期六考。这些词我都看过了，意思也都懂了。","Xīngqīliù kǎo. Zhèxiē cí wǒ dōu kànguo le, yìsi yě dōu dǒng le.","Thứ Bảy thi. Mấy từ này mình xem hết rồi, nghĩa cũng hiểu hết."]},
+{w:"小王",vi:"Dặn xem lại cả những câu làm sai trong vở.",h:[["本子上","běnzi shang"],["做错的题","zuòcuò de tí"],["也要看一看","yě yào kàn yi kàn"]],r:["本子上做错的题也要看一看。","Běnzi shang zuòcuò de tí yě yào kàn yi kàn.","Câu làm sai trong vở cũng phải xem lại nhé."]},
+{w:"我",vi:"Nhờ cậu ấy xem giúp chữ này viết sai không.",h:[["你","nǐ"],["帮我看看","bāng wǒ kànkan"],["这个字","zhège zì"],["写错了吗","xiěcuò le ma"]],r:["你帮我看看，这个字写错了吗？","Nǐ bāng wǒ kànkan, zhège zì xiěcuò le ma?","Cậu xem giúp mình chữ này viết sai không?"]},
+{w:"小王",vi:"Nói không sai; sắp tan làm rồi, rủ cùng về (快要……了).",h:[["没错","méi cuò"],["快要下班了","kuàiyào xiàbān le"],["我们","wǒmen"],["一起走吧","yìqǐ zǒu ba"]],r:["没错。快要下班了，我们一起走吧。","Méi cuò. Kuàiyào xiàbān le, wǒmen yìqǐ zǒu ba.","Không sai đâu. Sắp tan làm rồi, mình cùng về nhé."]}]}]};
+/* Bài tập Ngữ pháp · Mẫu câu (3 dạng) */
+GXD["2-10"]={so:[
+{t:["我的书包|wǒ de shūbāo","你|nǐ","看见了|kànjiànle","吗|ma"],ok:["我的书包你看见了吗"],f:"我的书包你看见了吗？",p:"Wǒ de shūbāo nǐ kànjiànle ma?",e:"Chủ ngữ + cụm chủ vị (你看见了)."},
+{t:["是|shì","您|nín","准备考试|zhǔnbèi kǎoshì","还是|háishi","我|wǒ","准备考试|zhǔnbèi kǎoshì"],ok:["是您准备考试还是我准备考试","是我准备考试还是您准备考试"],f:"是您准备考试还是我准备考试？",p:"Shì nín zhǔnbèi kǎoshì háishi wǒ zhǔnbèi kǎoshì?",e:"(是) A 还是 B."},
+{t:["饭菜|fàncài","快要|kuàiyào","做好|zuòhǎo","了|le"],ok:["饭菜快要做好了"],f:"饭菜快要做好了。",p:"Fàncài kuàiyào zuòhǎo le.",e:"快要 + động từ + 了."},
+{t:["我们|wǒmen","下星期|xià xīngqī","就要|jiù yào","考试|kǎoshì","了|le"],ok:["我们下星期就要考试了","下星期我们就要考试了"],f:"我们下星期就要考试了。",p:"Wǒmen xià xīngqī jiù yào kǎoshì le.",e:"Có từ chỉ thời gian → 就要……了."},
+{t:["弟弟|dìdi","手|shǒu","很|hěn","小|xiǎo"],ok:["弟弟手很小"],f:"弟弟手很小。",p:"Dìdi shǒu hěn xiǎo.",e:"Chủ ngữ + cụm chủ vị (手很小)."}],
+tr:[
+{vi:"Ngày mai con thi, con đang học bài (xem sách).",a:["明天考试我在看书呢","明天考试我在看书","明天我考试我在看书呢"],r:["明天考试，我在看书呢。","Míngtiān kǎoshì, wǒ zài kàn shū ne."]},
+{vi:"Chúng ta khi nào đi xem phim? Hôm nay hay ngày mai?",a:["我们什么时候去看电影今天还是明天","我们什么时候去看电影是今天还是明天"],r:["我们什么时候去看电影？今天还是明天？","Wǒmen shénme shíhou qù kàn diànyǐng? Jīntiān háishi míngtiān?"]},
+{vi:"Cơm sắp nấu xong rồi.",a:["饭菜快要做好了","饭快要做好了","饭菜快做好了","饭菜要做好了","饭快做好了"],r:["饭菜快要做好了。","Fàncài kuàiyào zuòhǎo le."]},
+{vi:"Tàu hỏa sắp chạy rồi.",a:["火车快开了","火车快要开了","火车要开了","火车就要开了"],r:["火车快开了。","Huǒchē kuài kāi le."]},
+{vi:"Sắp khai giảng rồi, bố giúp em trai chuẩn bị cặp sách, vở và bút.",a:["快要开学了爸爸帮弟弟准备书包本子和笔","快开学了爸爸帮弟弟准备书包本子和笔","要开学了爸爸帮弟弟准备书包本子和笔"],r:["快要开学了，爸爸帮弟弟准备书包、本子和笔。","Kuàiyào kāixué le, bàba bāng dìdi zhǔnbèi shūbāo, běnzi hé bǐ."]}],
+pc:[
+{img:"h2b10a",req:"Một người đứng ở ngã rẽ, không biết đi đường nào. Hãy đặt câu hỏi lựa chọn giúp anh ấy (dùng 还是).",kw:[{l:"还是",m:[["还是","haishi"]]}],r:[["往左边走还是往右边走？","Wǎng zuǒbian zǒu háishi wǎng yòubian zǒu?","Đi bên trái hay đi bên phải?"],["我是往左边走还是往右边走？","Wǒ shì wǎng zuǒbian zǒu háishi wǎng yòubian zǒu?","Mình đi bên trái hay bên phải đây?"]]},
+{img:"h2b10b",req:"Trời nhiều mây, hai em bé vẫn đang chơi. Hãy nói trời sắp mưa rồi, gọi các em về nhà (dùng 快要 / 要 / 快 …… 了).",kw:[{l:"快要 / 要 / 快",m:[["快要","kuaiyao"],["就要","jiuyao"],["快","kuai"],["要","yao"]]},{l:"了",m:[["了","le"]]}],r:[["快要下雨了，别玩了，我们回家吧。","Kuàiyào xià yǔ le, bié wán le, wǒmen huí jiā ba.","Sắp mưa rồi, đừng chơi nữa, mình về nhà thôi."],["要下雨了，我们快回家吧。","Yào xià yǔ le, wǒmen kuài huí jiā ba.","Sắp mưa rồi, mình mau về nhà đi."]]}]};
+var TKP=Object.assign(window.TKP||{},{"我的":"wǒ de","书包":"shūbāo","你":"nǐ","看见":"kànjiàn","了":"le","吗":"ma","在":"zài","门":"mén","后面":"hòumiàn","这些":"zhèxiē","词":"cí","要":"yào","好好":"hǎohǎo","看看":"kànkan","今天":"jīntiān","考试":"kǎoshì","考得":"kǎo de","怎么样":"zěnmeyàng","饭菜":"fàncài","快要":"kuàiyào","做好":"zuòhǎo"});
