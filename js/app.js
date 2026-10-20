@@ -34,13 +34,13 @@ function gxHtml(L){if(!GX||GX.k!=gxKey())gxInit();const d=GXD[GX.k];let h="";
   return `<div class="card q ${ok?"ok":bad?"no":""}"><b>Câu ${k+1}.</b><div class="slots">${s.ch.map((i,j)=>gxTok(it.t[i],ok?"disabled":`onclick="gxMv(${k},'c',${j})"`)).join("")}</div><div class="bank">${s.pool.map((i,j)=>gxTok(it.t[i],`onclick="gxMv(${k},'p',${j})"`)).join("")}</div>
 ${ok?`<div class="okt">✓ Đúng rồi!</div><div class="zh hd">${it.f}</div><div class="py" style="color:var(--m)">${it.p}</div>`:bad?`<div class="bad">✗ Chưa đúng. ${it.e}</div>`:""}
 <div class="row">${ok?"":`<button class="btn sm" onclick="gxSoCheck(${k})">Kiểm tra</button>`}${bad?`<button class="btn o sm" onclick="gxSoReset(${k})">↻ Làm lại câu này</button><button class="btn o sm" onclick="GX.so[${k}].show=!GX.so[${k}].show;rr()">${s.show?"Ẩn":"Xem"} đáp án</button>`:""}</div>
-${bad&&s.show?`<div class="ans"><span class="zh hd">${it.f}</span><br>${it.p}</div>`:""}</div>`}).join("");
+${bad&&s.show?`<div class="ans"><span class="zh hd">${it.f}</span><br><span class="py">${it.p}</span></div>`:""}</div>`}).join("");
  h+=`<div class="card note"><b>Dạng 2 · Dịch Việt → Trung</b><br>Gõ câu tiếng Trung bằng <b>chữ Hán</b> (hoặc pinyin không dấu, ví dụ: <i>women haishi dache qu ba</i>). Không cần gõ dấu câu.</div>`;
  h+=d.tr.map((it,k)=>{const t=GX.tr[k],st=t.st;
   return `<div class="card dt ${st=="ok"||st=="sok"?"ok":st=="sno"?"no":""}"><b>${k+1}.</b> ${it.vi}<input value="${esc(t.v)}" oninput="GX.tr[${k}].v=this.value" placeholder="Nhập câu tiếng Trung" autocomplete="off" autocapitalize="off" ${st&&st!="self"?"disabled":""}>
 ${st=="ok"?`<div class="okt">✓ Đúng rồi!</div>`:""}
 ${st=="self"?`<div class="ans">Câu của em chưa khớp với các đáp án mẫu. Có thể em vẫn đúng nhưng dùng cách nói khác, máy không chấm chắc chắn được. Em tự đối chiếu nhé:</div>`:""}
-${st?`<div class="ans"><b>Đáp án tham khảo:</b> <span class="zh hd">${it.r[0]}</span> ${bS(it.r[0])}<br><span style="color:var(--m)">${it.r[1]}</span></div>`:""}
+${st?`<div class="ans"><b>Đáp án tham khảo:</b> <span class="zh hd">${it.r[0]}</span> ${bS(it.r[0])}<br><span class="py" style="color:var(--m)">${it.r[1]}</span></div>`:""}
 ${st=="self"?`<div class="row"><button class="btn sm" onclick="gxTrSelf(${k},1)">✓ Câu em đúng ý</button><button class="btn o sm" onclick="gxTrSelf(${k},0)">✗ Câu em chưa đúng</button></div>`:""}
 ${st=="sok"?`<div class="okt">✓ Em tự xác nhận câu đúng ý.</div>`:st=="sno"?`<div class="bad">Ghi nhận: cần xem lại câu này.</div>`:""}
 <div class="row">${!st?`<button class="btn sm" onclick="gxTrCheck(${k})">Kiểm tra</button>`:st=="self"?`<button class="btn o sm" onclick="gxTrCheck(${k})">Kiểm tra lại</button>`:`<button class="btn o sm" onclick="GX.tr[${k}].st=null;GX.tr[${k}].v='';rr()">↻ Làm lại</button>`}</div></div>`}).join("");
@@ -125,29 +125,33 @@ function drawTs(){if(tcur){$("lp-ts").innerHTML=testView();return}
  $("lp-ts").innerHTML=lvBar()+`<div class="card"><b>Bài test nhanh HSK ${olLv} theo bài</b><p>Kiểm tra vận dụng: sắp xếp câu, nghe hiểu, nói theo tình huống. 15 điểm, đạt từ 12/15 (80%).</p></div>`+lessons("ts")}
 
 /* ===== Trang bài học ===== */
-const LTABS=[["bk","📖 Bài khóa"],["fc","🃏 Flashcard"],["gp","📐 Ngữ pháp · Mẫu câu"],["dt","🎧 Nghe chép"],["ns","🗣 Luyện nói"],["sum","📊 Tổng kết"]];
-function openL(n){cur=n;ltab="bk";fcI=0;fcShow=false;DTV={};DTR={};DTD=false;NSR={};NSH={};NSM={};nsS=0;delete QS.gp;GX=null;rr();scrollTo(0,0)}
+const LTB0=[["bk","📖 Bài khóa"],["fc","🃏 Flashcard"],["gp","📐 Ngữ pháp · Mẫu câu"],["dt","🎧 Nghe chép"],["ns","🗣 Luyện nói"],["sum","📊 Tổng kết"]],LTABS=[];
+/* Bài nào có warm (Khởi động) / act (Hoạt động trên lớp) thì tự thêm phần tương ứng */
+function setTabs(L){LTABS.length=0;if(L&&L.warm)LTABS.push(["wu","🔥 Khởi động"]);LTB0.forEach(t=>{LTABS.push(t);if(t[0]=="ns"&&L&&L.act)LTABS.push(["hd","🎭 Hoạt động"])})}
+setTabs(null);
+function openL(n){cur=n;setTabs(LD[n]);ltab=LD[n]&&LD[n].warm?"wu":"bk";WU={};ACR={};ACS={};ACRL={};fcI=0;fcShow=false;DTV={};DTR={};DTD=false;NSR={};NSH={};NSM={};nsS=0;delete QS.gp;GX=null;rr();scrollTo(0,0)}
 function closeL(){cur=null;rr()}
 function lt(t){ltab=t;rr();const e=$("ltabs");if(e)e.scrollIntoView({block:"nearest"})}
-function lessonView(){const L=LD[cur],r=ldN(cur);
+function lessonView(){const L=LD[cur],r=ldN(cur);setTabs(L);if(!LTABS.some(t=>t[0]==ltab))ltab="bk";
  return `
 <div class="lhead"><span class="no">${cur}</span><div><small>HSK ${olLv} · Bài ${cur}</small><div class="zh lt2">${L.t}</div><small>${L.tp}</small><div>${L.vi}</div></div>${vBtn()}</div>
 ${vBar()}<div class="stb" id="ltabs">${LTABS.map(t=>`<button class="${t[0]==ltab?"on":""}" onclick="lt('${t[0]}')">${t[1]}${r[t[0]]!=null?` <i class="sc ${r[t[0]]>=80?"ok":"no"}">${r[t[0]]}%</i>`:""}</button>`).join("")}</div>
-<div class="stack" id="lbody">${({bk:vBk,fc:vFc,gp:vGp,dt:vDt,ns:vNs,sum:vSum})[ltab](L,r)}</div>`}
+${pvBar()}<div class="stack ${hidePy?"hidepy":""} ${hideVi?"hidevi":""}" id="lbody">${({wu:vWu,hd:vHd,bk:vBk,fc:vFc,gp:vGp,dt:vDt,ns:vNs,sum:vSum})[ltab](L,r)}</div>`}
 const nextBtn=k=>{const i=LTABS.findIndex(t=>t[0]==k);return i<LTABS.length-1?`<button class="btn" onclick="lt('${LTABS[i+1][0]}')">Tiếp: ${LTABS[i+1][1]} →</button>`:""};
 
-let hidePy=false,hideVi=false;
+let hidePy=false,hideVi=false;try{hidePy=localStorage.getItem("ct_hpy")=="1";hideVi=localStorage.getItem("ct_hvi")=="1"}catch(e){}
+function pvT(k){if(k=="p")hidePy=!hidePy;else hideVi=!hideVi;try{localStorage.setItem("ct_hpy",hidePy?"1":"0");localStorage.setItem("ct_hvi",hideVi?"1":"0")}catch(e){}rr()}
+const pvBar=()=>`<div class="pvbar"><span>Hiển thị:</span><button class="tg ${hidePy?"":"on"}" onclick="pvT('p')" aria-pressed="${!hidePy}">${hidePy?"☐":"☑"} Pinyin</button><button class="tg ${hideVi?"":"on"}" onclick="pvT('v')" aria-pressed="${!hideVi}">${hideVi?"☐":"☑"} Tiếng Việt</button><small>áp dụng cho mọi phần của bài</small></div>`;
 function vBk(L){const sp=x=>`<div class="who"><b>${x}</b>${SPN[x][1]}</div>`;
- return `<div class="card note"><b>🎯 Mục tiêu</b><ul>${L.goals.map(g=>`<li>${g}</li>`).join("")}</ul></div>
-<div class="row"><button class="btn o sm" onclick="hidePy=!hidePy;rr()">${hidePy?"Hiện":"Ẩn"} phiên âm</button><button class="btn o sm" onclick="hideVi=!hideVi;rr()">${hideVi?"Hiện":"Ẩn"} nghĩa tiếng Việt</button></div>
-<div class="${hidePy?"hidepy":""} ${hideVi?"hidevi":""}">`+L.texts.map((x,i)=>`<div class="card"><h3>课文 ${i+1} · Bài khóa ${i+1}</h3><p class="ctx">📍 ${x.ctx}</p><div class="pbar" id="pb${i}">${pbHtml(i)}</div>
+ return (L.warm?"":`<div class="card note"><b>🎯 Mục tiêu</b><ul>${L.goals.map(g=>`<li>${g}</li>`).join("")}</ul></div>`)+`
+<div>`+L.texts.map((x,i)=>`<div class="card"><h3>课文 ${i+1} · Bài khóa ${i+1}</h3><p class="ctx">📍 ${x.ctx}</p><div class="pbar" id="pb${i}">${pbHtml(i)}</div>
 ${x.l.map((y,j)=>`<div class="dl">${sp(y[0])}<div class="bub" id="bub${i}-${j}" onclick="spk(${S(y[1])})"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div></div></div>`).join("")}
-<details><summary>Từ mới bài khóa ${i+1}</summary><table class="wt">${L.words.filter(w=>w[4]==i&&!(i==0&&w[2]=="danh từ riêng")||(i==0&&w[2]=="danh từ riêng")).filter(w=>w[4]==i).map(w=>`<tr><td class="zh">${w[0]} ${bS(w[0])}</td><td>${w[1]}</td><td>${w[2]?`<small>${w[2]}</small> `:""}${w[3]}</td></tr>`).join("")}</table></details></div>`).join("")+
-(L.rhyme?`<div class="card"><h3>跟读绕口令 · Cùng đọc bài vè</h3><p class="ctx">Luyện phân biệt 4 thanh điệu với âm “ma”.</p><div class="pbar" id="pbr">${pbHtml("r")}</div>${L.rhyme.l.map((y,j)=>`<div class="bub" id="bubr-${j}" style="margin-top:8px"><div class="py">${y[1]}</div><div class="hz">${y[0]}</div><div class="vi">${y[2]}</div></div>`).join("")}</div>`:"")+`</div>
+<details><summary>Từ mới bài khóa ${i+1}</summary><table class="wt">${L.words.filter(w=>w[4]==i&&!(i==0&&w[2]=="danh từ riêng")||(i==0&&w[2]=="danh từ riêng")).filter(w=>w[4]==i).map(w=>`<tr><td class="zh">${w[0]} ${bS(w[0])}</td><td class="py">${w[1]}</td><td class="vi">${w[2]?`<small>${w[2]}</small> `:""}${w[3]}</td></tr>`).join("")}</table></details></div>`).join("")+
+(L.rhyme?`<div class="card"><h3>跟读绕口令 · Cùng đọc bài vè</h3><p class="ctx">${L.rhyme.n||"Luyện phân biệt 4 thanh điệu với âm “ma”."}</p><div class="pbar" id="pbr">${pbHtml("r")}</div>${L.rhyme.l.map((y,j)=>`<div class="bub" id="bubr-${j}" style="margin-top:8px"><div class="py">${y[1]}</div><div class="hz">${y[0]}</div><div class="vi">${y[2]}</div></div>`).join("")}</div>`:"")+`</div>
 <p class="ctx">🎧 Hiện đang dùng giọng đọc máy của trình duyệt. File nghe giáo trình sẽ được gắn vào sau. Chạm vào từng câu để nghe riêng câu đó.</p>`+nextBtn("bk")}
 
 function vFc(L,r){const w=L.words[fcI],k=r.fck||{},n=L.words.length,m=Object.values(k).filter(x=>x).length;
- return `<div class="fc" onclick="fcShow=!fcShow;rr()">${fcShow?`<div><div class="h">${w[0]}</div><div class="py">${w[1]}</div><b>${w[3]}</b>${w[2]?`<br><small>(${w[2]})</small>`:""}</div>`:`<div><div class="h">${w[0]}</div><small style="color:var(--sub)">Chạm để lật thẻ</small></div>`}</div>
+ return `<div class="fc" onclick="fcShow=!fcShow;rr()">${fcShow?`<div><div class="h">${w[0]}</div><div class="py">${w[1]}</div><b class="vi">${w[3]}</b>${w[2]?`<br><small class="vi">(${w[2]})</small>`:""}</div>`:`<div><div class="h">${w[0]}</div><small style="color:var(--sub)">Chạm để lật thẻ</small></div>`}</div>
 <div class="row c">${bS(w[0],"🔊 Nghe")}<button class="btn o" onclick="fcNx(-1)">←</button><button class="btn" onclick="fcMk(1)">✓ Đã nhớ</button><button class="btn o" onclick="fcMk(0)">✗ Chưa nhớ</button><button class="btn o" onclick="fcNx(1)">→</button></div>
 <p>Thẻ ${fcI+1}/${n} · Đã nhớ ${m}/${n}${r.fc==null?` · Đánh dấu đủ ${n} thẻ để tính điểm`:` · Điểm: <b>${r.fc}%</b>`}</p>
 <div class="chips">${L.words.map((x,j)=>`<span class="chip ${k[j]===1?"ok":k[j]===0?"no":""} ${j==fcI?"cur":""}" onclick="fcI=${j};fcShow=false;rr()">${x[0]}</span>`).join("")}</div>
@@ -173,7 +177,7 @@ function vGp(L){return `<div class="card note">${L.gpNote||"Bài 1 trong sách c
 
 let DTV={},DTR={},DTD=false;
 function vDt(L,r){return `<div class="card note">Nghe từng câu rồi gõ lại cả câu bằng <b>pinyin không dấu</b> (ví dụ: <i>laoshi nin hao</i>) hoặc <b>chữ Hán</b>. Không cần gõ dấu câu. Mỗi câu nghe lại được nhiều lần.</div>`+
- L.dt.map((x,i)=>{const st=DTR[i];return `<div class="card dt ${DTD?(st?"ok":"no"):""}"><b>${i+1}.</b> ${bS(x[0],"🔊 Nghe")}<input value="${esc(DTV[i]||"")}" oninput="DTV[${i}]=this.value" placeholder="Gõ điều bạn nghe được" autocomplete="off" autocapitalize="off" ${DTD?"disabled":""}>${DTD?`<div class="ans">${st?"✓":"✗"} <span class="zh">${x[0]}</span> · ${x[1]}</div>`:""}</div>`}).join("")+
+ L.dt.map((x,i)=>{const st=DTR[i];return `<div class="card dt ${DTD?(st?"ok":"no"):""}"><b>${i+1}.</b> ${bS(x[0],"🔊 Nghe")}<input value="${esc(DTV[i]||"")}" oninput="DTV[${i}]=this.value" placeholder="Gõ điều bạn nghe được" autocomplete="off" autocapitalize="off" ${DTD?"disabled":""}>${DTD?`<div class="ans">${st?"✓":"✗"} <span class="zh">${x[0]}</span> <span class="py">· ${x[1]}</span></div>`:""}</div>`}).join("")+
  (DTD?`<div class="card res"><div class="big ${r.dt>=80?"ok":"no"}">${r.dt}%</div><div class="row c"><button class="btn o" onclick="DTV={};DTR={};DTD=false;rr()">↻ Làm lại</button>${nextBtn("dt")}</div></div>`:`<button class="btn" onclick="dtCheck()">Chấm điểm</button>`)}
 function dtCheck(){const L=LD[cur];let ok=0;L.dt.forEach((x,i)=>{const v=np(DTV[i]||"");DTR[i]=!!v&&(v===np(x[0])||v===np(x[1]));if(DTR[i])ok++});DTD=true;const r=ldN(cur);r.dt=Math.round(ok/L.dt.length*100);svN(cur,r);rr()}
 
@@ -209,6 +213,49 @@ function rec(i){if(curRec){try{curRec.stop()}catch(e){}return}
   NSR[i]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ bị thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;nsMk(i,ok?1:0)};
  s.onerror=e=>{fin=true;end();if(/not-allowed|service-not-allowed/.test(e.error)){srBlocked=true;NSR[i]=`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro, hoặc tự đọc rồi tự chấm.</span>`}else NSR[i]=`<span class="bad">Chưa nghe rõ, bấm 🎤 Nói lại nhé.</span>`;rr()};
  s.onend=()=>{if(!fin){end();NSR[i]=`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()}};
+ try{s.start()}catch(e){end();srBlocked=true;rr()}}
+
+/* ===== Khởi động: nhìn tranh chọn từ (L.warm) ===== */
+let WU={};
+function vWu(L){const W=L.warm,n=W.pics.length,ok=W.pics.filter((p,i)=>WU[i]===p[1]).length,sel=Object.keys(WU).length;
+ return `${L.goals?`<div class="card note"><b>🎯 目标 · Mục tiêu bài học</b><ul>${L.goals.map(g=>`<li>${g}</li>`).join("")}</ul></div>`:""}
+<div class="card"><h3>热身 · Khởi động</h3><p><span class="zh">${W.q}</span><br><span class="vi">${W.qv}</span></p>
+<div class="wuw">${W.w.map(w=>`<span class="wuc" onclick="spk(${S(w[1])})"><b class="wul">${w[0]}</b><span class="zp"><span class="zh">${w[1]}</span><small>${w[2]}</small></span><span class="vi">${w[3]}</span></span>`).join("")}</div>
+<p class="ctx">Chạm vào từ để nghe. Dưới mỗi tranh, chọn chữ cái của từ phù hợp.</p></div>
+<div class="wug">${W.pics.map((p,i)=>{const v=WU[i],w=W.w.find(x=>x[0]==p[1]),st=v?(v==p[1]?"ok":"no"):"";
+ return `<div class="card wup ${st}"><img src="img/gx/${p[0]}.webp" alt="Tranh ${i+1}" loading="lazy"><div class="wubs">${W.w.map(x=>`<button class="wub ${v==x[0]?"sel":""}" ${st=="ok"?"disabled":""} onclick="WU[${i}]='${x[0]}';rr()">${x[0]}</button>`).join("")}</div>
+${st=="ok"?`<div class="okt">✓ ${w[0]} · <span class="zh">${w[1]}</span> <span class="py">${w[2]}</span> <span class="vi">· ${w[3]}</span> ${bS(w[1])}</div>`:st=="no"?`<div class="bad">✗ Chưa đúng, em chọn lại nhé.</div>`:""}</div>`}).join("")}</div>
+${sel?`<div class="card res"><div class="big ${ok==n?"ok":"no"}">${ok}/${n}</div><p style="text-align:center">${ok==n?"🎉 Em đã nối đúng tất cả các tranh!":"Tranh viền đỏ là chưa đúng, em chọn lại nhé."}</p></div>`:""}
+<div class="row"><button class="btn o sm" onclick="WU={};rr()">↻ Làm lại</button>${nextBtn("wu")}</div>`}
+
+/* ===== Hoạt động trên lớp: đóng vai (L.act) ===== */
+let ACR={},ACS={},ACRL={},HDT="";
+function cpTxt(t){const done=()=>ask("Đã sao chép. Em dán vào Zalo để gửi cô nhé.",null,1);
+ if(!String(t||"").trim())return ask("Em chưa viết gì để sao chép.",null,1);
+ try{navigator.clipboard.writeText(t).then(done,()=>cpOld(t,done))}catch(e){cpOld(t,done)}}
+function cpOld(t,cb){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy")}catch(e){}a.remove();cb()}
+function vHd(L){return `<div class="card note"><b>课堂活动 · Hoạt động trên lớp</b><br>Chọn vai của em. Lượt của bạn kia: chạm để nghe. Lượt của em: đọc gợi ý tiếng Việt, tự nói rồi bấm <b>🎤 Nói</b> (đạt từ 70%). Bí thì bấm <b>👁 Xem mẫu</b>. Muốn xem cả đoạn, chọn <b>Xem cả đoạn mẫu</b>.${SRC&&!srBlocked?"":`<br><span class="warn">Trình duyệt này chưa dùng được máy nghe. Mở bằng Chrome hoặc Edge và cho phép micro.</span>`}</div>`+
+ L.act.map((A,ai)=>{const me=ACRL[ai]==null?null:ACRL[ai];
+ return `<div class="card"><h3>${A.title}</h3><p class="ctx">📍 ${A.ctx}</p>${A.req?`<div class="bub ref"><div class="py">${A.req[1]}</div><div class="hz">${A.req[0]}</div><div class="vi">${A.req[2]}</div></div>`:""}
+<p><b>Em đóng vai:</b></p><div class="row">${A.roles.map((r,ri)=>`<button class="btn sm ${me===ri?"":"o"}" onclick="ACRL[${ai}]=${ri};rr()"><span class="zh">${r}</span> · ${(SPN[r]||["",r])[1]}</button>`).join("")}<button class="btn sm ${me===null?"":"o"}" onclick="ACRL[${ai}]=null;rr()">Xem cả đoạn mẫu</button></div>
+${A.l.map((y,j)=>{const k=ai+"-"+j,mine=me!==null&&y[0]==A.roles[me],nm=SPN[y[0]]||[y[0],""],st=ACS[k];
+ if(!mine)return `<div class="dl"><div class="who"><b>${y[0]}</b>${nm[1]}</div><div class="bub" onclick="spk(${S(y[1])})"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div></div></div>`;
+ return `<div class="card ns ${st===1?"ok":st===0?"no":""}"><div class="who2"><b class="zh">${y[0]}</b> <small>${nm[1]} (em)</small></div><div class="goal">🎯 ${y[4]}</div>
+<div class="row"><button class="btn sm mic ${recOn===k?"rec":""}" onclick="acRec(${ai},${j})">${recOn===k?"⏹ Đang nghe… bấm để dừng":"🎤 Nói"}</button><button class="snd" onclick="NSM['${k}']=!NSM['${k}'];rr()">👁 ${NSM[k]?"Ẩn":"Xem"} mẫu</button></div>
+${NSM[k]?`<div class="bub ref"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div>${bS(y[1],"🔊 Nghe mẫu")}</div>`:""}<div class="out">${ACR[k]||""}</div></div>`}).join("")}
+${A.sub?`<details class="hdsub"><summary>💡 Gợi ý thay đổi để nói theo cách của nhóm em</summary>${A.sub.map(g=>`<p><b>${g[0]}</b></p><div class="hints">${g[1].map(x=>`<span onclick="spk(${S(x[0])})"><b class="zh">${x[0]}</b><small>${x[1]}</small><em class="vi">${x[2]}</em></span>`).join("")}</div>`).join("")}</details>`:""}
+${A.note?`<p class="ctx">${A.note}</p>`:""}</div>`}).join("")+
+ `<div class="card"><b>✍️ Đoạn đóng vai của nhóm em</b><p class="ctx">Hai bạn một nhóm: viết lại hoặc viết tiếp đoạn hội thoại (chữ Hán hoặc pinyin), luyện nói cùng nhau rồi sao chép gửi cô qua Zalo.</p><textarea class="tin hdta" rows="6" oninput="HDT=this.value" placeholder="病人：医生，我病了。&#10;医生：……">${esc(HDT)}</textarea><div class="row"><button class="btn sm" onclick="cpTxt(HDT)">📋 Sao chép bài</button></div></div>`+nextBtn("hd")}
+function acRec(ai,j){if(curRec){try{curRec.stop()}catch(e){}return}
+ const k=ai+"-"+j,tgt=LD[cur].act[ai].l[j][1];
+ if(!SRC||srBlocked){ACR[k]=`<span class="bad">Trình duyệt chưa dùng được micro. Mở bằng Chrome hoặc Edge và cho phép micro.</span>`;rr();return}
+ let s;try{s=new SRC()}catch(e){srBlocked=true;rr();return}
+ s.lang="zh-CN";s.interimResults=false;s.maxAlternatives=1;let fin=false;curRec=s;recOn=k;ACR[k]="";rr();
+ const end=()=>{curRec=null;recOn=null};
+ s.onresult=e=>{fin=true;const t=e.results[0][0].transcript,m=simi(np(t),np(tgt)),ok=m>=70;end();ACS[k]=ok?1:0;
+  ACR[k]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;rr()};
+ s.onerror=e=>{fin=true;end();if(/not-allowed|service-not-allowed/.test(e.error)){srBlocked=true;ACR[k]=`<span class="bad">Trang chưa được phép dùng micro.</span>`}else ACR[k]=`<span class="bad">Chưa nghe rõ, bấm 🎤 Nói lại nhé.</span>`;rr()};
+ s.onend=()=>{if(!fin){end();ACR[k]=`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()}};
  try{s.start()}catch(e){end();srBlocked=true;rr()}}
 
 const PN={fc:"Flashcard từ vựng",gp:"Ngữ pháp · Mẫu câu",dt:"Nghe chép chính tả",ns:"Luyện nói"};

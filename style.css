@@ -202,3 +202,25 @@ button:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visib
 .gpb p.warn::first-letter{color:#b23a48}
 .gpb b{color:var(--m)}
 @media(prefers-reduced-motion:reduce){.btn,.ls.go{transition:none}}
+
+/* ===== Thanh bật / tắt pinyin, tiếng Việt (mọi phần bài HSK1–2) + Khởi động + Hoạt động (20/10/2026) ===== */
+.pvbar{position:sticky;top:calc(var(--hdr,72px) + 6px);z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 4px;padding:8px 12px;background:var(--c);border:1px solid var(--b);border-radius:16px;box-shadow:var(--sh)}
+.pvbar>span{font-weight:700;color:var(--m)}.pvbar small{color:var(--sub)}
+.pvbar .tg{border:1px solid var(--b);background:var(--k);color:var(--t);border-radius:999px;padding:6px 14px;font:700 .92rem var(--ui);cursor:pointer}
+.pvbar .tg.on{background:var(--g);border-color:var(--g);color:#fff}
+.hidepy .zp small,.hidepy .opy,.hidepy .tpy,.hidepy .hints small,.hidepy .fm small{display:none!important}
+.hidevi .hints em{display:none!important}
+.wuw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0 4px}
+.wuc{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;background:var(--k);border:1px solid var(--b);border-radius:14px;padding:8px 10px;cursor:pointer}
+.wuc .zp{margin:0}.wuc .vi{flex-basis:100%;font-size:.85rem;color:var(--sub);padding-left:36px}
+.wul{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--m);color:#fff;font-size:.9rem}
+.wug{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.wup{padding:10px;display:flex;flex-direction:column;gap:8px}
+.wup img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px;display:block}
+.wup.ok{outline:2px solid #2e7d4f}.wup.no{outline:2px solid #b23a48}
+.wubs{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.wub{width:30px;height:30px;flex:none;padding:0;border-radius:50%;border:1px solid var(--b);background:var(--k);font:800 .95rem var(--ui);color:var(--m);cursor:pointer}
+.wub.sel{background:var(--g);border-color:var(--g);color:#fff}.wub:disabled{opacity:.55;cursor:default}.wub.sel:disabled{opacity:1}
+.hints em{display:block;font-style:normal;font-size:.78rem;color:var(--sub)}
+.hdsub{margin-top:10px}.hdsub summary{cursor:pointer;font-weight:700;color:var(--m)}
+.hdta{width:100%;box-sizing:border-box;font:1.08rem var(--han,"Noto Serif SC"),serif;line-height:1.7}
