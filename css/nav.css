@@ -1,0 +1,40 @@
+/* ===== Điều hướng bài học: mục lục bên phải, tab dính, nút nổi ===== */
+:root{--hdr:72px}
+body.inl main{max-width:1320px}
+.lwrap{display:grid;grid-template-columns:minmax(0,1fr) 272px;gap:22px;align-items:start}
+.lmain{min-width:0}
+/* thanh tab dính dưới menu */
+/* thanh tab ngang trong bài đã bỏ theo yêu cầu cô: chuyển phần bằng mục lục bên phải (hoặc nút ☰ Mục lục trên điện thoại) */
+.lwrap #ltabs{display:none!important}
+/* mục lục bên phải */
+.lside{position:sticky;top:calc(var(--hdr) + 12px);max-height:calc(100vh - var(--hdr) - 24px);overflow:auto;background:var(--c);border:1px solid var(--b);border-radius:22px;box-shadow:var(--sh);padding:14px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
+.lsx{display:none}
+.lsall{border:0;border-radius:14px;padding:10px 12px;background:var(--m);color:#fff;font:700 .95rem var(--ui);cursor:pointer;text-align:left}
+.lsh{font:800 .72rem var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin:8px 2px 0}
+.lstabs,.lsls{display:flex;flex-direction:column;gap:4px}
+.lstabs button,.lsls button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid transparent;background:transparent;border-radius:12px;padding:7px 9px;font:600 .9rem var(--ui);color:var(--t);cursor:pointer}
+.lstabs button:hover,.lsls button:hover{background:var(--k)}
+.lstabs button.on,.lsls button.on{background:var(--k);border-color:var(--g);color:var(--m);font-weight:800}
+.lsn{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--k);border:1px solid var(--b);font-size:.75rem}
+.lstabs button.on .lsn{background:var(--g);border-color:var(--g);color:#fff}
+.lst{flex:1}.lstabs .sc,.lsls .sc{margin-left:auto;flex:none}
+.lsls button b{flex:none;min-width:46px;font-size:.85rem}.lsls button .zh{flex:1;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+.lsprog .tr{height:8px;border-radius:8px;background:var(--k);overflow:hidden;border:1px solid var(--b)}.lsprog .tr i{display:block;height:100%;background:var(--g)}.lsprog small{color:var(--sub)}
+.lsnav{display:flex;justify-content:space-between;gap:6px;margin-top:4px}
+.lsend{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:center;text-align:center}
+/* nút nổi */
+.lfloat{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));z-index:6;display:flex;flex-direction:column;gap:8px}
+.lfloat button{width:46px;height:46px;border-radius:50%;border:1px solid var(--b);background:var(--m);color:#fff;font-size:1.1rem;box-shadow:var(--sh);cursor:pointer;display:grid;place-items:center;line-height:1}
+.lfloat .lfm{display:none;background:var(--g);height:auto;padding:8px 0}.lfm small{font-size:.58rem;font-weight:700}
+body.inl .lwrap~.lfloat{display:flex}
+.lsbg{display:none}
+/* màn hình hẹp: mục lục thành ngăn kéo từ bên phải */
+@media(max-width:1060px){
+ .lwrap{grid-template-columns:minmax(0,1fr)}
+ .lside{position:fixed;top:0;right:0;bottom:0;width:min(320px,86vw);max-height:none;border-radius:22px 0 0 22px;z-index:40;transform:translateX(105%);transition:transform .25s;padding-top:max(14px,env(safe-area-inset-top,0px))}
+ .lside.open{transform:none}
+ .lsx{display:block;align-self:flex-end;border:0;background:var(--k);border-radius:50%;width:34px;height:34px;font-size:1rem;color:var(--t);cursor:pointer}
+ .lsbg{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:39}
+ .lfloat .lfm{display:grid}
+}
+@media(prefers-reduced-motion:reduce){.lside{transition:none}}
