@@ -67,6 +67,9 @@ var WG=Object.assign(window.WG||{},{
 "更":["7 nét, nét phẩy dài và nét mác cuối cùng kéo xuống dưới. 更 + tính từ = càng, hơn nữa.",["这件更好看。","Zhè jiàn gèng hǎokàn.","Cái này đẹp hơn."]],
 "颜色":["颜 có bộ <b>页</b> (hiệt – cái đầu, khuôn mặt): sắc mặt → màu. 色 (sắc). Màu sắc = 颜色.",["你喜欢什么颜色？","Nǐ xǐhuan shénme yánsè?","Bạn thích màu gì?"]]},
 "2-5":{
+"次":["Bộ <b>冫</b> (băng, 2 chấm) + <b>欠</b> (há miệng thở). Mỗi lần thở ra là một hơi → 次: lần. ⚠️ Đừng viết 冫 thành 氵 (3 chấm).",["我第一次去中国朋友家。","Wǒ dì-yī cì qù Zhōngguó péngyou jiā.","Lần đầu tiên tôi đến nhà bạn người Trung Quốc."]],
+"就":["<b>京</b> (kinh đô) + <b>尤</b>: đến được kinh đô là dừng ngay ở đó → 就: ngay, liền; đứng trước động từ: thì.",["我就在下面等你。","Wǒ jiù zài xiàmiàn děng nǐ.","Mình đợi bạn ngay ở dưới này."]],
+"那":["Bên phải là bộ <b>阝</b> (ấp – thành ấp): chỉ thành ấp ở đằng kia → kia. Đứng đầu câu, 那 = vậy thì. ⚠️ Thêm 口 thành 哪 (nǎ, nào) để hỏi.",["那我一会儿就下去。","Nà wǒ yíhuìr jiù xiàqù.","Vậy một lát nữa mình sẽ xuống."]],
 "快":["Bộ <b>忄</b> (tâm) + 夬: trong lòng nóng vội → nhanh, mau.",["快来吃饭吧！","Kuài lái chī fàn ba!","Mau đến ăn cơm đi!"]],
 "下来":["下: xuống. 来: về phía người nói. Đi xuống đây (người nói ở dưới) = 下来.",["你快下来！","Nǐ kuài xiàlái!","Bạn xuống đây mau!"]],
 "上来":["上: lên. 来: về phía người nói. Đi lên đây (người nói ở trên) = 上来.",["你上来吧。","Nǐ shànglái ba.","Bạn lên đây đi."]],
