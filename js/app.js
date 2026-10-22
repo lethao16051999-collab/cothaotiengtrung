@@ -196,7 +196,7 @@ function vNs(L,r){const k=r.nk||{},all=nsAll(L),S=L.sit[nsS];
 <div class="card note"><b>${S.title}</b><br>📍 ${S.ctx}</div>`+
  S.turns.map((t,ti)=>{const n=nsIdx(L,nsS,ti),st=k[n],nm=SPN[t.w]||[t.w,""];
  return `<div class="card ns ${st===1?"ok":st===0?"no":""}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[0]} · ${nm[1]}</small></div><div class="goal">🎯 ${t.vi}</div>
-<div class="row"><button class="btn sm mic ${recOn===n?"rec":""}" onclick="rec(${n})">${recOn===n?"⏹ Đang nghe… bấm để dừng":"🎤 Nói"}</button><button class="snd" onclick="NSH[${n}]=!NSH[${n}];rr()">💡 ${NSH[n]?"Ẩn":"Xem"} gợi ý</button><button class="snd" onclick="NSM[${n}]=!NSM[${n}];rr()">👁 ${NSM[n]?"Ẩn":"Xem"} mẫu</button></div>
+<div class="row"><button class="btn sm mic ${recOn===n?"rec":""}" onclick="rec(${n})">${recOn===n?"⏹ Nói xong":"🎤 Nói"}</button><button class="snd" onclick="NSH[${n}]=!NSH[${n}];rr()">💡 ${NSH[n]?"Ẩn":"Xem"} gợi ý</button><button class="snd" onclick="NSM[${n}]=!NSM[${n}];rr()">👁 ${NSM[n]?"Ẩn":"Xem"} mẫu</button></div>
 ${NSH[n]?`<div class="hints">${t.h.map(x=>`<span><b class="zh">${x[0]}</b><small>${x[1]}</small></span>`).join("")}</div>`:""}
 ${NSM[n]?`<div class="bub ref"><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div><div class="vi">${t.r[2]}</div>${bS(t.r[0],"🔊 Nghe mẫu")}</div>`:""}
 <div class="out" id="nsr${n}">${NSR[n]||""}</div>
@@ -205,15 +205,29 @@ ${!SRC||srBlocked?`<div class="row"><button class="btn sm ${st===1?"":"o"}" oncl
  (r.ns!=null?`<p>Điểm luyện nói: <b>${r.ns}%</b> (${Object.values(k).filter(x=>x===1).length}/${all.length} lượt đạt)</p>`+nextBtn("ns"):`<p style="color:var(--sub)">Điểm được tính khi đã nói đủ ${all.length} lượt của 4 tình huống.</p>`)}
 function nsMk(i,v){const L=LD[cur],n=nsAll(L).length,r=ldN(cur);r.nk=r.nk||{};if(r.nk[i]!==1||v===1)r.nk[i]=v;if(Object.keys(r.nk).length>=n)r.ns=Math.round(Object.values(r.nk).filter(x=>x===1).length/n*100);svN(cur,r);rr()}
 let curRec=null;
+/* Máy nghe (sửa 22/10/2026): nghe liên tục, chỉ tự dừng khi em im lặng SR_SIL ms sau khi đã nói, hoặc chưa nói gì sau SR_WAIT ms; bấm ⏹ để dừng sớm. Điện thoại Android tự ngắt sau mỗi quãng nghỉ: trang tự mở nghe lại và nối chữ. */
+const SR_SIL=3500,SR_WAIT=10000,SR_MAX=45000;
+const srLiveHtml=()=>`<div class="srlive" style="background:#fff8e1;border:1px dashed #c9a227;border-radius:12px;padding:8px 12px;margin-top:6px">🎙 Máy đang nghe: <span id="srLive" class="zh hd">…</span><br><small>Cứ nói thong thả hết câu. Nói xong bấm <b>⏹ Nói xong</b> để chấm (hoặc im lặng khoảng 3 giây máy tự chấm).</small></div>`;
+function srListen(done,fail){let txt="",sess="",heard=false,closed=false,s=null;const t0=Date.now();let last=t0;
+ const live=()=>{const el=document.getElementById("srLive");if(el)el.textContent=(txt+sess)||"…"};
+ const shut=()=>{closed=true;clearInterval(tm);curRec=null;recOn=null};
+ const finish=()=>{if(closed)return;shut();try{s&&s.abort()}catch(e){}const t=(txt+sess).trim();t?done(t):fail("empty")};
+ const over=()=>{const now=Date.now();return now-t0>SR_MAX||(heard&&now-last>SR_SIL)||(!heard&&now-t0>SR_WAIT)};
+ let user=false;const halt=()=>{user=true;try{s.stop()}catch(e){finish()}};
+ const go=()=>{try{s=new SRC()}catch(e){shut();srBlocked=true;fail("deny");return}
+  s.lang="zh-CN";s.continuous=true;s.interimResults=true;s.maxAlternatives=1;
+  s.onresult=e=>{let f="",it="";for(let j=0;j<e.results.length;j++){const r=e.results[j][0].transcript;if(e.results[j].isFinal){if(f&&r.startsWith(f))f=r;else f+=r}else it+=r}
+   sess=f+it;if(sess.trim()){heard=true;last=Date.now()}live()};
+  s.onerror=e=>{if(/not-allowed|service-not-allowed/.test(e.error)){shut();srBlocked=true;fail("deny")}};
+  s.onend=()=>{if(closed)return;txt+=sess;sess="";if(user||over())finish();else setTimeout(()=>{if(!closed)go()},120)};
+  try{s.start()}catch(e){finish()}};
+ const tm=setInterval(()=>{if(!closed&&!user&&over())halt()},300);
+ curRec={stop:halt};go()}
 function rec(i){if(curRec){try{curRec.stop()}catch(e){}return}
- const o=nsAll(LD[cur])[i],tgt=o.t.r[0];let s;try{s=new SRC()}catch(e){srBlocked=true;rr();return}
- s.lang="zh-CN";s.interimResults=false;s.maxAlternatives=1;let fin=false;curRec=s;recOn=i;NSR[i]="";rr();
- const end=()=>{curRec=null;recOn=null};
- s.onresult=e=>{fin=true;const t=e.results[0][0].transcript,m=simi(np(t),np(tgt)),ok=m>=70;end();
-  NSR[i]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ bị thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;nsMk(i,ok?1:0)};
- s.onerror=e=>{fin=true;end();if(/not-allowed|service-not-allowed/.test(e.error)){srBlocked=true;NSR[i]=`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro, hoặc tự đọc rồi tự chấm.</span>`}else NSR[i]=`<span class="bad">Chưa nghe rõ, bấm 🎤 Nói lại nhé.</span>`;rr()};
- s.onend=()=>{if(!fin){end();NSR[i]=`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()}};
- try{s.start()}catch(e){end();srBlocked=true;rr()}}
+ const o=nsAll(LD[cur])[i],tgt=o.t.r[0];recOn=i;NSR[i]=srLiveHtml();rr();
+ srListen(t=>{const m=simi(np(t),np(tgt)),ok=m>=70;
+  NSR[i]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ bị thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;nsMk(i,ok?1:0)},
+ k=>{NSR[i]=k=="deny"?`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro, hoặc tự đọc rồi tự chấm.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()})}
 
 /* ===== Khởi động: nhìn tranh chọn từ (L.warm) ===== */
 let WU={};
@@ -241,7 +255,7 @@ function vHd(L){return `<div class="card note"><b>课堂活动 · Hoạt động
 ${A.l.map((y,j)=>{const k=ai+"-"+j,mine=me!==null&&y[0]==A.roles[me],nm=SPN[y[0]]||[y[0],""],st=ACS[k];
  if(!mine)return `<div class="dl"><div class="who"><b>${y[0]}</b>${nm[1]}</div><div class="bub" onclick="spk(${S(y[1])})"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div></div></div>`;
  return `<div class="card ns ${st===1?"ok":st===0?"no":""}"><div class="who2"><b class="zh">${y[0]}</b> <small>${nm[1]} (em)</small></div><div class="goal">🎯 ${y[4]}</div>
-<div class="row"><button class="btn sm mic ${recOn===k?"rec":""}" onclick="acRec(${ai},${j})">${recOn===k?"⏹ Đang nghe… bấm để dừng":"🎤 Nói"}</button><button class="snd" onclick="NSM['${k}']=!NSM['${k}'];rr()">👁 ${NSM[k]?"Ẩn":"Xem"} mẫu</button></div>
+<div class="row"><button class="btn sm mic ${recOn===k?"rec":""}" onclick="acRec(${ai},${j})">${recOn===k?"⏹ Nói xong":"🎤 Nói"}</button><button class="snd" onclick="NSM['${k}']=!NSM['${k}'];rr()">👁 ${NSM[k]?"Ẩn":"Xem"} mẫu</button></div>
 ${NSM[k]?`<div class="bub ref"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div>${bS(y[1],"🔊 Nghe mẫu")}</div>`:""}<div class="out">${ACR[k]||""}</div></div>`}).join("")}
 ${A.sub?`<details class="hdsub"><summary>💡 Gợi ý thay đổi để nói theo cách của nhóm em</summary>${A.sub.map(g=>`<p><b>${g[0]}</b></p><div class="hints">${g[1].map(x=>`<span onclick="spk(${S(x[0])})"><b class="zh">${x[0]}</b><small>${x[1]}</small><em class="vi">${x[2]}</em></span>`).join("")}</div>`).join("")}</details>`:""}
 ${A.note?`<p class="ctx">${A.note}</p>`:""}</div>`}).join("")+
@@ -249,14 +263,10 @@ ${A.note?`<p class="ctx">${A.note}</p>`:""}</div>`}).join("")+
 function acRec(ai,j){if(curRec){try{curRec.stop()}catch(e){}return}
  const k=ai+"-"+j,tgt=LD[cur].act[ai].l[j][1];
  if(!SRC||srBlocked){ACR[k]=`<span class="bad">Trình duyệt chưa dùng được micro. Mở bằng Chrome hoặc Edge và cho phép micro.</span>`;rr();return}
- let s;try{s=new SRC()}catch(e){srBlocked=true;rr();return}
- s.lang="zh-CN";s.interimResults=false;s.maxAlternatives=1;let fin=false;curRec=s;recOn=k;ACR[k]="";rr();
- const end=()=>{curRec=null;recOn=null};
- s.onresult=e=>{fin=true;const t=e.results[0][0].transcript,m=simi(np(t),np(tgt)),ok=m>=70;end();ACS[k]=ok?1:0;
-  ACR[k]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;rr()};
- s.onerror=e=>{fin=true;end();if(/not-allowed|service-not-allowed/.test(e.error)){srBlocked=true;ACR[k]=`<span class="bad">Trang chưa được phép dùng micro.</span>`}else ACR[k]=`<span class="bad">Chưa nghe rõ, bấm 🎤 Nói lại nhé.</span>`;rr()};
- s.onend=()=>{if(!fin){end();ACR[k]=`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()}};
- try{s.start()}catch(e){end();srBlocked=true;rr()}}
+ recOn=k;ACR[k]=srLiveHtml();rr();
+ srListen(t=>{const m=simi(np(t),np(tgt)),ok=m>=70;ACS[k]=ok?1:0;
+  ACR[k]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;rr()},
+ x=>{ACR[k]=x=="deny"?`<span class="bad">Trang chưa được phép dùng micro.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()})}
 
 const PN={fc:"Flashcard từ vựng",gp:"Ngữ pháp · Mẫu câu",dt:"Nghe chép chính tả",ns:"Luyện nói"};
 function vSum(L,r){const ks=Object.keys(PN),avg=avgOf(r),weak=ks.filter(k=>r[k]!=null&&r[k]<80),todo=ks.filter(k=>r[k]==null);
@@ -309,19 +319,15 @@ function tBody(L){const d=T.done;let h="";
  h+=`<h3 class="ab-h">Phần 2 · Nói theo tình huống (5 điểm)</h3><p class="ctx">Không có gợi ý: đọc mục đích, tự nói câu tiếng Trung. Mỗi câu nói <b>một lần</b>; máy nghe xong mới hiện câu mẫu (đạt từ 60%).</p>`;
  const all=nsAll(L);T.sp.forEach((ix,k)=>{const t=all[ix].t,nm=SPN[t.w]||[t.w,""],ok=!!T.spk[k],self=!SRC||srBlocked;
   h+=`<div class="card ns ${d?(ok?"ok":"no"):""}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[1]}</small></div><div class="ctx">${L.sit[all[ix].si].ctx}</div><div class="goal">🎯 ${t.vi}</div>
-  ${d||T.spr[k]?"":self?`<div class="bad">Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Đang nghe… bấm để dừng":"🎤 Nói"}</button></div>`}
+  ${d||T.spr[k]?"":self?`<div class="bad">Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Nói xong":"🎤 Nói"}</button></div>`}
   <div class="out">${T.spo[k]||""}</div>${d&&!T.spr[k]?`<div class="bad">✗ Chưa nói</div>`:""}${d||T.spr[k]?`<div class="bub ref"><small>Câu mẫu:</small><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div></div>`:""}</div>`});
  h+=`</div>`+(d?`<div class="row c"><button class="btn" onclick="T=null;rr();scrollTo(0,0)">↻ Làm lại bài</button><button class="btn o" onclick="sub('ol');openL(${tcur})">📖 Ôn lại Bài ${tcur}</button></div>`:`<div class="row c"><button class="btn" onclick="tSubmit(false)">Nộp bài</button></div>`);
  return h}
 function tRec(k){if(curRec){try{curRec.stop()}catch(e){}return}if(T.spr[k]||T.done)return;
- const L=LD[tcur],tgt=nsAll(L)[T.sp[k]].t.r[0];let s;try{s=new SRC()}catch(e){srBlocked=true;rr();return}
- s.lang="zh-CN";s.interimResults=false;s.maxAlternatives=1;let fin=false;curRec=s;recOn="t"+k;T.spo[k]="";rr();
- const end=()=>{curRec=null;recOn=null};
- s.onresult=e=>{fin=true;end();if(T.done)return;const t=e.results[0][0].transcript,m=simi(np(t),np(tgt)),ok=m>=60;T.spk[k]=ok;T.spr[k]=true;
-  T.spo[k]=`Máy nghe được: <span class="zh hd">${esc(t)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()};
- s.onerror=e=>{fin=true;end();if(/not-allowed|service-not-allowed/.test(e.error)){srBlocked=true;T.spo[k]=`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro rồi bấm 🎤 Nói lại.</span>`}else T.spo[k]=`<span class="bad">Chưa nghe rõ, bấm 🎤 Nói lại.</span>`;rr()};
- s.onend=()=>{if(!fin){end();T.spo[k]=`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại.</span>`;rr()}};
- try{s.start()}catch(e){end();srBlocked=true;rr()}}
+ const L=LD[tcur],tgt=nsAll(L)[T.sp[k]].t.r[0];recOn="t"+k;T.spo[k]=srLiveHtml();rr();
+ srListen(t=>{if(T.done)return;const m=simi(np(t),np(tgt)),ok=m>=60;T.spk[k]=ok;T.spr[k]=true;
+  T.spo[k]=`Máy nghe được: <span class="zh hd">${esc(t)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()},
+ x=>{if(T.done)return;T.spo[k]=x=="deny"?`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro rồi bấm 🎤 Nói lại.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại.</span>`;rr()})}
 function tSubmit(auto,f){if(!T||T.done)return;
  if(!auto&&!f){const miss=T.so.filter(s=>s.pool.length).length+T.li.filter(s=>s.pick==null).length+T.sp.filter((_,k)=>T.spk[k]==null).length;if(miss)return ask(`Còn ${miss} câu chưa làm. Vẫn nộp bài?`,()=>tSubmit(false,1))}
  tStop();if(curRec){try{curRec.stop()}catch(e){}}const L=LD[tcur];
