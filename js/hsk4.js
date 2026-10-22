@@ -177,13 +177,11 @@ function h4Long(k){if(H.rec){try{H.rec.stop()}catch(e){}return}let s;try{s=new S
  try{s.start()}catch(e){H.rec=null;H.recK=null;srBlocked=true;rr();return}
  clearInterval(H.tmI);H.tmI=setInterval(()=>{const t=$("h4tm-"+k);if(t)t.textContent=Math.round((Date.now()-H.t0)/1000)+" giây"},500);rr()}
 function h4LongDone(k){if(!hanN(H[k].txt))return ask("Khung còn trống. Em nói hoặc gõ bài bằng chữ Hán trước nhé.",null,1);H[k].done=true;h4Save(r=>{r[k=="rt"?"s2":"s3"]=1;if(/^tk\d/.test(k)){r.tks=r.tks||{};r.tks[k]=1}});rr()}
-function h4Rp(k){if(H.rec){try{H.rec.stop()}catch(e){}return}const[ti,j]=k.split("-").map(Number),y=HL().texts[ti].l[j],tgt=h4Tgt(y[1]);let s;try{s=new SRC()}catch(e){srBlocked=true;rr();return}
- s.lang="zh-CN";s.interimResults=false;let fin=false;H.rec=s;H.recK=k;rr();const end=()=>{H.rec=null;H.recK=null};
- s.onresult=e=>{fin=true;const t=e.results[0][0].transcript,m=simi(np(t),np(tgt)),ok=m>=70;end();
-  H.rpR[k]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;h4RpMk(k,ok?1:0)};
- s.onerror=e=>{fin=true;end();if(/not-allowed|service-not-allowed/.test(e.error))srBlocked=true;H.rpR[k]=`<span class="bad">Chưa nghe rõ, bấm 🎤 Nói lại nhé.</span>`;rr()};
- s.onend=()=>{if(!fin){end();H.rpR[k]=`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()}};
- try{s.start()}catch(e){end();srBlocked=true;rr()}}
+function h4Rp(k){if(H.rec){try{H.rec.stop()}catch(e){}return}const[ti,j]=k.split("-").map(Number),y=HL().texts[ti].l[j],tgt=h4Tgt(y[1]);
+ H.recK=k;H.rpR[k]=srLiveHtml();rr();const end=()=>{H.rec=null;H.recK=null};
+ srListen(t=>{end();const m=simi(np(t),np(tgt)),ok=m>=70;
+  H.rpR[k]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;h4RpMk(k,ok?1:0)},
+ x=>{end();H.rpR[k]=x=="deny"?`<span class="bad">Trang chưa được phép dùng micro.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()});H.rec=curRec}
 function h4RpMk(k,v){h4Save(r=>{r.nk=r.nk||{};if(r.nk[k]!==1||v===1)r.nk[k]=v});h4RpScore();rr()}
 function h4RpScore(){const L=HL(),need=h4RpNeed(L);h4Save(r=>{const nk=r.nk||{};if(need.every(k=>nk[k]!=null))r.ns=pct(need.filter(k=>nk[k]===1).length,need.length);else delete r.ns})}
 
