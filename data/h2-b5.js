@@ -31,7 +31,7 @@ texts:[
 ["白家月","到她家的时候，饭菜都做好了。","Dào tā jiā de shíhou, fàncài dōu zuòhǎo le.","Khi chúng tôi đến nơi, đồ ăn đã sẵn sàng."],
 ["白家月","刘爷爷还准备了奶茶。","Liú yéye hái zhǔnbèile nǎichá.","Bác Lưu còn chuẩn bị cả trà sữa nữa."],
 ["白家月","因为吃了太多东西，我们吃完饭是走回酒店的。","Yīnwèi chīle tài duō dōngxi, wǒmen chīwán fàn shì zǒuhuí jiǔdiàn de.","Vì ăn quá nhiều món, nên sau bữa ăn chúng tôi đã đi bộ về khách sạn."]]}],
-words:[["快","kuài","phó từ / tính từ","mau, nhanh",0],["下来","xiàlái","động từ","xuống, xuống đây",0],["上来","shànglái","động từ","lên, lên đây",0],["上去","shàngqù","động từ","lên, lên đi, lên kia",0],["下面","xiàmiàn","danh từ","dưới, phía dưới",0],["面","miàn","hậu tố","phía",0],["等","děng","động từ","đợi",0],["一会儿","yíhuìr","số lượng từ","một lát",0],["下去","xiàqù","động từ","xuống, đi xuống, xuống kia",0],
+words:[["快","kuài","phó từ / tính từ","mau, nhanh",0],["下来","xiàlái","động từ","xuống, xuống đây",0],["次","cì","lượng từ","lần (lượng từ chỉ số lần)",0],["上来","shànglái","động từ","lên, lên đây",0],["上去","shàngqù","động từ","lên, lên đi, lên kia",0],["下面","xiàmiàn","danh từ","dưới, phía dưới",0],["面","miàn","hậu tố","phía",0],["就","jiù","phó từ","thì, ngay, liền",0],["等","děng","động từ","đợi",0],["那","nà","liên từ","vậy thì, thế thì",0],["一会儿","yíhuìr","số lượng từ","một lát",0],["下去","xiàqù","động từ","xuống, đi xuống, xuống kia",0],
 ["进来","jìnlái","động từ","vào, đi vào, vào đây",1],["爷爷","yéye","danh từ","ông nội",1],["奶奶","nǎinai","danh từ","bà nội",1],["礼物","lǐwù","danh từ","quà, quà tặng",1],["准备","zhǔnbèi","động từ","chuẩn bị",1],
 ["奶茶","nǎichá","danh từ","trà sữa",2],["跟","gēn","giới từ / liên từ","với, và",2],
 ["走","zǒu","động từ","đi bộ, đi",3],["酒店","jiǔdiàn","danh từ","khách sạn",3]],
