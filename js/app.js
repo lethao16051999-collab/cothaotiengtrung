@@ -208,18 +208,23 @@ let curRec=null;
 /* Máy nghe (sửa 22/10/2026): nghe liên tục, chỉ tự dừng khi em im lặng SR_SIL ms sau khi đã nói, hoặc chưa nói gì sau SR_WAIT ms; bấm ⏹ để dừng sớm. Điện thoại Android tự ngắt sau mỗi quãng nghỉ: trang tự mở nghe lại và nối chữ. */
 const SR_SIL=3500,SR_WAIT=10000,SR_MAX=45000;
 const srLiveHtml=()=>`<div class="srlive" style="background:#fff8e1;border:1px dashed #c9a227;border-radius:12px;padding:8px 12px;margin-top:6px">🎙 Máy đang nghe: <span id="srLive" class="zh hd">…</span><br><small>Cứ nói thong thả hết câu. Nói xong bấm <b>⏹ Nói xong</b> để chấm (hoặc im lặng khoảng 3 giây máy tự chấm).</small></div>`;
-function srListen(done,fail){let txt="",sess="",heard=false,closed=false,s=null;const t0=Date.now();let last=t0;
+/* Sửa 23/10/2026 cho iPhone/iPad (Safari): iOS hay không báo "onend" sau khi dừng, khiến máy nghe kẹt ở trạng thái đang nghe nên từ câu thứ 2 bấm 🎤 không thu được. Cách xử lý: mỗi lần nghe hủy hẳn phiên cũ, dừng giọng đọc mẫu, trên iOS nghe một lượt (không tự mở lại ngoài thao tác bấm), và luôn có hẹn giờ tự kết thúc nếu iOS không báo xong. */
+const SR_IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+let srInst=null;
+function srListen(done,fail){let txt="",sess="",heard=false,closed=false,s=null,kill=0;const t0=Date.now();let last=t0;
+ if(srInst){try{srInst.onend=srInst.onresult=srInst.onerror=null;srInst.abort()}catch(e){}srInst=null}
+ try{speechSynthesis.cancel()}catch(e){}
  const live=()=>{const el=document.getElementById("srLive");if(el)el.textContent=(txt+sess)||"…"};
- const shut=()=>{closed=true;clearInterval(tm);curRec=null;recOn=null};
- const finish=()=>{if(closed)return;shut();try{s&&s.abort()}catch(e){}const t=(txt+sess).trim();t?done(t):fail("empty")};
+ const shut=()=>{closed=true;clearInterval(tm);clearTimeout(kill);curRec=null;recOn=null};
+ const finish=()=>{if(closed)return;shut();if(s){s.onend=s.onresult=s.onerror=null;try{s.abort()}catch(e){}}if(srInst===s)srInst=null;const t=(txt+sess).trim();t?done(t):fail("empty")};
  const over=()=>{const now=Date.now();return now-t0>SR_MAX||(heard&&now-last>SR_SIL)||(!heard&&now-t0>SR_WAIT)};
- let user=false;const halt=()=>{user=true;try{s.stop()}catch(e){finish()}};
- const go=()=>{try{s=new SRC()}catch(e){shut();srBlocked=true;fail("deny");return}
-  s.lang="zh-CN";s.continuous=true;s.interimResults=true;s.maxAlternatives=1;
+ let user=false;const halt=()=>{if(closed)return;user=true;try{s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,SR_IOS?700:1500)};
+ const go=()=>{try{s=new SRC()}catch(e){shut();srBlocked=true;fail("deny");return}srInst=s;
+  s.lang="zh-CN";s.continuous=!SR_IOS;s.interimResults=true;s.maxAlternatives=1;
   s.onresult=e=>{let f="",it="";for(let j=0;j<e.results.length;j++){const r=e.results[j][0].transcript;if(e.results[j].isFinal){if(f&&r.startsWith(f))f=r;else f+=r}else it+=r}
    sess=f+it;if(sess.trim()){heard=true;last=Date.now()}live()};
-  s.onerror=e=>{if(/not-allowed|service-not-allowed/.test(e.error)){shut();srBlocked=true;fail("deny")}};
-  s.onend=()=>{if(closed)return;txt+=sess;sess="";if(user||over())finish();else setTimeout(()=>{if(!closed)go()},120)};
+  s.onerror=e=>{if(/not-allowed|service-not-allowed/.test(e.error)){if(closed)return;shut();srBlocked=true;fail("deny")}else if(SR_IOS&&!closed){clearTimeout(kill);kill=setTimeout(finish,600)}};
+  s.onend=()=>{if(closed)return;txt+=sess;sess="";if(user||over()||SR_IOS)finish();else setTimeout(()=>{if(!closed)go()},120)};
   try{s.start()}catch(e){finish()}};
  const tm=setInterval(()=>{if(!closed&&!user&&over())halt()},300);
  curRec={stop:halt};go()}
