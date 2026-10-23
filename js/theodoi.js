@@ -38,8 +38,8 @@ function gvDraw(){const s=gvSec(),D=GV.data;
 <label>Thời gian <select onchange="gvSet('days',+this.value,1)">${[7,30,60,120,365].map(d=>`<option value="${d}" ${d==GV.days?"selected":""}>${d} ngày qua</option>`).join("")}</select></label>
 <button class="btn sm" onclick="gvLoad()" ${GV.busy?"disabled":""}>${GV.busy?"Đang tải…":"↻ Tải lại"}</button><button class="btn o sm" onclick="gvLogout()">Thoát</button>
 <small>Cập nhật lúc ${gvT(D.now)}</small></div>${GV.err?`<p class="bad">${GV.err}</p>`:""}
-<div class="stb gvtabs">${[["tq","👥 Tổng quan"],["td","📈 Tiến độ theo bài"],["ls","⚠️ Lỗi hay gặp"]].map(t=>`<button class="${GV.tab==t[0]&&!GV.stu?"on":""}" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>
-${GV.stu?gvStu(F,GV.stu):({tq:gvTq,td:gvTd,ls:gvLs})[GV.tab](F)}`}
+<div class="stb gvtabs">${[["tq","👥 Tổng quan"],["dd","✋ Điểm danh"],["dg","📝 Tự đánh giá"],["td","📈 Tiến độ theo bài"],["ls","⚠️ Lỗi hay gặp"]].map(t=>`<button class="${GV.tab==t[0]&&!GV.stu?"on":""}" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>
+${GV.stu?gvStu(F,GV.stu):({tq:gvTq,dd:gvDd,dg:gvDg,td:gvTd,ls:gvLs})[GV.tab](F)}`}
 
 /* ---------- Tổng quan ---------- */
 function gvPer(F,code){const tt=F.tt.filter(x=>x.code==code),tc=F.tc.filter(x=>x.code==code),last=Math.max(0,...tc.map(x=>x.at),...tt.map(x=>x.at||0),(GV.data.hv.find(h=>h.code==code)||{}).last||0);
@@ -105,6 +105,44 @@ ${tt.map(x=>`<tr><td>${gvLv(x.lv)} · B${x.b}</td><td>${gvSc(x.avg)}</td>${Objec
 <div class="card"><b>Hoạt động gần đây</b><ul class="gvact">${acts.map(a=>`<li><small>${gvT(a.at)}</small> ${gvE(a.t)}${a.lv?` · ${gvLv(a.lv)} Bài ${a.b}`:""}${a.m?` · ${a.m} phút`:""}${a.s?` · <b>${gvE(a.s)}</b>`:""}${a.p?`<br><small>${gvE(a.p)}</small>`:""}</li>`).join("")||"<li>Chưa có.</li>"}</ul></div>
 <div class="card"><b>Câu làm sai (${errs.length})</b>${errs.slice(0,60).map(e=>`<div class="gvel"><small>${gvT(e.at)} · ${gvLv(e.lv)} B${e.b} · ${gvE(e.sec)}</small>${e.q&&e.q!==e.c?`<div>${gvE(e.q)}</div>`:""}<div>Em trả lời: <span class="zh bad">${gvE(e.a)}</span></div><div>Đúng: <span class="zh">${gvE(e.c)}</span></div></div>`).join("")||"<p>Không có.</p>"}</div>`}
 
+/* ---------- Điểm danh ---------- */
+const gvDay=d=>{const x=new Date(d+"T12:00:00");return ["CN","T2","T3","T4","T5","T6","T7"][x.getDay()]+" "+d.slice(8,10)+"/"+d.slice(5,7)};
+function gvLops(){const D=GV.data,act=D.hv.filter(h=>h.st!="Nghỉ"),cs=[...new Set(act.map(h=>h.cls).filter(Boolean))].filter(c=>!GV.cls||c==GV.cls).sort((a,b)=>a.localeCompare(b,"vi"));
+ return cs.map(c=>({cls:c,hv:act.filter(h=>h.cls==c),pin:((D.lop||[]).find(l=>l.cls==c)||{}).pin||"—",info:(D.lop||[]).find(l=>l.cls==c)||{}}))}
+function gvDd(F){const D=GV.data,T=D.today,dd=D.dd||[],L=gvLops();
+ const card=l=>{const pr=l.hv.filter(h=>dd.some(x=>x.d==T&&x.code==h.code)),ab=l.hv.filter(h=>!pr.includes(h));
+  return `<div class="card gvpin"><div class="gvph"><b>${gvE(l.cls)}</b><small>${l.hv.length} học viên</small></div><div class="gvpn">${gvE(l.pin)}</div>
+<div class="gvpc ${pr.length?"":"none"}">Có mặt <b>${pr.length}/${l.hv.length}</b></div>
+${pr.length?`<details><summary>${ab.length?`Chưa điểm danh (${ab.length})`:"Đủ cả lớp 🎉"}</summary><small>${ab.map(h=>gvE(h.name)).join(", ")||"—"}</small><br><small class="gvok">Có mặt: ${pr.map(h=>gvE(h.name)+" "+((dd.find(x=>x.d==T&&x.code==h.code)||{}).t||"")).join(", ")}</small></details>`:`<small class="ctx">Chưa ai điểm danh</small>`}</div>`};
+ let h=`<div class="card note">Mã buổi học hôm nay <b>${gvDay(T)}</b>: đọc hoặc ghi mã của lớp lên bảng, học viên vào mục <b>✋ Vào lớp</b> trên trang web để tự điểm danh. Mã đổi mỗi ngày, lớp nào dùng mã lớp đó. Bấm ↻ Tải lại để xem ai đã điểm danh.</div>
+<div class="gvpins">${L.map(card).join("")||`<div class="card">Chưa có lớp nào.</div>`}</div>`;
+ if(!GV.cls)return h+`<p class="ctx">Chọn một lớp ở ô <b>Lớp</b> phía trên để xem lịch sử điểm danh từng buổi.</p>`;
+ const l=L[0];if(!l)return h;const ds=[...new Set(dd.filter(x=>x.cls==l.cls).map(x=>x.d))].sort().slice(-12);
+ if(!ds.length)return h+`<div class="card">Lớp ${gvE(l.cls)} chưa có buổi điểm danh nào trong ${GV.days} ngày qua.</div>`;
+ const at=(c,d)=>dd.find(x=>x.code==c&&x.d==d);
+ return h+`<h3 class="ab-h">Lịch sử điểm danh · ${gvE(l.cls)}</h3><div class="card gvtw"><table class="gvt gvm"><thead><tr><th>Học viên</th>${ds.map(d=>`<th>${gvDay(d)}</th>`).join("")}<th>Có mặt</th></tr></thead><tbody>
+${l.hv.map(hv=>{const n=ds.filter(d=>at(hv.code,d)).length;return `<tr><td onclick="GV.stu='${hv.code}';gvDraw()"><b>${gvE(hv.name)}</b></td>${ds.map(d=>{const x=at(hv.code,d);return x?`<td class="gvy">✓<small>${gvE(x.t)}</small></td>`:`<td class="gvx">✗</td>`}).join("")}<td>${gvSc(Math.round(n/ds.length*100))}<small>${n}/${ds.length}</small></td></tr>`}).join("")}
+<tr class="gvavg"><td>Sĩ số có mặt</td>${ds.map(d=>`<td>${l.hv.filter(hv=>at(hv.code,d)).length}/${l.hv.length}</td>`).join("")}<td></td></tr></tbody></table></div>
+<p class="ctx">Một ngày được tính là buổi học khi có ít nhất một bạn trong lớp điểm danh.</p>`}
+
+/* ---------- Tự đánh giá ---------- */
+function gvDg(F){const D=GV.data,dg=(D.dg||[]).filter(x=>!GV.cls||x.cls==GV.cls),dd=D.dd||[],nm=c=>(D.hv.find(h=>h.code==c)||{}).name||c;
+ if(!dg.length)return `<div class="card">Chưa có phiếu tự đánh giá nào${GV.cls?" của lớp này":""} trong ${GV.days} ngày qua. Học viên làm phiếu ở mục <b>✋ Vào lớp</b> sau khi điểm danh.</div>`;
+ const G={};dg.forEach(x=>{const k=x.cls+"|"+x.d;(G[k]=G[k]||{cls:x.cls,d:x.d,list:[]}).list.push(x)});
+ const gs=Object.values(G).sort((a,b)=>b.d.localeCompare(a.d)||a.cls.localeCompare(b.cls)).slice(0,10+GV.more);
+ return gs.map(g=>{const ls=g.list,n=ls.length,att=dd.filter(x=>x.cls==g.cls&&x.d==g.d).map(x=>x.code),miss=att.filter(c=>!ls.some(x=>x.code==c));
+  const st=ls.map(x=>x.star).filter(Boolean),avg=st.length?(st.reduce((a,b)=>a+b,0)/st.length).toFixed(1):"—";
+  const sp={};ls.forEach(x=>{if(x.speed)sp[x.speed]=(sp[x.speed]||0)+1});const hd={};ls.forEach(x=>String(x.hard||"").split(/,\s*/).filter(Boolean).forEach(k=>hd[k]=(hd[k]||0)+1));
+  const R={},ord=[];ls.forEach(x=>(x.rows||[]).forEach(r=>{if(!R[r[0]]){R[r[0]]={u:[],d:[],n:0};ord.push(r[0])}R[r[0]].n++;if(!r[1])R[r[0]].u.push(x.code);if(!r[2])R[r[0]].d.push(x.code)}));
+  const bais=[...new Set(ls.map(x=>x.bai))].join(", "),qs=ls.filter(x=>x.q&&x.q.trim()),low=ls.filter(x=>x.star&&x.star<=2);
+  return `<div class="card gvdg"><div class="gvdgh"><div><b>${gvE(g.cls)}</b> · ${gvDay(g.d)}<br><small>${gvE(bais)}</small></div><div class="gvcnt"><b>${avg}★</b><small>${n}${att.length?"/"+att.length:""} bạn gửi phiếu</small></div></div>
+<div class="row gvchips">${Object.keys(sp).map(k=>`<span class="pill">Tốc độ ${k.toLowerCase()}: ${sp[k]}</span>`).join("")}${Object.keys(hd).sort((a,b)=>hd[b]-hd[a]).map(k=>`<span class="pill gvhard">Khó ${k}: ${hd[k]}</span>`).join("")}</div>
+<table class="gvt gvdt"><thead><tr><th>Nội dung</th><th>Chưa hiểu</th><th>Chưa dùng được</th></tr></thead><tbody>
+${ord.map(k=>{const r=R[k],c=(a)=>a.length?`<b class="gvs ${a.length/r.n>=.5?"no":"mid"}">${a.length}/${r.n}</b><small>${a.map(x=>gvE(nm(x))).join(", ")}</small>`:`<b class="gvs ok">0</b>`;return `<tr><td>${gvE(k)}</td><td>${c(r.u)}</td><td>${c(r.d)}</td></tr>`}).join("")}</tbody></table>
+${low.length?`<p class="bad">Hiểu dưới 3★: ${low.map(x=>gvE(nm(x.code))+" ("+x.star+"★)").join(", ")}</p>`:""}
+${qs.length?`<div class="gvqs"><b>Học viên muốn hỏi cô</b>${qs.map(x=>`<div><small>${gvE(nm(x.code))} · ${gvE(x.t)}</small><div>${gvE(x.q)}</div></div>`).join("")}</div>`:""}
+${miss.length?`<small class="ctx">Có mặt nhưng chưa gửi phiếu: ${miss.map(c=>gvE(nm(c))).join(", ")}</small>`:""}</div>`}).join("")+(Object.keys(G).length>gs.length?`<div class="row c"><button class="btn o" onclick="gvSet('more',GV.more+10)">Xem thêm buổi cũ</button></div>`:"")}
+
 /* lối vào: chân trang + #theodoi */
 (function(){const f=document.querySelector("footer");if(f&&!$("gvlink"))f.insertAdjacentHTML("beforeend",` · <a id="gvlink" href="#" onclick="gvOpen();return false">Dành cho giáo viên</a>`);
  gvSec();if(/theodoi/.test(location.hash))gvOpen();addEventListener("hashchange",()=>{if(/theodoi/.test(location.hash))gvOpen()});
@@ -112,6 +150,13 @@ ${tt.map(x=>`<tr><td>${gvLv(x.lv)} · B${x.b}</td><td>${gvSc(x.avg)}</td>${Objec
 footer #gvlink{color:var(--m);text-decoration:none;font-weight:700}#gv .gvlog{max-width:420px}#gv .gvlog .tin{width:100%;box-sizing:border-box;margin:6px 0}.gvck{display:flex;gap:6px;align-items:center;margin:4px 0 10px;font-size:.9rem}
 .gvbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:6px 0 12px}.gvbar label{display:flex;gap:6px;align-items:center;font-weight:700}.gvbar select{padding:6px 10px;border-radius:10px;border:1px solid var(--b);font:inherit}.gvbar small{color:var(--sub)}
 .gvtabs{margin-bottom:14px}
+.gvpins{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:12px}.gvpin{margin:0;text-align:center}.gvph{display:flex;flex-direction:column}.gvph small{color:var(--sub)}
+.gvpn{font-size:2.6rem;font-weight:900;letter-spacing:.18em;color:var(--m);margin:4px 0;font-variant-numeric:tabular-nums}.gvpc{font-size:.95rem}.gvpc.none{color:var(--sub)}
+.gvpin details{margin-top:6px;text-align:left}.gvpin summary{cursor:pointer;color:#b23a48;font-weight:700;font-size:.88rem}.gvok{color:#2e7d4f}
+td.gvy{color:#2e7d4f;font-weight:800}td.gvx{color:#b23a48;font-weight:800;background:#fff6f6}
+.gvdgh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.gvdgh small{color:var(--sub)}.gvchips{margin:8px 0}.gvhard{background:#fff6f6;border-color:#e3a3a3}
+.gvdt{margin-top:6px}.gvdt tbody tr{cursor:default}.gvdt td small{display:block;color:var(--sub)}.gvdt td:not(:first-child),.gvdt th:not(:first-child){width:28%}
+.gvqs{margin-top:10px;background:var(--k);border-radius:12px;padding:10px 12px;display:grid;gap:8px}.gvqs small{color:var(--sub)}
 .gvst{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px}.gvst .card{display:flex;flex-direction:column;gap:2px;margin:0}.gvst b{font-size:1.6rem;color:var(--m)}.gvst span{color:var(--sub);font-size:.9rem}
 .gvwarn{background:#fff8e1;border:1px dashed var(--g)}.gvwarn ul{margin:6px 0 0;padding-left:20px}.gvwarn a,.gvt td a{color:var(--m);cursor:pointer;text-decoration:underline}
 .gvtw{overflow-x:auto;padding:10px}.gvt{width:100%;border-collapse:collapse;font-size:.9rem}.gvt th{text-align:left;color:var(--sub);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;padding:8px;border-bottom:2px solid var(--b);white-space:nowrap}
@@ -123,4 +168,4 @@ footer #gvlink{color:var(--m);text-decoration:none;font-weight:700}#gv .gvlog{ma
 .gvq{margin:4px 0;color:var(--t)}.gvc{font-size:1.1rem;color:#2e7d4f}.gvcnt{text-align:center;flex:none}.gvcnt b{display:block;font-size:1.4rem;color:#b23a48}.gvcnt small{color:var(--sub)}
 .gvans{margin:8px 0 4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.gvans>span{background:#fff6f6;border:1px solid #e3a3a3;border-radius:10px;padding:2px 8px}.gvans i{color:#b23a48;font-style:normal;font-size:.8rem}.gvwho{color:var(--sub)}
 .gvact{padding-left:18px;margin:6px 0 0}.gvact li{margin:6px 0}.gvact small{color:var(--sub)}.gvel{border-top:1px dashed var(--b);padding:8px 0}.gvel small{color:var(--sub)}
-@media(max-width:600px){.gvbr{grid-template-columns:110px 1fr 32px}.gvst b{font-size:1.3rem}}`;document.head.appendChild(st)})();
+@media(max-width:600px){.gvpins{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gvpin{padding:10px}.gvpn{font-size:1.8rem;letter-spacing:.1em}.gvdt{font-size:.82rem}.gvdt th,.gvdt td{padding:6px 4px}.gvdt td:not(:first-child),.gvdt th:not(:first-child){width:22%}.gvdt td small{font-size:.7rem}.gvbr{grid-template-columns:110px 1fr 32px}.gvst b{font-size:1.3rem}}`;document.head.appendChild(st)})();
