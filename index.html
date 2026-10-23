@@ -6,17 +6,21 @@
 <link rel="stylesheet" href="style.css?v=2">
 <link rel="stylesheet" href="css/hsk4.css?v=2">
 <link rel="stylesheet" href="css/nav.css?v=2">
+<link rel="stylesheet" href="css/home.css?v=1">
 </head><body>
 <header><div class="logo"><img alt="Logo" src="img/logo.webp">Cô Thảo tiếng Trung</div><nav id="nav"></nav><button id="mbtn" aria-label="Mở menu" onclick="mMenu()">☰</button></header>
 <main>
 <section id="home" class="on">
-<div class="hero"><img alt="Logo Tiếng Trung Cô Thảo" src="img/logo.webp"><div class="zh">学好中文，用得上</div><h1>Cô Thảo tiếng Trung</h1>
-<p>Học đúng trọng tâm, dùng được ngay – từ người mới bắt đầu đến tiếng Trung công việc.</p>
-<a class="btn" href="#" onclick="go('courses');return false">Xem khóa học</a><a class="btn o" href="#" onclick="go('about');return false">Về cô Thảo</a></div>
-<div class="grid">
-<div class="card"><h3>👩‍🏫 Giới thiệu</h3>Giảng viên HSK 6, biên–phiên dịch doanh nghiệp.</div>
-<div class="card"><h3>🎓 Khóa học</h3>HSK 1, 2, 3 theo khung mới 3.0, nhóm 6–12 hoặc 1-1, online/trực tiếp.</div>
-<div class="card"><h3>📖 Học tiếng Trung</h3>Ôn luyện theo từng bài giáo trình New HSK 3.0, miễn phí.</div></div>
+<div class="hero hm">
+<div class="hm-brand"><img alt="Logo Tiếng Trung Cô Thảo" src="img/logo.webp"><div class="zh">学好中文，用得上</div><h1>Cô Thảo tiếng Trung</h1>
+<p>Học đúng trọng tâm, dùng được ngay – từ người mới bắt đầu đến tiếng Trung công việc.</p></div>
+<div class="hm-col">
+<button class="hm-b" id="hm-ma" onclick="typeof trkOpen=='function'&&trkOpen()"><span class="hm-i">🔑</span><span class="hm-t">Nhập mã học viên</span><span class="hm-a">›</span></button>
+<button class="hm-b" onclick="typeof vlOpen=='function'?vlOpen():trkOpen()"><span class="hm-i">✋</span><span class="hm-t">Điểm danh</span><span class="hm-a">›</span></button>
+<button class="hm-b" onclick="goSub('ol')"><span class="hm-i">📖</span><span class="hm-t">Học tiếng Trung</span><span class="hm-a">›</span></button>
+<button class="hm-b" onclick="goSub('gm')"><span class="hm-i">🎮</span><span class="hm-t">Game chữ Hán</span><span class="hm-a">›</span></button>
+<button class="hm-b" onclick="goSub('ts')"><span class="hm-i">📝</span><span class="hm-t">Test nhanh</span><span class="hm-a">›</span></button>
+</div></div>
 </section>
 
 <section id="about">
@@ -131,5 +135,6 @@
 <script src="js/track.js?v=2"></script>
 <script src="js/theodoi.js?v=2"></script>
 <script src="js/lop.js?v=1"></script>
+<script src="js/home.js?v=1"></script>
 </body></html>
 

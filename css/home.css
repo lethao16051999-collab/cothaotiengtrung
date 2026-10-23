@@ -1,0 +1,24 @@
+/* Trang chủ dạng cột nút dọc (23/10/2026) + ẩn mục menu cô gạch */
+#nilearn,nav button[data-id="share"],nav button[data-id="notes"]{display:none!important}
+.hero.hm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:center;text-align:center;padding:36px 32px}
+.hm-col{display:flex;flex-direction:column;gap:14px;position:relative;order:-1}
+.hm-b{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:12px 20px;border:0;border-radius:18px;background:#fbf5e6;color:#5c1730;font:800 1.25rem var(--ui,Nunito,sans-serif);text-align:left;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.18),0 8px 18px rgba(0,0,0,.18);transition:transform .12s,box-shadow .12s,background .12s}
+.hm-b:hover{background:#fff;transform:translateY(-2px)}
+.hm-b:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.hm-b:focus-visible{outline:3px solid var(--g,#c9a227);outline-offset:3px}
+.hm-i{flex:none;width:42px;height:42px;border-radius:12px;background:#c9a227;display:grid;place-items:center;font-size:1.3rem}
+.hm-t{flex:1;min-width:0}
+.hm-a{flex:none;font-size:1.6rem;color:#c9a227;line-height:1}
+.hm-b.in .hm-t small{display:block;font:600 .85rem var(--ui,Nunito,sans-serif);color:#8e2a4f}
+.hm-brand{position:relative}
+.hm-brand img{width:120px;height:120px}
+.hm-brand h1{font-size:2.3rem}
+@media(max-width:760px){
+ .hero.hm{grid-template-columns:1fr;gap:18px;padding:22px 16px}
+ .hm-col{order:0}
+ .hm-brand img{width:76px;height:76px}
+ .hm-brand h1{font-size:1.6rem}
+ .hm-brand p{margin:6px auto 0;font-size:.92rem}
+ .hm-b{min-height:58px;font-size:1.1rem;padding:10px 16px}
+ .hm-i{width:38px;height:38px}
+}
