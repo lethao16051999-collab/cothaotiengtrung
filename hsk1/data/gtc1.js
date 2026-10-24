@@ -1,7 +1,7 @@
 /* ===== Giáo trình chuẩn HSK 1 (标准教程 HSK 1, bản cũ) – trang ôn tập riêng ở thư mục hsk1/ =====
    Nội dung lấy từ PDF sách: Bài 1 trang 14–19, Bài 2 trang 20–25, Bài 3 trang 26–32.
    Cấu trúc dữ liệu giống HSK1 3.0 (LD1[N], GXD["1-N"]) để dùng chung js/app.js của trang chính. ===== */
-const LT1=["你好！|Chào anh!","谢谢你！|Cảm ơn anh!","你叫什么名字？|Cô tên gì?","她是我的汉语老师|Cô ấy là cô giáo dạy tiếng Trung Quốc của tôi","她女儿今年二十岁|Con gái cô ấy năm nay 20 tuổi","我会说汉语|Tôi biết nói tiếng Trung Quốc","今天几号？|Hôm nay là ngày mấy?","我想喝茶|Tôi muốn uống trà","你儿子在哪儿工作？|Con trai anh làm việc ở đâu?","我能坐这儿吗？|Tôi có thể ngồi ở đây được không?","现在几点？|Bây giờ là mấy giờ?","明天天气怎么样？|Thời tiết ngày mai thế nào?","他在学做中国菜呢|Anh ấy đang học nấu món ăn Trung Quốc","她买了不少衣服|Cô ấy đã mua không ít quần áo","我是坐飞机来的|Tôi đến bằng máy bay"];
+const LT1=["你好！|Chào anh!","谢谢你！|Cảm ơn anh!","你叫什么名字？|Cô tên gì?","她是我的汉语老师|Cô ấy là cô giáo dạy tiếng Trung Quốc của tôi","她女儿今年二十岁|Con gái cô ấy năm nay 20 tuổi","我会说汉语|Tôi biết nói tiếng Trung Quốc","今天几号？|Hôm nay là ngày mấy?","我想喝茶|Tôi muốn uống trà","你儿子在哪儿工作？|Con trai anh làm việc ở đâu?","我能坐这儿吗？|Tôi có thể ngồi ở đây được không?","现在几点？|Bây giờ là mấy giờ?","明天天气怎么样？|Thời tiết ngày mai thế nào?","他在学做中国菜呢|Anh ấy đang học nấu món ăn Trung Quốc","她买了不少衣服|Cô ấy đã mua nhiều quần áo","我是坐飞机来的|Tôi đến bằng máy bay"];
 const AUD={};
 const SPN={"A":["A","Người A"],"B":["B","Người B"],"老师":["lǎoshī","Cô giáo"],"我":["wǒ","Em"],"同学":["tóngxué","Bạn học"],"李月":["Lǐ Yuè","Lý Nguyệt"],"阮明":["Ruǎn Míng","Nguyễn Minh"]};
 const LD1={};
@@ -167,9 +167,6 @@ pc:[
 LD1[3]={t:"你叫什么名字？",tp:"Nǐ jiào shénme míngzi?",vi:"Cô tên gì?",
 gpNote:"Ngữ pháp lấy từ mục Chú thích (注释) của sách: đại từ nghi vấn 什么, câu chữ 是, câu hỏi với 吗; thêm biến điệu của 不 và quy tắc viết ü (mục Ghép âm), kèm lỗi người Việt hay mắc.",
 goals:["Hỏi và nói tên: 你叫什么名字？— 我叫……","Dùng câu chữ 是 (khẳng định, phủ định) để nói mình là ai, người nước nào; hỏi bằng 吗.","Đọc đúng j, q, x / z, c, s và i, u, ü; biết biến điệu của 不 (不是 bú shì)."],
-warm:{q:"给下面的词语选择对应的图片。",qv:"Chọn hình tương ứng với các từ ngữ bên dưới.",
-w:[["A","中国","Zhōngguó","Trung Quốc"],["B","美国","Měiguó","nước Mỹ"],["C","中国人","Zhōngguó rén","người Trung Quốc"],["D","美国人","Měiguó rén","người Mỹ"],["E","老师","lǎoshī","thầy/cô giáo"],["F","学生","xuésheng","học sinh"]],
-pics:[["h1cb3-laoshi","E"],["h1cb3-xuesheng","F"],["h1cb3-zhongguo","A"],["h1cb3-meiguo","B"],["h1cb3-meiguoren","D"],["h1cb3-zhongguoren","C"]]},
 texts:[
 {ctx:"在学校 · Ở trường: hai người gặp nhau lần đầu, hỏi tên nhau.",a:"c3-1",l:[
 ["A","你叫什么名字？","Nǐ jiào shénme míngzi?","Cô tên gì?"],
