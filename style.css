@@ -224,3 +224,8 @@ button:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visib
 .hints em{display:block;font-style:normal;font-size:.78rem;color:var(--sub)}
 .hdsub{margin-top:10px}.hdsub summary{cursor:pointer;font-weight:700;color:var(--m)}
 .hdta{width:100%;box-sizing:border-box;font:1.08rem var(--han,"Noto Serif SC"),serif;line-height:1.7}
+
+/* ===== Ô nền sáng (luyện đọc, phiếu tự đánh giá, máy đang nghe): giữ chữ đậm cho rõ cả khi điện thoại bật giao diện tối · 24/10/2026 ===== */
+.rd .rdl,.vlt tbody,.srlive{--sub:#4e3a43;--m:#7a1f3d;color:#2b1a20}
+.rd .rdl .rdw small,.rd .rdl .out small{color:#4e3a43}
+.vlt td{color:#2b1a20;font-weight:600}

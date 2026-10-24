@@ -290,7 +290,7 @@ function testView(){const L=LD[tcur];
 <div class="lhead"><span class="no">${tcur}</span><div><div>Kiểm tra HSK ${olLv} · Bài ${tcur} · ${TMIN} phút</div><div class="zh lt2">${L.t}</div></div>${vBtn()}</div>${vBar()}<div class="stack">${T?tBody(L):tIntro(L)}</div>`}
 function tIntro(L){let nm="";try{nm=localStorage.getItem("ct_name")||""}catch(e){}
  return `<div class="card"><b>Bài kiểm tra Bài ${tcur} · ${TMIN} phút · 15 điểm</b>
-<p>Phần 1A: ${L.tsort.length} câu sắp xếp thành câu đúng.<br>Phần 1B: ${L.tlis.length} câu nghe và chọn cách đáp lại / hiểu ý (mỗi câu nghe tối đa 2 lượt).<br>Phần 2: nói 5 lượt lấy ngẫu nhiên từ phần Luyện nói, <b>không có gợi ý</b>, mỗi lượt nói một lần.<br>Đạt từ 12/15 (80%). Hết giờ bài tự nộp.</p>
+<p>Phần 1A: ${L.tsort.length} câu sắp xếp thành câu đúng.<br>Phần 1B: ${L.tlis.length} câu nghe và chọn cách đáp lại / hiểu ý (mỗi câu nghe tối đa 2 lượt).<br>Phần 2: nói 5 lượt lấy ngẫu nhiên từ phần Luyện nói, <b>không có gợi ý</b>, mỗi lượt được nói <b>tối đa 2 lần</b>.<br>Đạt từ 12/15 (80%). Hết giờ bài tự nộp.</p>
 <label><b>Họ và tên học sinh <span class="bad">*</span></b></label><input class="tin" id="tname" value="${esc(nm)}" placeholder="Nhập họ và tên của em" autocomplete="name" oninput="try{localStorage.setItem('ct_name',this.value)}catch(e){};$('tnerr').hidden=true"><div class="bad" id="tnerr" hidden>Em cần điền họ và tên trước khi bắt đầu.</div>
 <p><b>Em chọn cách làm bài:</b></p><div class="row"><button class="btn sm ${TPY?"":"o"}" onclick="TPY=true;rr()">Có pinyin</button><button class="btn sm ${TPY?"o":""}" onclick="TPY=false;rr()">Chỉ chữ Hán (pinyin hiện khi chấm)</button></div>
 <p class="ctx">Phần nói cần Google Chrome hoặc Microsoft Edge và cho phép dùng micro.</p><button class="btn" onclick="tStart()">▶ Bắt đầu làm bài</button></div>`}
@@ -299,7 +299,7 @@ function tStart(){const nm=($("tname").value||"").trim();if(!nm){$("tnerr").hidd
  const L=LD[tcur],all=nsAll(L),seen=new Set(),pool=[];shuf(all.map((_,i)=>i)).forEach(i=>{const r=all[i].t.r[0];if(np(r).length>=3&&!seen.has(r)){seen.add(r);pool.push(i)}});
  T={name:nm,han:!TPY,left:TMIN*60,done:false,
   so:L.tsort.map(it=>{let p;for(let k=0;k<10;k++){p=shuf(it.t.map((_,i)=>i));if(!it.ok.includes(p.map(i=>it.t[i]).join("")))break}return{pool:p,ch:[]}}),
-  li:L.tlis.map(q=>({o:shuf(q.o.slice()),pick:null,plays:0})),sp:pool.slice(0,5),spk:[],spo:[],spr:[]};
+  li:L.tlis.map(q=>({o:shuf(q.o.slice()),pick:null,plays:0})),sp:pool.slice(0,5),spk:[],spo:[],spr:[],spn:[]};
  tStop();TIV=setInterval(()=>{if(!T||T.done)return tStop();T.left--;const e=$("tm");if(e){e.textContent=tClock();e.classList.toggle("low",T.left<=120)}if(T.left<=0)tSubmit(true)},1000);rr();scrollTo(0,0)}
 const tClock=()=>`${String(Math.floor(T.left/60)).padStart(2,"0")}:${String(T.left%60).padStart(2,"0")}`;
 const tTokPy={"老师":"lǎoshī","您":"nín","好":"hǎo","你":"nǐ","们":"men","王":"Wáng","同学":"tóngxué","再见":"zàijiàn","小语":"Xiǎoyǔ","谢谢":"xièxie","不":"bù","客气":"kèqi","大家":"dàjiā"};
@@ -321,17 +321,17 @@ function tBody(L){const d=T.done;let h="";
   h+=`<div class="card q ${d?(ok?"ok":"no"):""}"><b>Câu ${k+1+L.tsort.length}.</b> <span class="zh hd">${q.qz||"听后选择正确的回答。"}</span><small class="opy">${q.qp||"Tīng hòu xuǎnzé zhèngquè de huídá."}</small><div class="row"><button class="snd" ${d||s.plays>=2?"disabled":""} onclick="tPlay(${k})">🔊 ${s.plays>=2?"Đã nghe đủ 2 lượt":`Nghe (còn ${2-s.plays} lượt)`}</button></div>
   <div class="opts">${s.o.map((o,j)=>`<button class="opt ${s.pick===j?"sel":""} ${d&&o===q.o[0]?"right":""}" ${d?"disabled":""} onclick="T.li[${k}].pick=${j};rr()">${OP(o)}</button>`).join("")}</div>
   ${d?`<small class="ex">${ok?"✓ Đúng.":"✗ Chưa đúng."} Nội dung nghe: <span class="zh">${q.a}</span></small>`:""}</div>`});
- h+=`<h3 class="ab-h">Phần 2 · Nói theo tình huống (5 điểm)</h3><p class="ctx">Không có gợi ý: đọc mục đích, tự nói câu tiếng Trung. Mỗi câu nói <b>một lần</b>; máy nghe xong mới hiện câu mẫu (đạt từ 60%).</p>`;
+ h+=`<h3 class="ab-h">Phần 2 · Nói theo tình huống (5 điểm)</h3><p class="ctx">Không có gợi ý: đọc mục đích, tự nói câu tiếng Trung. Mỗi câu được nói <b>tối đa 2 lần</b> (lấy lần tốt hơn); nói đạt hoặc dùng hết 2 lần thì máy mới hiện câu mẫu (đạt từ 60%).</p>`;
  const all=nsAll(L);T.sp.forEach((ix,k)=>{const t=all[ix].t,nm=SPN[t.w]||[t.w,""],ok=!!T.spk[k],self=!SRC||srBlocked;
   h+=`<div class="card ns ${d?(ok?"ok":"no"):""}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[1]}</small></div><div class="ctx">${L.sit[all[ix].si].ctx}</div><div class="goal">🎯 ${t.vi}</div>
-  ${d||T.spr[k]?"":self?`<div class="bad">Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Nói xong":"🎤 Nói"}</button></div>`}
+  ${d||T.spr[k]?"":self?`<div class="bad">Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Nói xong":(T.spn||[])[k]?"🎤 Nói lại (lần 2/2)":"🎤 Nói"}</button></div>`}
   <div class="out">${T.spo[k]||""}</div>${d&&!T.spr[k]?`<div class="bad">✗ Chưa nói</div>`:""}${d||T.spr[k]?`<div class="bub ref"><small>Câu mẫu:</small><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div></div>`:""}</div>`});
  h+=`</div>`+(d?`<div class="row c"><button class="btn" onclick="T=null;rr();scrollTo(0,0)">↻ Làm lại bài</button><button class="btn o" onclick="sub('ol');openL(${tcur})">📖 Ôn lại Bài ${tcur}</button></div>`:`<div class="row c"><button class="btn" onclick="tSubmit(false)">Nộp bài</button></div>`);
  return h}
 function tRec(k){if(curRec){try{curRec.stop()}catch(e){}return}if(T.spr[k]||T.done)return;
  const L=LD[tcur],tgt=nsAll(L)[T.sp[k]].t.r[0];recOn="t"+k;T.spo[k]=srLiveHtml();rr();
- srListen(t=>{if(T.done)return;const m=simi(np(t),np(tgt)),ok=m>=60;T.spk[k]=ok;T.spr[k]=true;
-  T.spo[k]=`Máy nghe được: <span class="zh hd">${esc(t)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()},
+ srListen(t=>{if(T.done)return;T.spn=T.spn||[];const m=simi(np(t),np(tgt)),ok=m>=60,n=(T.spn[k]||0)+1;T.spn[k]=n;T.spk[k]=!!T.spk[k]||ok;T.spr[k]=T.spk[k]||n>=2;
+  T.spo[k]=`${n>1?"<b>Lần 2:</b> ":""}Máy nghe được: <span class="zh hd">${esc(t)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":n<2?"✗ Chưa đạt · em còn 1 lần nói lại":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()},
  x=>{if(T.done)return;T.spo[k]=x=="deny"?`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro rồi bấm 🎤 Nói lại.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại.</span>`;rr()})}
 function tSubmit(auto,f){if(!T||T.done)return;
  if(!auto&&!f){const miss=T.so.filter(s=>s.pool.length).length+T.li.filter(s=>s.pick==null).length+T.sp.filter((_,k)=>T.spk[k]==null).length;if(miss)return ask(`Còn ${miss} câu chưa làm. Vẫn nộp bài?`,()=>tSubmit(false,1))}
