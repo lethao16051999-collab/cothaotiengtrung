@@ -7,10 +7,12 @@ const SHELF=[
  {l:2,img:"img/bia-hsk2.webp",t:"New HSK 2",s:"Sơ cấp 2"},
  {l:3,img:"img/bia-hsk3.webp",t:"New HSK 3",s:"Trung cấp 1"},
  {l:4,img:"",t:"HSK 4",s:"Trung cấp · du học",zh:"汉语",c:"#5c1730"},
- {l:5,img:"",t:"Mở rộng H4",s:"Trung cấp · đời sống",zh:"生活",c:"#8e2a4f"}];
+ {l:5,img:"",t:"Mở rộng H4",s:"Trung cấp · đời sống",zh:"生活",c:"#8e2a4f"},
+ {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:3,tot:15}];
+/* Cuốn có href = trang ôn tập riêng (thư mục hsk1/, 24/10/2026); chỉ hiện ở Ôn luyện theo bài */
 const shN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
 function shCount(l){const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]).length}
-function shelfView(pk="olPick",hint="Chọn giáo trình để xem các bài ôn luyện.",cnt=shCount,unit="bài đã có"){return `<p class="shint">${hint}</p><div class="shelf">${SHELF.filter(b=>b.l<5||LDS[5]).map(b=>{const n=cnt(b.l),tot=LV[b.l]||0;
+function shelfView(pk="olPick",hint="Chọn giáo trình để xem các bài ôn luyện.",cnt=shCount,unit="bài đã có"){return `<p class="shint">${hint}</p><div class="shelf">${SHELF.filter(b=>b.href?pk=="olPick":(b.l<5||LDS[5])).map(b=>{if(b.href)return `<a class="shb" href="${b.href}"><div class="shimg"><img src="${b.img}" alt="Bìa ${b.t} ${b.s}" loading="lazy"></div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ok">${b.n}/${b.tot} ${unit}</span></a>`;const n=cnt(b.l),tot=LV[b.l]||0;
  const cov=b.img?`<img src="${b.img}" alt="Bìa giáo trình ${b.t}" loading="lazy">`:`<div class="shcv" style="--cc:${b.c}"><span class="zh">${b.zh}</span><b>${b.t}</b><i>Cô Thảo tiếng Trung</i></div>`;
  return `<button class="shb ${n?"":"soon"}" onclick="${pk}(${b.l})"><div class="shimg">${cov}</div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ${n?"ok":""}">${n?`${n}/${tot} ${unit}`:"Sắp ra mắt"}</span></button>`}).join("")}</div>`}
 function olPick(l){OLPICK=true;setLv(l);scrollTo(0,0)}
@@ -42,7 +44,7 @@ const _shCrumb2=crumbDraw;crumbDraw=function(){_shCrumb2();const c=$("crumb");if
 (function(){const st=document.createElement("style");st.textContent=`
 .shint{color:var(--sub);margin:4px 0 14px}
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:18px;margin:6px 0 18px}
-.shb{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--c);border:1px solid var(--b);border-radius:22px;padding:14px 12px 16px;box-shadow:var(--sh);cursor:pointer;font:inherit;color:var(--t);transition:transform .15s,box-shadow .15s}
+.shb{text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--c);border:1px solid var(--b);border-radius:22px;padding:14px 12px 16px;box-shadow:var(--sh);cursor:pointer;font:inherit;color:var(--t);transition:transform .15s,box-shadow .15s}
 .shb:hover,.shb:focus-visible{transform:translateY(-4px);border-color:var(--g);outline:none}
 .shimg{width:100%;aspect-ratio:3/4;display:grid;place-items:center;margin-bottom:4px}
 .shimg img{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,.25);object-fit:cover}
