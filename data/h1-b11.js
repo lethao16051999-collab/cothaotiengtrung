@@ -3,9 +3,6 @@ Object.assign(SPN,{"王一飞":["Wáng Yīfēi","Vương Nhất Phi"],"李文":[
 LD1[11]={t:"我读大学呢",tp:"Wǒ dú dàxué ne",vi:"Em đang học đại học",
 gpNote:"Mục 1–3 lấy từ Lớp học của Tiểu Ngữ (小语讲堂) trong sách: câu hỏi chính phản, phó từ 在 / 正在, động từ năng nguyện 要 (ví dụ là câu trong sách). Mục 4–6 do cô Thảo bổ sung từ bài khóa (什么时候, 还, 对 + người + 说), kèm lỗi người Việt hay mắc.",
 goals:["Có thể nghe hiểu và sử dụng được ba cấu trúc diễn đạt hành động đang diễn ra.","Có thể nghe hiểu và đặt câu hỏi bằng cấu trúc câu hỏi chính phản.","Nắm vững cách sử dụng của động từ năng nguyện “要” để diễn đạt mong muốn làm gì hoặc dự định làm việc gì đó."],
-warm:{q:"给下面的词语选择对应的图片。",qv:"Lựa chọn hình ảnh tương ứng với các từ ngữ sau.",
-w:[["A","开车","kāichē","lái xe"],["B","睡觉","shuìjiào","ngủ"],["C","问","wèn","hỏi"],["D","饭店","fàndiàn","nhà hàng"],["E","找","zhǎo","tìm"],["F","大学生","dàxuéshēng","sinh viên"]],
-pics:[["h1b11-fandian","D"],["h1b11-daxuesheng","F"],["h1b11-kaiche","A"],["h1b11-zhao","E"],["h1b11-wen","C"],["h1b11-shuijiao","B"]]},
 texts:[
 {ctx:"Lý Văn đang tìm nhà hàng trên đường đi, Vương Nhất Phi gọi điện cho anh ấy.",a:"11-1",l:[
 ["王一飞","喂，李文，你什么时候能到饭店？","Wèi, Lǐ Wén, nǐ shénme shíhou néng dào fàndiàn?","A lô, Lý Văn à, khi nào em có thể đến nhà hàng?"],
