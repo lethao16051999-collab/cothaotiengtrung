@@ -70,8 +70,8 @@ sit:[
 {title:"Tình huống 4 · Vận dụng: kể chuyện đi mua sắm cuối tuần",ctx:"Sáng thứ hai ở lớp, bạn hỏi em cuối tuần đi đâu, mua gì.",turns:[
 {w:"同学",vi:"Hỏi thứ bảy em đi đâu.",h:[["星期六","xīngqīliù"],["你","nǐ"],["去哪儿","qù nǎr"],["了","le"]],r:["星期六你去哪儿了？","Xīngqīliù nǐ qù nǎr le?","Thứ bảy bạn đi đâu vậy?"]},
 {w:"我",vi:"Nói em đi cửa hàng mua quần áo.",h:[["我","wǒ"],["去商店","qù shāngdiàn"],["买衣服","mǎi yīfu"],["了","le"]],r:["我去商店买衣服了。","Wǒ qù shāngdiàn mǎi yīfu le.","Mình đi cửa hàng mua quần áo."]},
-{w:"同学",vi:"Hỏi em đã mua mấy bộ.",h:[["你","nǐ"],["买了","mǎile"],["几件","jǐ jiàn"]],r:["你买了几件？","Nǐ mǎile jǐ jiàn?","Bạn mua mấy bộ?"]},
-{w:"我",vi:"Nói em không mua, quần áo đắt quá — chỉ mua một ít táo.",h:[["我没买","wǒ méi mǎi"],["我买了","wǒ mǎile"],["一点儿苹果","yìdiǎnr píngguǒ"]],r:["我没买衣服，我买了一点儿苹果。","Wǒ méi mǎi yīfu, wǒ mǎile yìdiǎnr píngguǒ.","Mình không mua quần áo, mình mua một ít táo."]},
+{w:"同学",vi:"Hỏi em có mua nhiều quần áo không.",h:[["你","nǐ"],["买了","mǎile"],["不少衣服吗","bùshǎo yīfu ma"]],r:["你买了不少衣服吗？","Nǐ mǎile bùshǎo yīfu ma?","Bạn mua nhiều quần áo à?"]},
+{w:"我",vi:"Nói em không mua quần áo, chỉ mua một ít táo.",h:[["我没买","wǒ méi mǎi"],["我买了","wǒ mǎile"],["一点儿苹果","yìdiǎnr píngguǒ"]],r:["我没买衣服，我买了一点儿苹果。","Wǒ méi mǎi yīfu, wǒ mǎile yìdiǎnr píngguǒ.","Mình không mua quần áo, mình mua một ít táo."]},
 {w:"同学",vi:"Hỏi các bạn cùng phòng có đi không.",h:[["你朋友","nǐ péngyou"],["都","dōu"],["去了吗","qù le ma"]],r:["你朋友都去了吗？","Nǐ péngyou dōu qù le ma?","Các bạn của bạn đều đi à?"]},
 {w:"我",vi:"Nói các bạn đều đi, các bạn mua nhiều quần áo.",h:[["她们","tāmen"],["都去了","dōu qù le"],["买了","mǎile"],["不少衣服","bùshǎo yīfu"]],r:["她们都去了，她们买了不少衣服。","Tāmen dōu qù le, tāmen mǎile bùshǎo yīfu.","Họ đều đi, họ mua nhiều quần áo lắm."]}]}],
 act:[
