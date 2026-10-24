@@ -8,7 +8,7 @@ const SHELF=[
  {l:3,img:"img/bia-hsk3.webp",t:"New HSK 3",s:"Trung cấp 1"},
  {l:4,img:"",t:"HSK 4",s:"Trung cấp · du học",zh:"汉语",c:"#5c1730"},
  {l:5,img:"",t:"Mở rộng H4",s:"Trung cấp · đời sống",zh:"生活",c:"#8e2a4f"},
- {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:8,tot:15}];
+ {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:10,tot:15}];
 /* Cuốn có href = trang ôn tập riêng (thư mục hsk1/, 24/10/2026); chỉ hiện ở Ôn luyện theo bài */
 const shN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
 function shCount(l){const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]).length}
