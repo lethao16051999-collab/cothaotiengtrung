@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HSK 1 · Giáo trình chuẩn – Cô Thảo tiếng Trung</title>
+<!-- Trang ôn tập riêng cho "Giáo trình chuẩn HSK 1" (标准教程). Dùng chung giao diện và code của trang chính (thư mục cha). -->
+<base href="../">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Serif:wght@500;600&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;900&display=swap">
+<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="css/nav.css?v=2">
+<style>
+.gt-hero{display:flex;gap:22px;align-items:center;background:linear-gradient(135deg,#5c1730,#8e2a4f);color:#fff;border-radius:22px;padding:20px 24px;margin:18px 0 8px;box-shadow:var(--sh)}
+.gt-hero img{width:120px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.35);flex:none}
+.gt-hero .tag{display:inline-block;background:#c9a227;color:#3a0d1d;font-weight:800;border-radius:999px;padding:3px 12px;font-size:.85rem;letter-spacing:.04em}
+.gt-hero h1{margin:8px 0 4px;font-size:1.7rem;color:#fff;border:0}
+.gt-hero p{margin:4px 0;opacity:.92}
+.gt-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+.gt-back{color:inherit;text-decoration:none;font-weight:700;white-space:nowrap}
+header .gt-back{margin-left:auto;font-size:.95rem;color:#f3d77a}
+.gt-hide{display:none!important}
+@media(max-width:560px){.gt-hero{flex-direction:column;text-align:center;padding:18px 16px}.gt-hero img{width:110px}.gt-hero h1{font-size:1.4rem}}
+</style>
+<script>
+/* Tiến độ của giáo trình này lưu riêng, không lẫn với New HSK 1 (3.0) ở trang chính */
+(function(){try{const P=Storage.prototype,m=k=>typeof k=="string"?k.replace(/^ct_hsk1_/,"ct_gtc1_"):k,g=P.getItem,s=P.setItem,r=P.removeItem;
+P.getItem=function(k){return g.call(this,m(k))};P.setItem=function(k,v){return s.call(this,m(k),v)};P.removeItem=function(k){return r.call(this,m(k))}}catch(e){}})();
+</script>
+</head><body>
+<header><div class="logo"><img alt="Logo" src="img/logo.webp">Cô Thảo tiếng Trung</div><a class="gt-back" href="./">← Trang chính</a>
+<nav id="nav" class="gt-hide"></nav><button id="mbtn" class="gt-hide" aria-hidden="true"></button></header>
+<main>
+<section id="home" class="gt-hide"></section>
+<section id="learn">
+<div class="gt-hero"><img src="img/bia-hsk1-chuan.webp" alt="Bìa Giáo trình chuẩn HSK 1">
+<div><span class="tag">HSK1</span><h1>Giáo trình chuẩn HSK 1</h1><p class="zh">标准教程 HSK 1</p><p>Ôn tập theo bài: bài khóa, flashcard, ngữ pháp · mẫu câu, nghe chép, luyện nói, test nhanh. Hiện có Bài 1–3.</p></div></div>
+<div class="gt-tabs"><button class="btn sm" id="gt-ol" onclick="goSub('ol')">📖 Ôn luyện theo bài</button><button class="btn sm o" id="gt-ts" onclick="goSub('ts')">📝 Test nhanh</button></div>
+<div class="crumb" id="crumb"></div><h2 id="lh2">Ôn luyện theo bài</h2>
+<div id="lsub" hidden></div>
+<div class="lp on" id="lp-ol"></div>
+<div class="lp" id="lp-ts"></div>
+<div class="lp gt-hide" id="lp-fl"><div id="lv"></div><div id="fc"></div><p id="st"></p></div>
+<div class="lp gt-hide" id="lp-bt"></div><div class="lp gt-hide" id="lp-py"></div><div class="lp gt-hide" id="lp-hk"></div><div class="lp gt-hide" id="lp-gm"></div>
+</section>
+<div class="gt-hide"><div id="cl"></div><div id="tips"></div><input id="q"></div>
+</main>
+<footer>© Cô Thảo tiếng Trung · <a href="./" style="color:inherit">Về trang chính</a> · Zalo 0366 534 081</footer>
+<script src="js/core.js"></script>
+<script src="hsk1/data/gtc1.js?v=1"></script>
+<script src="hsk1/data/hz-them.js?v=1"></script>
+<script src="data/hsk2.js"></script>
+<script>LV[1]=LT1.length;function lvN(l){return "HSK 1 · Giáo trình chuẩn"}function h4t(){}</script>
+<script src="js/app.js?v=6"></script>
+<script src="js/nav.js?v=3"></script>
+<script src="js/write.js?v=4"></script>
+<script src="js/shelf.js?v=3"></script>
+<script src="js/read.js?v=1"></script>
+<script>
+/* Chỉ một giáo trình: bỏ kệ sách, mở thẳng danh sách bài; "Trang chủ" ở đường dẫn quay về trang chính */
+SHELF.splice(0,SHELF.length,{l:1,img:"img/bia-hsk1-chuan.webp",t:"HSK 1",s:"Giáo trình chuẩn"});
+(function(){const _go=go;go=function(id){if(id=="learn")return _go(id);location.href="./"};
+ const _gs=goSub;goSub=function(id){_gs(id);if(id=="ol"&&!cur){OLPICK=true;setLv(1)}if(id=="ts"&&!tcur){TSPICK=true;setLv(1)}
+  ["ol","ts"].forEach(k=>{const b=document.getElementById("gt-"+k);if(b)b.classList.toggle("o",k!=id)})};
+ goSub("ol")})();
+</script>
+</body></html>
