@@ -10,9 +10,9 @@ const SHELF=[
  {l:5,img:"",t:"Mở rộng H4",s:"Trung cấp · đời sống",zh:"生活",c:"#8e2a4f"}];
 const shN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
 function shCount(l){const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]).length}
-function shelfView(){return `<p class="shint">Chọn giáo trình để xem các bài ôn luyện.</p><div class="shelf">${SHELF.filter(b=>b.l<5||LDS[5]).map(b=>{const n=shCount(b.l),tot=LV[b.l]||0;
+function shelfView(pk="olPick",hint="Chọn giáo trình để xem các bài ôn luyện.",cnt=shCount,unit="bài đã có"){return `<p class="shint">${hint}</p><div class="shelf">${SHELF.filter(b=>b.l<5||LDS[5]).map(b=>{const n=cnt(b.l),tot=LV[b.l]||0;
  const cov=b.img?`<img src="${b.img}" alt="Bìa giáo trình ${b.t}" loading="lazy">`:`<div class="shcv" style="--cc:${b.c}"><span class="zh">${b.zh}</span><b>${b.t}</b><i>Cô Thảo tiếng Trung</i></div>`;
- return `<button class="shb ${n?"":"soon"}" onclick="olPick(${b.l})"><div class="shimg">${cov}</div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ${n?"ok":""}">${n?`${n}/${tot} bài đã có`:"Sắp ra mắt"}</span></button>`}).join("")}</div>`}
+ return `<button class="shb ${n?"":"soon"}" onclick="${pk}(${b.l})"><div class="shimg">${cov}</div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ${n?"ok":""}">${n?`${n}/${tot} ${unit}`:"Sắp ra mắt"}</span></button>`}).join("")}</div>`}
 function olPick(l){OLPICK=true;setLv(l);scrollTo(0,0)}
 function olShelf(){OLPICK=false;cur=null;rr();scrollTo(0,0)}
 const _shDrawOl=drawOl;drawOl=function(){
@@ -24,7 +24,21 @@ const _shDrawOl=drawOl;drawOl=function(){
 const _shCrumb=crumbDraw;crumbDraw=function(){_shCrumb();const c=$("crumb");if(!c||SUBC!="ol")return;
  if(!cur&&OLPICK){c.innerHTML=`<a onclick="go('home')">Trang chủ</a> › <a onclick="goSub('ol')">Học tiếng Trung</a> › <a onclick="olShelf()">Ôn luyện theo bài</a> › ${shN(olLv)}`}
  else if(cur){c.innerHTML=`<a onclick="go('home')">Trang chủ</a> › <a onclick="goSub('ol')">Học tiếng Trung</a> › <a onclick="olShelf()">Ôn luyện theo bài</a> › <a onclick="closeL()">${shN(olLv)}</a> › Bài ${cur}`}};
-const _shGoSub=goSub;goSub=function(id){if(id=="ol"){OLPICK=false;cur=null}_shGoSub(id);if(id=="ol")rr()};
+const _shGoSub=goSub;goSub=function(id){if(id=="ol"){OLPICK=false;cur=null}if(id=="ts"&&!(T&&!T.done&&tcur)){TSPICK=false;tcur=null}_shGoSub(id);if(id=="ol"||id=="ts")rr()};
+/* Test nhanh: mở ra là kệ chọn cấp độ trước, bấm cấp mới hiện danh sách bài (24/10/2026) */
+let TSPICK=false;
+const tsCount=l=>{const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]&&D[n].tsort&&D[n].tsort.length).length};
+function tsPick(l){TSPICK=true;setLv(l);scrollTo(0,0)}
+function tsShelf(){const q=()=>{tStop();TSPICK=false;tcur=null;T=null;rr();scrollTo(0,0)};(!tcur||!T||T.done)?q():ask("Thoát sẽ hủy bài đang làm. Thoát?",q)}
+function tsList(){const q=()=>{tStop();tcur=null;T=null;rr();scrollTo(0,0)};(!T||T.done)?q():ask("Thoát sẽ hủy bài đang làm. Thoát?",q)}
+const _shOpenTest=openTest;openTest=function(n){TSPICK=true;_shOpenTest(n)};
+const _shDrawTs=drawTs;drawTs=function(){
+ if(!tcur&&!TSPICK){$("lp-ts").innerHTML=shelfView("tsPick","Chọn cấp độ để làm bài test nhanh.",tsCount,"bài có test");return}
+ if(tcur)return _shDrawTs();
+ const lb=lvBar;lvBar=()=>`<div class="row shback"><button class="btn o sm" onclick="tsShelf()">← Chọn cấp độ khác</button><b class="shcur">${shN(olLv)}</b></div>`;
+ try{_shDrawTs()}finally{lvBar=lb}};
+const _shCrumb2=crumbDraw;crumbDraw=function(){_shCrumb2();const c=$("crumb");if(!c||SUBC!="ts"||!TSPICK)return;
+ c.innerHTML=`<a onclick="go('home')">Trang chủ</a> › <a onclick="goSub('ol')">Học tiếng Trung</a> › <a onclick="tsShelf()">Test nhanh</a> › `+(tcur?`<a onclick="tsList()">${shN(olLv)}</a> › Bài ${tcur}`:shN(olLv))};
 (function(){const st=document.createElement("style");st.textContent=`
 .shint{color:var(--sub);margin:4px 0 14px}
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:18px;margin:6px 0 18px}
