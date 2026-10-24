@@ -3,9 +3,6 @@ Object.assign(SPN,{"王一雪":["Wáng Yīxuě","Vương Nhất Tuyết"],"杨�
 LD1[12]={t:"昨天下雪了",tp:"Zuótiān xià xuě le",vi:"Hôm qua tuyết rơi rồi",
 gpNote:"Mục 1–3 lấy từ Lớp học của Tiểu Ngữ (小语讲堂) trong sách: câu phi chủ vị, trợ từ ngữ khí 了 (1), cấu trúc 太……了. Mục 4–5 do cô Thảo bổ sung từ bài khóa và ô “Tiểu Ngữ giúp sức” (有点儿 / 一点儿, 看看), kèm lỗi người Việt hay mắc.",
 goals:["Có thể nghe hiểu và miêu tả được tình hình thời tiết.","Có thể nghe hiểu và miêu tả ngắn gọn tình trạng bệnh tật.","Nắm vững cách sử dụng của trợ từ ngữ khí “了 (1)”.","Nắm vững cách sử dụng của cấu trúc “太……了”.","Hiểu được lợi ích của việc “uống một chút nước ấm” mà người Trung Quốc thường khuyên khi bị ốm."],
-warm:{q:"给下面的词语选择对应的图片。",qv:"Lựa chọn hình ảnh tương ứng với các từ ngữ sau.",
-w:[["A","下雨","xià yǔ","mưa"],["B","冷","lěng","lạnh"],["C","生病","shēngbìng","bị ốm"],["D","看病","kànbìng","khám bệnh"],["E","雪","xuě","tuyết"],["F","水","shuǐ","nước"]],
-pics:[["h1b12-shui","F"],["h1b12-kanbing","D"],["h1b12-leng","B"],["h1b12-xue","E"],["h1b12-shengbing","C"],["h1b12-xiayu","A"]]},
 texts:[
 {ctx:"Vương Nhất Tuyết gọi điện cho Vương Nhất Phi để hỏi thăm tình hình chỗ cô ấy.",a:"12-1",l:[
 ["王一雪","今天天气怎么样？","Jīntiān tiānqì zěnmeyàng?","Hôm nay thời tiết thế nào?"],

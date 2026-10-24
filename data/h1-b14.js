@@ -3,9 +3,6 @@ Object.assign(SPN,{"白家月":["Bái Jiāyuè","Bạch Gia Nguyệt"],"陈天�
 LD1[14]={t:"我看了一个电影",tp:"Wǒ kànle yí ge diànyǐng",vi:"Mình đã xem một bộ phim",
 gpNote:"Mục 1–3 lấy từ Lớp học của Tiểu Ngữ (小语讲堂) trong sách: trợ từ động thái 了 (2), từ li hợp (1), phó từ phạm vi 都 (ví dụ là câu trong sách). Mục 4 lấy từ hai ô Tiểu Ngữ giúp sức (有些 / 有的, 他们 / 她们 / 它们). Mục 5 do cô Thảo bổ sung (请大家不要 + V, 听 / 听见), kèm lỗi người Việt hay mắc.",
 goals:["Có thể nghe hiểu và sử dụng được trợ từ động thái “了 (2)” để biểu thị hành động đã xảy ra hoặc đã hoàn thành.","Nắm vững cách dùng của phó từ chỉ phạm vi “都”.","Nắm vững cách dùng cơ bản của một số từ li hợp.","Hiểu và có thể miêu tả được tình hình học tập."],
-warm:{q:"给下面的词语选择对应的图片。",qv:"Lựa chọn hình ảnh tương ứng với các từ ngữ sau.",
-w:[["A","火车","huǒchē","tàu hỏa"],["B","看见","kànjiàn","nhìn thấy"],["C","汉字","Hànzì","chữ Hán"],["D","听","tīng","nghe"],["E","小学生","xiǎoxuéshēng","học sinh tiểu học"],["F","说话","shuōhuà","nói chuyện"]],
-pics:[["h1b14-kanjian","B"],["h1b14-hanzi","C"],["h1b14-ting","D"],["h1b14-shuohua","F"],["h1b14-xiaoxuesheng","E"],["h1b14-huoche","A"]]},
 texts:[
 {ctx:"Bạch Gia Nguyệt và Trần Thiên Trung đang thảo luận về chuyến du lịch ngoại khóa lần trước ở trong lớp sau giờ tan học.",a:"14-1",l:[
 ["白家月","你们上火车后看见王老师了吗？","Nǐmen shàng huǒchē hòu kànjiàn Wáng lǎoshī le ma?","Sau khi lên tàu các bạn có nhìn thấy cô Vương không?"],
