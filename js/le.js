@@ -6,15 +6,78 @@
    - Ngày dạng "mm-dd" lặp lại mỗi năm; ngày âm lịch ghi đủ "yyyy-mm-dd" (năm sau cô sửa ngày trong cài đặt).
    Nạp CUỐI CÙNG (sau theodoi.js, nhac.js). ===== */
 const LE_DEF=[
- {id:"nhagiao",vi:"Ngày Nhà giáo Việt Nam",zh:"越南教师节",day:"20/11",s:"11-14",e:"11-21",ic:"🌷",m:"Chúc mừng Ngày Nhà giáo Việt Nam 20/11 · 老师，您辛苦了！"},
- {id:"dongchi",vi:"Đông chí",zh:"冬至",day:"22/12/2026",s:"2026-12-20",e:"2026-12-22",ic:"❄️",m:"冬至快乐！Đông chí rồi – ăn bát sủi cảo 饺子 cho ấm nhé"},
- {id:"giangsinh",vi:"Giáng sinh",zh:"圣诞节",day:"25/12",s:"12-18",e:"12-26",ic:"🎄",m:"圣诞快乐！Chúc mừng Giáng sinh"},
- {id:"duonglich",vi:"Tết Dương lịch",zh:"元旦",day:"1/1",s:"12-29",e:"01-03",ic:"🎆",m:"元旦快乐！Chúc mừng năm mới – 新年快乐"},
- {id:"laba",vi:"Lễ Lạp Bát",zh:"腊八节",day:"15/1/2027",s:"2027-01-13",e:"2027-01-15",ic:"🥣",m:"腊八节快乐！Ăn cháo 腊八粥 – không khí Tết bắt đầu rồi"},
- {id:"ongtao",vi:"Ông Công Ông Táo",zh:"小年",day:"30/1/2027",s:"2027-01-28",e:"2027-01-30",ic:"🐟",m:"Tiễn ông Công ông Táo về trời · 小年快乐！"},
- {id:"tet",vi:"Tết Nguyên đán",zh:"春节",day:"6/2/2027",s:"2027-01-31",e:"2027-02-14",ic:"🏮",m:"春节快乐！Chúc mừng năm mới Đinh Mùi 2027 · 羊年大吉"},
- {id:"nguyentieu",vi:"Rằm tháng Giêng",zh:"元宵节",day:"20/2/2027",s:"2027-02-18",e:"2027-02-21",ic:"🏮",m:"元宵节快乐！Rằm tháng Giêng – ngắm đèn lồng, ăn bánh trôi 汤圆"},
- {id:"phunu",vi:"Quốc tế Phụ nữ",zh:"三八妇女节",day:"8/3",s:"03-05",e:"03-08",ic:"🌷",m:"Chúc mừng ngày 8/3 · 三八妇女节快乐！"}];
+ {id:"nhagiao",vi:"Ngày Nhà giáo Việt Nam",zh:"越南教师节",day:"20/11",s:"11-14",e:"11-21",ic:"🌷"},
+ {id:"dongchi",vi:"Đông chí",zh:"冬至",day:"22/12/2026",s:"2026-12-20",e:"2026-12-22",ic:"❄️"},
+ {id:"giangsinh",vi:"Giáng sinh",zh:"圣诞节",day:"25/12",s:"12-18",e:"12-26",ic:"🎄"},
+ {id:"duonglich",vi:"Tết Dương lịch",zh:"元旦",day:"1/1",s:"12-29",e:"01-03",ic:"🎆"},
+ {id:"laba",vi:"Lễ Lạp Bát",zh:"腊八节",day:"15/1/2027",s:"2027-01-13",e:"2027-01-15",ic:"🥣"},
+ {id:"ongtao",vi:"Ông Công Ông Táo",zh:"小年",day:"30/1/2027",s:"2027-01-28",e:"2027-01-30",ic:"🐟"},
+ {id:"tet",vi:"Tết Nguyên đán",zh:"春节",day:"6/2/2027",s:"2027-01-31",e:"2027-02-14",ic:"🏮"},
+ {id:"nguyentieu",vi:"Rằm tháng Giêng",zh:"元宵节",day:"20/2/2027",s:"2027-02-18",e:"2027-02-21",ic:"🏮"},
+ {id:"phunu",vi:"Quốc tế Phụ nữ",zh:"三八妇女节",day:"8/3",s:"03-05",e:"03-08",ic:"🌷"}];
+
+/* ---------- lời chúc (chữ Hán · phiên âm · tiếng Việt) và tên lễ có phiên âm ---------- */
+const LE_MSG={
+ nhagiao:{z:"老师，您辛苦了！",p:"Lǎoshī, nín xīnkǔ le!",v:"Chúc mừng Ngày Nhà giáo Việt Nam 20/11 – thầy cô vất vả rồi ạ!",np:"Yuènán Jiàoshī Jié"},
+ dongchi:{z:"冬至快乐！",p:"Dōngzhì kuàilè!",v:"Đông chí vui vẻ – nhớ ăn bát sủi cảo cho ấm nhé!",np:"Dōngzhì"},
+ giangsinh:{z:"圣诞快乐！",p:"Shèngdàn kuàilè!",v:"Chúc mừng Giáng sinh!",np:"Shèngdàn Jié"},
+ duonglich:{z:"新年快乐！",p:"Xīnnián kuàilè!",v:"Chúc mừng năm mới!",np:"Yuándàn"},
+ laba:{z:"腊八节快乐！",p:"Làbā Jié kuàilè!",v:"Lễ Lạp Bát vui vẻ – không khí Tết bắt đầu rồi!",np:"Làbā Jié"},
+ ongtao:{z:"小年快乐！",p:"Xiǎonián kuàilè!",v:"Tiễn ông Công ông Táo về trời – chúc nhà nhà bình an!",np:"Xiǎonián"},
+ tet:{z:"春节快乐！恭喜发财！",p:"Chūnjié kuàilè! Gōngxǐ fācái!",v:"Chúc mừng năm mới Đinh Mùi 2027 – an khang thịnh vượng!",np:"Chūnjié"},
+ nguyentieu:{z:"元宵节快乐！",p:"Yuánxiāo Jié kuàilè!",v:"Chúc mừng Rằm tháng Giêng – gia đình đoàn viên, bình an!",np:"Yuánxiāo Jié"},
+ phunu:{z:"妇女节快乐！",p:"Fùnǚ Jié kuàilè!",v:"Chúc mừng ngày Quốc tế Phụ nữ 8/3!",np:"Sān-Bā Fùnǚ Jié"}};
+
+/* ---------- Khám phá văn hóa: vn = Việt Nam, cn = Trung Quốc; y = ý nghĩa, h = hoạt động chính, c = câu chúc.
+   Trong chữ: {汉字|pīnyīn} hiện chữ Hán kèm phiên âm. Câu chúc tiếng Trung: [chữ Hán, phiên âm, nghĩa]. ---------- */
+const LE_VH={
+ nhagiao:{vn:{y:"Ngày 20/11 tôn vinh nghề dạy học, là dịp học trò bày tỏ lòng biết ơn thầy cô theo truyền thống “Tôn sư trọng đạo”, “Uống nước nhớ nguồn”.",
+   h:["Học sinh tặng hoa, thiệp, viết lời tri ân thầy cô","Trường tổ chức mít tinh, văn nghệ, thi làm báo tường","Học trò cũ về thăm thầy cô giáo cũ"],c:["Chúc thầy cô luôn mạnh khỏe, hạnh phúc!","Em cảm ơn thầy cô đã tận tình dạy dỗ!"]},
+  cn:{y:"Ngày Nhà giáo của Trung Quốc ({教师节|Jiàoshī Jié}) là ngày 10/9, rơi vào đầu năm học mới (có từ năm 1985). Câu {一日为师，终身为父|yí rì wéi shī, zhōngshēn wéi fù} “một ngày là thầy, cả đời là cha” thể hiện truyền thống tôn sư.",
+   h:["Học sinh tặng thầy cô hoa cẩm chướng {康乃馨|kāngnǎixīn}, thiệp tự làm","Gửi tin nhắn tri ân thầy cô cũ"],
+   c:[["老师，您辛苦了！","Lǎoshī, nín xīnkǔ le!","Thầy cô vất vả rồi ạ!"],["教师节快乐！","Jiàoshī Jié kuàilè!","Chúc mừng Ngày Nhà giáo!"],["谢谢您，老师！","Xièxie nín, lǎoshī!","Em cảm ơn thầy cô!"],["祝老师身体健康，工作顺利！","Zhù lǎoshī shēntǐ jiànkāng, gōngzuò shùnlì!","Chúc thầy cô mạnh khỏe, công việc thuận lợi!"]]},
+  tip:"Người Việt hay nhầm: Ngày Nhà giáo Trung Quốc là 10/9, không phải 20/11."},
+ dongchi:{vn:{y:"Ở Việt Nam, Đông chí không phải ngày lễ lớn. Đây là một tiết khí trong năm: ngày có ban ngày ngắn nhất, đêm dài nhất.",
+   h:["Một số gia đình người Hoa ở Việt Nam vẫn cúng tổ tiên và ăn chè trôi nước","Miền Bắc bắt đầu vào những ngày rét nhất trong năm"],c:["Chúc cả nhà ngày đông ấm áp!"]},
+  cn:{y:"{冬至|Dōngzhì} là một trong 24 tiết khí, ngày có đêm dài nhất năm. Người xưa rất coi trọng ngày này, nên có câu {冬至大如年|Dōngzhì dà rú nián} “Đông chí lớn như Tết”.",
+   h:["Miền Bắc ăn sủi cảo {饺子|jiǎozi}; dân gian nói ăn sủi cảo thì mùa đông không bị cóng tai","Miền Nam ăn bánh trôi nước {汤圆|tāngyuán}, tượng trưng cho đoàn viên","Cúng tổ tiên, gia đình sum họp"],
+   c:[["冬至快乐！","Dōngzhì kuàilè!","Đông chí vui vẻ!"],["冬至到了，记得吃饺子！","Dōngzhì dào le, jìde chī jiǎozi!","Đông chí rồi, nhớ ăn sủi cảo nhé!"]]}},
+ giangsinh:{vn:{y:"Giáng sinh 25/12 là lễ của người theo đạo Thiên Chúa, nay cũng là dịp vui chơi chung của nhiều người, nhất là giới trẻ.",
+   h:["Đêm 24/12 đi lễ nhà thờ, xem hang đá, dạo phố","Trang trí cây thông, tặng quà, gặp gỡ bạn bè"],c:["Chúc mừng Giáng sinh!","Giáng sinh an lành!"]},
+  cn:{y:"Ở Trung Quốc, {圣诞节|Shèngdàn Jié} không phải ngày nghỉ, nhưng rất phổ biến ở thành phố, nhất là với giới trẻ.",
+   h:["Đêm 24/12 gọi là {平安夜|Píng'ānyè} “đêm bình an”: mọi người tặng nhau táo {平安果|píng'ānguǒ}, vì {苹|píng} trong {苹果|píngguǒ} đồng âm với {平|píng} trong {平安|píng'ān}","Trung tâm thương mại trang trí cây thông, có nhiều khuyến mãi"],
+   c:[["圣诞快乐！","Shèngdàn kuàilè!","Giáng sinh vui vẻ!"],["平安夜快乐！","Píng'ānyè kuàilè!","Chúc đêm bình an vui vẻ!"],["祝你平平安安！","Zhù nǐ píngpíng ān'ān!","Chúc bạn bình bình an an!"]]}},
+ duonglich:{vn:{y:"Tết Dương lịch 1/1 mở đầu năm mới theo lịch quốc tế; người lao động được nghỉ 1 ngày.",
+   h:["Đêm 31/12 xem bắn pháo hoa, đếm ngược","Đặt mục tiêu, kế hoạch cho năm mới"],c:["Chúc mừng năm mới!","Năm mới vạn sự như ý!"]},
+  cn:{y:"Ở Trung Quốc, ngày 1/1 dương lịch gọi là {元旦|Yuándàn}, được nghỉ 1 ngày (thường nối với cuối tuần). Tết âm lịch thì gọi là {春节|Chūnjié}.",
+   h:["Đêm 31/12 đếm ngược đón năm mới {跨年|kuànián}, xem chương trình ca nhạc trên TV","Đi du lịch ngắn ngày, gặp gỡ bạn bè"],
+   c:[["新年快乐！","Xīnnián kuàilè!","Chúc mừng năm mới!"],["元旦快乐！","Yuándàn kuàilè!","Chúc mừng Tết Dương lịch!"],["祝你新的一年万事如意！","Zhù nǐ xīn de yì nián wànshì rúyì!","Chúc bạn năm mới vạn sự như ý!"]]},
+  tip:"Người Việt hay nhầm: “Tết Nguyên đán” của Việt Nam (Tết âm lịch) trong tiếng Trung là 春节, còn 元旦 là ngày 1/1 dương lịch."},
+ laba:{vn:{y:"Việt Nam không có lễ Lạp Bát. Tháng Chạp là lúc mọi nhà bắt đầu chuẩn bị đón Tết.",
+   h:["Dọn dẹp nhà cửa, sắm sửa đồ Tết","Đi tảo mộ, thăm mộ tổ tiên cuối năm"],c:["Chúc cả nhà tháng Chạp bình an, sắm Tết đủ đầy!"]},
+  cn:{y:"{腊八节|Làbā Jié} là ngày mùng 8 tháng Chạp âm lịch. Dân gian nói {过了腊八就是年|guòle Làbā jiù shì nián} “qua Lạp Bát là đến Tết”.",
+   h:["Nấu cháo Lạp Bát {腊八粥|Làbā zhōu} từ gạo, các loại đậu, táo đỏ, hạt sen…","Miền Bắc ngâm tỏi giấm {腊八蒜|Làbā suàn}, đến Tết ăn kèm sủi cảo"],
+   c:[["腊八节快乐！","Làbā Jié kuàilè!","Lễ Lạp Bát vui vẻ!"],["你喝腊八粥了吗？","Nǐ hē Làbā zhōu le ma?","Bạn ăn cháo Lạp Bát chưa?"]]}},
+ ongtao:{vn:{y:"Ngày 23 tháng Chạp, người Việt tiễn ông Công ông Táo (thần Bếp) về trời, báo cáo với Ngọc Hoàng mọi việc trong nhà suốt một năm.",
+   h:["Cúng mâm cỗ, mũ áo ông Công ông Táo","Thả cá chép ra sông, hồ – cá chép đưa ông Táo về trời","Dọn dẹp nhà cửa, bắt đầu sắm Tết"],c:["Chúc gia đình năm mới bình an, ấm no!"]},
+  cn:{y:"{小年|Xiǎonián} (Tết nhỏ) là ngày cúng Táo quân {祭灶|jì zào}: miền Bắc vào ngày 23, miền Nam vào ngày 24 tháng Chạp. Từ hôm nay, cả nhà chuẩn bị đón Tết.",
+   h:["Cúng Táo quân bằng kẹo mạch nha {糖瓜|tángguā}, mong Táo quân “ngọt miệng”, nói điều tốt về gia đình","Tổng vệ sinh nhà cửa {扫尘|sǎochén}, dán hoa giấy cắt lên cửa sổ"],
+   c:[["小年快乐！","Xiǎonián kuàilè!","Tết ông Táo vui vẻ!"],["上天言好事，下界保平安。","Shàng tiān yán hǎo shì, xià jiè bǎo píng'ān.","Lên trời nói việc tốt, xuống trần giữ bình an (câu đối dán ở bếp)."]]}},
+ tet:{vn:{y:"Tết Nguyên đán là lễ lớn nhất năm, dịp gia đình đoàn tụ, tiễn năm cũ, đón năm mới.",
+   h:["Gói bánh chưng, bánh tét; chơi hoa đào (miền Bắc), hoa mai (miền Nam)","Cúng tất niên, đón giao thừa","Xông đất, chúc Tết, mừng tuổi (lì xì) cho trẻ em","Đi chùa, hái lộc đầu năm"],c:["Chúc mừng năm mới!","An khang thịnh vượng!","Vạn sự như ý!"]},
+  cn:{y:"{春节|Chūnjié} là Tết âm lịch, lễ quan trọng nhất của người Trung Quốc. Dù ở xa, mọi người đều cố về nhà đoàn tụ, tạo nên mùa cao điểm đi lại {春运|chūnyùn}.",
+   h:["Đêm giao thừa ăn bữa cơm đoàn viên {年夜饭|niányèfàn}; miền Bắc gói sủi cảo","Dán câu đối đỏ {春联|chūnlián}, dán ngược chữ {福|fú}: {福倒了|fú dào le} (phúc ngược) đồng âm với {福到了|fú dào le} (phúc đến rồi)","Mừng tuổi bằng bao lì xì đỏ {红包|hóngbāo}, xem chương trình Xuân Vãn {春晚|Chūnwǎn}","Đốt pháo, thức đón giao thừa {守岁|shǒusuì}"],
+   c:[["新年快乐！","Xīnnián kuàilè!","Chúc mừng năm mới!"],["春节快乐！","Chūnjié kuàilè!","Chúc Tết vui vẻ!"],["恭喜发财！","Gōngxǐ fācái!","Chúc phát tài!"],["万事如意！","Wànshì rúyì!","Vạn sự như ý!"],["身体健康！","Shēntǐ jiànkāng!","Chúc sức khỏe!"],["羊年大吉！","Yáng nián dàjí!","Năm Mùi đại cát!"]]}},
+ nguyentieu:{vn:{y:"Rằm tháng Giêng (Tết Nguyên tiêu) là ngày rằm đầu tiên của năm. Dân gian có câu “Lễ Phật quanh năm không bằng Rằm tháng Giêng”.",
+   h:["Đi chùa lễ Phật, cầu bình an cho cả năm","Làm mâm cúng rằm tại gia","Ngày Thơ Việt Nam được tổ chức vào dịp này"],c:["Chúc gia đình một năm bình an, may mắn!"]},
+  cn:{y:"{元宵节|Yuánxiāo Jié} là đêm trăng tròn đầu tiên của năm mới, đánh dấu kết thúc dịp Tết.",
+   h:["Ăn bánh trôi nước có nhân {元宵|yuánxiāo} / {汤圆|tāngyuán}, tượng trưng cho đoàn tụ, tròn đầy","Ngắm đèn lồng {赏花灯|shǎng huādēng}, đoán câu đố trên đèn {猜灯谜|cāi dēngmí}","Múa lân, múa rồng"],
+   c:[["元宵节快乐！","Yuánxiāo Jié kuàilè!","Chúc mừng Tết Nguyên tiêu!"],["团团圆圆！","Tuántuán yuányuán!","Đoàn viên tròn đầy!"],["花好月圆！","Huā hǎo yuè yuán!","Hoa thắm trăng tròn!"]]}},
+ phunu:{vn:{y:"Ngày Quốc tế Phụ nữ 8/3 tôn vinh phụ nữ; ở Việt Nam còn là dịp kỷ niệm khởi nghĩa Hai Bà Trưng.",
+   h:["Tặng hoa, quà cho mẹ, cô giáo, bạn nữ, đồng nghiệp nữ","Cơ quan, trường học tổ chức gặp mặt, liên hoan"],c:["Chúc mẹ, chúc cô luôn xinh đẹp, hạnh phúc!"]},
+  cn:{y:"Ở Trung Quốc, ngày 8/3 gọi là {三八妇女节|Sān-Bā Fùnǚ Jié}; theo quy định, phụ nữ được nghỉ nửa ngày. Giới trẻ còn gọi vui là {女神节|Nǚshén Jié} “Ngày nữ thần”.",
+   h:["Nhiều cơ quan cho nữ nhân viên nghỉ buổi chiều, tặng hoa, quà","Cửa hàng, trang mua sắm có nhiều khuyến mãi"],
+   c:[["妇女节快乐！","Fùnǚ Jié kuàilè!","Chúc mừng ngày Phụ nữ!"],["女神节快乐！","Nǚshén Jié kuàilè!","Chúc mừng Ngày nữ thần!"],["祝你越来越漂亮！","Zhù nǐ yuè lái yuè piàoliang!","Chúc bạn ngày càng xinh đẹp!"]]}}};
 
 /* ---------- hình vẽ (SVG) ---------- */
 const LEM={
@@ -61,7 +124,17 @@ const leDays=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
 /* lễ đang áp dụng hôm nay */
 function lePick(cfg){cfg=cfg||LE.cfg;if(cfg.mode=="off")return null;if(cfg.mode=="fixed")return LE_DEF.find(h=>h.id==cfg.theme)||null;
  const t=leToday();let best=null,bl=1e9;LE_DEF.forEach(h=>{if((cfg.off||[]).includes(h.id))return;const[s,e]=leRange(h,cfg,t);if(t>=s&&t<=e&&leDays(s,e)<bl){best=h;bl=leDays(s,e)}});return best}
-const leMsg=(h,cfg)=>{const m=((cfg||LE.cfg).m||{})[h.id]||h.m,e=leRange(h,cfg||LE.cfg)[1];return m.replace(/\{Y\}/g,e.slice(0,4))};
+const leMsg=(h,cfg)=>{const d=LE_MSG[h.id],m=((cfg||LE.cfg).m||{})[h.id];return Object.assign({},d,m&&typeof m=="object"?m:{})};
+const leZp=s=>leE(s).replace(/\{([^|}]+)\|([^}]+)\}/g,'<ruby class="le-zh">$1<rt>$2</rt></ruby>');
+function leSay(t){try{const u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function leVh(id){const h=LE_DEF.find(x=>x.id==id),V=LE_VH[id],M=leMsg(h);if(!V)return;
+ const col=(f,t,o,zh)=>`<div class="lev-c"><h4>${f} ${t}</h4><b>Ý nghĩa</b><p>${leZp(o.y)}</p><b>Hoạt động chính</b><ul>${o.h.map(x=>`<li>${leZp(x)}</li>`).join("")}</ul><b>Câu chúc thường dùng</b><ul class="lev-w">${o.c.map(c=>zh?`<li><button onclick="leSay('${c[0]}')" aria-label="Nghe">🔊</button><div><span class="zh">${c[0]}</span><i>${leE(c[1])}</i><small>${leE(c[2])}</small></div></li>`:`<li><div>${leE(c)}</div></li>`).join("")}</ul></div>`;
+ let d=document.getElementById("levh");if(!d){d=document.createElement("div");d.id="levh";document.body.appendChild(d)}d.hidden=false;
+ d.innerHTML=`<div class="askw" onclick="if(event.target===this)leVhX()"><div class="card lev" role="dialog" aria-label="Khám phá văn hóa"><button class="lev-x" onclick="leVhX()" aria-label="Đóng">✕</button>
+<div class="lev-h"><span class="lev-ic">${h.ic}</span><div><h3>${h.vi}</h3><div class="zh">${h.zh} <i>${leE(M.np||"")}</i> · ${h.day}</div></div></div>
+<div class="lev-g">${col("🇻🇳","Ở Việt Nam",V.vn,0)}${col("🇨🇳","Ở Trung Quốc",V.cn,1)}</div>${V.tip?`<p class="lev-tip">⚠️ ${leE(V.tip)}</p>`:""}</div></div>`}
+function leVhX(){const d=document.getElementById("levh");if(d){d.hidden=true;d.innerHTML="";try{speechSynthesis.cancel()}catch(e){}}}
+addEventListener("keydown",e=>{if(e.key=="Escape")leVhX()});
 const leTile=id=>{const T=LET[id];return "data:image/svg+xml,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">`+T.p.map(([m,x,y,s,r,a,b])=>`<g transform="translate(${x} ${y}) rotate(${r||0}) scale(${s||1})">${LEM[m](a,b)}</g>`).join("")+`</svg>`)};
 
 /* ---------- vẽ nền ---------- */
@@ -75,7 +148,7 @@ function leApply(){const pv=LE.pv&&LE_DEF.find(h=>h.id==LE.pv),h=pv||lePick(),cf
  /* dải lời chúc đầu trang */
  const hid=leJ(sessionStorage,"ct_le_x","")==h.id&&!pv,main=document.querySelector("main");
  if((cfg.bn||pv)&&!hid&&main){if(!bn){bn=document.createElement("div");bn.id="lebn";main.prepend(bn)}
-  bn.innerHTML=`<span class="le-ic">${h.ic}</span><span class="le-tx">${leE(leMsg(h))}</span>${pv?`<b class="le-pv">Xem thử</b>`:`<button aria-label="Ẩn lời chúc" onclick="leHide('${h.id}')">✕</button>`}`}
+  const M=leMsg(h);bn.innerHTML=`<span class="le-ic">${h.ic}</span><div class="le-tx"><div class="le-z"><span class="zh">${leE(M.z)}</span><button class="le-say" onclick="leSay('${leE(M.z)}')" aria-label="Nghe câu chúc">🔊</button></div><div class="le-py">${leE(M.p)}</div><div class="le-vi">${leE(M.v)}</div>${LE_VH[h.id]?`<button class="btn sm le-vhb" onclick="leVh('${h.id}')">🏮 Khám phá văn hóa</button>`:""}</div>${pv?`<b class="le-pv">Xem thử</b>`:`<button class="le-x" aria-label="Ẩn lời chúc" onclick="leHide('${h.id}')">✕</button>`}`}
  else if(bn)bn.remove();
  /* hiệu ứng rơi (chỉ Trang chủ) */
  if((cfg.fx||pv)&&T.fx.length&&!matchMedia("(prefers-reduced-motion: reduce)").matches){if(!fx){fx=document.createElement("div");fx.id="lefx";fx.setAttribute("aria-hidden","true");document.body.appendChild(fx)}
@@ -109,7 +182,7 @@ function lePanel(){const D=LE.draft||(LE.draft=JSON.parse(JSON.stringify(LE.cfg)
 <div class="lep-h"><label><input type="checkbox" ${on?"checked":""} onchange="leOn('${h.id}',this.checked)"> <span class="lep-i">${h.ic}</span><b>${h.vi}</b> <span class="zh">${h.zh}</span></label><span class="lep-st">${h.day} · ${st}</span></div>
 <div class="lep-sw" style="background:linear-gradient(160deg,${LET[h.id].bg[0]},${LET[h.id].bg[1]});"><i style="background-image:url('${leTile(h.id)}')"></i></div>
 <div class="lep-f"><label>Từ <input type="date" value="${s}" onchange="leDt('${h.id}',0,this.value)"></label><label>đến <input type="date" value="${e}" onchange="leDt('${h.id}',1,this.value)"></label>${(D.d||{})[h.id]?`<button class="btn o sm" onclick="leDt('${h.id}')">↺ Ngày mặc định</button>`:""}</div>
-<label class="lep-m">Lời chúc <input class="tin" value="${leE((D.m||{})[h.id]||h.m)}" onchange="leM('${h.id}',this.value)"></label>
+${(()=>{const M=leMsg(h,D);return `<div class="lep-m">Lời chúc<label>Chữ Hán <input class="tin zh" value="${leE(M.z)}" onchange="leM('${h.id}','z',this.value)"></label><label>Phiên âm <input class="tin" value="${leE(M.p)}" onchange="leM('${h.id}','p',this.value)"></label><label>Tiếng Việt <input class="tin" value="${leE(M.v)}" onchange="leM('${h.id}','v',this.value)"></label></div>`})()}
 <button class="btn o sm" onclick="lePv('${h.id}')">👁 Xem thử trên trang</button></div>`).join("")}</div>
 ${LE.msg?`<p class="${LE.msg[0]=="✓"?"good":"bad"}">${LE.msg}</p>`:""}
 <div class="row"><button class="btn" onclick="leSave()" ${LE.busy?"disabled":""}>${LE.busy?"Đang lưu…":"💾 Lưu cho mọi học viên"}</button><button class="btn o" onclick="LE.draft=null;LE.msg='';gvDraw()">Bỏ thay đổi</button><button class="btn o" onclick="ask('Đưa toàn bộ về lịch mặc định?',()=>{LE.draft=leCfg0();gvDraw()})">↺ Mặc định</button></div>
@@ -136,7 +209,7 @@ const leDr=()=>LE.draft||(LE.draft=JSON.parse(JSON.stringify(LE.cfg)));
 function leD(k,v){leDr()[k]=v;LE.msg="";gvDraw()}
 function leOn(id,v){leDr();const o=LE.draft.off=(LE.draft.off||[]).filter(x=>x!=id);if(!v)o.push(id);LE.msg="";gvDraw()}
 function leDt(id,i,v){leDr();const d=LE.draft.d=LE.draft.d||{};if(i==null){delete d[id]}else{const h=LE_DEF.find(x=>x.id==id),r=d[id]||leRange(h,LE.draft).slice();r[i]=v;if(r[1]<r[0])r[1-i]=v;d[id]=r}LE.msg="";gvDraw()}
-function leM(id,v){leDr();const h=LE_DEF.find(x=>x.id==id),m=LE.draft.m=LE.draft.m||{};v=v.trim();if(!v||v==h.m)delete m[id];else m[id]=v.slice(0,160)}
+function leM(id,k,v){leDr();const m=LE.draft.m=LE.draft.m||{},o=m[id]&&typeof m[id]=="object"?m[id]:{};v=v.trim().slice(0,160);if(!v||v==LE_MSG[id][k])delete o[k];else o[k]=v;if(Object.keys(o).length)m[id]=o;else delete m[id]}
 function lePv(id){LE.pv=id;try{sessionStorage.setItem(LE_PV,JSON.stringify(id))}catch(e){}leApply();lePvBar();scrollTo(0,0)}
 function lePvOff(){LE.pv=null;try{sessionStorage.removeItem(LE_PV)}catch(e){}leApply();lePvBar()}
 function lePvBar(){let b=document.getElementById("lepvb");if(!LE.pv){if(b)b.remove();return}const h=LE_DEF.find(x=>x.id==LE.pv);
@@ -156,10 +229,27 @@ if(typeof gvDraw=="function"){const _gd=gvDraw;gvDraw=function(){const nen=GV.ta
 
 (function(){const st=document.createElement("style");st.textContent=`
 #lebg{position:fixed;inset:0;z-index:-1;pointer-events:none}#lebg i{position:absolute;inset:0}
-#lebg .le-p{background-size:300px 300px;opacity:.75}
-#lebn{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:10px 14px;border-radius:16px;background:var(--c,#fff);color:var(--t,#2b1a20);border:2px solid var(--le-ac);box-shadow:var(--sh2,0 4px 12px rgba(0,0,0,.08));font-weight:700}
-#lebn .le-ic{font-size:1.5rem;flex:none}#lebn .le-tx{flex:1;min-width:0;font-family:var(--ui),"Noto Serif SC",sans-serif}
-#lebn button{flex:none;border:0;background:none;color:var(--sub,#8a7380);font-size:1rem;cursor:pointer;padding:4px 6px}
+#lebg .le-p{background-size:300px 300px;opacity:.75;-webkit-mask-image:var(--le-mk);mask-image:var(--le-mk)}
+:root{--le-mk:linear-gradient(90deg,#000 calc(50% - 600px),transparent calc(50% - 535px),transparent calc(50% + 535px),#000 calc(50% + 600px))}
+#lefx{-webkit-mask-image:var(--le-mk);mask-image:var(--le-mk)}
+@media(max-width:1120px){#lebg .le-p,#lefx{opacity:0!important}}
+#lebn{display:flex;align-items:flex-start;gap:10px;margin:0 0 14px;padding:10px 14px;border-radius:16px;background:var(--c,#fff);color:var(--t,#2b1a20);border:2px solid var(--le-ac);box-shadow:var(--sh2,0 4px 12px rgba(0,0,0,.08));font-weight:700}
+#lebn .le-ic{font-size:1.9rem;flex:none;line-height:1.2}#lebn .le-tx{flex:1;min-width:0}
+#lebn .le-z{display:flex;align-items:center;gap:6px;flex-wrap:wrap}#lebn .le-z .zh{font:700 1.3rem "Noto Serif SC",serif;color:var(--le-ac)}
+#lebn .le-py{color:var(--m);font-weight:600;font-size:.95rem}#lebn .le-vi{font-weight:600}
+#lebn .le-x,#lebn .le-say{flex:none;border:0;background:none;color:var(--sub,#8a7380);font-size:1rem;cursor:pointer;padding:4px 6px}
+#lebn .le-vhb{margin-top:8px;background:var(--le-ac);border-color:var(--le-ac);color:#fff}
+#levh .lev{position:relative;max-width:860px;width:calc(100vw - 32px);max-height:calc(100vh - 40px);overflow:auto;text-align:left}
+.lev-x{position:absolute;top:10px;right:10px;border:0;background:var(--k);border-radius:50%;width:34px;height:34px;cursor:pointer;color:var(--t)}
+.lev-h{display:flex;gap:12px;align-items:center;margin:0 36px 12px 0}.lev-ic{font-size:2.4rem}.lev-h h3{margin:0;color:var(--m)}.lev-h .zh{color:var(--sub)}.lev-h i{font-style:normal;color:var(--m)}
+.lev-g{display:grid;grid-template-columns:1fr 1fr;gap:14px}.lev-c{background:var(--k);border:1px solid var(--b);border-radius:16px;padding:12px 14px}
+.lev-c h4{margin:0 0 8px;font-size:1.05rem}.lev-c>b{display:block;color:var(--m);font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;margin-top:8px}.lev-c p{margin:4px 0}.lev-c ul{margin:4px 0;padding-left:20px}
+.lev-w{list-style:none;padding:0!important;display:grid;gap:6px}.lev-w li{display:flex;gap:8px;align-items:flex-start;background:var(--c);border-radius:10px;padding:6px 8px}
+.lev-w button{border:0;background:none;cursor:pointer;font-size:1rem;padding:2px}.lev-w .zh{display:block;font:600 1.1rem "Noto Serif SC",serif}.lev-w i{display:block;color:var(--m);font-size:.88rem}.lev-w small{color:var(--sub)}
+ruby.le-zh{font-family:"Noto Serif SC",serif;ruby-position:over}ruby.le-zh rt{font:500 .68rem var(--ui,sans-serif);color:var(--m)}.lev-c li,.lev-c p{line-height:2}
+.lev-tip{margin:12px 0 0;background:var(--warnbg,#fbe9ec);border-radius:12px;padding:8px 12px}
+@media(max-width:700px){.lev-g{grid-template-columns:1fr}}
+.lep-m label{display:block;margin-top:4px}
 #lebn .le-pv{flex:none;font-size:.75rem;background:var(--le-ac);color:#fff;border-radius:999px;padding:2px 10px}
 #lefx{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;display:none}html.le-home #lefx{display:block}
 #lefx span{position:absolute;top:-30px;opacity:.75;color:var(--le-ac);animation:lefall linear infinite}
@@ -174,7 +264,7 @@ if(typeof gvDraw=="function"){const _gd=gvDraw;gvDraw=function(){const nen=GV.ta
 .lep-h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}.lep-i{font-size:1.2rem}.lep-st{font-size:.8rem;color:var(--sub)}
 .lep-sw{position:relative;height:74px;border-radius:12px;overflow:hidden;border:1px solid var(--b)}.lep-sw i{position:absolute;inset:0;background-size:150px 150px;opacity:.7}
 .lep-f{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.9rem}.lep-f input{font:inherit;padding:4px 6px;border:1px solid var(--b);border-radius:8px;background:var(--k);color:var(--t)}
-.lep-m{font-size:.85rem;color:var(--sub)}.lep-m .tin{margin:2px 0 0;padding:6px 8px;font-size:.9rem}
+.lep-m{font-size:.85rem;color:var(--sub)}.lep-m .tin.zh{font-family:'Noto Serif SC',serif}.lep-m .tin{margin:2px 0 0;padding:6px 8px;font-size:.9rem}
 .lep-code textarea{font:12px/1.4 ui-monospace,monospace}.lep .good{color:#2e7d32;font-weight:700}`;document.head.appendChild(st)})();
 
 leApply();lePvBar();leSync();
