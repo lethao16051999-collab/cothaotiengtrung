@@ -14,7 +14,12 @@ const LE_DEF=[
  {id:"ongtao",vi:"Ông Công Ông Táo",zh:"小年",day:"30/1/2027",s:"2027-01-28",e:"2027-01-30",ic:"🐟"},
  {id:"tet",vi:"Tết Nguyên đán",zh:"春节",day:"6/2/2027",s:"2027-01-31",e:"2027-02-14",ic:"🏮"},
  {id:"nguyentieu",vi:"Rằm tháng Giêng",zh:"元宵节",day:"20/2/2027",s:"2027-02-18",e:"2027-02-21",ic:"🏮"},
- {id:"phunu",vi:"Quốc tế Phụ nữ",zh:"三八妇女节",day:"8/3",s:"03-05",e:"03-08",ic:"🌷"}];
+ {id:"valentine",vi:"Lễ Tình nhân",zh:"情人节",day:"14/2",s:"02-14",e:"02-14",ic:"💝"},
+ {id:"phunu",vi:"Quốc tế Phụ nữ",zh:"三八妇女节",day:"8/3",s:"03-05",e:"03-08",ic:"🌷"},
+ {id:"thanhminh",vi:"Thanh minh · Hàn thực",zh:"清明节 · 寒食节",day:"5/4 & 9/4/2027",s:"2027-04-02",e:"2027-04-09",ic:"🌿"},
+ {id:"doanngo",vi:"Tết Đoan Ngọ",zh:"端午节",day:"9/6/2027",s:"2027-06-06",e:"2027-06-09",ic:"🐉"},
+ {id:"thattich",vi:"Lễ Thất Tịch",zh:"七夕节",day:"8/8/2027",s:"2027-08-05",e:"2027-08-08",ic:"🌌"},
+ {id:"trungthu",vi:"Tết Trung thu",zh:"中秋节",day:"15/9/2027",s:"2027-09-08",e:"2027-09-16",ic:"🥮"}];
 
 /* ---------- lời chúc (chữ Hán · phiên âm · tiếng Việt) và tên lễ có phiên âm ---------- */
 const LE_MSG={
@@ -26,6 +31,11 @@ const LE_MSG={
  ongtao:{z:"小年快乐！",p:"Xiǎonián kuàilè!",v:"Tiễn ông Công ông Táo về trời – chúc nhà nhà bình an!",np:"Xiǎonián"},
  tet:{z:"春节快乐！恭喜发财！",p:"Chūnjié kuàilè! Gōngxǐ fācái!",v:"Chúc mừng năm mới Đinh Mùi 2027 – an khang thịnh vượng!",np:"Chūnjié"},
  nguyentieu:{z:"元宵节快乐！",p:"Yuánxiāo Jié kuàilè!",v:"Chúc mừng Rằm tháng Giêng – gia đình đoàn viên, bình an!",np:"Yuánxiāo Jié"},
+ valentine:{z:"情人节快乐！",p:"Qíngrén Jié kuàilè!",v:"Chúc mừng ngày Lễ Tình nhân 14/2!",np:"Qíngrén Jié"},
+ thanhminh:{z:"清明安康！",p:"Qīngmíng ānkāng!",v:"Tiết Thanh minh – tưởng nhớ tổ tiên, chúc cả nhà bình an!",np:"Qīngmíng Jié · Hánshí Jié"},
+ doanngo:{z:"端午安康！",p:"Duānwǔ ānkāng!",v:"Tết Đoan Ngọ – chúc cả nhà mạnh khỏe, bình an!",np:"Duānwǔ Jié"},
+ thattich:{z:"七夕快乐！",p:"Qīxī kuàilè!",v:"Lễ Thất Tịch – ngày Ngưu Lang Chức Nữ gặp nhau!",np:"Qīxī Jié"},
+ trungthu:{z:"中秋节快乐！",p:"Zhōngqiū Jié kuàilè!",v:"Chúc mừng Tết Trung thu – trăng tròn, người đoàn viên!",np:"Zhōngqiū Jié"},
  phunu:{z:"妇女节快乐！",p:"Fùnǚ Jié kuàilè!",v:"Chúc mừng ngày Quốc tế Phụ nữ 8/3!",np:"Sān-Bā Fùnǚ Jié"}};
 
 /* ---------- Khám phá văn hóa: vn = Việt Nam, cn = Trung Quốc; y = ý nghĩa, h = hoạt động chính, c = câu chúc.
@@ -73,6 +83,34 @@ const LE_VH={
   cn:{y:"{元宵节|Yuánxiāo Jié} là đêm trăng tròn đầu tiên của năm mới, đánh dấu kết thúc dịp Tết.",
    h:["Ăn bánh trôi nước có nhân {元宵|yuánxiāo} / {汤圆|tāngyuán}, tượng trưng cho đoàn tụ, tròn đầy","Ngắm đèn lồng {赏花灯|shǎng huādēng}, đoán câu đố trên đèn {猜灯谜|cāi dēngmí}","Múa lân, múa rồng"],
    c:[["元宵节快乐！","Yuánxiāo Jié kuàilè!","Chúc mừng Tết Nguyên tiêu!"],["团团圆圆！","Tuántuán yuányuán!","Đoàn viên tròn đầy!"],["花好月圆！","Huā hǎo yuè yuán!","Hoa thắm trăng tròn!"]]}},
+ valentine:{vn:{y:"Lễ Tình nhân 14/2 có nguồn gốc phương Tây, được giới trẻ Việt Nam hưởng ứng rộng rãi.",
+   h:["Tặng hoa hồng, sô-cô-la, quà cho người yêu","Hẹn hò, đi ăn tối, xem phim"],c:["Chúc mừng Valentine!","Chúc hai bạn mãi hạnh phúc!"]},
+  cn:{y:"Ở Trung Quốc, 14/2 gọi là {情人节|Qíngrén Jié}, có khi gọi {西方情人节|Xīfāng Qíngrén Jié} (Lễ Tình nhân phương Tây) để phân biệt với {七夕|Qīxī} – ngày lễ tình nhân truyền thống.",
+   h:["Tặng hoa hồng, sô-cô-la, hẹn hò","Gửi lì xì qua WeChat với những con số có ý nghĩa: 520 (đọc gần giống {我爱你|wǒ ài nǐ}), 1314 (gần âm {一生一世|yìshēng yíshì} – trọn đời)"],
+   c:[["情人节快乐！","Qíngrén Jié kuàilè!","Chúc mừng Lễ Tình nhân!"],["我爱你！","Wǒ ài nǐ!","Anh yêu em / Em yêu anh!"],["愿得一心人，白首不相离。","Yuàn dé yì xīn rén, bái shǒu bù xiāng lí.","Nguyện có được người một lòng, bạc đầu không chia lìa."]]}},
+ thanhminh:{vn:{y:"Tết Hàn thực (mùng 3/3 âm) và tiết Thanh minh (khoảng 4–5/4 dương) là hai dịp gần nhau. Truyện Kiều có câu: “Thanh minh trong tiết tháng Ba, / Lễ là tảo mộ, hội là đạp thanh.”",
+   h:["Tết Hàn thực: làm bánh trôi, bánh chay cúng tổ tiên","Thanh minh: đi tảo mộ, sửa sang, thắp hương mộ ông bà"],c:["Nhân tiết Thanh minh, con cháu kính nhớ ông bà tổ tiên."]},
+  cn:{y:"{清明节|Qīngmíng Jié} là dịp tảo mộ lớn nhất trong năm, được nghỉ lễ. {寒食节|Hánshí Jié} ngay trước Thanh minh: xưa kiêng đun lửa, chỉ ăn đồ nguội để tưởng nhớ Giới Tử Thôi {介子推|Jiè Zǐtuī}; nay phần lớn đã gộp vào Thanh minh.",
+   h:["Tảo mộ {扫墓|sǎomù}, viếng tổ tiên","Đi dạo ngắm xuân {踏青|tàqīng} (đạp thanh), thả diều","Vùng Giang Nam ăn bánh thanh đoàn {青团|qīngtuán} màu xanh lá"],
+   c:[["清明安康！","Qīngmíng ānkāng!","Thanh minh an khang!"],["清明时节雨纷纷，路上行人欲断魂。","Qīngmíng shíjié yǔ fēnfēn, lù shang xíngrén yù duàn hún.","Tiết Thanh minh mưa lất phất, người đi đường lòng buồn da diết (thơ Đỗ Mục)."]]},
+  tip:"Không nói 清明快乐 vì đây là dịp tưởng nhớ người đã khuất; nên nói 清明安康."},
+ doanngo:{vn:{y:"Tết Đoan Ngọ (mùng 5/5 âm) còn gọi là Tết diệt sâu bọ: người xưa tin đây là lúc sâu bọ, dịch bệnh phát sinh nhiều.",
+   h:["Sáng sớm ăn rượu nếp, hoa quả chua (mận, vải…) để “diệt sâu bọ”","Hái lá thuốc vào giờ Ngọ","Một số nơi buộc chỉ ngũ sắc cho trẻ em"],c:["Chúc cả nhà Tết Đoan Ngọ mạnh khỏe!"]},
+  cn:{y:"{端午节|Duānwǔ Jié} gắn với tích tưởng nhớ nhà thơ Khuất Nguyên {屈原|Qū Yuán} trầm mình xuống sông Mịch La; là ngày nghỉ lễ ở Trung Quốc.",
+   h:["Đua thuyền rồng {赛龙舟|sài lóngzhōu}","Ăn bánh ú {粽子|zòngzi}, nhân ngọt hoặc mặn","Treo ngải cứu {艾草|àicǎo}, đeo túi thơm {香囊|xiāngnáng} để trừ tà"],
+   c:[["端午安康！","Duānwǔ ānkāng!","Đoan Ngọ an khang!"],["端午节快乐！","Duānwǔ Jié kuàilè!","Chúc Tết Đoan Ngọ vui vẻ!"],["吃粽子了吗？","Chī zòngzi le ma?","Ăn bánh ú chưa?"]]},
+  tip:"Nhiều người Trung Quốc chúc 端午安康 (an khang) thay vì 快乐, vì gốc của ngày lễ là tưởng nhớ Khuất Nguyên."},
+ thattich:{vn:{y:"Thất Tịch (mùng 7/7 âm) gắn với tích Ngưu Lang – Chức Nữ, mỗi năm chỉ được gặp nhau một lần trên cầu Ô Thước. Mưa dịp này gọi là “mưa ngâu” – nước mắt của đôi lứa.",
+   h:["Giới trẻ coi là Lễ Tình nhân phương Đông: tặng quà, hẹn hò","Một số bạn trẻ ăn chè đậu đỏ để “cầu duyên”"],c:["Chúc bạn sớm gặp được nửa kia!","Chúc hai bạn mãi bên nhau!"]},
+  cn:{y:"{七夕节|Qīxī Jié} được coi là ngày lễ tình nhân truyền thống của Trung Quốc. Ngưu Lang {牛郎|Niúláng} và Chức Nữ {织女|Zhīnǚ} gặp nhau trên cầu chim khách {鹊桥|quèqiáo}.",
+   h:["Đôi lứa tặng hoa, quà, hẹn hò","Xưa các cô gái “khất xảo” {乞巧|qǐqiǎo}: cầu xin Chức Nữ cho mình khéo tay"],
+   c:[["七夕快乐！","Qīxī kuàilè!","Thất Tịch vui vẻ!"],["有情人终成眷属。","Yǒuqíngrén zhōng chéng juànshǔ.","Người có tình rồi sẽ nên duyên."],["金风玉露一相逢，便胜却人间无数。","Jīn fēng yù lù yì xiāngféng, biàn shèngquè rénjiān wúshù.","Gió vàng sương ngọc một lần gặp, hơn bao lần gặp gỡ chốn nhân gian (thơ Tần Quán)."]]}},
+ trungthu:{vn:{y:"Ở Việt Nam, Tết Trung thu (rằm tháng Tám) là Tết thiếu nhi, cũng là dịp gia đình sum họp ngắm trăng.",
+   h:["Rước đèn ông sao, đèn lồng; múa lân","Phá cỗ trông trăng với bánh nướng, bánh dẻo, hoa quả","Kể chuyện chú Cuội, chị Hằng"],c:["Chúc các con Trung thu vui vẻ!","Chúc gia đình đoàn viên, hạnh phúc!"]},
+  cn:{y:"{中秋节|Zhōngqiū Jié} là dịp đoàn viên quan trọng thứ hai sau Tết, được nghỉ lễ. Trăng tròn tượng trưng cho sự sum họp.",
+   h:["Ăn bánh trung thu {月饼|yuèbing}, ngắm trăng {赏月|shǎng yuè}","Cả nhà ăn bữa cơm đoàn viên","Kể truyện Hằng Nga bay lên cung trăng {嫦娥奔月|Cháng'é bēn yuè}"],
+   c:[["中秋节快乐！","Zhōngqiū Jié kuàilè!","Chúc Trung thu vui vẻ!"],["月圆人团圆。","Yuè yuán rén tuányuán.","Trăng tròn, người đoàn viên."],["但愿人长久，千里共婵娟。","Dàn yuàn rén chángjiǔ, qiānlǐ gòng chánjuān.","Chỉ mong người mãi bên nhau, nghìn dặm cùng ngắm một vầng trăng (thơ Tô Thức)."]]},
+  tip:"Ở Việt Nam, Trung thu chủ yếu là Tết của thiếu nhi; ở Trung Quốc, trọng tâm là gia đình đoàn viên."},
  phunu:{vn:{y:"Ngày Quốc tế Phụ nữ 8/3 tôn vinh phụ nữ; ở Việt Nam còn là dịp kỷ niệm khởi nghĩa Hai Bà Trưng.",
    h:["Tặng hoa, quà cho mẹ, cô giáo, bạn nữ, đồng nghiệp nữ","Cơ quan, trường học tổ chức gặp mặt, liên hoan"],c:["Chúc mẹ, chúc cô luôn xinh đẹp, hạnh phúc!"]},
   cn:{y:"Ở Trung Quốc, ngày 8/3 gọi là {三八妇女节|Sān-Bā Fùnǚ Jié}; theo quy định, phụ nữ được nghỉ nửa ngày. Giới trẻ còn gọi vui là {女神节|Nǚshén Jié} “Ngày nữ thần”.",
@@ -95,6 +133,12 @@ const LEM={
  tulip:c=>`<path d="M0 26V2" stroke="#4f8a4b" stroke-width="2.4"/><path d="M0 14Q-12 6-14-2Q-4 2 0 10" fill="#5fa15a"/><path d="M-11-16Q-12 4 0 6Q12 4 11-16L5-8L0-18L-5-8Z" fill="${c}"/>`,
  heart:c=>`<path d="M0 14C-18 2-18-12-9-14C-4-15-1-11 0-8C1-11 4-15 9-14C18-12 18 2 0 14Z" fill="${c}"/>`,
  cloud:c=>`<path d="M-24 6Q-28-6-16-6Q-14-18 0-16Q12-20 16-8Q28-8 26 4Q24 12 14 10H-18Q-24 12-24 6Z" fill="none" stroke="${c}" stroke-width="2.2"/>`,
+ zongzi:c=>`<path d="M0-22L22 16H-22Z" fill="${c}" stroke="#2f6b3a" stroke-width="2" stroke-linejoin="round"/><path d="M-14 4H14M-8-8L8 8" stroke="#f3e1a0" stroke-width="2.4"/>`,
+ boat:c=>`<path d="M-30 4H26Q24 14 10 16H-20Q-30 14-30 4Z" fill="${c}"/><path d="M26 4Q34-2 30-12Q38-8 36 2" fill="${c}"/><circle cx="31" cy="-6" r="1.6" fill="#fff"/><path d="M-20 4L-24-6M-8 4L-12-6M4 4L0-6M16 4L12-6" stroke="#8b5a2b" stroke-width="2"/><path d="M-34 20Q-26 16-18 20T-2 20T14 20T30 20" stroke="#6fa8dc" stroke-width="2" fill="none"/>`,
+ willow:c=>`<path d="M-24-24Q0-28 24-20" stroke="#8b5a2b" stroke-width="2" fill="none"/>`+[-18,-8,2,12,20].map((x,i)=>`<path d="M${x}-23Q${x-3} ${-6+i*2} ${x+2} ${14-i*3}" stroke="${c}" stroke-width="1.6" fill="none"/>`+[0,1,2].map(k=>`<ellipse cx="${x-1+k}" cy="${-14+k*9}" rx="2" ry="4.5" fill="${c}" transform="rotate(${15-k*10} ${x-1+k} ${-14+k*9})"/>`).join("")).join(""),
+ kite:c=>`<path d="M0-24L16 0L0 24L-16 0Z" fill="${c}"/><path d="M0-24V24M-16 0H16" stroke="#fff" stroke-width="1.4" opacity=".7"/><path d="M0 24Q6 32 0 38Q-6 44 2 50" stroke="${c}" stroke-width="1.4" fill="none"/>`,
+ mooncake:c=>`<circle r="22" fill="${c}"/><circle r="16" fill="none" stroke="#8b5a2b" stroke-width="1.6" opacity=".6"/>`+Array.from({length:10},(_,i)=>`<circle cy="-22" r="4" fill="${c}" transform="rotate(${i*36})"/>`).join("")+`<text y="7" text-anchor="middle" font-size="18" font-weight="700" fill="#8b5a2b" font-family="Noto Serif SC, KaiTi, serif">月</text>`,
+ bird:c=>`<path d="M-22 4Q-8-14 6-2Q14-10 24-8Q16-2 12 6Q0 14-22 4Z" fill="${c}"/><path d="M-6 0Q2-16 14-14Q6-6 2 2Z" fill="#fff" opacity=".5"/><circle cx="16" cy="-6" r="1.6" fill="#fff"/>`,
  txt:(t,c)=>`<text y="10" text-anchor="middle" font-size="28" font-weight="700" fill="${c}" font-family="Noto Serif SC, KaiTi, serif">${t}</text>`};
 /* ô mẫu 300×300: [hình, x, y, cỡ, xoay, tham số 1, tham số 2] */
 const LET={
@@ -106,6 +150,11 @@ const LET={
  ongtao:{bg:["#fff5e9","#fdeee2"],ac:"#d1621f",fx:[],p:[["carp",55,55,1,-15,"#f08a24"],["cloud",195,45,1,0,"#c9a227"],["carp",130,150,1,10,"#d7263d"],["cloud",255,180,.8,0,"#e6a23c"],["carp",60,245,.8,-5,"#e6a23c"],["txt",195,255,.9,0,"小年","#d1621f"]]},
  tet:{bg:["#fff1ec","#fdf3e0"],ac:"#d7263d",fx:["🌸","🌼","✿"],p:[["lantern",50,60,1,0,"#d7263d"],["flower",195,45,.9,10,"#f4a6b8","#c9a227"],["fu",125,150,1,0],["flower",255,180,.8,25,"#f6c453","#d7263d"],["flower",55,245,.7,0,"#f4a6b8","#c9a227"],["lantern",195,255,.85,0,"#d7263d"]]},
  nguyentieu:{bg:["#fbf1e8","#f4eef8"],ac:"#c0392b",fx:["✨","✦"],p:[["lantern",50,60,1,0,"#d7263d"],["moon",195,45,1,0,"#f6c453"],["bowl",125,150,1,0,"#8e2a4f"],["lantern",255,185,.9,0,"#e6a23c"],["star",55,245,.6,0,"#c9a227"],["lantern",195,255,.8,0,"#d7263d"]]},
+ valentine:{bg:["#fdf0f3","#fbeaf0"],ac:"#d6336c",fx:["💗","♥","🌹"],p:[["heart",50,55,1,-10,"#e8608a"],["flower",195,45,.9,0,"#d6336c","#f6c453"],["txt",125,150,1,0,"爱","#d6336c"],["heart",255,180,.8,12,"#f2a7bd"],["tulip",55,245,.8,0,"#d6336c"],["heart",195,255,.7,-5,"#c2477a"]]},
+ thanhminh:{bg:["#f1f7ef","#f6f8ea"],ac:"#3f7d4f",fx:["🍃","🌿"],p:[["willow",50,55,1,0,"#6aa86f"],["kite",195,50,.8,10,"#e8608a"],["txt",125,150,1.1,0,"清明","#3f7d4f"],["willow",255,180,.9,0,"#8bbf7a"],["flower",55,245,.7,0,"#f4c2d0","#f6d36b"],["kite",195,255,.7,-10,"#6fa8dc"]]},
+ doanngo:{bg:["#eef6f1","#fbf5e6"],ac:"#2f7d5b",fx:["🍃"],p:[["boat",55,55,1,0,"#d7263d"],["zongzi",195,45,.9,0,"#5fa15a"],["txt",125,150,1.1,0,"端午","#2f7d5b"],["zongzi",255,180,.8,15,"#7cb46b"],["boat",60,245,.8,0,"#e6a23c"],["willow",195,255,.8,0,"#6aa86f"]]},
+ thattich:{bg:["#f1eef9","#fbeef3"],ac:"#6a4c93",fx:["✦","✧","⭐"],p:[["bird",55,55,1,0,"#6a4c93"],["star",195,45,.8,0,"#c9a227"],["txt",125,150,1.1,0,"七夕","#6a4c93"],["bird",255,180,.8,0,"#8e7cc3"],["star",55,245,.6,15,"#c9a227"],["heart",195,255,.7,0,"#e8608a"]]},
+ trungthu:{bg:["#fff6e6","#f6eef8"],ac:"#c27c0e",fx:["✨","⭐"],p:[["moon",50,55,1,0,"#f6c453"],["lantern",195,55,.9,0,"#e6a23c"],["mooncake",125,150,1,0,"#d9a05b"],["star",255,180,.7,0,"#c9a227"],["lantern",55,245,.8,0,"#d7263d"],["mooncake",195,255,.7,0,"#e2b06a"]]},
  phunu:{bg:["#fdf0f4","#fbf5e6"],ac:"#c2477a",fx:["🌷","🌸","♥"],p:[["tulip",50,55,1,-8,"#e8608a"],["heart",195,45,.9,10,"#f2a7bd"],["flower",125,150,1,0,"#f2a7bd","#c9a227"],["tulip",255,180,.9,10,"#c2477a"],["heart",55,245,.7,-10,"#e8608a"],["tulip",195,255,.8,0,"#f6c453"]]}};
 
 /* ---------- cài đặt ---------- */
