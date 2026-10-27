@@ -284,9 +284,9 @@ ${r.test!=null?`<div class="bar"><span>Test nhanh</span><div class="tr"><i style
 /* ===== Test nhanh (kiểm tra vận dụng) ===== */
 let T=null,TIV=null,TPY=true;const TMIN=10;
 /* Phần Gõ phiên âm (nhớ mặt chữ) trong Test nhanh: bật theo cấp. Thêm cấp: TVW[2]=true. */
-const TVW={1:true},TVN=10;
+const TVW={1:true};
 const tHasV=L=>!!(TVW[olLv]&&L&&L.words&&L.words.length);
-const tMin=L=>TMIN+(tHasV(L)?3:0),tMax=L=>15+(tHasV(L)?TVN:0);
+const tMin=L=>TMIN+(tHasV(L)?Math.max(3,Math.ceil(tVPick(L).length/4)):0);
 const TONEMK={"\u0304":1,"\u0301":2,"\u030c":3,"\u0300":4};
 function pyParse(str){const x=String(str||"").toLowerCase().normalize("NFD");let base="";const tn=[];
  for(const c of x){if(TONEMK[c])tn.push(TONEMK[c]);else if(c==="\u0308"||(c===":"&&base.endsWith("u"))){if(base.endsWith("u"))base=base.slice(0,-1)+"v"}else if(/[1-4]/.test(c))tn.push(+c);else if(/[a-z]/.test(c))base+=c}
@@ -295,7 +295,7 @@ function pyParse(str){const x=String(str||"").toLowerCase().normalize("NFD");let
 function pyScore(want,inp,hz){const g=pyParse(inp);if(!g.base)return 0;let best=0;
  const alts=new Set([want]);if(/一/.test(hz||""))["yī","yí","yì"].forEach(t=>alts.add(want.replace(/y[īíìǐ]/,t)));if(/不/.test(hz||""))["bù","bú"].forEach(t=>alts.add(want.replace(/b[úù]/,t)));
  alts.forEach(a=>{const w=pyParse(a);if(g.base===w.base)best=Math.max(best,g.tn===w.tn?2:1)});return best}
-const tVPick=L=>{const seen=new Set(),ok=[];L.words.forEach((w,i)=>{if(w[2]=="danh từ riêng"||seen.has(w[0]))return;seen.add(w[0]);ok.push(i)});return shuf(ok).slice(0,TVN)};
+const tVPick=L=>{const seen=new Set(),ok=[];L.words.forEach((w,i)=>{if(seen.has(w[0]))return;seen.add(w[0]);ok.push(i)});return ok};
 const nfmt=x=>String(Math.round(x*10)/10).replace(".",",");
 function openTest(n){tStop();tcur=n;T=null;rr();scrollTo(0,0)}
 function tStop(){if(TIV){clearInterval(TIV);TIV=null}try{speechSynthesis.cancel()}catch(e){}}
@@ -303,9 +303,9 @@ function testView(){const L=LD[tcur];
  return `<button class="btn o sm" onclick="const q=()=>{tStop();tcur=null;T=null;rr()};(!T||T.done)?q():ask('Thoát sẽ hủy bài đang làm. Thoát?',q)">← Danh sách bài</button>
 <div class="lhead"><span class="no">${tcur}</span><div><div>Kiểm tra HSK ${olLv} · Bài ${tcur} · ${tMin(L)} phút</div><div class="zh lt2">${L.t}</div></div>${vBtn()}</div>${vBar()}<div class="stack">${T?tBody(L):tIntro(L)}</div>`}
 function tIntro(L){let nm="";try{nm=localStorage.getItem("ct_name")||""}catch(e){}
- const hv=tHasV(L),mx=tMax(L),nv=hv?Math.min(TVN,tVPick(L).length):0;
- return `<div class="card"><b>Bài kiểm tra Bài ${tcur} · ${tMin(L)} phút · ${mx} điểm</b>
-<p>${hv?`<b>Làm trước:</b> Gõ phiên âm ${nv} từ trong bài (chỉ nhìn chữ Hán), xong phần này mới làm các phần sau.<br>`:""}Phần 1A: ${L.tsort.length} câu sắp xếp thành câu đúng.<br>Phần 1B: ${L.tlis.length} câu nghe và chọn cách đáp lại / hiểu ý (mỗi câu nghe tối đa 2 lượt).<br>Phần 2: nói 5 lượt lấy ngẫu nhiên từ phần Luyện nói, <b>không có gợi ý</b>, mỗi lượt được nói <b>tối đa 2 lần</b>.<br>Đạt từ ${nfmt(mx*.8)}/${mx} (80%). Hết giờ bài tự nộp.</p>
+ const hv=tHasV(L),nv=hv?tVPick(L).length:0;
+ return `<div class="card"><b>Bài kiểm tra Bài ${tcur} · ${tMin(L)} phút</b>
+<p>${hv?`<b>Phần Chữ Hán (làm trước, thang 10):</b> nhìn chữ Hán, gõ phiên âm cả ${nv} từ mới của bài; xong phần này mới làm các phần sau.<br><b>Phần Nghe – nói – cấu trúc câu (thang 10):</b><br>`:""}Phần 1A: ${L.tsort.length} câu sắp xếp thành câu đúng.<br>Phần 1B: ${L.tlis.length} câu nghe và chọn cách đáp lại / hiểu ý (mỗi câu nghe tối đa 2 lượt).<br>Phần 2: nói 5 lượt lấy ngẫu nhiên từ phần Luyện nói, <b>không có gợi ý</b>, mỗi lượt được nói <b>tối đa 2 lần</b>.<br>Mỗi phần đạt từ 8/10. Hết giờ bài tự nộp.</p>
 <label><b>Họ và tên học sinh <span class="bad">*</span></b></label><input class="tin" id="tname" value="${esc(nm)}" placeholder="Nhập họ và tên của em" autocomplete="name" oninput="try{localStorage.setItem('ct_name',this.value)}catch(e){};$('tnerr').hidden=true"><div class="bad" id="tnerr" hidden>Em cần điền họ và tên trước khi bắt đầu.</div>
 <p><b>Em chọn cách làm bài:</b></p><div class="row"><button class="btn sm ${TPY?"":"o"}" onclick="TPY=true;rr()">Có pinyin</button><button class="btn sm ${TPY?"o":""}" onclick="TPY=false;rr()">Chỉ chữ Hán (pinyin hiện khi chấm)</button></div>
 <p class="ctx">Phần nói cần Google Chrome hoặc Microsoft Edge và cho phép dùng micro.</p><button class="btn" onclick="tStart()">▶ Bắt đầu làm bài</button></div>`}
@@ -331,29 +331,29 @@ function tBody(L){const d=T.done;let h="";
  if(T.vw.length){const nv=T.vw.length;
   h+=`<h3 class="ab-h">Phần Từ vựng · Nhìn chữ Hán, gõ phiên âm (${nv} điểm)</h3><p class="ctx">Gõ pinyin có dấu (<b>huí</b>) hoặc số thanh (<b>hui2</b>); <b>ü</b> gõ là <b>v</b> (lǜ = lv4). Khoảng cách, chữ hoa không quan trọng. Đúng cả âm và thanh được 1 điểm, đúng âm sai thanh được ½ điểm. Bấm Enter để sang ô sau.</p><div class="tvgrid">`;
   T.vw.forEach((wi,k)=>{const w=L.words[wi],sc=T.vsc[k];
-   h+=`<div class="tvi ${d?(sc==2?"ok":sc==1?"half":"no"):""}"><div class="zh tvh">${w[0]}</div>${d?`<div class="tvans">${T.vin[k]?esc(T.vin[k]):"<i>(bỏ trống)</i>"}</div><div class="${sc==2?"okt":sc==1?"half":"bad"}">${sc==2?"✓ Đúng":sc==1?"½ Sai thanh điệu":"✗ Sai"}</div>${sc<2?`<div class="py">${w[1]}</div>`:""}<small>${w[3]}</small>`:`<input class="tin tvin" id="tv${k}" value="${esc(T.vin[k]||"")}" ${T.vok?"disabled":""} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="pinyin" oninput="T.vin[${k}]=this.value" onkeydown="if(event.key=='Enter'&&!event.isComposing){event.preventDefault();const n=$('tv${k+1}');n?n.focus():this.blur()}">`}</div>`});
+   h+=`<div class="tvi ${d?(sc==2?"ok":sc==1?"half":"no"):""}" id="tq-vw-${k}"><div class="zh tvh">${w[0]}</div>${d?`<div class="tvans">${T.vin[k]?esc(T.vin[k]):"<i>(bỏ trống)</i>"}</div><div class="${sc==2?"okt":sc==1?"half":"bad"}">${sc==2?"✓ Đúng":sc==1?"½ Sai thanh điệu":"✗ Sai"}</div>${sc<2?`<div class="py">${w[1]}</div>`:""}<small>${w[3]}</small>`:`<input class="tin tvin" id="tv${k}" value="${esc(T.vin[k]||"")}" ${T.vok?"disabled":""} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="pinyin" oninput="T.vin[${k}]=this.value" onkeydown="if(event.key=='Enter'&&!event.isComposing){event.preventDefault();const n=$('tv${k+1}');n?n.focus():this.blur()}">`}</div>`});
   h+=`</div>`;
   if(!T.vok&&!d){h+=`<div class="row c"><button class="btn" onclick="tVDone()">Xong phần từ vựng → làm tiếp</button></div>`;return h}
   if(!d)h+=`<p class="ctx" style="text-align:center">✔ Đã khóa phần từ vựng, kết quả hiện khi nộp bài.</p>`}
  h+=`<div class="${T.han&&!d?"hanonly":""}"><h3 class="ab-h">Phần 1A · Sắp xếp câu (${L.tsort.length} điểm)</h3><p class="ctx">Bấm các từ bên dưới để ghép thành câu đúng; bấm từ đã chọn để bỏ ra.</p>`;
  L.tsort.forEach((it,k)=>{const s=T.so[k],ans=s.ch.map(i=>it.t[i]).join(""),ok=it.ok.includes(ans);
-  h+=`<div class="card q ${d?(ok?"ok":"no"):""}"><b>Câu ${k+1}.</b><div class="slots">${s.ch.length?s.ch.map((i,j)=>tTok(it.t[i],`onclick="tSo(${k},'c',${j})"`)).join(""):`<span class="ctx">Chọn từ để ghép câu…</span>`}</div><div class="bank">${s.pool.map((i,j)=>tTok(it.t[i],`onclick="tSo(${k},'p',${j})"`)).join("")}</div>
+  h+=`<div class="card q ${d?(ok?"ok":"no"):""}" id="tq-so-${k}"><b>Câu ${k+1}.</b><div class="slots">${s.ch.length?s.ch.map((i,j)=>tTok(it.t[i],`onclick="tSo(${k},'c',${j})"`)).join(""):`<span class="ctx">Chọn từ để ghép câu…</span>`}</div><div class="bank">${s.pool.map((i,j)=>tTok(it.t[i],`onclick="tSo(${k},'p',${j})"`)).join("")}</div>
   ${d?`<div class="${ok?"okt":"bad"}">${ok?"✓ Đúng":"✗ Chưa đúng"}</div><div class="zh hd">${it.ok[0]}</div><div class="py">${it.p}</div><small class="ex">💡 ${it.e}</small>`:""}</div>`});
  h+=`<h3 class="ab-h">Phần 1B · Nghe hiểu (${L.tlis.length} điểm)</h3><p class="ctx">Mỗi câu nghe tối đa 2 lượt.</p>`;
  L.tlis.forEach((q,k)=>{const s=T.li[k],ok=s.pick!=null&&s.o[s.pick]===q.o[0];
-  h+=`<div class="card q ${d?(ok?"ok":"no"):""}"><b>Câu ${k+1+L.tsort.length}.</b> <span class="zh hd">${q.qz||"听后选择正确的回答。"}</span><small class="opy">${q.qp||"Tīng hòu xuǎnzé zhèngquè de huídá."}</small><div class="row"><button class="snd" ${d||s.plays>=2?"disabled":""} onclick="tPlay(${k})">🔊 ${s.plays>=2?"Đã nghe đủ 2 lượt":`Nghe (còn ${2-s.plays} lượt)`}</button></div>
+  h+=`<div class="card q ${d?(ok?"ok":"no"):""}" id="tq-li-${k}"><b>Câu ${k+1+L.tsort.length}.</b> <span class="zh hd">${q.qz||"听后选择正确的回答。"}</span><small class="opy">${q.qp||"Tīng hòu xuǎnzé zhèngquè de huídá."}</small><div class="row"><button class="snd" ${d||s.plays>=2?"disabled":""} onclick="tPlay(${k})">🔊 ${s.plays>=2?"Đã nghe đủ 2 lượt":`Nghe (còn ${2-s.plays} lượt)`}</button></div>
   <div class="opts">${s.o.map((o,j)=>`<button class="opt ${s.pick===j?"sel":""} ${d&&o===q.o[0]?"right":""}" ${d?"disabled":""} onclick="T.li[${k}].pick=${j};rr()">${OP(o)}</button>`).join("")}</div>
   ${d?`<small class="ex">${ok?"✓ Đúng.":"✗ Chưa đúng."} Nội dung nghe: <span class="zh">${q.a}</span></small>`:""}</div>`});
  h+=`<h3 class="ab-h">Phần 2 · Nói theo tình huống (5 điểm)</h3><p class="ctx">Không có gợi ý: đọc mục đích, tự nói câu tiếng Trung. Mỗi câu được nói <b>tối đa 2 lần</b> (lấy lần tốt hơn); nói đạt hoặc dùng hết 2 lần thì máy mới hiện câu mẫu (đạt từ 60%).</p>`;
  const all=nsAll(L);T.sp.forEach((ix,k)=>{const t=all[ix].t,nm=SPN[t.w]||[t.w,""],ok=!!T.spk[k],self=!SRC||srBlocked;
-  h+=`<div class="card ns ${d?(ok?"ok":"no"):""}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[1]}</small></div><div class="ctx">${L.sit[all[ix].si].ctx}</div><div class="goal">🎯 ${t.vi}</div>
+  h+=`<div class="card ns ${d?(ok?"ok":"no"):""}" id="tq-sp-${k}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[1]}</small></div><div class="ctx">${L.sit[all[ix].si].ctx}</div><div class="goal">🎯 ${t.vi}</div>
   ${d||T.spr[k]?"":self?`<div class="bad">Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Nói xong":(T.spn||[])[k]?"🎤 Nói lại (lần 2/2)":"🎤 Nói"}</button></div>`}
   <div class="out">${T.spo[k]||""}</div>${d&&!T.spr[k]?`<div class="bad">✗ Chưa nói</div>`:""}${d||T.spr[k]?`<div class="bub ref"><small>Câu mẫu:</small><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div></div>`:""}</div>`});
  h+=`</div>`+(d?`<div class="row c"><button class="btn" onclick="T=null;rr();scrollTo(0,0)">↻ Làm lại bài</button><button class="btn o" onclick="sub('ol');openL(${tcur})">📖 Ôn lại Bài ${tcur}</button></div>`:`<div class="row c"><button class="btn" onclick="tSubmit(false)">Nộp bài</button></div>`);
  return h}
 function tRec(k){if(curRec){try{curRec.stop()}catch(e){}return}if(T.spr[k]||T.done)return;
  const L=LD[tcur],tgt=nsAll(L)[T.sp[k]].t.r[0];recOn="t"+k;T.spo[k]=srLiveHtml();rr();
- srListen(t=>{if(T.done)return;T.spn=T.spn||[];const m=simi(np(t),np(tgt)),ok=m>=60,n=(T.spn[k]||0)+1;T.spn[k]=n;T.spk[k]=!!T.spk[k]||ok;T.spr[k]=T.spk[k]||n>=2;
+ srListen(t=>{if(T.done)return;T.spn=T.spn||[];const m=simi(np(t),np(tgt)),ok=m>=60,n=(T.spn[k]||0)+1;T.spn[k]=n;T.sph=T.sph||[];if(!T.spk[k])T.sph[k]=t;T.spk[k]=!!T.spk[k]||ok;T.spr[k]=T.spk[k]||n>=2;
   T.spo[k]=`${n>1?"<b>Lần 2:</b> ":""}Máy nghe được: <span class="zh hd">${esc(t)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":n<2?"✗ Chưa đạt · em còn 1 lần nói lại":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()},
  x=>{if(T.done)return;T.spo[k]=x=="deny"?`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro rồi bấm 🎤 Nói lại.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại.</span>`;rr()})}
 function tSubmit(auto,f){if(!T||T.done)return;
@@ -361,14 +361,37 @@ function tSubmit(auto,f){if(!T||T.done)return;
  tStop();if(curRec){try{curRec.stop()}catch(e){}}const L=LD[tcur];
  const a=L.tsort.filter((it,k)=>it.ok.includes(T.so[k].ch.map(i=>it.t[i]).join(""))).length,b=L.tlis.filter((q,k)=>T.li[k].pick!=null&&T.li[k].o[T.li[k].pick]===q.o[0]).length,c=T.sp.filter((_,k)=>T.spk[k]===true).length;
  T.vsc=T.vw.map((wi,k)=>pyScore(L.words[wi][1],T.vin[k],L.words[wi][0]));const v=T.vsc.reduce((x,y)=>x+y,0)/2;
- T.res={a,b,c,v,auto};T.done=true;const r=ldN(tcur);r.test=Math.round((a+b+c+v)/tMax(L)*100);if(T.vw.length)r.tvw=Math.round(v/T.vw.length*100);svN(tcur,r);rr();scrollTo(0,0)}
+ T.res={a,b,c,v,auto};T.done=true;T.at=new Date();const r=ldN(tcur);r.test=Math.round((a+b+c)/15*100);if(T.vw.length)r.tvw=Math.round(v/T.vw.length*100);svN(tcur,r);rr();scrollTo(0,0)}
 function tVDone(){const e=T.vw.filter((_,k)=>!(T.vin[k]||"").trim()).length,go=()=>{T.vok=true;rr();scrollTo(0,0)};
  e?ask(`Còn ${e} từ chưa gõ. Khóa phần từ vựng và làm tiếp?`,go):ask("Khóa phần từ vựng (không sửa lại được) và làm tiếp?",go)}
-function tResult(L){const {a,b,c,auto}=T.res,v=T.res.v||0,nv=T.vw.length,mx=tMax(L),tot=a+b+c+v,pass=tot>=mx*.8,ns=L.tsort.length,nl=L.tlis.length;
- const weak=[];if(nv&&v<nv*.8)weak.push(["fc","Từ vựng → ôn Flashcard"]);if(a<ns*.8)weak.push(["gp","Sắp xếp câu → ôn Ngữ pháp · Mẫu câu"]);if(b<nl*.8)weak.push(["bk","Nghe hiểu → nghe lại Bài khóa"]);if(c<4)weak.push(["ns","Nói → ôn Luyện nói"]);
- return `<div class="card res"><p style="text-align:center;margin:0">${auto?"⏰ Hết giờ! ":""}Học sinh: <b>${esc(T.name)}</b></p><div class="big ${pass?"ok":"no"}">${nfmt(tot)}/${mx}</div>
-<p style="text-align:center">${nv?`Gõ phiên âm ${nfmt(v)}/${nv} · `:""}Sắp xếp câu ${a}/${ns} · Nghe hiểu ${b}/${nl} · Nói ${c}/5<br><b>${tot>=mx*.93?"Xuất sắc! 🎉":pass?"Đạt. Ôn thêm các câu sai bên dưới nhé.":"Chưa đạt 80%. Em ôn lại rồi làm lại bài nhé."}</b></p>
+/* Kết quả Test nhanh: 2 phần chấm riêng trên thang 10 (Nghe – nói – cấu trúc câu; Chữ Hán) + danh sách câu sai */
+const t10=(x,n)=>n?Math.round(x/n*100)/10:0;
+function tGoQ(id){const e=$(id);if(e){e.scrollIntoView({behavior:"smooth",block:"center"});e.classList.add("tqflash");setTimeout(()=>e.classList.remove("tqflash"),1600)}}
+function tResult(L){const {a,b,c,auto}=T.res,v=T.res.v||0,nv=T.vw.length,ns=L.tsort.length,nl=L.tlis.length,all=nsAll(L);
+ const s1=t10(a+b+c,15),s2=nv?t10(v,nv):null,pass=s1>=8&&(s2==null||s2>=8);
+ const vOk=T.vsc.filter(x=>x==2).length,vHalf=T.vsc.filter(x=>x==1).length,ok=a+b+c+vOk,tot=15+nv,bad=tot-ok;
+ const at=T.at||new Date(),p2=x=>String(x).padStart(2,"0"),when=`${p2(at.getHours())}:${p2(at.getMinutes())}:${p2(at.getSeconds())} ${p2(at.getDate())}/${p2(at.getMonth()+1)}/${at.getFullYear()}`;
+ const lvName=typeof lvN=="function"?lvN(olLv):"HSK "+olLv;
+ const errs=[],E=(part,no,id,prompt,mine,notes,rev,zh)=>errs.push({part,no,id,prompt,mine,notes,rev,zh});
+ T.vw.forEach((wi,k)=>{const sc=T.vsc[k];if(sc==2)return;const w=L.words[wi],m=(T.vin[k]||"").trim();
+  E("Chữ Hán",k+1,"tq-vw-"+k,`<span class="zh">${w[0]}</span> · ${esc(w[3])}`,m?esc(m):"",[!m?"Em bỏ trống.":sc==1?"Đúng âm nhưng sai thanh điệu (được ½ điểm).":"Phiên âm chưa đúng.",`Đáp án: <b>${w[1]}</b>`],"Flashcard · tập viết chữ này 3 dòng",0)});
+ L.tsort.forEach((it,k)=>{const ch=T.so[k].ch.map(i=>it.t[i]);if(it.ok.includes(ch.join("")))return;
+  E("Sắp xếp câu",k+1,"tq-so-"+k,"Sắp xếp các từ thành câu đúng.",ch.length?esc(ch.join(" ")):"",[!ch.length?"Em chưa sắp xếp câu này.":"Trật tự từ trong câu chưa đúng.",`Đáp án: <span class="zh">${it.ok[0]}</span> · ${it.p}`,it.e],"Ngữ pháp · Mẫu câu",1)});
+ L.tlis.forEach((q,k)=>{const s=T.li[k],pk=s.pick!=null?s.o[s.pick]:null;if(pk===q.o[0])return;
+  E("Nghe hiểu",k+1+ns,"tq-li-"+k,`${q.qz||"听后选择正确的回答。"} <small>(nghe: <span class="zh">${q.a}</span>)</small>`,pk?pk.split("|")[0]:"",[pk?"Chọn chưa đúng ý câu nghe.":"Em chưa chọn đáp án.",`Đáp án: <span class="zh">${q.o[0].split("|")[0]}</span>`],"Bài khóa · nghe lại bài khóa",1)});
+ T.sp.forEach((ix,k)=>{if(T.spk[k]===true)return;const t=all[ix].t,h=(T.sph||[])[k];
+  E("Nói",k+1+ns+nl,"tq-sp-"+k,esc(t.vi),h?esc(h):"",[h?"Câu nói chưa giống câu mẫu (cần từ 60%).":"Em chưa nói câu này.",`Câu mẫu: <span class="zh">${t.r[0]}</span> · ${t.r[1]}`],"Luyện nói",1)});
+ const part=(n,o,m,extra)=>`<div class="tr-p"><b>${n}</b><span><span class="okt">${o} đúng</span> · <span class="bad">${m-o} sai/trống</span> / ${m}${extra||""}</span></div>`;
+ const weak=[];if(nv&&s2<8)weak.push(["fc","Chữ Hán → ôn Flashcard"]);if(a<ns*.8)weak.push(["gp","Sắp xếp câu → ôn Ngữ pháp · Mẫu câu"]);if(b<nl*.8)weak.push(["bk","Nghe hiểu → nghe lại Bài khóa"]);if(c<4)weak.push(["ns","Nói → ôn Luyện nói"]);
+ return `<div class="card res trs">${auto?`<p class="bad" style="margin:0 0 6px">⏰ Hết giờ, bài đã tự nộp.</p>`:""}
+<h3 class="tr-h">Kết quả của ${esc(T.name)} · ${esc(lvName)} - Bài ${tcur}</h3><div class="tr-when">${when}</div>
+<div class="tr-st"><div class="tr-t g"><b>${ok}</b><span>câu đúng</span></div><div class="tr-t r"><b>${bad}</b><span>câu sai</span></div>
+<div class="tr-t n"><b>${nfmt(s1)}</b><span>Nghe – nói – cấu trúc câu (thang 10)</span></div>${nv?`<div class="tr-t n"><b>${nfmt(s2)}</b><span>Chữ Hán (thang 10)</span></div>`:""}</div>
+${vHalf?`<p class="tr-note">Trong số câu sai có ${vHalf} từ đúng âm nhưng sai thanh điệu, được tính ½ điểm.</p>`:""}
+<div class="tr-ps">${nv?part("Chữ Hán",vOk,nv):""}${part("Sắp xếp câu",a,ns)}${part("Nghe hiểu",b,nl)}${part("Nói",c,5)}</div>
+${errs.length?`<h3 class="tr-h2">Các câu sai và lỗi sai của em</h3>${errs.map(e=>`<div class="tr-e"><div class="tr-eh"><b>${e.part} · Câu ${e.no}</b><a href="javascript:void 0" onclick="tGoQ('${e.id}')">xem câu này</a></div><div class="tr-ep">${e.prompt}</div><div class="tr-el">Bài làm của em:</div><div class="tr-em ${e.zh?"zh":""}">${e.mine||"<i>(bỏ trống)</i>"}</div><ul>${e.notes.filter(Boolean).map(x=>`<li>${x}</li>`).join("")}</ul><div class="tr-rv">Ôn lại: ${e.rev}</div></div>`).join("")}`:`<h3 class="tr-h2">Em làm đúng hết. Giỏi lắm! 🎉</h3>`}
 ${nv&&T.vsc.some(x=>x<2)?`<div class="card tvcopy"><b>✍ Chép các từ chưa nhớ vào vở, mỗi từ 3 dòng</b><div class="tvlist">${T.vw.filter((_,k)=>T.vsc[k]<2).map(wi=>{const w=L.words[wi];return `<span><b class="zh">${w[0]}</b><small>${w[1]}<br>${w[3]}</small></span>`}).join("")}</div><small>Vừa viết vừa đọc to pinyin. Viết xong làm lại bài test để kiểm tra.</small></div>`:""}
+<div class="tr-sum"><div>Test nghe – nói – cấu trúc câu: <b>${nfmt(s1)}/10</b></div>${nv?`<div>Phần chữ Hán: <b>${nfmt(s2)}/10</b></div>`:""}<p><b>${pass?(s1>=9.5&&(s2==null||s2>=9.5)?"Xuất sắc! 🎉":"Đạt. Ôn thêm các câu sai ở trên nhé."):"Chưa đạt 8/10. Em ôn lại rồi làm lại bài nhé."}</b></p></div>
 ${weak.length?`<div class="row c">${weak.map(w=>`<button class="btn o sm" onclick="tStop();T=null;sub('ol');openL(${tcur});lt('${w[0]}')">${w[1]}</button>`).join("")}</div>`:""}
 ${typeof trkIn=="function"&&trkIn()?`<p class="ctx" style="text-align:center">✅ Kết quả đã tự lưu cho cô (mã ${esc(TRKME.code)}).</p>`:`<div class="card trkban" style="justify-content:center;text-align:center"><span>⚠️ Em <b>chưa nhập mã học viên</b> nên kết quả này <b>chưa gửi cho cô</b>. Nhập mã xong, kết quả sẽ tự gửi.</span>${typeof trkOpen=="function"?`<button class="btn sm" onclick="trkOpen()">🔑 Nhập mã</button>`:""}</div><p class="ctx" style="text-align:center">Chưa có mã thì chụp màn hình kết quả gửi cô qua <a href="https://zalo.me/0366534081">Zalo</a>.</p>`}</div>`}
 
