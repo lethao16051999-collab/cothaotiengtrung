@@ -1,7 +1,7 @@
 /* ===== HSK4 (trung cấp): bài học 7 tab. Nạp SAU js/app.js; dùng lại hàm chung của app.js (giọng đọc, nghe cả bài, lưu tiến độ…).
-   Dữ liệu: data/hsk4.js (LT4, LD4, SPN4) + data/h4-bN.js (LD4[N]). Không cần sửa app.js. ===== */
+   Dữ liệu: data/hsk4/index.js (LT4, LD4, SPN4, NAP[4]) + data/hsk4/bNN.js (LD4[N], tải khi mở cấp, js/kho.js). Không cần sửa app.js. ===== */
 LV[4]=LT4.length;LDS[4]=LD4;LTS[4]=LT4;
-/* cấp 5 = "Mở rộng H4": cùng giao diện 7 tab, dữ liệu ở LD5 (data/h4mr-bN.js) */
+/* cấp 5 = "Mở rộng H4": cùng giao diện 7 tab, dữ liệu ở LD5 (data/h4mr/index.js + data/h4mr/bNN.js) */
 if(typeof LD5!="undefined"){LV[5]=LT5.length;LDS[5]=LD5;LTS[5]=LT5}
 const HL=()=>LDS[olLv][cur];
 const lvN=l=>l==5?"Mở rộng H4":"HSK "+l;

@@ -1,9 +1,5 @@
-/* ===== HSK1 – dữ liệu bài học (tách riêng khỏi code) ===== */
-const LT1=["AI小语，你好！|Xin chào AI Tiểu Ngữ!","我叫李文|Mình tên là Lý Văn","我是中国人|Mình là người Trung Quốc","我有两个孩子|Chị có hai con","今天我休息|Hôm nay anh được nghỉ","你的手机号是多少？|Số điện thoại của bạn là bao nhiêu?","我晚上六点半下班|Em tan làm lúc 6 rưỡi tối","我爸爸也在医院工作|Bố em cũng làm việc ở bệnh viện","我明天上午在学校学习|Sáng mai mình học ở trường","这儿的苹果真便宜！|Táo ở đây rẻ thật!","我读大学呢|Em đang học đại học","昨天下雪了|Hôm qua tuyết rơi rồi","请给我一杯茶|Cho tôi một cốc trà","我看了一个电影|Mình đã xem một bộ phim","大兴机场见！|Hẹn gặp ở sân bay Đại Hưng!"];
-/* File nghe giáo trình: điền link/asset theo mã bài, ví dụ "1-1":"…mp3". Chưa có thì dùng giọng đọc máy. */
-const AUD={};
-const SPN={"王一飞":["Wáng Yīfēi","Vương Nhất Phi"],"小语":["Xiǎoyǔ","Tiểu Ngữ"],"学生们":["xuéshengmen","Học sinh"]};
-const LD1={1:{t:"AI小语，你好！",tp:"AI Xiǎoyǔ, nǐ hǎo!",vi:"Xin chào AI Tiểu Ngữ!",
+/* ===== HSK1 · Bài 1 ===== */
+LD1[1]={t:"AI小语，你好！",tp:"AI Xiǎoyǔ, nǐ hǎo!",vi:"Xin chào AI Tiểu Ngữ!",
 goals:["Nghe hiểu và dùng được ngôn ngữ lịch sự để chào hỏi, cảm ơn và tạm biệt.","Hiểu nghi thức giao tiếp của người Trung Quốc; nghe hiểu và dùng được đại từ kính trọng “您”."],
 texts:[
 {ctx:"Ngày đầu tiên đi học, Vương Nhất Phi chào hỏi trợ giảng AI Tiểu Ngữ trong văn phòng.",a:"1-1",l:[
@@ -52,7 +48,7 @@ tlis:[
 {a:"同学们，再见！",o:["老师，再见！|Lǎoshī, zàijiàn!","不客气！|Bú kèqi!","你好！|Nǐ hǎo!"]},
 {a:"大家好！",o:["老师，您好！|Lǎoshī, nín hǎo!","谢谢！|Xièxie!","再见！|Zàijiàn!"]},
 {a:"AI小语，你好！",o:["王老师，你好！|Wáng lǎoshī, nǐ hǎo!","不客气！|Bú kèqi!","同学们，再见！|Tóngxuémen, zàijiàn!"]},
-{a:"老师，您好！",o:["你们好！|Nǐmen hǎo!","不客气！|Bú kèqi!","老师，再见！|Lǎoshī, zàijiàn!"]}]}};
+{a:"老师，您好！",o:["你们好！|Nǐmen hǎo!","不客气！|Bú kèqi!","老师，再见！|Lǎoshī, zàijiàn!"]}]};
 
 
 /* Luyện nói theo tình huống: w=người nói, vi=mục đích, h=gợi ý [chữ,pinyin], r=[câu mẫu, pinyin, nghĩa] */

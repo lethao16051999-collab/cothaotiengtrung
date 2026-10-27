@@ -29,7 +29,9 @@ function nbDue(h){if(!h)return null;let y,m,d,s=String(h).trim(),x;
  const due=new Date(y,m-1,d),t=new Date();t.setHours(0,0,0,0);
  return{left:Math.round((due-t)/864e5),txt:["Chủ nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"][due.getDay()]+" "+String(d).padStart(2,"0")+"/"+String(m).padStart(2,"0")}}
 function nbInfo(){const s=NB.st;if(!trkIn()||!s||!s.lesson)return null;
- const lv=+s.lesson.lv,b=+s.lesson.b,L=(LDS[lv]||{})[b];if(!L)return null;
+ const lv=+s.lesson.lv,b=+s.lesson.b;
+ if(typeof napOk=="function"&&!napOk(lv)){napLv(lv).then(nbDraw,()=>{});return null}
+ const L=(LDS[lv]||{})[b];if(!L)return null;
  const r=nbProg(lv,b),P=(lv>=4?NB_P45:NB_P12).filter(p=>p[0]!="test"||(L.tsort&&L.tlis)).filter(p=>p[0]!="rd"||(L.texts&&L.texts.length));
  const parts=P.map(p=>({k:p[0],tab:p[1],n:p[2],v:r[p[0]]!=null?Math.round(r[p[0]]):null}));
  parts.forEach(p=>p.st=p.v==null?"no":p.v>=NB_OK?"ok":"low");

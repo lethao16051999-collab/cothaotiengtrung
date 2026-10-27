@@ -1,4 +1,4 @@
-/* ===== HSK2 – danh sách tên bài, nhân vật. Mỗi bài nằm trong file data/h2-bN.js ===== */
+/* ===== HSK2 · tên bài, nhân vật, danh sách file bài (nạp ngay khi mở trang). Mỗi bài nằm ở data/hsk2/bNN.js ===== */
 const LT2=[
 "她请我们吃了北京烤鸭|Chị ấy mời chúng tôi ăn vịt quay Bắc Kinh",
 "还是打车去北大吧|Hay là bắt taxi đến Đại học Bắc Kinh đi",
@@ -22,3 +22,5 @@ Object.assign(SPN,{"王一飞":["Wáng Yīfēi","Vương Nhất Phi"],"李文":[
 Object.assign(SPN,{"杨同乐":["Yáng Tónglè","Dương Đồng Lạc"]});
 const GPN="Ngữ pháp lấy từ mục Lớp học của Tiểu Ngữ (小语讲堂) trong sách, kèm lỗi người Việt hay mắc.";
 const LD2={};
+/* Danh sách file của cấp này (tải khi học viên mở HSK 2, js/kho.js). Thêm bài N: tạo data/hsk2/bNN.js, thêm N vào "bai", tăng "v". */
+var NAP=window.NAP||{};NAP[2]={dir:"data/hsk2/",bai:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],them:["wg.js"],ts:true,v:1};
