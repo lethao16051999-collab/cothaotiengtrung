@@ -229,3 +229,13 @@ button:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visib
 .rd .rdl,.vlt tbody,.srlive{--sub:#4e3a43;--m:#7a1f3d;color:#2b1a20}
 .rd .rdl .rdw small,.rd .rdl .out small{color:#4e3a43}
 .vlt td{color:#2b1a20;font-weight:600}
+
+/* Test nhanh · Gõ phiên âm (27/10) */
+.tvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:8px 0}
+.tvi{background:var(--c);border:2px solid var(--b);border-radius:14px;padding:10px;text-align:center}
+.tvi.ok{border-color:#3d8b4f}.tvi.half{border-color:#d08a1e}.tvi.no{border-color:#c0392b}
+.tvh{font-size:2rem;line-height:1.3;color:var(--m)}.tvin{text-align:center;margin:6px 0 0}
+.tvans{font-size:.95rem;margin-top:4px}.tvi small{display:block;color:var(--sub);font-size:.8rem}
+.half{color:#b8730f;font-weight:600}
+.tvlist{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.tvlist span{background:var(--k);border:1px solid var(--b);border-radius:10px;padding:6px 10px;text-align:center}
+.tvlist .zh{font-size:1.5rem;color:var(--m);display:block}.tvlist small{color:var(--sub);font-size:.8rem}
