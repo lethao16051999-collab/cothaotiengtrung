@@ -286,7 +286,7 @@ let T=null,TIV=null,TPY=true;const TMIN=10;
 /* Phần Gõ phiên âm (nhớ mặt chữ) trong Test nhanh: bật theo cấp. Thêm cấp: TVW[2]=true. */
 const TVW={1:true,2:true,3:true};
 const tHasV=L=>!!(TVW[olLv]&&L&&L.words&&L.words.length);
-const tMin=L=>TMIN+(tHasV(L)?Math.max(3,Math.ceil(tVPick(L).length/4)):0);
+const tMin=L=>olLv==3?25:TMIN+(tHasV(L)?Math.max(3,Math.ceil(tVPick(L).length/4)):0);/* HSK3: cố định 25 phút */
 const TONEMK={"\u0304":1,"\u0301":2,"\u030c":3,"\u0300":4};
 function pyParse(str){const x=String(str||"").toLowerCase().normalize("NFD");let base="";const tn=[];
  for(const c of x){if(TONEMK[c])tn.push(TONEMK[c]);else if(c==="\u0308"||(c===":"&&base.endsWith("u"))){if(base.endsWith("u"))base=base.slice(0,-1)+"v"}else if(/[1-4]/.test(c))tn.push(+c);else if(/[a-z]/.test(c))base+=c}
