@@ -5,7 +5,7 @@
 let GV={pass:"",data:null,tab:"tq",cls:"",days:30,lv:null,eb:"",es:"",stu:null,err:"",busy:false,more:0};
 try{GV.pass=localStorage.getItem("ct_gv_pass")||sessionStorage.getItem("ct_gv_pass")||""}catch(e){}
 const gvE=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-const gvLv=l=>({1:"HSK 1",2:"HSK 2",3:"HSK 3",4:"HSK 4",5:"Mở rộng H4"})[l]||("HSK "+l);
+const gvLv=l=>({1:"HSK 1",2:"HSK 2",3:"HSK 3",4:"HSK 4",5:"Mở rộng H4",6:"HSK1 · GT chuẩn"})[l]||("HSK "+l);
 const gvT=ms=>{if(!ms)return"—";const d=new Date(ms),p=n=>String(n).padStart(2,"0");return `${p(d.getDate())}/${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}`};
 const gvAgo=ms=>{if(!ms)return"chưa vào";const d=Math.floor((Date.now()-ms)/864e5);return d<1?"hôm nay":d==1?"hôm qua":d+" ngày trước"};
 const gvSc=v=>v==null?`<span class="gvna">—</span>`:`<b class="gvs ${v>=80?"ok":v>=50?"mid":"no"}">${v}%</b>`;

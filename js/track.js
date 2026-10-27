@@ -6,8 +6,11 @@
 const TRK_URL="https://script.google.com/macros/s/AKfycbzwJj7bMam8_gZHPltogTqSvxVrxI6ikvzkj6gZLm1bnk2jmrRr57Dg6IStI23Og5HZOw/exec";
 const TRK_API=(()=>{try{return localStorage.getItem("ct_trk_url")||TRK_URL}catch(e){return TRK_URL}})();
 const TRK_KEY=/^ct_hsk\d+_b\d+$/;
-const trkJ=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
-const _trkSet=Storage.prototype.setItem;
+/* Trang có đổi tên khóa (hsk1/ Giáo trình chuẩn: ct_hsk1_ → ct_hsk6_) khai CT_RAW (hàm gốc), CT_KMAP (đổi khóa), CT_LVMAP (đổi cấp) trước khi nạp file này */
+const _trkRaw=window.CT_RAW||{s:Storage.prototype.setItem,g:Storage.prototype.getItem,r:Storage.prototype.removeItem};
+const trkLv=()=>window.CT_LVMAP?CT_LVMAP(olLv):olLv;
+const trkJ=(k,d)=>{try{const v=_trkRaw.g.call(localStorage,k);return v?JSON.parse(v):d}catch(e){return d}};
+const _trkSet=_trkRaw.s;
 const trkPut=(k,o)=>{try{_trkSet.call(localStorage,k,JSON.stringify(o))}catch(e){}};
 let TRKME=trkJ("ct_trk_me",null),TRKQ=trkJ("ct_trk_q",{ev:[],err:[]}),TRKD=trkJ("ct_trk_dirty",[]),TRKBUSY=false,TRKLAST=trkJ("ct_trk_last",0),TRKMSG="",TRKBAN=false,TRKSEEN={};
 const trkOn=()=>!!TRK_API;
@@ -53,7 +56,7 @@ async function trkLogin(){const el=$("trkcode"),code=(el&&el.value||"").trim().t
 function trkOut(){trkClose();ask("Đăng xuất khỏi máy này? Kết quả của em đã lưu cho cô, lần sau nhập lại mã là học tiếp được.",async()=>{
  await trkFlush();if(trkPending())await trkFlush();
  const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(TRK_KEY.test(k))ks.push(k)}
- ks.concat(["ct_trk_me","ct_trk_q","ct_trk_dirty","ct_trk_last","ct_trk_s","ct_name"]).forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+ ks.concat(["ct_trk_me","ct_trk_q","ct_trk_dirty","ct_trk_last","ct_trk_s","ct_name"]).forEach(k=>{try{_trkRaw.r.call(localStorage,k)}catch(e){}});
  TRKME=null;TRKQ={ev:[],err:[]};TRKD=[];TRKSESS=null;trkBadge();if(typeof rr=="function")rr()})}
 
 /* ---------- giao diện: nút ở thanh menu + hộp nhập mã ---------- */
@@ -82,7 +85,7 @@ function trkBanner(){return trkOn()&&!trkIn()&&!TRKBAN?`<div class="card trkban"
 const trkId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function trkEv(o){if(!trkIn())return;o.at=o.at||Date.now();o.id=trkId();TRKQ.ev.push(o);if(TRKQ.ev.length>400)TRKQ.ev=TRKQ.ev.slice(-400);trkPut("ct_trk_q",TRKQ);trkSoon()}
 const trkTxt=s=>{const d=document.createElement("div");d.innerHTML=String(s==null?"":s);return d.textContent.replace(/\s+/g," ").trim()};
-function trkErr(sec,q,a,c,b){if(!trkIn())return;const lv=olLv,bb=b||cur,k=[lv,bb,sec,q].join("|");if(TRKSEEN[k])return;TRKSEEN[k]=1;
+function trkErr(sec,q,a,c,b){if(!trkIn())return;const lv=trkLv(),bb=b||cur,k=[lv,bb,sec,q].join("|");if(TRKSEEN[k])return;TRKSEEN[k]=1;
  TRKQ.err.push({id:trkId(),at:Date.now(),lv,b:bb,sec,q:trkTxt(q),a:trkTxt(a)||"(bỏ trống)",c:trkTxt(c)});if(TRKQ.err.length>600)TRKQ.err=TRKQ.err.slice(-600);trkPut("ct_trk_q",TRKQ);trkSoon()}
 
 /* thời gian học: cứ 15 giây, nếu trang đang mở một bài và em có thao tác trong 2 phút gần nhất thì cộng 15 giây */
@@ -90,7 +93,7 @@ let TRKSESS=trkJ("ct_trk_s",null),TRKACT=Date.now();
 ["pointerdown","keydown","scroll","touchstart"].forEach(e=>addEventListener(e,()=>TRKACT=Date.now(),{passive:true}));
 function trkPartName(){try{const tabs=navTabs(),k=navCur(),t=tabs.find(x=>x[0]==k);return t?t[1].replace(/^[^A-Za-zÀ-ỹ]+/,"").trim():""}catch(e){return ""}}
 function trkCtx(){const L=$("learn");if(!L||!L.classList.contains("on"))return null;
- if(SUBC=="ol"&&cur)return{t:"Học bài",lv:olLv,b:cur};if(SUBC=="ts"&&tcur)return{t:"Làm test",lv:olLv,b:tcur};return null}
+ if(SUBC=="ol"&&cur)return{t:"Học bài",lv:trkLv(),b:cur};if(SUBC=="ts"&&tcur)return{t:"Làm test",lv:trkLv(),b:tcur};return null}
 function trkEnd(){const s=TRKSESS;TRKSESS=null;try{localStorage.removeItem("ct_trk_s")}catch(e){}
  if(s&&s.sec>=30)trkEv({t:s.t,lv:s.lv,b:s.b,p:(s.p||[]).join(", "),m:Math.round(s.sec/6)/10,at:s.at})}
 function trkTick(){if(!trkIn())return;const c=trkCtx();
@@ -106,7 +109,8 @@ addEventListener("pagehide",()=>{trkTick();trkFlush(true)});
 
 /* ---------- gắn vào các phần chấm điểm (HSK1, HSK2) ---------- */
 /* tiến trình: mọi lần trang lưu ct_hsk{cấp}_b{bài} */
-Storage.prototype.setItem=function(k,v){_trkSet.call(this,k,v);try{if(this===localStorage&&TRK_KEY.test(k)&&trkIn())trkDirty(k)}catch(e){}};
+const _trkPrev=Storage.prototype.setItem;
+Storage.prototype.setItem=function(k,v){_trkPrev.call(this,k,v);try{const kk=window.CT_KMAP?CT_KMAP(k):k;if(this===localStorage&&TRK_KEY.test(kk)&&trkIn())trkDirty(kk)}catch(e){}};
 /* câu máy nghe được (luyện nói, luyện đọc, test nói) */
 let TRKHEARD={};
 if(typeof srListen=="function"){const _o=srListen;srListen=function(done,fail){const tag=recOn!=null?recOn:(typeof RDON!="undefined"&&RDON!=null?"rd"+RDON:"x");return _o(t=>{TRKHEARD[tag]=t;TRKHEARD.last=t;return done(t)},fail)}}
@@ -122,7 +126,7 @@ trkWrap("tSubmit",(o,a)=>{const was=T&&T.done,r=o(...a);try{if(T&&T.done&&!was){
  L.tsort.forEach((it,k)=>{const s=T.so[k].ch.map(i=>it.t[i]).join("");if(!it.ok.includes(s))trkErr("Test · Sắp xếp câu",it.ok[0],T.so[k].ch.map(i=>it.t[i]).join(" "),it.ok[0],b)});
  L.tlis.forEach((q,k)=>{const s=T.li[k],p=s.pick!=null?s.o[s.pick]:null;if(p!==q.o[0])trkErr("Test · Nghe hiểu",(q.qz?q.qz+" · ":"")+"Nghe: "+q.a,p?p.split("|")[0]:"",q.o[0].split("|")[0],b)});
  T.sp.forEach((ix,k)=>{if(T.spk[k]!==true){const t=all[ix].t;trkErr("Test · Nói",t.vi,T.spr[k]?(TRKHEARD["t"+k]||""):"(chưa nói)",t.r[0],b)}});
- trkEv({t:"Nộp test",lv:olLv,b,s:`${x+y+z}/15`})}}catch(e){}return r});
+ trkEv({t:"Nộp test",lv:trkLv(),b,s:`${x+y+z}/15`})}}catch(e){}return r});
 
 /* lời nhắc nhập mã ở đầu bài học và bài test */
 if(typeof lessonView=="function"){const _lv=lessonView;lessonView=function(){return trkBanner()+_lv()}}
