@@ -81,7 +81,9 @@ function vBar(){voices();return `<div class="card vset" id="vpanel" ${vOpen?"":"
 <button class="btn o sm" onclick="say('你好，我叫王一雪。很高兴认识你。')">▶ Nghe thử</button></div>
 <small class="ctx">Giọng đọc lấy từ máy của em. Giọng có ★ nghe tự nhiên nhất. Máy tính: mở trang bằng <b>Microsoft Edge</b> (giọng Xiaoxiao) hoặc <b>Google Chrome</b> (giọng Google). iPhone/iPad: vào Cài đặt › Trợ năng › Nội dung được đọc › Giọng nói › Tiếng Trung, tải giọng <b>Tingting (Nâng cao)</b>.</small></div>`}
 let SPK=[];const S=t=>(SPK.push(t),SPK.length-1);
-function say(t){const k=typeof t=="object"?t.k:null,x=typeof t=="object"?t.t:t;
+/* Số điện thoại (từ 8 chữ số trở lên) đọc từng số, 1 đọc yāo (幺) */
+const ttsFix=x=>String(x).replace(/\+?\d[\d ]{6,}\d/g,m=>m.replace(/\+/g,"").trim().replace(/\d/g,d=>"零幺二三四五六七八九"[d]).replace(/ +/g,"，"));
+function say(t){const k=typeof t=="object"?t.k:null,x=ttsFix(typeof t=="object"?t.t:t);
  if(k&&AUD[k]){try{new Audio(AUD[k]).play();return}catch(e){}}
  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(x);u.lang=zhV?zhV.lang:"zh-CN";u.rate=VRATE;u.pitch=.95;if(zhV)u.voice=zhV;speechSynthesis.speak(u)}catch(e){ask("Trình duyệt này chưa hỗ trợ đọc tiếng Trung.",null,1)}}
 function spk(n){plStop();say(SPK[n])}
@@ -98,7 +100,7 @@ function plPlay(i){if(PL&&PL.i===i&&PL.st=="pause"){PL.st="play";if(PL.aud){PL.a
  if(src.a&&AUD[src.a]){try{const a=new Audio(AUD[src.a]);PL.aud=a;a.onended=()=>plStop();a.play();plUI();return}catch(e){PL.aud=null}}
  plNext()}
 function plNext(){if(!PL||PL.st!="play")return;const l=plSrc(PL.i).l;if(PL.j>=l.length)return plStop();plUI();
- const tk=++PLT;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(l[PL.j]);u.lang=zhV?zhV.lang:"zh-CN";u.rate=VRATE;u.pitch=.95;if(zhV)u.voice=zhV;
+ const tk=++PLT;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(ttsFix(l[PL.j]));u.lang=zhV?zhV.lang:"zh-CN";u.rate=VRATE;u.pitch=.95;if(zhV)u.voice=zhV;
   u.onend=()=>{if(tk!==PLT||!PL||PL.st!="play")return;PL.j++;setTimeout(()=>{if(tk===PLT)plNext()},450)};
   u.onerror=u.onend;PL.u=u;speechSynthesis.speak(u)}catch(e){plStop();ask("Trình duyệt này chưa hỗ trợ đọc tiếng Trung.",null,1)}}
 function plPause(){if(!PL)return;PL.st="pause";PLT++;if(PL.aud)PL.aud.pause();else try{speechSynthesis.cancel()}catch(e){}plUI()}
@@ -113,12 +115,13 @@ function simi(a,b){if(!b.length)return 0;const d=Array(a.length+1).fill(0).map((
 /* ===== Danh sách bài ===== */
 let cur=null,tcur=null,ltab="bk",fcI=0,fcShow=false;
 function rr(){plStop();SPK=[];drawOl();drawTs();crumbDraw()}
-function setLv(l){olLv=l;LD=LDS[l]||{};cur=null;tcur=null;rr()}
+function setLv(l){olLv=l;window.NVOPEN=false;LD=LDS[l]||{};cur=null;tcur=null;rr()}
 function avgOf(r){const v=["fc","gp","dt","ns"].map(k=>r[k]).filter(x=>x!=null);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null}
-function lessons(mode){return `<div class="lessons">${Array.from({length:LV[olLv]},(_,k)=>{const n=k+1,ok=!!LD[n],t=LTS[olLv]&&LTS[olLv][k]?LTS[olLv][k].split("|"):null,r=ok?ldN(n):{};
+function lessons(mode){return `<div class="lessons">${mode=="ol"&&window.NVH&&NVH[olLv]?NVH[olLv].card():""}${Array.from({length:LV[olLv]},(_,k)=>{const n=k+1,ok=!!LD[n],t=LTS[olLv]&&LTS[olLv][k]?LTS[olLv][k].split("|"):null,r=ok?ldN(n):{};
  const sc=mode=="ts"?r.test:avgOf(r);
  return `<div class="ls ${ok?"go":""}" ${ok?`onclick="${mode=="ts"?"openTest":"openL"}(${n})"`:""}><b>Bài ${n}</b>${t?`<span class="zh lt" title="${t[1]}">${t[0]}</span>`:""}<small>${ok?(sc!=null?`<i class="sc ${sc>=80?"ok":"no"}">${sc}%</i>`:(mode=="ts"?"Làm test →":"Vào học →")):"Sắp ra mắt"}</small></div>`}).join("")}</div>`}
 function drawOl(){if(cur){$("lp-ol").innerHTML=lessonView();return}
+ if(window.NVOPEN&&window.NVH&&NVH[olLv]){$("lp-ol").innerHTML=NVH[olLv].view();return}
  const cv=document.querySelectorAll("img.bk")[olLv-1];
  $("lp-ol").innerHTML=lvBar()+`<div class="bookrow">${cv?`<img class="bk" src="${cv.src}" alt="Bìa giáo trình New HSK ${olLv}">`:""}<div class="card"><b>Mỗi bài ôn gồm:</b><br>${PARTS.map((p,k)=>`<span class="pill">${k+1}. ${p}</span>`).join("")}<p>Cuối bài, hệ thống tổng kết kết quả. Phần nào dưới 80% sẽ được ghi rõ để ôn lại.</p><small style="color:var(--sub)">Tiến độ lưu trên máy này.</small></div></div>`+lessons("ol")}
 function drawTs(){if(tcur){$("lp-ts").innerHTML=testView();return}
@@ -129,7 +132,7 @@ const LTB0=[["bk","📖 Bài khóa"],["fc","🃏 Flashcard"],["gp","📐 Ngữ p
 /* Bài nào có warm (Khởi động) / act (Hoạt động trên lớp) thì tự thêm phần tương ứng */
 function setTabs(L){LTABS.length=0;if(L&&L.warm)LTABS.push(["wu","🔥 Khởi động"]);LTB0.forEach(t=>{LTABS.push(t);if(t[0]=="ns"&&L&&L.act)LTABS.push(["hd","🎭 Hoạt động"])})}
 setTabs(null);
-function openL(n){cur=n;setTabs(LD[n]);ltab=LD[n]&&LD[n].warm?"wu":"bk";WU={};ACR={};ACS={};ACRL={};fcI=0;fcShow=false;DTV={};DTR={};DTD=false;NSR={};NSH={};NSM={};nsS=0;delete QS.gp;GX=null;rr();scrollTo(0,0)}
+function openL(n){cur=n;window.NVOPEN=false;setTabs(LD[n]);ltab=LD[n]&&LD[n].warm?"wu":"bk";WU={};ACR={};ACS={};ACRL={};fcI=0;fcShow=false;DTV={};DTR={};DTD=false;NSR={};NSH={};NSM={};nsS=0;delete QS.gp;GX=null;rr();scrollTo(0,0)}
 function closeL(){cur=null;rr()}
 function lt(t){ltab=t;rr();const e=$("ltabs");if(e)e.scrollIntoView({block:"nearest"})}
 function lessonView(){const L=LD[cur],r=ldN(cur);setTabs(L);if(!LTABS.some(t=>t[0]==ltab))ltab="bk";

@@ -128,6 +128,112 @@ if(LD1[3])LD1[3].gp=[
  n:["想 trong bài nghĩa là “nhớ”: 我们很想你。 · 我也想你们。"],
  w:["“không bận lắm” theo trật tự tiếng Việt dễ thành ✗ 不忙太. Đúng: 不太忙.","不 trước 太 (thanh 4) đọc thành bú."]})}];
 
+/* ---------- Bài 4 ---------- */
+if(LD1[4])LD1[4].gp=[
+{h:"1. Câu chữ 有 (1): có ai, có cái gì",b:G({
+ d:["有 biểu thị sự sở hữu: người nào có người / vật gì."],
+ f:[["k","Chủ ngữ ＋ 有 ＋ (số ＋ lượng từ) ＋ danh từ","… + yǒu + …"],["p","Chủ ngữ ＋ 没有 / 没 ＋ danh từ","… + méiyǒu / méi + …"],["h","Chủ ngữ ＋ 有 ＋ danh từ ＋ 吗？ · 有多少 / 几 ＋ lượng từ ＋ danh từ？","… yǒu … ma? · yǒu duōshao / jǐ …?"]],
+ e:[["k",[["她有二十个学生。","Tā yǒu èrshí ge xuésheng.","Cô ấy có hai mươi học sinh."],["她有一个姐姐。","Tā yǒu yí ge jiějie.","Cô ấy có một chị gái."]]],
+    ["p",[["我没有姐姐。","Wǒ méiyǒu jiějie.","Mình không có chị gái."],["我没哥哥。","Wǒ méi gēge.","Mình không có anh trai."]]],
+    ["h",[["你有姐姐吗？","Nǐ yǒu jiějie ma?","Bạn có chị gái không?","我有两个姐姐。","Wǒ yǒu liǎng ge jiějie."],["她有多少个学生？","Tā yǒu duōshao ge xuésheng?","Cô ấy có bao nhiêu học sinh?"]]]],
+ w:["Phủ định của 有 luôn là 没有 / 没; không bao giờ nói ✗ 不有.","Tiếng Việt nói “có hai con” nhưng tiếng Trung phải có lượng từ: 两个孩子, không nói ✗ 两孩子."]})},
+{h:"2. Cách đọc số",b:G({
+ d:["0–10: 零 líng · 一 yī · 二 èr · 三 sān · 四 sì · 五 wǔ · 六 liù · 七 qī · 八 bā · 九 jiǔ · 十 shí.","11–99 ghép như tiếng Việt: 十一 (11) · 二十 (20) · 二十八 (28) · 九十九 (99).","100 trở lên: 一百 (100) · 二百零八 (208) · 一千 (1000) · 一千五百二十八 (1528) · 九千九百九十九 (9999)."],
+ f:[["c","Hàng chục ＋ 十 ＋ hàng đơn vị","… shí …"],["c","Số đếm, số thứ tự: 二 · Trước lượng từ: 两","èr · liǎng + lượng từ"]],
+ e:[["c",[["十二","shí'èr","12"],["二十二","èrshí'èr","22"],["一百二十二","yìbǎi èrshí'èr","122"],["两个人","liǎng ge rén","hai người"],["两口人","liǎng kǒu rén","hai người (trong nhà)"],["两本书","liǎng běn shū","hai quyển sách"]]]],
+ n:["Số có 0 ở giữa đọc 零: 208 = 二百零八. Số 10–19 ở đầu không đọc 一: 12 = 十二 (không nói 一十二)."],
+ w:["Trước lượng từ dùng 两: ✗ 二个哥哥 → 两个哥哥.","Đọc số thì vẫn dùng 二: 12 = 十二, 22 = 二十二 (không nói ✗ 十两, 两十两)."]})},
+{h:"3. Trợ từ 呢 (1): A……，B呢？",b:G({
+ d:["呢 đứng cuối câu, hỏi lại về điều vừa nói: “Còn B thì sao?”"],
+ f:[["h","A ……，B ＋ 呢？","…, B + ne?"],["t","B 也 … · B 没有 / 不 …","B yě … · B méiyǒu / bù …"]],
+ e:[["h",[["我有两个哥哥，你呢？","Wǒ yǒu liǎng ge gēge, nǐ ne?","Mình có hai anh trai, còn bạn?","我没有哥哥。","Wǒ méiyǒu gēge."],["我叫白家月，你呢？","Wǒ jiào Bái Jiāyuè, nǐ ne?","Mình tên là Bạch Gia Nguyệt, còn bạn?"],["我是中国人，你呢？","Wǒ shì Zhōngguó rén, nǐ ne?","Mình là người Trung Quốc, còn bạn?","我也是中国人。","Wǒ yě shì Zhōngguó rén."]]]],
+ w:["呢 đứng sau người được hỏi: 你呢？ không nói ✗ 呢你？","Không thay 呢 bằng 吗: ✗ 我很好，你吗？"]})},
+{h:"4. Lượng từ 个, 口: số ＋ lượng từ ＋ danh từ",b:G({
+ d:["Khi nói số lượng, sau số từ thường phải có lượng từ. 个 dùng cho nhiều danh từ; 口 dùng đếm người trong gia đình."],
+ f:[["k","Số ＋ 个 / 口 ＋ (danh từ)","… + gè / kǒu + …"],["h","几 / 多少 ＋ (个 / 口) ＋ danh từ？","jǐ / duōshao + …?"]],
+ e:[["k",[["两个学生","liǎng ge xuésheng","hai học sinh"],["四口人","sì kǒu rén","bốn người (nhà có bốn người)"],["我家有四口人。","Wǒ jiā yǒu sì kǒu rén.","Nhà mình có bốn người."]]],
+    ["h",[["你家有几口人？","Nǐ jiā yǒu jǐ kǒu rén?","Nhà bạn có mấy người?","我家有三口人。","Wǒ jiā yǒu sān kǒu rén."],["你有几个姐姐？","Nǐ yǒu jǐ ge jiějie?","Bạn có mấy chị gái?","我有两个姐姐。","Wǒ yǒu liǎng ge jiějie."]]]],
+ n:["几 hỏi số nhỏ (thường dưới 10), sau 几 bắt buộc có lượng từ. 多少 hỏi số bất kỳ, lượng từ có thể bỏ: 多少学生."],
+ w:["Đã có 口 thì không thêm 个: ✗ 四个口人.","Nhà có 4 người dùng 有, không dùng 是: ✗ 我家是四口人."]})},
+{h:"5. Hỏi tuổi: 几岁 / 多大",b:G({
+ d:["Hỏi trẻ em dưới 10 tuổi: 几岁. Hỏi người trên 10 tuổi: 多大.","Câu nói tuổi là câu vị ngữ danh từ, không cần 是: 他今年五岁。 Trên 10 tuổi có thể bỏ 岁: 她今年十二。"],
+ f:[["h","(今年) ＋ 几岁？ · (今年) ＋ 多大？","jǐ suì? · duō dà?"],["t","(今年) ＋ số ＋ 岁","… + suì"]],
+ e:[["t",[["您儿子几岁？","Nín érzi jǐ suì?","Con trai chị mấy tuổi?","他今年五岁。","Tā jīnnián wǔ suì."],["您女儿多大？","Nín nǚ'ér duō dà?","Con gái chị bao nhiêu tuổi?","她今年十二。","Tā jīnnián shí'èr."],["你今年多大？","Nǐ jīnnián duō dà?","Năm nay bạn bao nhiêu tuổi?","我今年二十岁。","Wǒ jīnnián èrshí suì."]]]],
+ w:["Không nói ✗ 你多大岁？ / ✗ 你几大？","Không thêm 是 trước tuổi: ✗ 我是二十岁 → 我二十岁."]})}];
+
+/* ---------- Bài 5 ---------- */
+if(LD1[5])LD1[5].gp=[
+{h:"1. Nói ngày tháng, thứ: 年 → 月 → 日/号 → 星期",b:G({
+ d:["Tiếng Trung nói từ lớn đến nhỏ: năm → tháng → ngày → thứ (ngược với tiếng Việt).","Năm đọc từng chữ số: 2025年 = èr líng èr wǔ nián. Tháng: 一月 … 十二月. Thứ: 星期一 (thứ Hai) … 星期六 (thứ Bảy), Chủ nhật: 星期日 / 星期天.","日 dùng trong văn viết, 号 dùng nhiều trong khẩu ngữ."],
+ f:[["c","… 年 ＋ … 月 ＋ … 日 / 号 ＋ 星期 …","… nián … yuè … rì / hào, xīngqī …"]],
+ e:[["c",[["1992年5月16日/号，星期六","yī jiǔ jiǔ èr nián wǔ yuè shíliù rì / hào, Xīngqīliù","Thứ Bảy, ngày 16 tháng 5 năm 1992"],["2024年10月22日/号，星期二","èr líng èr sì nián shíyuè èrshí'èr rì / hào, Xīngqī'èr","Thứ Ba, ngày 22 tháng 10 năm 2024"],["明天是2024年8月18号，星期天。","Míngtiān shì èr líng èr sì nián bā yuè shíbā hào, Xīngqītiān.","Ngày mai là Chủ nhật, ngày 18 tháng 8 năm 2024."]]]],
+ n:["Mẹo nhớ thứ: số sau 星期 = số trong tiếng Việt trừ 1 (thứ Hai → 星期一, thứ Sáu → 星期五)."],
+ w:["Nói theo thứ tự tiếng Việt ✗ 星期二，22号10月 → 10月22号，星期二.","Không có ✗ 星期七; năm không đọc như số đếm ✗ 两千零二十五年."]})},
+{h:"2. Câu vị ngữ danh từ",b:G({
+ d:["Vị ngữ chỉ là danh từ / cụm danh từ chỉ thời gian, ngày tháng, tuổi tác…; không cần 是.","Khi phủ định phải thêm 不是."],
+ f:[["k","Chủ ngữ ＋ danh từ (ngày, thứ, tuổi)","… + …"],["p","Chủ ngữ ＋ 不是 ＋ danh từ","… + bú shì + …"],["h","Chủ ngữ ＋ 几号 / 星期几 / 几岁？","… jǐ hào / xīngqī jǐ / jǐ suì?"]],
+ e:[["k",[["今天5月1号。","Jīntiān wǔ yuè yī hào.","Hôm nay ngày 1 tháng 5."],["我妹妹12岁。","Wǒ mèimei shí'èr suì.","Em gái mình 12 tuổi."]]],
+    ["p",[["今天不是星期六。","Jīntiān bú shì Xīngqīliù.","Hôm nay không phải thứ Bảy."]]],
+    ["h",[["今天几号？","Jīntiān jǐ hào?","Hôm nay ngày mấy?","今天5月1号。","Jīntiān wǔ yuè yī hào."]]]],
+ w:["Câu khẳng định có thể thêm 是 (今天是5月1号), nhưng câu phủ định bắt buộc 不是: ✗ 今天不星期六."]})},
+{h:"3. Động từ năng nguyện 会: biết làm (nhờ học)",b:G({
+ d:["会 đặt trước động từ, biểu thị nhờ học tập mà biết làm, có khả năng làm việc gì."],
+ f:[["k","Chủ ngữ ＋ 会 ＋ động từ","… + huì + V"],["p","Chủ ngữ ＋ 不会 ＋ động từ","… + bú huì + V"],["h","… 会 ＋ động từ ＋ 吗？ · 会不会 …？ · 会 ＋ V ＋ 什么？","… huì … ma? · huì bu huì …? · huì … shénme?"]],
+ e:[["k",[["我会做面条儿。","Wǒ huì zuò miàntiáor.","Mình biết nấu mì."]]],
+    ["p",[["我不会做菜。","Wǒ bú huì zuò cài.","Mình không biết nấu món ăn."]]],
+    ["h",[["你会做饭吗？","Nǐ huì zuò fàn ma?","Bạn biết nấu ăn không?","我会做。","Wǒ huì zuò."],["你会做什么？","Nǐ huì zuò shénme?","Bạn biết nấu món gì?","我会做饺子。","Wǒ huì zuò jiǎozi."]]]],
+ n:["Trả lời ngắn chỉ cần 会 / 不会."],
+ w:["会 đứng trước động từ: ✗ 我做会饺子.","Phủ định là 不会, không dùng 没会; 不 trước 会 (thanh 4) đọc bú."]})},
+{h:"4. Hỏi ngày, thứ: 几号？ 星期几？",b:G({
+ d:["几 thay vào chỗ con số cần hỏi: 几月 (tháng mấy) · 几号 (ngày mấy) · 星期几 (thứ mấy)."],
+ f:[["h","今天 ＋ 几月几号？ · 今天 ＋ 星期几？","Jīntiān jǐ yuè jǐ hào? · Jīntiān xīngqī jǐ?"],["t","今天 ＋ … 月 … 号 · 今天 ＋ 星期 …","Jīntiān … yuè … hào · Jīntiān xīngqī …"]],
+ e:[["t",[["今天几号？","Jīntiān jǐ hào?","Hôm nay ngày mấy?","今天9月8号。","Jīntiān jiǔ yuè bā hào."],["星期几？","Xīngqī jǐ?","Thứ mấy?","星期日。","Xīngqīrì."]]]],
+ n:["“9月8日” cũng nói được là “9月8号”; “星期日” cũng nói được là “星期天”."],
+ w:["Không nói ✗ 今天是星期什么？ Hỏi thứ dùng 星期几."]})},
+{h:"5. 真 ＋ tính từ · 喜欢",b:G({
+ d:["真 + tính từ dùng để cảm thán: thật là …!","喜欢 + danh từ / động từ: thích cái gì, thích làm gì."],
+ f:[["k","真 ＋ tính từ！ · 喜欢 ＋ danh từ / động từ","zhēn + … ! · xǐhuan + …"],["p","不喜欢 ＋ …","bù xǐhuan + …"],["h","你喜欢 … 吗？","Nǐ xǐhuan … ma?"]],
+ e:[["k",[["真好看！","Zhēn hǎokàn!","Đẹp thật!"],["我也很喜欢它。","Wǒ yě hěn xǐhuan tā.","Mình cũng rất thích nó."],["我喜欢做饭。","Wǒ xǐhuan zuò fàn.","Mình thích nấu ăn."]]],
+    ["p",[["我不喜欢面条儿。","Wǒ bù xǐhuan miàntiáor.","Mình không thích mì."]]],
+    ["h",[["你喜欢饺子吗？","Nǐ xǐhuan jiǎozi ma?","Bạn thích sủi cảo không?"]]]],
+ n:["它 (tā) chỉ đồ vật, con vật: 我很喜欢它 (nó = cái máy tính)."],
+ w:["Không dùng 真 cùng 很: ✗ 很真好看.","真 đứng trước tính từ: ✗ 好看真."]})}];
+
+/* ---------- Bài 6 ---------- */
+if(LD1[6])LD1[6].gp=[
+{h:"1. Động từ năng nguyện 想: muốn",b:G({
+ d:["想 đặt trước động từ, biểu thị mong muốn hoặc dự định.","Ở Bài 3, 想 là động từ “nhớ” (我很想你); ở bài này 想 + động từ = muốn làm gì."],
+ f:[["k","Chủ ngữ ＋ 想 ＋ động từ","… + xiǎng + V"],["p","Chủ ngữ ＋ 不想 ＋ động từ","… + bù xiǎng + V"],["h","… 想 ＋ V ＋ 吗？ · 想 ＋ V ＋ 什么 / 哪儿？","… xiǎng … ma? · xiǎng … shénme / nǎr?"]],
+ e:[["k",[["我想去超市。","Wǒ xiǎng qù chāoshì.","Mình muốn đi siêu thị."],["我想吃包子。","Wǒ xiǎng chī bāozi.","Con muốn ăn bánh bao."]]],
+    ["p",[["我哥哥不想休息。","Wǒ gēge bù xiǎng xiūxi.","Anh trai mình không muốn nghỉ."],["我不想吃包子。","Wǒ bù xiǎng chī bāozi.","Con không muốn ăn bánh bao."]]],
+    ["h",[["你想吃什么？","Nǐ xiǎng chī shénme?","Bạn muốn ăn gì?","我想吃米饭。","Wǒ xiǎng chī mǐfàn."]]]],
+ w:["想 đứng trước động từ: ✗ 我去想超市.","Phủ định: 不想 + V, không nói ✗ 想不吃 / ✗ 没想吃."]})},
+{h:"2. Câu liên động (1): mục đích, cách thức",b:G({
+ d:["Vị ngữ có hai (hoặc nhiều) cụm động từ, xếp theo thứ tự việc xảy ra.","(1) Chỉ mục đích: 去 + nơi chốn + việc cần làm.","(2) Chỉ cách thức: 坐 + phương tiện + 去 + nơi chốn."],
+ f:[["k","去 ＋ nơi chốn ＋ V (mục đích) · 坐 ＋ phương tiện ＋ 去 ＋ nơi chốn","qù … + V · zuò … qù …"],["p","不想 / 不 ＋ cụm động từ 1 ＋ cụm động từ 2","bù (xiǎng) …"],["h","去哪儿 ＋ V？ · 怎么去 ＋ nơi chốn？","qù nǎr …? · zěnme qù …?"]],
+ e:[["k",[["我想去超市买东西。","Wǒ xiǎng qù chāoshì mǎi dōngxi.","Mình muốn đi siêu thị mua đồ."],["我们去西安饭店吃晚饭。","Wǒmen qù Xī'ān Fàndiàn chī wǎnfàn.","Chúng ta đến nhà hàng Tây An ăn tối."],["我们坐出租车去西安饭店。","Wǒmen zuò chūzūchē qù Xī'ān Fàndiàn.","Chúng ta đi taxi đến nhà hàng Tây An."],["她坐出租车去超市。","Tā zuò chūzūchē qù chāoshì.","Cô ấy đi taxi đến siêu thị."]]],
+    ["p",[["我不想去超市买东西。","Wǒ bù xiǎng qù chāoshì mǎi dōngxi.","Mình không muốn đi siêu thị mua đồ."]]],
+    ["h",[["星期天我们去哪儿吃晚饭？","Xīngqītiān wǒmen qù nǎr chī wǎnfàn?","Chủ nhật chúng ta đi đâu ăn tối?"]]]],
+ w:["Tiếng Việt hay nói “đi siêu thị bằng taxi”, dịch thẳng thành ✗ 去超市坐出租车. Đúng: 坐出租车去超市 (cách thức đứng trước).","Mục đích đứng sau: ✗ 我买东西去超市 → 我去超市买东西."]})},
+{h:"3. Đại từ nghi vấn 怎么: hỏi cách thức",b:G({
+ d:["怎么 đặt trước động từ để hỏi làm việc đó bằng cách nào."],
+ f:[["h","Chủ ngữ ＋ 怎么 ＋ động từ (＋ tân ngữ)？","… zěnme + V …?"],["t","坐 ＋ phương tiện ＋ 去","zuò … qù"]],
+ e:[["t",[["我们怎么去？","Wǒmen zěnme qù?","Chúng ta đi thế nào?","坐出租车去。","Zuò chūzūchē qù."],["她怎么去超市？","Tā zěnme qù chāoshì?","Cô ấy đi siêu thị bằng gì?","她坐出租车去超市。","Tā zuò chūzūchē qù chāoshì."]]]],
+ w:["怎么 đứng trước động từ: ✗ 我们去怎么？","Câu đã có 怎么 thì không thêm 吗."]})},
+{h:"4. Đọc số điện thoại: từng chữ số, 1 đọc yāo",b:G({
+ d:["Số điện thoại đọc từng chữ số một. Riêng số 1 đọc là yāo (để không nhầm với 七 qī).","Hỏi số điện thoại: … 手机号是多少？ (多少 dùng để hỏi con số)."],
+ f:[["h","你的手机号 / 电话号 ＋ 是多少？","Nǐ de shǒujīhào / diànhuà hào shì duōshao?"],["t","我的手机号是 ＋ từng chữ số","Wǒ de shǒujīhào shì …"]],
+ e:[["t",[["你的手机号是多少？","Nǐ de shǒujīhào shì duōshao?","Số điện thoại di động của bạn là bao nhiêu?","我的手机号是13552721160。","Wǒ de shǒujīhào shì yāo sān wǔ wǔ èr qī èr yāo yāo liù líng."]]],
+    ["c",[["0912345678","líng jiǔ yāo èr sān sì wǔ liù qī bā","số điện thoại kiểu Việt Nam"],["+86","bā liù","mã quốc gia Trung Quốc"]],"Ví dụ · Cách đọc"]],
+ n:["Hiện nay người ta cũng dùng 电话 (điện thoại) để chỉ 手机."],
+ w:["Không đọc số điện thoại như số đếm: ✗ 一百三十五亿….","Không hỏi ✗ 你的手机号是什么？ khi muốn biết con số; dùng 是多少."]})},
+{h:"5. 哪儿 · 那边 · 非常 ＋ tính từ · 些",b:G({
+ d:["哪儿 hỏi nơi chốn, đứng ở chỗ của nơi chốn trong câu trả lời: 去哪儿 → 去超市.","那边: bên kia, chỗ đó. 那边的包子 = bánh bao ở chỗ đó.","非常 + tính từ: rất, cực kỳ (mạnh hơn 很).","(一)些 + danh từ: một ít, một vài: 买些牛奶 · 做一些菜."],
+ f:[["h","去哪儿？","qù nǎr?"],["k","非常 ＋ tính từ · 些 ＋ danh từ","fēicháng + … · xiē + …"]],
+ e:[["h",[["明天你去哪儿？","Míngtiān nǐ qù nǎr?","Ngày mai bạn đi đâu?","我想去超市。","Wǒ xiǎng qù chāoshì."]]],
+    ["k",[["那边的包子非常好吃。","Nàbiān de bāozi fēicháng hǎochī.","Bánh bao ở đó cực kỳ ngon."],["我想买些牛奶。","Wǒ xiǎng mǎi xiē niúnǎi.","Mình muốn mua ít sữa."]]]],
+ w:["哪儿 (nǎr, thanh 3) là “đâu”; 那边 (nà, thanh 4) là “chỗ đó”. Đọc sai thanh sẽ thành câu khác nghĩa.","Không nói ✗ 你哪儿去？ → 你去哪儿？"]})}];
+
 /* ---------- Bài 8 ---------- */
 if(LD1[8])LD1[8].gp=[
 {h:"1. Phương vị từ: 上, 下, 前, 后, 里, 外",b:G({
