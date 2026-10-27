@@ -25,6 +25,8 @@ function napLv(l){const c=NAP[l];if(!c||NAPX[l]===1)return Promise.resolve();if(
 function napView(l,err){const n=typeof lvN=="function"?lvN(l):"HSK "+l;
  return err?`<div class="card note napbox">Chưa tải được bài ${n}. Em kiểm tra mạng rồi bấm <button class="btn sm" onclick="setLv(${l})">Thử lại</button></div>`
  :`<div class="card napbox" role="status"><span class="napsp" aria-hidden="true"></span>Đang tải bài ${n}…</div>`}
+/* cấp mới (ví dụ HSK3) chỉ cần khai trong data/hsk3/index.js: var LT3=[…], LD3={}, NAP[3]={…}; tự gắn vào LDS/LTS ở đây */
+Object.keys(NAP).forEach(l=>{if(!LDS[l]&&window["LD"+l]){LDS[l]=window["LD"+l];if(window["LT"+l])LTS[l]=window["LT"+l]}});
 let NAPERR=0;
 const _napSetLv=setLv;
 setLv=function(l){if(napOk(l)){NAPERR=0;return _napSetLv(l)}
