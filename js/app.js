@@ -284,7 +284,7 @@ ${r.test!=null?`<div class="bar"><span>Test nhanh</span><div class="tr"><i style
 /* ===== Test nhanh (kiểm tra vận dụng) ===== */
 let T=null,TIV=null,TPY=true;const TMIN=10;
 /* Phần Gõ phiên âm (nhớ mặt chữ) trong Test nhanh: bật theo cấp. Thêm cấp: TVW[2]=true. */
-const TVW={1:true,2:true};
+const TVW={1:true,2:true,3:true};
 const tHasV=L=>!!(TVW[olLv]&&L&&L.words&&L.words.length);
 const tMin=L=>TMIN+(tHasV(L)?Math.max(3,Math.ceil(tVPick(L).length/4)):0);
 const TONEMK={"\u0304":1,"\u0301":2,"\u030c":3,"\u0300":4};
