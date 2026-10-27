@@ -8,4 +8,4 @@ const LD1={};
 /* Vai dùng chung cho mọi cấp (trước đây khai trong file bài HSK1; HSK2 cũng dùng 我, 王老师, 医生) */
 Object.assign(SPN,{"我":["wǒ","Bạn"],"王老师":["Wáng lǎoshī","Cô Vương"],"同学":["tóngxué","Bạn học"],"胡医生":["Hú yīshēng","Bác sĩ Hồ"],"A":["A","Người A"],"B":["B","Người B"],"医生":["yīshēng","Bác sĩ"],"病人":["bìngrén","Bệnh nhân"]});
 /* Danh sách file của cấp này. Thêm bài N: tạo data/hsk1/bNN.js (số bài 2 chữ số, vd b04.js), thêm N vào "bai", tăng "v". */
-var NAP=window.NAP||{};NAP[1]={dir:"data/hsk1/",bai:[1,2,3,8,9,11,12,14],them:["gp.js","wg.js"],ts:true,v:1};
+var NAP=window.NAP||{};NAP[1]={dir:"data/hsk1/",bai:[1,2,3,4,5,6,8,9,11,12,14],them:["gp.js","wg.js","nv.js"],ts:true,v:2};

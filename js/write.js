@@ -26,7 +26,7 @@ function wgRun(){const el=$("wgc");if(!el||typeof HanziWriter=="undefined")retur
  if(WGQ){WGW.forEach(w=>w.quiz({showHintAfterMisses:3,onComplete:()=>{}}));return}
  let k=0;const nx=()=>{if(k<WGW.length&&$("wgc")===el)WGW[k++].animateCharacter({onComplete:()=>setTimeout(nx,300)})};nx()}
 function wgInit(){if(!$("wgc"))return;const k=olLv+"-"+cur+"-"+fcI;if(k!==WGK){WGQ=false;WGK=k}
- wgLoad("js/hanzi-writer.min.js").then(()=>wgLoad(`${((window.NAP||{})[olLv]||{}).dir||"data/hsk"+olLv+"/"}hz.js?v=4`)).then(wgRun).catch(()=>{const e=$("wgc");if(e)e.innerHTML=`<small>Chưa tải được dữ liệu nét chữ. Tải lại trang hoặc kiểm tra mạng.</small>`})}
+ wgLoad("js/hanzi-writer.min.js").then(()=>wgLoad(`${((window.NAP||{})[olLv]||{}).dir||"data/hsk"+olLv+"/"}hz.js?v=5`)).then(wgRun).catch(()=>{const e=$("wgc");if(e)e.innerHTML=`<small>Chưa tải được dữ liệu nét chữ. Tải lại trang hoặc kiểm tra mạng.</small>`})}
 const _wgFc=vFc;vFc=function(L,r){return _wgFc(L,r)+wgCard(L.words[fcI])};
 const _wgRR=rr;rr=function(){_wgRR();if(olLv<=3&&ltab=="fc")wgInit()};
 (function(){const st=document.createElement("style");st.textContent=`
