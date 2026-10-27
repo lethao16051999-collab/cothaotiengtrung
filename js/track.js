@@ -126,7 +126,8 @@ trkWrap("tSubmit",(o,a)=>{const was=T&&T.done,r=o(...a);try{if(T&&T.done&&!was){
  L.tsort.forEach((it,k)=>{const s=T.so[k].ch.map(i=>it.t[i]).join("");if(!it.ok.includes(s))trkErr("Test · Sắp xếp câu",it.ok[0],T.so[k].ch.map(i=>it.t[i]).join(" "),it.ok[0],b)});
  L.tlis.forEach((q,k)=>{const s=T.li[k],p=s.pick!=null?s.o[s.pick]:null;if(p!==q.o[0])trkErr("Test · Nghe hiểu",(q.qz?q.qz+" · ":"")+"Nghe: "+q.a,p?p.split("|")[0]:"",q.o[0].split("|")[0],b)});
  T.sp.forEach((ix,k)=>{if(T.spk[k]!==true){const t=all[ix].t;trkErr("Test · Nói",t.vi,T.spr[k]?(TRKHEARD["t"+k]||""):"(chưa nói)",t.r[0],b)}});
- trkEv({t:"Nộp test",lv:trkLv(),b,s:`${x+y+z}/15`})}}catch(e){}return r});
+ (T.vw||[]).forEach((wi,k)=>{if(T.vsc[k]<2){const w=L.words[wi];trkErr("Test · Gõ phiên âm",w[0],T.vin[k]||"(bỏ trống)",w[1]+" · "+w[3],b)}});
+ const tv=T.res.v||0,mx=typeof tMax=="function"?tMax(L):15;trkEv({t:"Nộp test",lv:trkLv(),b,s:`${String(x+y+z+tv).replace(".",",")}/${mx}`})}}catch(e){}return r});
 
 /* lời nhắc nhập mã ở đầu bài học và bài test */
 if(typeof lessonView=="function"){const _lv=lessonView;lessonView=function(){return trkBanner()+_lv()}}
