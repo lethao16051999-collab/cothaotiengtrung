@@ -2,7 +2,7 @@
 <html lang="vi"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Trang luyện viết HSK6 3.0 · Phần 1 (viết đoạn văn ứng dụng). Mở từ "Ôn luyện theo bài" trên trang chính.
-     Sửa nội dung: chỉ cần sửa mảng LOAI trong <script> bên dưới. -->
+     Sửa nội dung: sửa mảng LOAI (nội dung), PRIO (xếp hạng khả năng ra thi), DICH (bản dịch) trong script bên dưới. -->
 <title>Luyện viết HSK6 3.0 – Cô Thảo tiếng Trung</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -154,6 +154,22 @@ td .zh{color:var(--plum);font-size:15.5px}
 .tipbox li b+span{color:var(--muted);font-size:13.5px}
 .prompts{display:flex;flex-direction:column;gap:16px}
 
+
+.headrow{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.viewbtns{display:flex;gap:6px}
+.viewbtns button{font-size:13px;padding:6px 12px;border-radius:99px}
+.viewbtns button[aria-pressed="true"]{background:var(--plum);border-color:var(--plum);color:var(--surface)}
+.prio{margin:0;font-size:13.5px;padding:8px 12px;border-radius:8px;background:var(--sunk);max-width:none}
+.prio.t1{background:var(--gold-soft)}
+.fire{font-size:13px}
+.nav .vol.t1{color:var(--plum)}
+.dich{background:var(--sunk);border-radius:8px;padding:10px 14px;display:flex;flex-direction:column;gap:4px}
+.dich p{margin:0;font-size:14px;line-height:1.7}
+.dich .label{color:var(--gold)}
+body.no-vi .vi-only{display:none!important}
+ruby{display:inline-flex;flex-direction:column-reverse;align-items:center;vertical-align:bottom;line-height:1.25;text-indent:0}
+rt{display:block;font-family:var(--f-body);font-size:.52em;line-height:1.2;color:var(--muted);font-weight:400;letter-spacing:0;padding:0 1px;white-space:nowrap}
+
 @media (max-width:860px){
   .app{grid-template-columns:minmax(0,1fr);gap:22px;padding-block:18px 48px}
   .side{position:static}
@@ -193,6 +209,7 @@ body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-a
   <main id="main"></main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
 <script>
 /* ===== DỮ LIỆU =====
    Mỗi loại có 5 phần: intro, sample, template, tips, prompts.
@@ -835,6 +852,71 @@ const LOAI = [
     ] }
 ];
 
+
+/* ===== XẾP HẠNG KHẢ NĂNG RA THI (cập nhật theo đề thật) =====
+   tier 1 = đã ra thi / đề mẫu chính thức (🔥), 2 = khả năng cao, 3 = có thể ra, 4 = ít khả năng */
+const TIERS = {1:"🔥 Đã ra thi · ôn trước", 2:"Khả năng cao", 3:"Có thể ra", 4:"Ít khả năng ra"};
+const PRIO = {
+  "loai-4":{t:1, o:1, why:"Đề thi 22/9/2026: viết 自荐信 ứng cử dẫn chương trình 新年晚会."},
+  "loai-10":{t:1, o:2, why:"Đề thi 31/7/2026 (ĐH Hà Nội): viết 通知 về lễ hội văn hoá."},
+  "loai-2":{t:1, o:3, why:"Đề mẫu chính thức HSK6 3.0: viết tin tìm người ở ghép (招租)."},
+  "loai-3":{t:2, why:"Thư / email là dạng ứng dụng phổ biến nhất, dễ ra dưới dạng email đăng ký, khiếu nại, hỏi dịch vụ."},
+  "loai-6":{t:2, why:"Cùng nhóm \"thông báo sự kiện\" với đề 31/7 (thời gian, địa điểm, hoạt động)."},
+  "loai-9":{t:2, why:"Cùng nhóm \"thông báo sự kiện\" với đề 31/7; đề có thể yêu cầu viết 海报 cho hoạt động."},
+  "loai-5":{t:2, why:"Thư cá nhân trang trọng, dễ đủ 150 chữ khi kể lại sự việc."},
+  "loai-1":{t:3, why:"Quen thuộc nhưng bài thường ngắn, phải kéo dài mới đủ 150 chữ."},
+  "loai-7":{t:3, why:"Thư cá nhân trang trọng, ít gặp hơn thư cảm ơn, thư mời."},
+  "loai-14":{t:3, why:"Hợp với chủ đề học tập, có thể ra dạng kế hoạch học tập / tổng kết hoạt động."},
+  "loai-8":{t:4, why:"Văn bản rất ngắn (khoảng 90 chữ), khó đạt yêu cầu 150 chữ."},
+  "loai-11":{t:4, why:"Chứng từ quá ngắn, không đủ 150 chữ."},
+  "loai-12":{t:4, why:"Dài và nặng tính pháp lý, không hợp khung 150 chữ."},
+  "loai-13":{t:4, why:"Dài và nặng tính pháp lý, không hợp khung 150 chữ."}
+};
+const NO = {}; LOAI.forEach((l,i)=>NO[l.id]=i+1);
+LOAI.sort((a,b)=>(PRIO[a.id].t-PRIO[b.id].t)||((PRIO[a.id].o||9)-(PRIO[b.id].o||9))||(NO[a.id]-NO[b.id]));
+
+/* ===== BẢN DỊCH TIẾNG VIỆT CỦA VĂN BẢN MẪU (nút "Tiếng Việt") ===== */
+const DICH = {
+ "loai-1":[
+  "Thầy Trương kính mến: Sáng nay ngủ dậy em thấy trán nóng, đau họng, cả người khó chịu. Em lập tức đến bệnh viện khám, bác sĩ nói em bị viêm đường hô hấp trên, kê cho em một ít thuốc và khuyên em nghỉ ở nhà một ngày. Vì vậy buổi học Viết sáng mai (22/9) em không thể lên lớp được. Em xin phép thầy cho em nghỉ, mong thầy chấp thuận.",
+  "Kính gửi Viện trưởng Vương: Em gái tôi sẽ kết hôn vào ngày 28/12. Là anh trai duy nhất, tôi rất mong được về nước giúp em tổ chức hôn lễ và trực tiếp chúc phúc cho em. Vì vậy, tôi dự định xin nghỉ bốn ngày, từ 26 đến 29/12. Kính mong ông phê duyệt! Trân trọng! — Triệu Đại Vệ, 23/12/2016",
+  "Kính gửi Chủ tịch HĐQT Lưu: Gần đây sức khoẻ của tôi không tốt; hội chẩn ở nhiều bệnh viện vẫn chưa tìm ra nguyên nhân. Hiện tôi đã liên hệ một bệnh viện ở Đức, dự định ngày 1/5 sang Đức chữa bệnh, nên xin phép ông và các thành viên HĐQT cho nghỉ hai tháng, kính mong được phê duyệt; đồng thời tôi xin lỗi sâu sắc vì việc nghỉ ốm trong thời gian này ảnh hưởng đến công việc của công ty. Trân trọng! — Cao Cát, 19/4/2016"],
+ "loai-2":[
+  "Thông báo tìm đồ. Ngày 1/3/2017, tôi không may đánh rơi một chiếc túi xách tại chợ điện tử Trung Quan Thôn. Trong túi có hộ chiếu, điện thoại, ví tiền, tài liệu công việc và nhiều đồ quan trọng khác. Tôi rất lo lắng, mong người tốt nào nhặt được túi hãy nhanh chóng gọi số 1390xxxxxxx để liên hệ với tôi. Xin hậu tạ! — Người mất đồ, 2/3/2017",
+  "Cần thuê nhà. Tôi là du học sinh Đại học Bắc Kinh, cần thuê một phòng khoảng 30 m², có đủ đồ điện như tủ lạnh, máy giặt, điều hoà, ti vi; có giường, tủ quần áo, bàn học; tắm, nấu ăn, lên mạng được. Vị trí tốt nhất là gần Trung Quan Thôn. Tôi cam kết tuân thủ quy định của khu nhà, nộp các khoản phí đúng hạn. Ai có nhà cho thuê xin gọi điện trước để hẹn gặp trao đổi. Xin gọi 1365xxxxxxx, gặp anh Lý. — Người cần thuê, 4/11/2016",
+  "Bán xe đạp cũ. Tôi là du học sinh Đại học Ngôn ngữ, tháng sau tôi về nước nên cần bán một chiếc xe đạp cũ. Xe kiểu nữ cỡ 24, màu đen, còn mới khoảng 60%, đi tốt, có hoá đơn mua xe, giá thoả thuận. Ai có nhu cầu xin liên hệ với tôi. Điện thoại: xxxxxxxx; người liên hệ: Anna. — Anna, 5/2/2017",
+  "Thông báo tuyển dụng của công ty Hải Sâm. Hải Sâm là công ty máy tính liên doanh Trung – nước ngoài tại Bắc Kinh, có thực lực hùng hậu, công nghệ tiên tiến, những năm gần đây kinh doanh hiệu quả và dẫn đầu trong ngành. Để mở rộng kinh doanh, công ty quyết định tuyển 10 nhân viên chuyên ngành máy tính, yêu cầu: 1. Dưới 35 tuổi, không phân biệt giới tính. 2. Tốt nghiệp đại học ngành máy tính trở lên. 3. Tiếng Anh đạt cấp 6 quốc gia. Ai có nhu cầu xin mang chứng minh thư, bằng tốt nghiệp và giấy tờ liên quan đến phỏng vấn lúc 9 giờ sáng 20/12 tại phòng xxx, toà nhà Trung Quan Thôn. — Công ty liên doanh Hải Sâm, 1/12/2016"],
+ "loai-3":[
+  "Bố mẹ thân yêu: Bố mẹ khoẻ không ạ! Dạo này sức khoẻ bố mẹ thế nào? Con mọi thứ đều ổn, bố mẹ yên tâm nhé. Lúc mới đến Bắc Kinh, con hơi chưa quen thời tiết ở đây, mùa hè nóng quá, tối không bật điều hoà là không ngủ được. Đúng là “ra khỏi nhà mới biết quê nhà tốt, uống nước nơi khác mới biết nước quê ngọt”. Nhưng giờ con đã bị thành phố này cuốn hút, sống rất vui. Với con, mọi thứ ở đây đều mới mẻ, ngày nào con cũng vui. …… Thôi, hôm nay con viết đến đây, bố mẹ giữ gìn sức khoẻ nhé, nghỉ đông con nhất định sẽ về đoàn tụ. Chúc bố mẹ mạnh khoẻ! — Con gái Lisa, 1/10/2016",
+  "Tiêu đề: Đăng ký làm tình nguyện viên. Kính gửi người phụ trách Hội Tình thương: Chào anh/chị! Tôi đã nhận được thông báo về hoạt động dạy học tình nguyện ở vùng núi dịp hè của quý hội. Tôi rất muốn tham gia, dạy học miễn phí cho các em, đồng thời góp một phần nhỏ cho xã hội. Hè năm ngoái tôi từng dạy tình nguyện ở một trường tiểu học vùng núi Ninh Hạ, đó là kỳ nghỉ ý nghĩa nhất của tôi. Nhìn ánh mắt ngây thơ của các em, nghe tiếng đọc bài sang sảng, tôi biết các em rất cần sự quan tâm, giúp đỡ của chúng ta. Trẻ em vùng núi nghèo tuy điều kiện sống khắc nghiệt nhưng rất khao khát học hỏi. Như lời một bài hát: “Chỉ cần mỗi người trao đi một chút yêu thương, thế giới sẽ thành nhân gian tươi đẹp.” Tôi mong dùng sức nhỏ của mình để lan toả yêu thương. Trân trọng! — Lý Văn, 3/6/2016"],
+ "loai-4":[
+  "Đơn xin. Kính gửi Giáo sư Lý: Chào giáo sư! Tôi rất vinh hạnh có cơ hội xin làm nghiên cứu sau tiến sĩ tại Khoa Trung văn, Đại học Bắc Kinh. Đại học Bắc Kinh lịch sử lâu đời, nhân tài lớp lớp, tôi ngưỡng mộ đã lâu. Nếu được đến đây học tập nâng cao, đó sẽ là tài sản quan trọng trong đời tôi. Hiện tôi là nghiên cứu sinh tiến sĩ năm thứ ba ngành Văn hoá Trung Quốc, Khoa Ngôn ngữ và Văn hoá, Đại học Oxford (Anh), sắp tốt nghiệp. …… Tôi tin chắc nếu được trao cơ hội, tôi nhất định sẽ tiến bộ hơn nữa. Xin giáo sư chấp nhận đơn của tôi. Kèm theo thư là sơ yếu lý lịch. Nếu có dịp được gặp trực tiếp giáo sư, tôi vô cùng cảm kích. Trân trọng! — Người làm đơn: Lý Cát, 1/3/2017",
+  "Đơn đề nghị điều chỉnh giờ học và thời gian học kỳ. Kính gửi thầy Hiệu trưởng: Chào thầy! Em là du học sinh Học viện Hán ngữ, rất mạo muội viết lá đơn này gửi thầy. Về giờ lên lớp, em mong thầy nghe ý kiến của du học sinh chúng em. Theo quy định, các khoa đều vào học lúc 8 giờ sáng. Với du học sinh, giờ này quá sớm! Theo khảo sát của em, phần lớn du học sinh ở nước mình đều 9 giờ mới vào học…… Nếu đổi giờ học thành 9 giờ, vừa tránh được giờ cao điểm, vừa giúp sinh viên ngủ đủ giấc, từ đó nâng cao hiệu quả học tập. Ngoài ra, học kỳ của chúng em quá dài!…… Thưa thầy, liệu thầy có thể dựa vào tình hình của chúng em mà thay đổi giờ học và thời gian học kỳ cho du học sinh không ạ? Kính mong thầy xem xét. Mong sớm nhận được hồi âm của thầy. Trân trọng! — Người làm đơn: Mã Trung Hoa, 1/3/2016"],
+ "loai-5":[
+  "Kính gửi Bệnh viện Tân Nhân: Tôi xin gửi lời cảm ơn vô hạn tới quý viện! Tôi là một nông dân bình thường lên Bắc Kinh làm thuê. Một tháng trước, bệnh tim của vợ tôi đột ngột tái phát, tình hình hết sức nguy cấp. Ôm một tia hy vọng, chúng tôi nhập viện tại quý viện. Sau khi kiểm tra toàn diện, bác sĩ Trần Giai quyết đoán chỉ định mổ ngay. Với thu nhập của tôi, tôi hoàn toàn không đủ tiền mổ. Lúc ấy, các bác sĩ của quý viện lần lượt chìa tay giúp đỡ, quyên góp viện phí cho tôi. Khi tôi từ chối, họ đều nói: “Cứu người là quan trọng, không gì quý hơn sinh mạng.” May mắn thay, ca mổ rất thành công. Sau mổ, các y tá chăm sóc vợ tôi tận tình, giúp cô ấy nhanh chóng hồi phục. Giờ vợ tôi đã có thể xuất viện. Với cả nhà tôi, đây quả là kỳ tích. Các bác sĩ của quý viện không chỉ giỏi nghề mà y đức còn cao hơn, là những thiên thần áo trắng thực sự! Cả nhà tôi vô cùng cảm động, không biết lấy gì báo đáp, chỉ biết khắc ghi ân tình này và nói một lời cảm ơn sâu sắc. Trân trọng! — Cao Tráng, 18/5/2016",
+  "Thư cảm ơn Lưu Tiểu Lệ. Kính gửi Học viện Ngôn ngữ, Đại học xx: Tôi xin gửi lời cảm ơn chân thành tới bạn Lưu Tiểu Lệ của quý học viện! Tinh thần nhặt được của rơi không tham của bạn khiến tôi vô cùng cảm động. Ngày 2/10 tôi ăn ở nhà hàng Bắc Mỹ, vô ý để quên túi xách trên bàn; trong túi có gần mười nghìn tệ tiền mặt, giấy tờ tuỳ thân, thẻ tín dụng, tài liệu công ty… Những thứ này rất quan trọng, liên quan đến lợi ích kinh tế của công ty. Nếu mất, hậu quả khó lường. Tôi vô cùng lo lắng, quay lại tìm mấy lần đều không thấy. Đúng lúc định báo cảnh sát, báo mất thẻ ngân hàng, huỷ tài liệu công ty thì tôi nhận được điện thoại, biết túi được một sinh viên của quý trường nhặt được. Bạn ấy dựa vào tên công ty trên túi để liên hệ với công ty tôi trước, rồi báo cho tôi, sau đó kịp thời trả lại túi. Thấy túi mất rồi lại tìm được, đồ bên trong không thiếu thứ gì, tôi mừng khôn xiết! Cảm động hơn là khi tôi đưa 2.000 tệ để cảm ơn, bạn ấy đã khéo léo từ chối. Sau này tôi biết bạn ấy là Lưu Tiểu Lệ, sinh viên Học viện Ngôn ngữ, có đạo đức xã hội tốt và phẩm chất cao đẹp của sinh viên thời nay. Cảm ơn sự nhiệt tình, vô tư của bạn Lưu Tiểu Lệ, cũng cảm ơn quý trường đã đào tạo nên nhân tài xuất sắc như vậy. Xin nhận ở tôi lòng kính trọng và lời cảm ơn sâu sắc! Trân trọng! — Vương Vân, Công ty Khoa học Kỹ thuật Bắc Kinh, 3/10/2016"],
+ "loai-6":[
+  "Thiệp mời. Kính gửi ông Bạch Hiểu và phu nhân: Chúng tôi sẽ tổ chức hôn lễ vào 12 giờ trưa ngày 26/8/2016 tại khách sạn Hưng Long. Trân trọng kính mời ông bà đến dự. — Phạm Duy, Vương Diễm, 15/8/2016",
+  "Thầy Vương thân mến: Chúng em dự định tổ chức một buổi giao lưu sinh viên Trung Quốc – nước ngoài trước dịp Giáng sinh, bắt đầu lúc 7 giờ tối ngày 24 tại Trung tâm hoạt động Hội sinh viên. Chúng em chân thành mong thầy có thể tham gia, rất mong được đón thầy. Nếu thầy không thể tham gia, xin gọi số xxxxxxxx báo cho chúng em. Trân trọng! — Học trò của thầy: Vương Tiểu Á và các bạn, 20/12/2016",
+  "Kính gửi Giáo sư Lý Hữu: Chúng tôi rất vinh hạnh mời giáo sư ngày 15 tháng này đến học viện trình bày một báo cáo về tình hình kinh tế Trung Quốc hiện nay. Đề tài và thời gian cụ thể do giáo sư quyết định. Nếu cần máy chiếu hoặc thiết bị khác, xin báo trước 17 giờ ngày 11. Chân thành cảm ơn sự ủng hộ của giáo sư đối với công tác học thuật của học viện, chúng tôi tha thiết mong được nghe bài báo cáo đặc sắc của giáo sư. — Học viện Kinh tế: Tiền Đức, 8/6/2016"],
+ "loai-7":[
+  "Kính gửi ông Hạ Tân Kiến: Vui mừng được tin ông có thành tựu nổi bật trong nghiên cứu triết học Nho gia, tác phẩm “Nghiên cứu Tuân Tử” vừa đạt giải Nhất Giải thưởng Sáng tạo Triết học và Khoa học Xã hội quốc gia. Xin gửi tới ông lời chúc mừng chân thành! Niềm say mê học thuật và những thành tựu của ông mãi khiến mọi người ngưỡng mộ. Tác phong tận tuỵ, miệt mài nghiên cứu của ông luôn là tấm gương để chúng tôi học tập. Chúc ông không ngừng tiến bước trên con đường học thuật, đạt những đỉnh cao mới! — Viên Quân, 21/12/2016",
+  "Kính gửi ông Vương: Vui mừng được tin ông vừa nhậm chức CEO công ty Khoa học Kỹ thuật Máy tính. Tôi vô cùng vui mừng! Xin gửi tới ông lời chúc mừng chân thành nhất! Là người kỳ cựu của công ty, ông luôn làm việc cần mẫn. Từ khi vào công ty, ông đã dồn biết bao tâm huyết, cùng công ty phát triển và đạt thành tích đáng tự hào. Sự nỗ lực của ông được lãnh đạo và đồng nghiệp khen ngợi, sự thông minh và tài năng của ông được lãnh đạo đánh giá cao, cuối cùng ông được thăng chức CEO. Đây là sự ghi nhận của công ty với những đóng góp của ông; tin rằng tương lai của ông sẽ còn tốt đẹp hơn. Chúc ông tiền đồ rộng mở! — Trưởng phòng Thiết kế: Triệu Vĩ, 3/8/2016"],
+ "loai-8":[
+  "Tuyên bố mất giấy tờ. Tôi là Ali (quốc tịch Ai Cập, số hộ chiếu E12345678), ngày 15/10/2016 không may đánh mất một thẻ sinh viên du học sinh Đại học Bắc Kinh ở gần Trung Quan Thôn, quận Hải Điến, Bắc Kinh; số thẻ 2015010023. Nay tuyên bố thẻ sinh viên trên hết hiệu lực kể từ hôm nay. — Người tuyên bố: Ali, 16/10/2016"],
+ "loai-9":[
+  "Poster toạ đàm học thuật. Đề tài: Ngôn ngữ và nghệ thuật trong giao tiếp liên văn hoá. Diễn giả: Giáo sư Trương Minh (hướng dẫn nghiên cứu sinh tiến sĩ, Khoa Trung văn, Đại học Bắc Kinh). Nội dung: kết hợp nhiều ví dụ giao lưu văn hoá Trung – ngoại, phân tích sâu sự khác biệt ngôn ngữ, ký hiệu phi ngôn ngữ và chuẩn mực hành vi văn hoá trong giao tiếp liên văn hoá, giúp các bạn nâng cao năng lực giao tiếp thực tế. Thời gian: 19:00–21:00 tối thứ Sáu 28/10/2016. Địa điểm: hội trường học thuật 201, toà Nhân văn. Đơn vị tổ chức: Học viện Giao lưu Văn hoá Quốc tế. Hoan nghênh thầy cô và các bạn sinh viên tham gia! — Hội sinh viên Học viện Giao lưu Văn hoá Quốc tế, 22/10/2016"],
+ "loai-10":[
+  "Thông báo về việc tổ chức cuộc thi hùng biện tiếng Hán cho du học sinh. Gửi các học viện, các bạn du học sinh: Nhằm làm phong phú đời sống văn hoá học đường của du học sinh, nâng cao khả năng diễn đạt và trình độ hùng biện tiếng Hán, học viện quyết định tổ chức Cuộc thi hùng biện tiếng Hán dành cho du học sinh năm 2016. Nay thông báo các việc liên quan như sau: 1. Chủ đề: “Tôi và Trung Quốc”. 2. Đối tượng: toàn bộ du học sinh nước ngoài đang học tại trường. 3. Thời gian, địa điểm: 14:30 chiều thứ Ba 15/11/2016, hội trường tầng 3 Trung tâm hoạt động sinh viên. 4. Cách đăng ký: bạn nào muốn tham gia xin gửi bản điện tử phiếu đăng ký tới email xxxx@126.com trước ngày 10/11, hoặc đăng ký trực tiếp tại Văn phòng Du học sinh (phòng 101). Hoan nghênh các bạn du học sinh hăng hái đăng ký! — Học viện Giao lưu Văn hoá Quốc tế, 20/10/2016"],
+ "loai-14":[
+  "Kế hoạch học tiếng Hán cá nhân học kỳ I năm học 2016–2017. Để nâng cao năng lực nghe, nói, đọc, viết tiếng Hán và thi đỗ HSK 5, tôi lập kế hoạch học kỳ này như sau: 1. Mục tiêu chung: vốn từ đạt 2.500 từ, điểm HSK 5 trên 220, giao tiếp hằng ngày và học thuật lưu loát. 2. Biện pháp và thời gian: (1) Nghe, nói: mỗi ngày nghe tin tức tiếng Hán 30 phút; mỗi tuần giao lưu với bạn người Trung Quốc 2 giờ. (2) Đọc, viết: mỗi ngày đọc 1 bài báo tiếng Hán; hai tuần viết một bài văn trên 500 chữ. (3) Từ vựng: mỗi ngày học thuộc 20 từ mới HSK 5 và luyện đặt câu. 3. Các giai đoạn: tháng 9–11 tập trung từ vựng và ngữ pháp; tháng 12–1 luyện đề thi thử, bù lỗ hổng. — Người lập kế hoạch: Ali, 5/9/2016"]
+};
+LOAI.forEach(l=>{ if(DICH[l.id]&&l.sample) l.sample.forEach((x,i)=>{ if(DICH[l.id][i]) x.dich=DICH[l.id][i]; }); });
+
+/* ===== NÚT HIỂN THỊ: pinyin / tiếng Việt (nhớ lựa chọn trên máy) ===== */
+const VIEW = { py: store0("hsk6-viet:py")==="1", vi: store0("hsk6-viet:vi")!=="0" };
+function store0(k){try{return localStorage.getItem(k)}catch(e){return null}}
+
 const PHAN = [
   {key:"intro",    vi:"Giới thiệu công dụng", zh:"用途与分类"},
   {key:"sample",   vi:"Văn bản mẫu",          zh:"范文"},
@@ -854,12 +936,12 @@ const store = {
 const countZi = t => (t.match(/[㐀-鿿豈-﫿　-〿＀-￯]/g)||[]).length;
 
 function renderNav(cur){
-  document.getElementById("nav").innerHTML = LOAI.map((l,i)=>`
-    ${(i===0||(LOAI[i-1].vol||1)!==(l.vol||1))?`<li class="vol">Tập ${l.vol||1}${(l.vol||1)===1?" · thư từ, đơn":" · hành chính, sự vụ"}</li>`:""}
-    <li><a href="#${l.id}" ${l.id===cur?'aria-current="page"':''}>
+  document.getElementById("nav").innerHTML = LOAI.map((l,i)=>{
+    const t=PRIO[l.id].t, head=(i===0||PRIO[LOAI[i-1].id].t!==t)?`<li class="vol t${t}">${TIERS[t]}</li>`:"";
+    return `${head}<li><a href="#${l.id}" ${l.id===cur?'aria-current="page"':''} title="${esc(PRIO[l.id].why)}">
       <span class="n">${i+1}</span>
-      <span class="t"><span class="zh">${l.zh}</span><span class="vi">${esc(l.vi)}</span></span>
-      <span class="pill">${filled(l)}/5</span></a></li>`).join("");
+      <span class="t"><span class="zh">${l.zh}${t===1?' <span class="fire" aria-label="Đã ra thi">🔥</span>':""}</span><span class="vi">${esc(l.vi)}</span></span>
+      <span class="pill">${filled(l)}/5</span></a></li>`}).join("");
 }
 
 function pending(what){
@@ -870,11 +952,11 @@ function pending(what){
 function practiceBox(id, de, huongdan, thamkhao, no){
   return `<div class="prompt" data-key="${id}">
     <div class="prompt-top"><span class="label">${de?"题目 "+(no||""):"Ô luyện tập tự do"}</span>
-      <p>${de?esc(de):"Chưa có đề cho dạng này. Có thể tự đặt đề và viết thử ở đây."}</p>
-      ${huongdan?`<span class="note">${esc(huongdan)}</span>`:""}</div>
+      <p class="${de?"de":""}">${de?esc(de):"Chưa có đề cho dạng này. Có thể tự đặt đề và viết thử ở đây."}</p>
+      ${huongdan?`<span class="note vi-only">${esc(huongdan)}</span>`:""}</div>
     <div class="tools">
       <div class="count"><span><b class="num">0</b> / ${MIN_ZI} 字</span><span class="bar"><i></i></span></div>
-      <div class="btns"><button type="button" data-act="mode">Dòng kẻ</button><button type="button" data-act="clear">Xoá bài</button></div>
+      <div class="btns"><button type="button" data-act="copy">Sao chép bài</button><button type="button" data-act="mode">Dòng kẻ</button><button type="button" data-act="clear">Xoá bài</button></div>
     </div>
     <div class="sheet"><textarea id="ta-${id}" class="grid" spellcheck="false" aria-label="Ô viết bài"></textarea></div>
     ${thamkhao?`<div class="ref"><details><summary>Xem bài tham khảo</summary><p class="zh" style="margin-top:10px;line-height:1.9">${esc(thamkhao)}</p></details></div>`:""}
@@ -904,14 +986,14 @@ function renderPart(l, p, idx){
           ${L.body.map(b=>typeof b==="string"?`<p class="l-body">${b}</p>`:b.list?`<ol class="l-list">${b.list.map(x=>`<li>${x}</li>`).join("")}</ol>`:b.kv?`<dl class="l-kv">${b.kv.map(([k,v])=>`<div><dt>${k}：</dt><dd>${v}</dd></div>`).join("")}</dl>`:b.h?`<p class="l-h">${b.h}</p>`:`<p class="l-gap">${esc(b.gap)}</p>`).join("")}
           ${cl?`<div class="l-zhi" style="text-indent:${cl.indent||4}em">${cl.a}</div><div class="l-li">${cl.b}</div>`:""}
           ${signs.map(x=>`<div class="l-sign">${x}</div>`).join("")}${L.date?`<div class="l-sign">${L.date}</div>`:""}
-        </div>${s.note?`<span class="note">${esc(s.note)}</span>`:""}</figure>`}).join("")}</div>`;
+        </div>${s.dich?`<div class="dich vi-only"><span class="label">Dịch nghĩa</span><p>${esc(s.dich)}</p></div>`:""}${s.note?`<span class="note">${esc(s.note)}</span>`:""}</figure>`}).join("")}</div>`;
   } else if(v && p.key==="template" && v.rows){
     body = `<p>${esc(v.intro)}</p>${v.tableTitle?`<span class="label">${esc(v.tableTitle)}</span>`:""}<div class="tbl"><table><thead><tr><th>#</th><th>Thành phần</th><th>Vị trí trình bày</th><th>Cụm từ mẫu / quy tắc</th></tr></thead><tbody>
       ${v.rows.map((r,k)=>`<tr><td class="num-c">${k+1}</td><td><b class="zh">${r[0]}</b><br><span class="note">${esc(r[1])}</span></td><td>${esc(r[2])}</td><td class="rule">${esc(r[3])}</td></tr>`).join("")}
       </tbody></table></div>${v.extra?`<div class="tipgrid">${v.extra.map(g=>`<div class="tipbox"><span class="label">${esc(g.title)}</span><ul>${g.items.map(it=>`<li>${it.zh?`<b class="zh">${esc(it.zh)}</b>`:""}<span>${esc(it.vi)}</span></li>`).join("")}</ul></div>`).join("")}</div>`:""}`;
   } else if(v && p.key==="tips" && v.groups){
     body = `<div class="tipgrid">${v.groups.map(g=>`<div class="tipbox"><span class="label">${esc(g.title)}</span><ul>
-      ${g.items.map(it=>`<li>${it.zh?`<b class="zh">${esc(it.zh)}</b>`:""}<span>${esc(it.vi)}</span></li>`).join("")}</ul></div>`).join("")}</div>`;
+      ${g.items.map(it=>`<li>${it.zh?`<b class="zh">${esc(it.zh)}</b>`:""}<span class="${it.zh?"vi-only":""}">${esc(it.vi)}</span></li>`).join("")}</ul></div>`).join("")}</div>`;
   } else {
     body = v ? `<div class="zh" style="white-space:pre-wrap;line-height:1.9">${esc(v)}</div>`
              : pending({sample:"Văn bản mẫu "+l.zh+" hoàn chỉnh.",template:"Khung bố cục rút ra từ văn bản mẫu: các phần bắt buộc và mẫu câu dùng được.",tips:"Lỗi hay gặp, quy ước trình bày và mẹo tiết kiệm thời gian khi thi."}[p.key]);
@@ -927,14 +1009,39 @@ function render(){
   renderNav(l.id);
   document.getElementById("main").innerHTML = `
     <header class="head">
-      <div class="crumb">Viết đoạn văn ứng dụng · Tập ${l.vol||1} · <b>Loại ${i+1}</b></div>
+      <div class="headrow"><div class="crumb">Viết đoạn văn ứng dụng · Tập ${l.vol||1} · <b>${TIERS[PRIO[l.id].t]}</b></div>
+        <div class="viewbtns" role="group" aria-label="Hiển thị">
+          <button type="button" id="btn-py" aria-pressed="${VIEW.py}">拼 Pinyin</button>
+          <button type="button" id="btn-vi" aria-pressed="${VIEW.vi}">Tiếng Việt</button></div></div>
       <h1><span class="zh-title">${l.zh}</span><span class="vi-title">${esc(l.vi)}</span></h1>
+      <p class="prio t${PRIO[l.id].t}">${PRIO[l.id].t===1?"🔥 ":""}<b>${TIERS[PRIO[l.id].t].replace("🔥 ","")}:</b> ${esc(PRIO[l.id].why)}</p>
       <div class="meta"><span class="chip gold">${filled(l)}/5 phần đã có nội dung</span><span class="chip zh">写作第一部分 · 不少于150字</span>${l.source?`<span class="chip">Nguồn: ${esc(l.source)}</span>`:""}</div>
     </header>
     <nav class="toc" aria-label="Các phần">${PHAN.map((p,k)=>`<a href="#${l.id}" data-jump="${l.id}-${p.key}"><span class="dot ${l[p.key]?"on":""}"></span>${k+1}. ${p.vi}</a>`).join("")}</nav>
     ${PHAN.map((p,k)=>renderPart(l,p,k+1)).join("")}`;
-  wire();
+  wire(); applyView();
 }
+
+const HAN=/[\u3400-\u9fff]+/g;
+function rubify(root){
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest("rt,textarea,.dich,script")||!/[\u3400-\u9fff]/.test(n.nodeValue)?2:1});
+  const nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+  nodes.forEach(n=>{const f=document.createDocumentFragment();let last=0;const t=n.nodeValue;
+    t.replace(HAN,(run,at)=>{ if(at>last)f.append(t.slice(last,at));
+      const py=pinyinPro.pinyin(run,{type:"array",toneType:"symbol"});
+      [...run].forEach((c,k)=>{const r=document.createElement("ruby");r.append(c);const rt=document.createElement("rt");rt.textContent=py[k]||"";r.append(rt);f.append(r)});
+      last=at+run.length;});
+    if(last<t.length)f.append(t.slice(last));n.replaceWith(f);});
+}
+function applyView(){
+  document.body.classList.toggle("no-vi",!VIEW.vi);
+  const bp=document.getElementById("btn-py"), bv=document.getElementById("btn-vi");
+  if(VIEW.py){ if(window.pinyinPro){ document.querySelectorAll(".zh-title,.type .zh,.letter,.tipbox li b,.prompt-top p.de,td b.zh").forEach(rubify); }
+    else if(bp){ bp.title="Chưa tải được bộ pinyin, kiểm tra kết nối mạng."; } }
+  if(bp) bp.onclick=()=>{VIEW.py=!VIEW.py;try{localStorage.setItem("hsk6-viet:py",VIEW.py?"1":"0")}catch(e){}keepScroll(render)};
+  if(bv) bv.onclick=()=>{VIEW.vi=!VIEW.vi;try{localStorage.setItem("hsk6-viet:vi",VIEW.vi?"1":"0")}catch(e){}bv.setAttribute("aria-pressed",VIEW.vi);document.body.classList.toggle("no-vi",!VIEW.vi)};
+}
+function keepScroll(fn){const y=window.scrollY;fn();window.scrollTo(0,y)}
 
 function fitGrid(ta){
   if(!ta.classList.contains("grid")) { ta.style.width=""; return; }
@@ -957,6 +1064,13 @@ function wire(){
     box.querySelector('[data-act="mode"]').addEventListener("click",e=>{
       const g = ta.classList.toggle("grid"); ta.classList.toggle("lines",!g);
       e.target.textContent = g?"Dòng kẻ":"Ô vuông"; fitGrid(ta);
+    });
+    const cp = box.querySelector('[data-act="copy"]');
+    cp.addEventListener("click",()=>{
+      const done=ok=>{cp.textContent=ok?"Đã chép ✓":"Đã chọn bài, bấm Ctrl+C";setTimeout(()=>cp.textContent="Sao chép bài",2200)};
+      if(!ta.value.trim()){cp.textContent="Chưa có bài";setTimeout(()=>cp.textContent="Sao chép bài",1800);return}
+      const fb=()=>{ta.focus();ta.select();let ok=false;try{ok=document.execCommand("copy")}catch(e){}done(ok)};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(()=>done(true),fb)}else fb();
     });
     const clr = box.querySelector('[data-act="clear"]');
     clr.addEventListener("click",()=>{
