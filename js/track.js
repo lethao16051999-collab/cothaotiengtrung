@@ -113,7 +113,7 @@ const _trkPrev=Storage.prototype.setItem;
 Storage.prototype.setItem=function(k,v){_trkPrev.call(this,k,v);try{const kk=window.CT_KMAP?CT_KMAP(k):k;if(this===localStorage&&TRK_KEY.test(kk)&&trkIn())trkDirty(kk)}catch(e){}};
 /* câu máy nghe được (luyện nói, luyện đọc, test nói) */
 let TRKHEARD={};
-if(typeof srListen=="function"){const _o=srListen;srListen=function(done,fail){const tag=recOn!=null?recOn:(typeof RDON!="undefined"&&RDON!=null?"rd"+RDON:"x");return _o(t=>{TRKHEARD[tag]=t;TRKHEARD.last=t;return done(t)},fail)}}
+if(typeof srListen=="function"){const _o=srListen;srListen=function(done,fail){const tag=recOn!=null?recOn:(typeof RDON!="undefined"&&RDON!=null?"rd"+RDON:"x");return _o((t,a)=>{TRKHEARD[tag]=t;TRKHEARD.last=t;return done(t,a)},fail)}}
 const trkWrap=(n,f)=>{if(typeof window[n]=="function"){const o=window[n];window[n]=function(...a){return f(o,a)}}};
 trkWrap("gxSoCheck",(o,[k])=>{const r=o(k);try{const d=GXD[GX.k].so[k],s=GX.so[k];if(s.st===false)trkErr("Ngữ pháp · Sắp xếp câu",d.f||d.ok[0],s.ch.map(i=>d.t[i].split("|")[0]).join(" "),d.f||d.ok[0])}catch(e){}return r});
 trkWrap("gxTrSelf",(o,[k,ok])=>{const r=o(k,ok);try{if(!ok){const d=GXD[GX.k].tr[k];trkErr("Ngữ pháp · Dịch Việt → Trung",d.vi,GX.tr[k].v,d.r[0])}}catch(e){}return r});
