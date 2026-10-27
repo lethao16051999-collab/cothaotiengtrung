@@ -11,7 +11,7 @@ const SHELF=[
  {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:10,tot:15}];
 /* Cuốn có href = trang ôn tập riêng (thư mục hsk1/, 24/10/2026); chỉ hiện ở Ôn luyện theo bài */
 const shN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
-function shCount(l){const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]).length}
+function shCount(l){if(typeof napOk=="function"&&!napOk(l))return napBai(l).length;const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]).length}
 function shelfView(pk="olPick",hint="Chọn giáo trình để xem các bài ôn luyện.",cnt=shCount,unit="bài đã có"){return `<p class="shint">${hint}</p><div class="shelf">${SHELF.filter(b=>b.href?pk=="olPick":(b.l<5||LDS[5])).map(b=>{if(b.href)return `<a class="shb" href="${b.href}"><div class="shimg"><img src="${b.img}" alt="Bìa ${b.t} ${b.s}" loading="lazy"></div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ok">${b.n}/${b.tot} ${unit}</span></a>`;const n=cnt(b.l),tot=LV[b.l]||0;
  const cov=b.img?`<img src="${b.img}" alt="Bìa giáo trình ${b.t}" loading="lazy">`:`<div class="shcv" style="--cc:${b.c}"><span class="zh">${b.zh}</span><b>${b.t}</b><i>Cô Thảo tiếng Trung</i></div>`;
  return `<button class="shb ${n?"":"soon"}" onclick="${pk}(${b.l})"><div class="shimg">${cov}</div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ${n?"ok":""}">${n?`${n}/${tot} ${unit}`:"Sắp ra mắt"}</span></button>`}).join("")}</div>`}
@@ -29,7 +29,7 @@ const _shCrumb=crumbDraw;crumbDraw=function(){_shCrumb();const c=$("crumb");if(!
 const _shGoSub=goSub;goSub=function(id){if(id=="ol"){OLPICK=false;cur=null}if(id=="ts"&&!(T&&!T.done&&tcur)){TSPICK=false;tcur=null}_shGoSub(id);if(id=="ol"||id=="ts")rr()};
 /* Test nhanh: mở ra là kệ chọn cấp độ trước, bấm cấp mới hiện danh sách bài (24/10/2026) */
 let TSPICK=false;
-const tsCount=l=>{const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]&&D[n].tsort&&D[n].tsort.length).length};
+const tsCount=l=>{if(typeof napOk=="function"&&!napOk(l))return napBai(l,1).length;const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]&&D[n].tsort&&D[n].tsort.length).length};
 function tsPick(l){TSPICK=true;setLv(l);scrollTo(0,0)}
 function tsShelf(){const q=()=>{tStop();TSPICK=false;tcur=null;T=null;rr();scrollTo(0,0)};(!tcur||!T||T.done)?q():ask("Thoát sẽ hủy bài đang làm. Thoát?",q)}
 function tsList(){const q=()=>{tStop();tcur=null;T=null;rr();scrollTo(0,0)};(!T||T.done)?q():ask("Thoát sẽ hủy bài đang làm. Thoát?",q)}

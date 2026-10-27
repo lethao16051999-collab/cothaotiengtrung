@@ -1,7 +1,5 @@
 /* ===== MỞ RỘNG H4 · Bài 1: 新城市，新生活 (chủ đề đời sống, cùng ngữ pháp HSK4 Bài 1) =====
  Nội dung bài khóa, câu hỏi, 选词填空, câu ngữ pháp, task: theo bản cô Thảo cung cấp. Từ vựng, pinyin, câu sắp xếp, đoạn văn Đọc 2, bài mẫu task 1/2/4: Claude soạn. */
-const LT5=["新城市，新生活|Thành phố mới, cuộc sống mới"];
-const LD5={};
 Object.assign(SPN4,{"物业主管":"Trưởng ban quản lý"});
 LD5[1]={t:"新城市，新生活",tp:"Xīn chéngshì, xīn shēnghuó",vi:"Thành phố mới, cuộc sống mới (chủ đề đời sống – mở rộng HSK4 Bài 1)",
 goals:[

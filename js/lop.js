@@ -9,13 +9,15 @@ const VL_GEN=["Từ vựng mới của buổi học","Ngữ pháp · mẫu câu 
 const VL_HARD=["Từ vựng","Ngữ pháp","Nghe","Nói","Đọc","Viết chữ Hán"];
 const vlE=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 const vlLvN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
-function vlLessons(){const o=[];[1,2].forEach(l=>{const D=LDS[l]||{};Object.keys(D).map(Number).filter(n=>D[n]&&D[n].gp).sort((a,b)=>a-b).forEach(n=>o.push([l,n]))});return o}
+function vlLessons(){const o=[];[1,2].forEach(l=>{if(typeof napOk=="function"&&!napOk(l)){(napBai(l)||[]).forEach(n=>o.push([l,n]));return}const D=LDS[l]||{};Object.keys(D).map(Number).filter(n=>D[n]&&D[n].gp).sort((a,b)=>a-b).forEach(n=>o.push([l,n]))});return o}
 function vlRows(lv,b){const L=(LDS[lv]||{})[b];if(!L||!L.gp)return VL_GEN.slice();
  const r=L.gp.map(g=>String(g.h).replace(/<[^>]+>/g,"").replace(/^\s*\d+\.\s*/,"").trim()).filter(h=>h&&!/^(Mẹo dùng từ|Văn hóa)/i.test(h));
  r.push("Từ vựng trọng tâm của Bài "+(b>1?b-1:b));return r}
 function vlFormNew(){const st=VL.st,ls=vlLessons(),les=st&&st.lesson&&ls.some(x=>x[0]==st.lesson.lv&&x[1]==st.lesson.b)?st.lesson.lv+"-"+st.lesson.b:"gen";
  VL.f={les,rows:null,star:0,speed:"",hard:[],q:""};vlSetRows()}
-function vlSetRows(){const f=VL.f;let t;if(f.les=="gen")t=VL_GEN.slice();else{const[l,b]=f.les.split("-").map(Number);t=vlRows(l,b)}f.rows=t.map(x=>[x,false,false])}
+function vlSetRows(){const f=VL.f;let t;if(f.les=="gen")t=VL_GEN.slice();else{const[l,b]=f.les.split("-").map(Number);
+ if(typeof napOk=="function"&&!napOk(l)){f.rows=[];f.wait=1;const les=f.les;napLv(l).then(()=>{if(VL.f===f&&f.les==les){vlSetRows();vlDraw()}},()=>{if(VL.f===f&&f.les==les){f.wait=0;f.rows=VL_GEN.map(x=>[x,false,false]);vlDraw()}});return}
+ t=vlRows(l,b)}f.wait=0;f.rows=t.map(x=>[x,false,false])}
 function vlSec(){let s=$("vaolop");if(!s){s=document.createElement("section");s.id="vaolop";document.querySelector("main").appendChild(s)}return s}
 function vlOpen(){go("vaolop");mMenu(false);vlDraw();if(trkIn())vlLoad()}
 async function vlLoad(){if(!trkIn())return vlDraw();VL.busy=true;VL.msg="";vlDraw();
@@ -29,7 +31,7 @@ async function vlAtt(){const v=(($("vlpin")||{}).value||"").replace(/\D/g,"");VL
   else VL.msg=r&&r.err=="pin"?`Mã buổi học chưa đúng. Em xem lại mã của <b>lớp ${vlE(VL.st.cls)}</b> nhé${r.left!=null&&r.left<4?` (còn ${Math.max(0,r.left)} lần thử)`:""}.`:r&&r.err=="too_many"?"Em nhập sai quá nhiều lần hôm nay. Em báo cô Thảo điểm danh giúp nhé.":r&&r.err=="no_class"?"Em chưa được xếp lớp. Em báo cô Thảo nhé.":"Chưa điểm danh được, em thử lại nhé."}
  catch(e){VL.msg="Chưa kết nối được. Em kiểm tra mạng rồi thử lại nhé."}
  VL.busy=false;vlDraw()}
-async function vlSend(){const f=VL.f;if(!f.star){VL.msg="Em chọn mức hiểu bài (số sao) trước khi gửi nhé.";return vlDraw()}
+async function vlSend(){const f=VL.f;if(f.wait){VL.msg="Đang tải nội dung bài, em đợi vài giây rồi gửi nhé.";return vlDraw()}if(!f.star){VL.msg="Em chọn mức hiểu bài (số sao) trước khi gửi nhé.";return vlDraw()}
  VL.busy=true;VL.msg="";vlDraw();const bai=f.les=="gen"?"Bài khác (không có trên web)":(()=>{const[l,b]=f.les.split("-");return vlLvN(+l)+" · Bài "+b})();
  try{const r=await trkPost({a:"eval",code:TRKME.code,bai,rows:f.rows,star:f.star,speed:f.speed,hard:f.hard,q:f.q});
   if(r&&r.ok){VL.st.ev=r.ev;VL.edit=false;VL.sent=r.ev;scrollTo(0,0)}
@@ -41,7 +43,7 @@ function vlForm(){const f=VL.f,ls=vlLessons();
  return `<div class="card vlf"><div class="vlh"><span class="vlbadge zh">学习小结</span><h3>Tổng kết học tập – Em tự đánh giá</h3></div>
 <label class="vll">Bài học hôm nay <select onchange="VL.f.les=this.value;vlSetRows();vlDraw()">${ls.map(x=>`<option value="${x[0]}-${x[1]}" ${f.les==x[0]+"-"+x[1]?"selected":""}>${vlLvN(x[0])} · Bài ${x[1]}${(LTS[x[0]]||[])[x[1]-1]?" · "+LTS[x[0]][x[1]-1].split("|")[0]:""}</option>`).join("")}<option value="gen" ${f.les=="gen"?"selected":""}>Bài khác (lớp HSK3, YCT, TOCFL…)</option></select></label>
 <table class="vlt"><thead><tr><th>Nội dung</th><th>Đã hiểu</th><th>Đã dùng được</th></tr></thead><tbody>
-${f.rows.map((r,i)=>`<tr><td>${vlE(r[0])}</td><td><label class="vlck"><input type="checkbox" ${r[1]?"checked":""} onchange="VL.f.rows[${i}][1]=this.checked"><span></span></label></td><td><label class="vlck"><input type="checkbox" ${r[2]?"checked":""} onchange="VL.f.rows[${i}][2]=this.checked"><span></span></label></td></tr>`).join("")}</tbody></table>
+${f.wait?`<tr><td colspan="3"><span class="napsp" style="display:inline-block;vertical-align:middle;margin-right:8px"></span>Đang tải nội dung bài…</td></tr>`:""}${f.rows.map((r,i)=>`<tr><td>${vlE(r[0])}</td><td><label class="vlck"><input type="checkbox" ${r[1]?"checked":""} onchange="VL.f.rows[${i}][1]=this.checked"><span></span></label></td><td><label class="vlck"><input type="checkbox" ${r[2]?"checked":""} onchange="VL.f.rows[${i}][2]=this.checked"><span></span></label></td></tr>`).join("")}</tbody></table>
 <p class="vlq"><b>Hôm nay em hiểu bài ở mức nào?</b></p><div class="vlstar">${[1,2,3,4,5].map(n=>`<button class="${f.star>=n?"on":""}" onclick="VL.f.star=${n};vlDraw()" aria-label="${n} sao">★</button>`).join("")}<small>${["","Chưa hiểu","Hiểu một ít","Hiểu khoảng một nửa","Hiểu gần hết","Hiểu hết"][f.star]||"Chạm để chọn"}</small></div>
 <p class="vlq"><b>Tốc độ cô dạy hôm nay</b></p><div class="row">${["Chậm","Vừa","Nhanh"].map(x=>`<button class="btn sm ${f.speed==x?"":"o"}" onclick="VL.f.speed='${x}';vlDraw()">${x}</button>`).join("")}</div>
 <p class="vlq"><b>Phần em thấy khó nhất</b> <small>(chọn được nhiều)</small></p><div class="row">${VL_HARD.map(x=>`<button class="btn sm ${f.hard.includes(x)?"":"o"}" onclick="const h=VL.f.hard,i=h.indexOf('${x}');i<0?h.push('${x}'):h.splice(i,1);vlDraw()">${x}</button>`).join("")}</div>

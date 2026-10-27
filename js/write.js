@@ -2,7 +2,7 @@
    Dưới thẻ flashcard: từ + phiên âm + nghĩa, chữ chạy từng nét (Hanzi Writer, nét vàng = bộ thủ),
    nút Xem lại / Tập viết, mẹo nhớ theo bộ thủ, câu ví dụ.
    Nội dung mẹo nhớ + ví dụ khai trong file bài: var WG=Object.assign(window.WG||{},{"1-8":{"病人":["mẹo nhớ",["câu","pinyin","nghĩa"]]}})
-   Dữ liệu nét chữ theo cấp: data/hz-h{cấp}.js (HZD), nạp khi mở flashcard. Nạp SAU js/nav.js. ===== */
+   Dữ liệu nét chữ theo cấp: data/hsk{cấp}/hz.js (HZD), nạp khi mở flashcard. Nạp SAU js/nav.js. ===== */
 var WG=window.WG||{},HZD=window.HZD||{};
 const WGL={},WGW=[];let WGQ=false,WGK="";
 function wgLoad(src){if(WGL[src])return WGL[src];return WGL[src]=new Promise((ok,no)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=()=>{delete WGL[src];no()};document.head.appendChild(s)})}
@@ -26,7 +26,7 @@ function wgRun(){const el=$("wgc");if(!el||typeof HanziWriter=="undefined")retur
  if(WGQ){WGW.forEach(w=>w.quiz({showHintAfterMisses:3,onComplete:()=>{}}));return}
  let k=0;const nx=()=>{if(k<WGW.length&&$("wgc")===el)WGW[k++].animateCharacter({onComplete:()=>setTimeout(nx,300)})};nx()}
 function wgInit(){if(!$("wgc"))return;const k=olLv+"-"+cur+"-"+fcI;if(k!==WGK){WGQ=false;WGK=k}
- wgLoad("js/hanzi-writer.min.js").then(()=>wgLoad(`data/hz-h${olLv}.js?v=4`)).then(wgRun).catch(()=>{const e=$("wgc");if(e)e.innerHTML=`<small>Chưa tải được dữ liệu nét chữ. Tải lại trang hoặc kiểm tra mạng.</small>`})}
+ wgLoad("js/hanzi-writer.min.js").then(()=>wgLoad(`${((window.NAP||{})[olLv]||{}).dir||"data/hsk"+olLv+"/"}hz.js?v=4`)).then(wgRun).catch(()=>{const e=$("wgc");if(e)e.innerHTML=`<small>Chưa tải được dữ liệu nét chữ. Tải lại trang hoặc kiểm tra mạng.</small>`})}
 const _wgFc=vFc;vFc=function(L,r){return _wgFc(L,r)+wgCard(L.words[fcI])};
 const _wgRR=rr;rr=function(){_wgRR();if(olLv<=2&&ltab=="fc")wgInit()};
 (function(){const st=document.createElement("style");st.textContent=`
