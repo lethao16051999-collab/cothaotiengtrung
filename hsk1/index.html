@@ -20,8 +20,12 @@ header .gt-back{margin-left:auto;font-size:.95rem;color:#f3d77a}
 @media(max-width:560px){.gt-hero{flex-direction:column;text-align:center;padding:18px 16px}.gt-hero img{width:110px}.gt-hero h1{font-size:1.4rem}}
 </style>
 <script>
-/* Tiến độ của giáo trình này lưu riêng, không lẫn với New HSK 1 (3.0) ở trang chính */
-(function(){try{const P=Storage.prototype,m=k=>typeof k=="string"?k.replace(/^ct_hsk1_/,"ct_gtc1_"):k,g=P.getItem,s=P.setItem,r=P.removeItem;
+/* Tiến độ của giáo trình này lưu riêng, không lẫn với New HSK 1 (3.0) ở trang chính: khóa ct_hsk1_bN được đổi thành ct_hsk6_bN
+   (cấp 6 = "HSK1 · Giáo trình chuẩn" trong Sổ theo dõi). Bản cũ (đến 27/10/2026) lưu ở ct_gtc1_bN: tự chuyển sang khóa mới. */
+(function(){try{const P=Storage.prototype,g=P.getItem,s=P.setItem,r=P.removeItem,m=k=>typeof k=="string"?k.replace(/^ct_hsk1_/,"ct_hsk6_"):k;
+window.CT_RAW={s,g,r};window.CT_KMAP=m;window.CT_LVMAP=l=>l==1?6:l;
+const L=localStorage,old=[];for(let i=0;i<L.length;i++){const k=L.key(i);if(/^ct_gtc1_/.test(k))old.push(k)}
+old.forEach(k=>{const n=k.replace(/^ct_gtc1_/,"ct_hsk6_");if(g.call(L,n)==null)s.call(L,n,g.call(L,k));r.call(L,k)});
 P.getItem=function(k){return g.call(this,m(k))};P.setItem=function(k,v){return s.call(this,m(k),v)};P.removeItem=function(k){return r.call(this,m(k))}}catch(e){}})();
 </script>
 </head><body>
@@ -60,6 +64,9 @@ P.getItem=function(k){return g.call(this,m(k))};P.setItem=function(k,v){return s
 <script src="js/write.js?v=5"></script>
 <script src="js/shelf.js?v=3"></script>
 <script src="js/read.js?v=1"></script>
+<script src="js/track.js?v=3"></script>
+<script>/* gửi lại kết quả đã làm trên trang này trước khi có theo dõi (một lần trên mỗi máy) */
+try{if(trkIn()&&!localStorage.getItem("ct_trk_gtc")){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^ct_hsk6_b\d+$/.test(k))trkDirty(k)}CT_RAW.s.call(localStorage,"ct_trk_gtc","1")}}catch(e){}</script>
 <script src="js/le.js?v=3"></script>
 <script>
 /* Chỉ một giáo trình: bỏ kệ sách, mở thẳng danh sách bài; "Trang chủ" ở đường dẫn quay về trang chính */
