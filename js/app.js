@@ -343,6 +343,6 @@ function tResult(L){const {a,b,c,auto}=T.res,tot=a+b+c,pass=tot>=12,ns=L.tsort.l
  return `<div class="card res"><p style="text-align:center;margin:0">${auto?"⏰ Hết giờ! ":""}Học sinh: <b>${esc(T.name)}</b></p><div class="big ${pass?"ok":"no"}">${tot}/15</div>
 <p style="text-align:center">Sắp xếp câu ${a}/${ns} · Nghe hiểu ${b}/${nl} · Nói ${c}/5<br><b>${tot>=14?"Xuất sắc! 🎉":pass?"Đạt. Ôn thêm các câu sai bên dưới nhé.":"Chưa đạt 80%. Em ôn lại rồi làm lại bài nhé."}</b></p>
 ${weak.length?`<div class="row c">${weak.map(w=>`<button class="btn o sm" onclick="tStop();T=null;sub('ol');openL(${tcur});lt('${w[0]}')">${w[1]}</button>`).join("")}</div>`:""}
-<p class="ctx" style="text-align:center">Chụp màn hình kết quả gửi cô qua <a href="https://zalo.me/0366534081">Zalo</a> để cô theo dõi.</p></div>`}
+${typeof trkIn=="function"&&trkIn()?`<p class="ctx" style="text-align:center">✅ Kết quả đã tự lưu cho cô (mã ${esc(TRKME.code)}).</p>`:`<div class="card trkban" style="justify-content:center;text-align:center"><span>⚠️ Em <b>chưa nhập mã học viên</b> nên kết quả này <b>chưa gửi cho cô</b>. Nhập mã xong, kết quả sẽ tự gửi.</span>${typeof trkOpen=="function"?`<button class="btn sm" onclick="trkOpen()">🔑 Nhập mã</button>`:""}</div><p class="ctx" style="text-align:center">Chưa có mã thì chụp màn hình kết quả gửi cô qua <a href="https://zalo.me/0366534081">Zalo</a>.</p>`}</div>`}
 
 rr();drawTips();sub("ol");
