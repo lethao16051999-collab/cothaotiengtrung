@@ -256,3 +256,4 @@ button:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visib
 .tr-e ul{margin:8px 0 4px;padding-left:20px;font-size:.9rem}.tr-rv{font-size:.82rem;color:var(--sub)}
 .tr-sum{border-top:2px solid var(--g);margin-top:14px;padding-top:10px;font-size:1.05rem}.tr-sum div{margin:2px 0}.tr-sum p{margin:8px 0 0}
 .tqflash{outline:3px solid var(--g);outline-offset:3px}
+.tr-t b small{font-size:.95rem;font-weight:600;color:var(--sub)}.tr-st{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}

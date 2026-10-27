@@ -292,7 +292,8 @@ function pyParse(str){const x=String(str||"").toLowerCase().normalize("NFD");let
  for(const c of x){if(TONEMK[c])tn.push(TONEMK[c]);else if(c==="\u0308"||(c===":"&&base.endsWith("u"))){if(base.endsWith("u"))base=base.slice(0,-1)+"v"}else if(/[1-4]/.test(c))tn.push(+c);else if(/[a-z]/.test(c))base+=c}
  return{base,tn:tn.join("")}}
 /* 2 = đúng âm và thanh, 1 = đúng âm sai thanh, 0 = sai. 一, 不 chấp nhận cả thanh gốc và thanh đã biến điệu. */
-function pyScore(want,inp,hz){const g=pyParse(inp);if(!g.base)return 0;let best=0;
+const pyClean=x=>String(x||"").replace(/\s*[(（][^)）]*[)）]/g,"").trim();
+function pyScore(want,inp,hz){want=pyClean(want);const g=pyParse(inp);if(!g.base)return 0;let best=0;
  const alts=new Set([want]);if(/一/.test(hz||""))["yī","yí","yì"].forEach(t=>alts.add(want.replace(/y[īíìǐ]/,t)));if(/不/.test(hz||""))["bù","bú"].forEach(t=>alts.add(want.replace(/b[úù]/,t)));
  alts.forEach(a=>{const w=pyParse(a);if(g.base===w.base)best=Math.max(best,g.tn===w.tn?2:1)});return best}
 const tVPick=L=>{const seen=new Set(),ok=[];L.words.forEach((w,i)=>{if(seen.has(w[0]))return;seen.add(w[0]);ok.push(i)});return ok};
@@ -374,7 +375,7 @@ function tResult(L){const {a,b,c,auto}=T.res,v=T.res.v||0,nv=T.vw.length,ns=L.ts
  const lvName=typeof lvN=="function"?lvN(olLv):"HSK "+olLv;
  const errs=[],E=(part,no,id,prompt,mine,notes,rev,zh)=>errs.push({part,no,id,prompt,mine,notes,rev,zh});
  T.vw.forEach((wi,k)=>{const sc=T.vsc[k];if(sc==2)return;const w=L.words[wi],m=(T.vin[k]||"").trim();
-  E("Chữ Hán",k+1,"tq-vw-"+k,`<span class="zh">${w[0]}</span> · ${esc(w[3])}`,m?esc(m):"",[!m?"Em bỏ trống.":sc==1?"Đúng âm nhưng sai thanh điệu (được ½ điểm).":"Phiên âm chưa đúng.",`Đáp án: <b>${w[1]}</b>`],"Flashcard · tập viết chữ này 3 dòng",0)});
+  E("Chữ Hán",k+1,"tq-vw-"+k,`<span class="zh">${w[0]}</span> · ${esc(w[3])}`,m?esc(m):"",[!m?"Em bỏ trống.":sc==1?"Đúng âm nhưng sai thanh điệu (được ½ điểm).":"Phiên âm chưa đúng.",`Đáp án: <b>${pyClean(w[1])}</b>`],"Flashcard · tập viết chữ này 3 dòng",0)});
  L.tsort.forEach((it,k)=>{const ch=T.so[k].ch.map(i=>it.t[i]);if(it.ok.includes(ch.join("")))return;
   E("Sắp xếp câu",k+1,"tq-so-"+k,"Sắp xếp các từ thành câu đúng.",ch.length?esc(ch.join(" ")):"",[!ch.length?"Em chưa sắp xếp câu này.":"Trật tự từ trong câu chưa đúng.",`Đáp án: <span class="zh">${it.ok[0]}</span> · ${it.p}`,it.e],"Ngữ pháp · Mẫu câu",1)});
  L.tlis.forEach((q,k)=>{const s=T.li[k],pk=s.pick!=null?s.o[s.pick]:null;if(pk===q.o[0])return;
@@ -385,13 +386,12 @@ function tResult(L){const {a,b,c,auto}=T.res,v=T.res.v||0,nv=T.vw.length,ns=L.ts
  const weak=[];if(nv&&s2<8)weak.push(["fc","Chữ Hán → ôn Flashcard"]);if(a<ns*.8)weak.push(["gp","Sắp xếp câu → ôn Ngữ pháp · Mẫu câu"]);if(b<nl*.8)weak.push(["bk","Nghe hiểu → nghe lại Bài khóa"]);if(c<4)weak.push(["ns","Nói → ôn Luyện nói"]);
  return `<div class="card res trs">${auto?`<p class="bad" style="margin:0 0 6px">⏰ Hết giờ, bài đã tự nộp.</p>`:""}
 <h3 class="tr-h">Kết quả của ${esc(T.name)} · ${esc(lvName)} - Bài ${tcur}</h3><div class="tr-when">${when}</div>
-<div class="tr-st"><div class="tr-t g"><b>${ok}</b><span>câu đúng</span></div><div class="tr-t r"><b>${bad}</b><span>câu sai</span></div>
-<div class="tr-t n"><b>${nfmt(s1)}</b><span>Nghe – nói – cấu trúc câu (thang 10)</span></div>${nv?`<div class="tr-t n"><b>${nfmt(s2)}</b><span>Chữ Hán (thang 10)</span></div>`:""}</div>
-${vHalf?`<p class="tr-note">Trong số câu sai có ${vHalf} từ đúng âm nhưng sai thanh điệu, được tính ½ điểm.</p>`:""}
+<div class="tr-st"><div class="tr-t ${s1>=8?"g":"r"}"><b>${nfmt(s1)} <small>điểm/10</small></b><span>Nghe – nói – cấu trúc câu</span></div>${nv?`<div class="tr-t ${s2>=8?"g":"r"}"><b>${nfmt(s2)} <small>điểm/10</small></b><span>Chữ Hán</span></div>`:""}</div>
+${vHalf?`<p class="tr-note">Có ${vHalf} từ đúng âm nhưng sai thanh điệu, mỗi từ được tính ½ điểm.</p>`:""}
 <div class="tr-ps">${nv?part("Chữ Hán",vOk,nv):""}${part("Sắp xếp câu",a,ns)}${part("Nghe hiểu",b,nl)}${part("Nói",c,5)}</div>
 ${errs.length?`<h3 class="tr-h2">Các câu sai và lỗi sai của em</h3>${errs.map(e=>`<div class="tr-e"><div class="tr-eh"><b>${e.part} · Câu ${e.no}</b><a href="javascript:void 0" onclick="tGoQ('${e.id}')">xem câu này</a></div><div class="tr-ep">${e.prompt}</div><div class="tr-el">Bài làm của em:</div><div class="tr-em ${e.zh?"zh":""}">${e.mine||"<i>(bỏ trống)</i>"}</div><ul>${e.notes.filter(Boolean).map(x=>`<li>${x}</li>`).join("")}</ul><div class="tr-rv">Ôn lại: ${e.rev}</div></div>`).join("")}`:`<h3 class="tr-h2">Em làm đúng hết. Giỏi lắm! 🎉</h3>`}
-${nv&&T.vsc.some(x=>x<2)?`<div class="card tvcopy"><b>✍ Chép các từ chưa nhớ vào vở, mỗi từ 3 dòng</b><div class="tvlist">${T.vw.filter((_,k)=>T.vsc[k]<2).map(wi=>{const w=L.words[wi];return `<span><b class="zh">${w[0]}</b><small>${w[1]}<br>${w[3]}</small></span>`}).join("")}</div><small>Vừa viết vừa đọc to pinyin. Viết xong làm lại bài test để kiểm tra.</small></div>`:""}
-<div class="tr-sum"><div>Test nghe – nói – cấu trúc câu: <b>${nfmt(s1)}/10</b></div>${nv?`<div>Phần chữ Hán: <b>${nfmt(s2)}/10</b></div>`:""}<p><b>${pass?(s1>=9.5&&(s2==null||s2>=9.5)?"Xuất sắc! 🎉":"Đạt. Ôn thêm các câu sai ở trên nhé."):"Chưa đạt 8/10. Em ôn lại rồi làm lại bài nhé."}</b></p></div>
+${nv&&T.vsc.some(x=>x<2)?`<div class="card tvcopy"><b>✍ Chép các từ chưa nhớ vào vở, mỗi từ 3 dòng</b><div class="tvlist">${T.vw.filter((_,k)=>T.vsc[k]<2).map(wi=>{const w=L.words[wi];return `<span><b class="zh">${w[0]}</b><small>${pyClean(w[1])}<br>${w[3]}</small></span>`}).join("")}</div><small>Vừa viết vừa đọc to pinyin. Viết xong làm lại bài test để kiểm tra.</small></div>`:""}
+<div class="tr-sum"><div>Test nghe – nói – cấu trúc câu: <b>${nfmt(s1)} điểm/10</b></div>${nv?`<div>Phần chữ Hán: <b>${nfmt(s2)} điểm/10</b></div>`:""}<p><b>${pass?(s1>=9.5&&(s2==null||s2>=9.5)?"Xuất sắc! 🎉":"Đạt. Ôn thêm các câu sai ở trên nhé."):"Chưa đạt 8/10. Em ôn lại rồi làm lại bài nhé."}</b></p></div>
 ${weak.length?`<div class="row c">${weak.map(w=>`<button class="btn o sm" onclick="tStop();T=null;sub('ol');openL(${tcur});lt('${w[0]}')">${w[1]}</button>`).join("")}</div>`:""}
 ${typeof trkIn=="function"&&trkIn()?`<p class="ctx" style="text-align:center">✅ Kết quả đã tự lưu cho cô (mã ${esc(TRKME.code)}).</p>`:`<div class="card trkban" style="justify-content:center;text-align:center"><span>⚠️ Em <b>chưa nhập mã học viên</b> nên kết quả này <b>chưa gửi cho cô</b>. Nhập mã xong, kết quả sẽ tự gửi.</span>${typeof trkOpen=="function"?`<button class="btn sm" onclick="trkOpen()">🔑 Nhập mã</button>`:""}</div><p class="ctx" style="text-align:center">Chưa có mã thì chụp màn hình kết quả gửi cô qua <a href="https://zalo.me/0366534081">Zalo</a>.</p>`}</div>`}
 
