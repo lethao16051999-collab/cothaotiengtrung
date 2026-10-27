@@ -257,3 +257,4 @@ button:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visib
 .tr-sum{border-top:2px solid var(--g);margin-top:14px;padding-top:10px;font-size:1.05rem}.tr-sum div{margin:2px 0}.tr-sum p{margin:8px 0 0}
 .tqflash{outline:3px solid var(--g);outline-offset:3px}
 .tr-t b small{font-size:.95rem;font-weight:600;color:var(--sub)}.tr-st{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.tr-hw{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:#fff6dc;border:1px dashed var(--g);color:#5c1730;font-weight:700}.tr-cp{margin:8px 0 0;padding-left:22px}.tr-cp li{margin:4px 0}.tr-cp .zh{font-size:1.15rem;margin-right:8px}.tr-cp small{color:var(--sub)}
