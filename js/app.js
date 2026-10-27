@@ -194,7 +194,7 @@ function lcsMark(m,h){const a=[...m].filter(c=>/[一-鿿A-Za-z]/.test(c)),b=[...
  let k=0;return [...m].map(c=>/[一-鿿A-Za-z]/.test(c)?`<span class="${ok.has(k++)?"g":"r"}">${c}</span>`:c).join("")}
 function vNs(L,r){const k=r.nk||{},all=nsAll(L),S=L.sit[nsS];
  const done=si=>L.sit[si].turns.filter((t,ti)=>k[nsIdx(L,si,ti)]===1).length;
- return `<div class="card note">Đọc mục đích bằng tiếng Việt, tự nói câu tiếng Trung rồi bấm <b>🎤 Nói</b> để máy nghe và so với câu mẫu (đạt từ 70% là qua). Bí thì bấm <b>💡 Xem gợi ý</b> (từ khóa có pinyin) hoặc <b>👁 Xem mẫu</b>.${SRC&&!srBlocked?"":`<br><span class="warn">Trình duyệt này chưa dùng được chức năng máy nghe. Mở bằng Google Chrome hoặc Microsoft Edge và cho phép micro; trong lúc chờ, hãy tự đọc và tự chấm.</span>`}</div>
+ return `<div class="card note">Đọc mục đích bằng tiếng Việt, tự nói câu tiếng Trung rồi bấm <b>🎤 Nói</b> để máy nghe và so với câu mẫu (đạt từ 70% là qua). Bí thì bấm <b>💡 Xem gợi ý</b> (từ khóa có pinyin) hoặc <b>👁 Xem mẫu</b>.${srWarn()?"<br>"+srWarn():""}</div>
 <div class="stb sit">${L.sit.map((x,si)=>`<button class="${si==nsS?"on":""}" onclick="nsS=${si};rr()">${x.title}<i class="sc ${done(si)==x.turns.length?"ok":"no"}">${done(si)}/${x.turns.length}</i></button>`).join("")}</div>
 <div class="card note"><b>${S.title}</b><br>📍 ${S.ctx}</div>`+
  S.turns.map((t,ti)=>{const n=nsIdx(L,nsS,ti),st=k[n],nm=SPN[t.w]||[t.w,""];
@@ -203,7 +203,7 @@ function vNs(L,r){const k=r.nk||{},all=nsAll(L),S=L.sit[nsS];
 ${NSH[n]?`<div class="hints">${t.h.map(x=>`<span><b class="zh">${x[0]}</b><small>${x[1]}</small></span>`).join("")}</div>`:""}
 ${NSM[n]?`<div class="bub ref"><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div><div class="vi">${t.r[2]}</div>${bS(t.r[0],"🔊 Nghe mẫu")}</div>`:""}
 <div class="out" id="nsr${n}">${NSR[n]||""}</div>
-${!SRC||srBlocked?`<div class="row"><button class="btn sm ${st===1?"":"o"}" onclick="nsMk(${n},1)">✓ Mình nói đúng</button><button class="btn sm ${st===0?"":"o"}" onclick="nsMk(${n},0)">✗ Chưa đúng</button></div>`:""}</div>`}).join("")+
+${!SR_OK()?`<div class="row"><button class="btn sm ${st===1?"":"o"}" onclick="nsMk(${n},1)">✓ Mình nói đúng</button><button class="btn sm ${st===0?"":"o"}" onclick="nsMk(${n},0)">✗ Chưa đúng</button></div>`:""}</div>`}).join("")+
  `<div class="row">${nsS<L.sit.length-1?`<button class="btn" onclick="nsS++;rr();$('ltabs').scrollIntoView()">Tình huống tiếp →</button>`:""}</div>`+
  (r.ns!=null?`<p>Điểm luyện nói: <b>${r.ns}%</b> (${Object.values(k).filter(x=>x===1).length}/${all.length} lượt đạt)</p>`+nextBtn("ns"):`<p style="color:var(--sub)">Điểm được tính khi đã nói đủ ${all.length} lượt của 4 tình huống.</p>`)}
 function nsMk(i,v){const L=LD[cur],n=nsAll(L).length,r=ldN(cur);r.nk=r.nk||{};if(r.nk[i]!==1||v===1)r.nk[i]=v;if(Object.keys(r.nk).length>=n)r.ns=Math.round(Object.values(r.nk).filter(x=>x===1).length/n*100);svN(cur,r);rr()}
@@ -211,31 +211,83 @@ let curRec=null;
 /* Máy nghe (sửa 22/10/2026): nghe liên tục, chỉ tự dừng khi em im lặng SR_SIL ms sau khi đã nói, hoặc chưa nói gì sau SR_WAIT ms; bấm ⏹ để dừng sớm. Điện thoại Android tự ngắt sau mỗi quãng nghỉ: trang tự mở nghe lại và nối chữ. */
 const SR_SIL=3500,SR_WAIT=10000,SR_MAX=45000;
 const srLiveHtml=()=>`<div class="srlive" style="background:#fff8e1;border:1px dashed #c9a227;border-radius:12px;padding:8px 12px;margin-top:6px">🎙 Máy đang nghe: <span id="srLive" class="zh hd">…</span><br><small>Cứ nói thong thả hết câu. Nói xong bấm <b>⏹ Nói xong</b> để chấm (hoặc im lặng khoảng 3 giây máy tự chấm).</small></div>`;
-/* Sửa 23/10/2026 cho iPhone/iPad (Safari): iOS hay không báo "onend" sau khi dừng, khiến máy nghe kẹt ở trạng thái đang nghe nên từ câu thứ 2 bấm 🎤 không thu được. Cách xử lý: mỗi lần nghe hủy hẳn phiên cũ, dừng giọng đọc mẫu, trên iOS nghe một lượt (không tự mở lại ngoài thao tác bấm), và luôn có hẹn giờ tự kết thúc nếu iOS không báo xong. */
+/* Sửa 27/10/2026 cho iPhone/iPad (lần 2). Nguyên nhân thường gặp trên iOS:
+   1) phiên nghe cũ chưa nhả micro (abort() làm Safari kẹt) → lần 2 không thu được;
+   2) giọng đọc mẫu vừa phát xong, Safari chưa chuyển sang chế độ thu âm;
+   3) Siri / Đọc chính tả đang tắt (lỗi service-not-allowed), hoặc mở trang trong Zalo / Facebook (không có máy nghe).
+   Cách xử lý: iOS chỉ dùng stop() (không abort), chờ phiên cũ kết thúc và chờ giọng đọc tắt hẳn rồi mới nghe; báo đúng lỗi;
+   khi Safari không thu được thì mở hộp "Nói qua micro của bàn phím" (Đọc chính tả của iPhone), kết quả chấm như cũ. */
 const SR_IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
-let srInst=null;
-function srListen(done,fail){let txt="",sess="",heard=false,closed=false,s=null,kill=0;const t0=Date.now();let last=t0;
- if(srInst){try{srInst.onend=srInst.onresult=srInst.onerror=null;srInst.abort()}catch(e){}srInst=null}
- try{speechSynthesis.cancel()}catch(e){}
+const SR_INAPP=/Zalo|FBAN|FBAV|FB_IAB|Instagram|Messenger|Line\/|musical_ly|TikTok|BytedanceWebview/i.test(navigator.userAgent);
+let srInst=null,srBusy=false,srEndT=0;
+const SR_OK=()=>SR_IOS||(!!SRC&&!srBlocked);
+function srWarn(){if(SR_IOS)return SR_INAPP?`<span class="warn">Em đang mở trang trong Zalo / Facebook nên micro khó dùng. Bấm <b>⋯</b> (hoặc biểu tượng la bàn) › <b>Mở bằng Safari</b> rồi luyện nói.</span>`:"";
+ return SR_OK()?"":`<span class="warn">Trình duyệt này chưa dùng được chức năng máy nghe. Mở bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</span>`}
+function srMsg(c){const m={
+ deny:SR_IOS?"Safari chưa được phép dùng micro. Vào <b>Cài đặt › Safari › Micro</b> chọn <b>Hỏi</b> hoặc <b>Cho phép</b>, tải lại trang rồi thử lại.":"Trang chưa được phép dùng micro. Hãy cho phép micro (biểu tượng 🔒 cạnh địa chỉ trang) rồi thử lại.",
+ "not-allowed":0,"service-not-allowed":SR_IOS?"iPhone/iPad cần bật <b>Siri</b> và <b>Đọc chính tả</b>: Cài đặt › Siri (bật) và Cài đặt chung › Bàn phím › Bật Đọc chính tả. Hoặc dùng micro của bàn phím.":"Trình duyệt không cho dùng máy nghe. Hãy mở bằng Chrome hoặc Edge.",
+ "audio-capture":"Micro đang bị ứng dụng khác dùng (cuộc gọi, ghi âm, video…). Tắt ứng dụng đó rồi bấm 🎤 lại.",
+ network:"Mạng yếu: máy nghe cần Internet. Kiểm tra mạng rồi bấm 🎤 lại.",
+ "language-not-supported":"Máy chưa nghe được tiếng Trung. iPhone/iPad: thêm bàn phím Tiếng Trung (Giản thể) và bật Đọc chính tả.",
+ nostart:"Máy nghe chưa khởi động được. Em đợi 1–2 giây rồi bấm 🎤 lại; vẫn không được thì tải lại trang.",
+ cancel:"Đã hủy. Bấm 🎤 để nói lại.",
+ empty:"Chưa nghe thấy gì, bấm 🎤 nói lại nhé (nói to, rõ, gần micro)."};
+ m["not-allowed"]=m.deny;return `<span class="bad">${m[c]||m.empty}${c&&!m[c]?` <small>(mã lỗi: ${esc(c)})</small>`:""}</span>`}
+function srKbOn(){try{return SR_IOS&&localStorage.getItem("ct_srkb")==="1"}catch(e){return false}}
+function srListen(done,fail){
+ if(SR_IOS&&(!SRC||srKbOn()))return srKb(done,fail,SRC?"":"nosr");
+ let txt="",sess="",heard=false,closed=false,s=null,kill=0,err="",started=false,wd=0;const t0=Date.now();let last=t0;const myKey=recOn;
+ if(srInst&&!SR_IOS){try{srInst.onend=srInst.onresult=srInst.onerror=null;srInst.abort()}catch(e){}srInst=null}
+ let wait=0;
+ try{if(speechSynthesis.speaking||speechSynthesis.pending){speechSynthesis.cancel();wait=SR_IOS?450:0}else speechSynthesis.cancel()}catch(e){}
+ try{document.querySelectorAll("audio").forEach(a=>{if(!a.paused){a.pause();wait=Math.max(wait,SR_IOS?350:0)}})}catch(e){}
+ if(SR_IOS){if(srBusy&&srInst){try{srInst.onresult=null;srInst.stop()}catch(e){}wait=Math.max(wait,700)}
+  const gap=Date.now()-srEndT;if(gap<400)wait=Math.max(wait,400-gap)}
  const live=()=>{const el=document.getElementById("srLive");if(el)el.textContent=(txt+sess)||"…"};
- const shut=()=>{closed=true;clearInterval(tm);clearTimeout(kill);curRec=null;recOn=null};
- const finish=()=>{if(closed)return;shut();if(s){s.onend=s.onresult=s.onerror=null;try{s.abort()}catch(e){}}if(srInst===s)srInst=null;const t=(txt+sess).trim();t?done(t):fail("empty")};
- const over=()=>{const now=Date.now();return now-t0>SR_MAX||(heard&&now-last>SR_SIL)||(!heard&&now-t0>SR_WAIT)};
- let user=false;const halt=()=>{if(closed)return;user=true;try{s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,SR_IOS?700:1500)};
- const go=()=>{try{s=new SRC()}catch(e){shut();srBlocked=true;fail("deny");return}srInst=s;
+ const shut=()=>{closed=true;clearInterval(tm);clearTimeout(kill);clearTimeout(wd);curRec=null;recOn=null};
+ const finish=()=>{if(closed)return;shut();
+  if(s){s.onresult=s.onerror=s.onend=null;if(SR_IOS){if(srBusy&&srInst===s){try{s.stop()}catch(e){}}}else{try{s.abort()}catch(e){}if(srInst===s)srInst=null}}
+  const t=(txt+sess).trim();if(t)return done(t);
+  const c=err&&err!="aborted"?err:(started||!SR_IOS?"empty":"nostart");
+  if(SR_IOS){recOn=myKey;return srKb(done,fail,c)}
+  if(/not-allowed/.test(c))srBlocked=true;fail(/not-allowed/.test(c)?"deny":c)};
+ const over=()=>{const now=Date.now();return now-t0>SR_MAX||(heard&&now-last>SR_SIL)||(!heard&&now-t0>SR_WAIT+wait)};
+ let user=false;const halt=()=>{if(closed)return;user=true;try{s&&s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,SR_IOS?1200:1500)};
+ const go=()=>{if(closed)return;try{s=new SRC()}catch(e){err="nostart";return finish()}srInst=s;
   s.lang="zh-CN";s.continuous=!SR_IOS;s.interimResults=true;s.maxAlternatives=1;
+  const mark=()=>{srBusy=false;srEndT=Date.now()};s.addEventListener("end",mark);s.addEventListener("error",mark);
+  s.onstart=s.onaudiostart=()=>{started=true;srBusy=true};
   s.onresult=e=>{let f="",it="";for(let j=0;j<e.results.length;j++){const r=e.results[j][0].transcript;if(e.results[j].isFinal){if(f&&r.startsWith(f))f=r;else f+=r}else it+=r}
    sess=f+it;if(sess.trim()){heard=true;last=Date.now()}live()};
-  s.onerror=e=>{if(/not-allowed|service-not-allowed/.test(e.error)){if(closed)return;shut();srBlocked=true;fail("deny")}else if(SR_IOS&&!closed){clearTimeout(kill);kill=setTimeout(finish,600)}};
-  s.onend=()=>{if(closed)return;txt+=sess;sess="";if(user||over()||SR_IOS)finish();else setTimeout(()=>{if(!closed)go()},120)};
-  try{s.start()}catch(e){finish()}};
+  s.onerror=e=>{err=e.error||"";if(closed)return;if(/not-allowed/.test(err)&&!SR_IOS)return finish();if(SR_IOS){clearTimeout(kill);kill=setTimeout(finish,600)}};
+  s.onend=()=>{if(closed)return;txt+=sess;sess="";if(user||over()||SR_IOS||/not-allowed|audio-capture|language/.test(err))finish();else setTimeout(()=>{if(!closed)go()},120)};
+  srBusy=true;try{s.start()}catch(e){srBusy=false;err="nostart";return finish()}
+  if(SR_IOS)wd=setTimeout(()=>{if(!closed&&!started&&!heard){try{s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,500)}},4500)};
  const tm=setInterval(()=>{if(!closed&&!user&&over())halt()},300);
- curRec={stop:halt};go()}
+ curRec={stop:halt};if(wait)setTimeout(go,wait);else go()}
+/* Hộp "Nói qua micro của bàn phím" (iPhone/iPad): dùng Đọc chính tả của bàn phím tiếng Trung, chữ hiện vào ô rồi chấm như máy nghe. */
+let KBF=null;
+function srKb(done,fail,code){KBF={done,fail,key:recOn};let d=$("kbmic");if(!d){d=document.createElement("div");d.id="kbmic";document.body.appendChild(d)}
+ curRec={stop:()=>srKbEnd(0)};d.hidden=false;const pref=srKbOn();
+ d.innerHTML=`<div class="askw"><div class="card kbm" style="text-align:left;max-width:460px">
+<h3 style="margin:0 0 6px">🎙 Nói qua micro của bàn phím</h3>
+${code&&code!="nosr"?`<p style="margin:0 0 8px">${srMsg(code)}</p>`:code=="nosr"?`<p class="bad" style="margin:0 0 8px">Trình duyệt này không có máy nghe${SR_INAPP?" (đang mở trong Zalo / Facebook; nên bấm ⋯ › Mở bằng Safari)":""}. Em dùng micro của bàn phím nhé.</p>`:""}
+<ol style="margin:0 0 8px;padding-left:20px;font-size:.92em;line-height:1.5"><li>Chạm vào ô dưới để mở bàn phím.</li><li>Bấm 🌐 chuyển sang bàn phím <b>简体拼音</b> (tiếng Trung giản thể).</li><li>Chạm biểu tượng <b>🎙</b> trên bàn phím, nói câu tiếng Trung, chạm lại để dừng.</li><li>Chữ hiện ra trong ô thì bấm <b>✓ Chấm</b>.</li></ol>
+<textarea id="kbt" class="tin zh" rows="2" style="width:100%;font-size:1.2em" placeholder="Chạm vào đây rồi bấm 🎙 trên bàn phím…" lang="zh-CN"></textarea>
+<div class="row c" style="margin-top:8px"><button class="btn" onclick="srKbEnd(1)">✓ Chấm</button>${SRC?`<button class="btn o" onclick="srKbRetry()">🎤 Thử lại máy nghe</button>`:""}<button class="btn o" onclick="srKbEnd(0)">Hủy</button></div>
+<label style="display:block;margin-top:8px;font-size:.88em"><input type="checkbox" id="kbpref" ${pref?"checked":""} onchange="srKbPref(this.checked)"> Trên máy này luôn nói qua micro bàn phím</label>
+<details style="font-size:.85em;margin-top:6px"><summary>Chưa có bàn phím tiếng Trung / không thấy 🎙?</summary><p style="margin:6px 0 0">Cài đặt › Cài đặt chung › Bàn phím › Bàn phím › Thêm bàn phím mới › <b>Tiếng Trung, Giản thể</b> › <b>Bính âm – QWERTY</b>. Trong mục Bàn phím, bật <b>Đọc chính tả</b>.</p></details></div></div>`;
+ const t=$("kbt");if(!code||code=="nosr"){try{t.focus()}catch(e){}}}
+function srKbPref(v){try{v?localStorage.setItem("ct_srkb","1"):localStorage.removeItem("ct_srkb")}catch(e){}}
+function srKbClose(){const d=$("kbmic");if(d){d.hidden=true;d.innerHTML=""}curRec=null;recOn=null}
+function srKbEnd(ok){const f=KBF;if(!f)return srKbClose();const t=(($("kbt")||{}).value||"").trim();KBF=null;srKbClose();
+ if(ok&&t)f.done(t);else f.fail(ok?"empty":"cancel")}
+function srKbRetry(){const f=KBF;if(!f)return;KBF=null;srKbPref(false);srKbClose();recOn=f.key;srListen(f.done,f.fail)}
 function rec(i){if(curRec){try{curRec.stop()}catch(e){}return}
  const o=nsAll(LD[cur])[i],tgt=o.t.r[0];recOn=i;NSR[i]=srLiveHtml();rr();
  srListen(t=>{const m=simi(np(t),np(tgt)),ok=m>=70;
   NSR[i]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ bị thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;nsMk(i,ok?1:0)},
- k=>{NSR[i]=k=="deny"?`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro, hoặc tự đọc rồi tự chấm.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()})}
+ k=>{NSR[i]=srMsg(k);rr()})}
 
 /* ===== Khởi động: nhìn tranh chọn từ (L.warm) ===== */
 let WU={};
@@ -256,7 +308,7 @@ function cpTxt(t){const done=()=>ask("Đã sao chép. Em dán vào Zalo để g�
  if(!String(t||"").trim())return ask("Em chưa viết gì để sao chép.",null,1);
  try{navigator.clipboard.writeText(t).then(done,()=>cpOld(t,done))}catch(e){cpOld(t,done)}}
 function cpOld(t,cb){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy")}catch(e){}a.remove();cb()}
-function vHd(L){return `<div class="card note"><b>课堂活动 · Hoạt động trên lớp</b><br>Chọn vai của em. Lượt của bạn kia: chạm để nghe. Lượt của em: đọc gợi ý tiếng Việt, tự nói rồi bấm <b>🎤 Nói</b> (đạt từ 70%). Bí thì bấm <b>👁 Xem mẫu</b>. Muốn xem cả đoạn, chọn <b>Xem cả đoạn mẫu</b>.${SRC&&!srBlocked?"":`<br><span class="warn">Trình duyệt này chưa dùng được máy nghe. Mở bằng Chrome hoặc Edge và cho phép micro.</span>`}</div>`+
+function vHd(L){return `<div class="card note"><b>课堂活动 · Hoạt động trên lớp</b><br>Chọn vai của em. Lượt của bạn kia: chạm để nghe. Lượt của em: đọc gợi ý tiếng Việt, tự nói rồi bấm <b>🎤 Nói</b> (đạt từ 70%). Bí thì bấm <b>👁 Xem mẫu</b>. Muốn xem cả đoạn, chọn <b>Xem cả đoạn mẫu</b>.${srWarn()?"<br>"+srWarn():""}</div>`+
  L.act.map((A,ai)=>{const me=ACRL[ai]==null?null:ACRL[ai];
  return `<div class="card"><h3>${A.title}</h3><p class="ctx">📍 ${A.ctx}</p>${A.req?`<div class="bub ref"><div class="py">${A.req[1]}</div><div class="hz">${A.req[0]}</div><div class="vi">${A.req[2]}</div></div>`:""}
 <p><b>Em đóng vai:</b></p><div class="row">${A.roles.map((r,ri)=>`<button class="btn sm ${me===ri?"":"o"}" onclick="ACRL[${ai}]=${ri};rr()"><span class="zh">${r}</span> · ${(SPN[r]||["",r])[1]}</button>`).join("")}<button class="btn sm ${me===null?"":"o"}" onclick="ACRL[${ai}]=null;rr()">Xem cả đoạn mẫu</button></div>
@@ -270,11 +322,11 @@ ${A.note?`<p class="ctx">${A.note}</p>`:""}</div>`}).join("")+
  `<div class="card"><b>✍️ Đoạn đóng vai của nhóm em</b><p class="ctx">Hai bạn một nhóm: viết lại hoặc viết tiếp đoạn hội thoại (chữ Hán hoặc pinyin), luyện nói cùng nhau rồi sao chép gửi cô qua Zalo.</p><textarea class="tin hdta" rows="6" oninput="HDT=this.value" placeholder="${(a=>a&&a[1]?esc(a[0][0]+"："+a[0][1])+"&#10;"+esc(a[1][0])+"：……":"")((L.act[0]||{}).l)}">${esc(HDT)}</textarea><div class="row"><button class="btn sm" onclick="cpTxt(HDT)">📋 Sao chép bài</button></div></div>`+nextBtn("hd")}
 function acRec(ai,j){if(curRec){try{curRec.stop()}catch(e){}return}
  const k=ai+"-"+j,tgt=LD[cur].act[ai].l[j][1];
- if(!SRC||srBlocked){ACR[k]=`<span class="bad">Trình duyệt chưa dùng được micro. Mở bằng Chrome hoặc Edge và cho phép micro.</span>`;rr();return}
+ if(!SR_OK()){ACR[k]=`<span class="bad">Trình duyệt chưa dùng được micro. Mở bằng Chrome hoặc Edge và cho phép micro.</span>`;rr();return}
  recOn=k;ACR[k]=srLiveHtml();rr();
  srListen(t=>{const m=simi(np(t),np(tgt)),ok=m>=70;ACS[k]=ok?1:0;
   ACR[k]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;rr()},
- x=>{ACR[k]=x=="deny"?`<span class="bad">Trang chưa được phép dùng micro.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại nhé.</span>`;rr()})}
+ x=>{ACR[k]=srMsg(x);rr()})}
 
 const PN={fc:"Flashcard từ vựng",gp:"Ngữ pháp · Mẫu câu",dt:"Nghe chép chính tả",ns:"Luyện nói"};
 function vSum(L,r){const ks=Object.keys(PN),avg=avgOf(r),weak=ks.filter(k=>r[k]!=null&&r[k]<80),todo=ks.filter(k=>r[k]==null);
@@ -348,8 +400,8 @@ function tBody(L){const d=T.done;let h="";
   h+=`<div class="card q ${d?(ok?"ok":"no"):""}" id="tq-li-${k}"><b>Câu ${k+1+L.tsort.length}.</b> <span class="zh hd">${q.qz||"听后选择正确的回答。"}</span><small class="opy">${q.qp||"Tīng hòu xuǎnzé zhèngquè de huídá."}</small><div class="row"><button class="snd" ${d||s.plays>=2?"disabled":""} onclick="tPlay(${k})">🔊 ${s.plays>=2?"Đã nghe đủ 2 lượt":`Nghe (còn ${2-s.plays} lượt)`}</button></div>
   <div class="opts">${s.o.map((o,j)=>`<button class="opt ${s.pick===j?"sel":""} ${d&&o===q.o[0]?"right":""}" ${d?"disabled":""} onclick="T.li[${k}].pick=${j};rr()">${OP(o)}</button>`).join("")}</div>
   ${d?`<small class="ex">${ok?"✓ Đúng.":"✗ Chưa đúng."} Nội dung nghe: <span class="zh">${q.a}</span></small>`:""}</div>`});
- h+=`<h3 class="ab-h">Phần 2 · Nói theo tình huống (5 điểm)</h3><p class="ctx">Không có gợi ý: đọc mục đích, tự nói câu tiếng Trung. Mỗi câu được nói <b>tối đa 2 lần</b> (lấy lần tốt hơn); nói đạt hoặc dùng hết 2 lần thì máy mới hiện câu mẫu (đạt từ 60%).</p>`;
- const all=nsAll(L);T.sp.forEach((ix,k)=>{const t=all[ix].t,nm=SPN[t.w]||[t.w,""],ok=!!T.spk[k],self=!SRC||srBlocked;
+ h+=`<h3 class="ab-h">Phần 2 · Nói theo tình huống (5 điểm)</h3><p class="ctx">Không có gợi ý: đọc mục đích, tự nói câu tiếng Trung. Mỗi câu được nói <b>tối đa 2 lần</b> (lấy lần tốt hơn); nói đạt hoặc dùng hết 2 lần thì máy mới hiện câu mẫu (đạt từ 60%).</p>${srWarn()?`<p>${srWarn()}</p>`:""}`;
+ const all=nsAll(L);T.sp.forEach((ix,k)=>{const t=all[ix].t,nm=SPN[t.w]||[t.w,""],ok=!!T.spk[k],self=!SR_OK();
   h+=`<div class="card ns ${d?(ok?"ok":"no"):""}" id="tq-sp-${k}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[1]}</small></div><div class="ctx">${L.sit[all[ix].si].ctx}</div><div class="goal">🎯 ${t.vi}</div>
   ${d||T.spr[k]?"":self?`<div class="bad">Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Nói xong":(T.spn||[])[k]?"🎤 Nói lại (lần 2/2)":"🎤 Nói"}</button></div>`}
   <div class="out">${T.spo[k]||""}</div>${d&&!T.spr[k]?`<div class="bad">✗ Chưa nói</div>`:""}${d||T.spr[k]?`<div class="bub ref"><small>Câu mẫu:</small><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div></div>`:""}</div>`});
@@ -359,7 +411,7 @@ function tRec(k){if(curRec){try{curRec.stop()}catch(e){}return}if(T.spr[k]||T.do
  const L=LD[tcur],tgt=nsAll(L)[T.sp[k]].t.r[0];recOn="t"+k;T.spo[k]=srLiveHtml();rr();
  srListen(t=>{if(T.done)return;T.spn=T.spn||[];const m=simi(np(t),np(tgt)),ok=m>=60,n=(T.spn[k]||0)+1;T.spn[k]=n;T.sph=T.sph||[];if(!T.spk[k])T.sph[k]=t;T.spk[k]=!!T.spk[k]||ok;T.spr[k]=T.spk[k]||n>=2;
   T.spo[k]=`${n>1?"<b>Lần 2:</b> ":""}Máy nghe được: <span class="zh hd">${esc(t)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":n<2?"✗ Chưa đạt · em còn 1 lần nói lại":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()},
- x=>{if(T.done)return;T.spo[k]=x=="deny"?`<span class="bad">Trang chưa được phép dùng micro. Hãy cho phép micro rồi bấm 🎤 Nói lại.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Nói lại.</span>`;rr()})}
+ x=>{if(T.done)return;T.spo[k]=srMsg(x);rr()})}
 function tSubmit(auto,f){if(!T||T.done)return;
  if(!auto&&!f){const miss=T.vw.filter((_,k)=>!(T.vin[k]||"").trim()).length+T.so.filter(s=>s.pool.length).length+T.li.filter(s=>s.pick==null).length+T.sp.filter((_,k)=>T.spk[k]==null).length;if(miss)return ask(`Còn ${miss} câu chưa làm. Vẫn nộp bài?`,()=>tSubmit(false,1))}
  tStop();if(curRec){try{curRec.stop()}catch(e){}}const L=LD[tcur];
