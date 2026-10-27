@@ -30,7 +30,7 @@ let SUBC="ol";
 function goSub(id){go("learn");sub(id);mMenu(false);const n=$("nilearn");n.classList.remove("open");n.style.pointerEvents="none";setTimeout(()=>n.style.pointerEvents="",300)}
 function crumbDraw(){const s=SUBS.find(x=>x[0]==SUBC),c=$("crumb");if(!c)return;
  const inNv=SUBC=="ol"&&!cur&&window.NVOPEN,inL=SUBC=="ol"&&cur,inT=SUBC=="ts"&&tcur;
- c.innerHTML=`<a onclick="go('home')">Trang chủ</a> › <a onclick="goSub('ol')">Học tiếng Trung</a> › `+(inNv?`<a onclick="nvClose()">${s[1]}</a> › HSK ${olLv} · Bài mở đầu`:inL?`<a onclick="closeL()">${s[1]}</a> › HSK ${olLv} · Bài ${cur}`:inT?`${s[1]} › HSK ${olLv} · Bài ${tcur}`:s[1]);
+ c.innerHTML=`<a onclick="go('home')">Trang chủ</a> › <a onclick="goSub('ol')">Học tiếng Trung</a> › `+(inNv?`<a onclick="nv1Close()">${s[1]}</a> › HSK ${olLv} · Bài mở đầu`:inL?`<a onclick="closeL()">${s[1]}</a> › HSK ${olLv} · Bài ${cur}`:inT?`${s[1]} › HSK ${olLv} · Bài ${tcur}`:s[1]);
  $("lh2").textContent=s[1]}
 function sub(id){SUBC=id;SUBS.forEach(s=>$("lp-"+s[0]).classList.toggle("on",s[0]===id));document.querySelectorAll("#ddlearn button").forEach(b=>b.classList.toggle("on",b.dataset.sub===id));crumbDraw()}
 function lvBar(){return `<div class="row">${[1,2,3].map(l=>`<button class="btn ${l==olLv?"":"o"}" onclick="setLv(${l})">HSK ${l}</button>`).join("")}</div>`}
