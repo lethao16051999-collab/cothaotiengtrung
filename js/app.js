@@ -216,27 +216,28 @@ const srLiveHtml=()=>`<div class="srlive" style="background:#fff8e1;border:1px d
    2) giọng đọc mẫu vừa phát xong, Safari chưa chuyển sang chế độ thu âm;
    3) Siri / Đọc chính tả đang tắt (lỗi service-not-allowed), hoặc mở trang trong Zalo / Facebook (không có máy nghe).
    Cách xử lý: iOS chỉ dùng stop() (không abort), chờ phiên cũ kết thúc và chờ giọng đọc tắt hẳn rồi mới nghe; báo đúng lỗi;
-   khi Safari không thu được thì mở hộp "Nói qua micro của bàn phím" (Đọc chính tả của iPhone), kết quả chấm như cũ. */
+   không có cách gõ thay (cô yêu cầu học viên phải nói, 27/10). */
 const SR_IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 const SR_INAPP=/Zalo|FBAN|FBAV|FB_IAB|Instagram|Messenger|Line\/|musical_ly|TikTok|BytedanceWebview/i.test(navigator.userAgent);
 let srInst=null,srBusy=false,srEndT=0;
-const SR_OK=()=>SR_IOS||(!!SRC&&!srBlocked);
-function srWarn(){if(SR_IOS)return SR_INAPP?`<span class="warn">Em đang mở trang trong Zalo / Facebook nên micro khó dùng. Bấm <b>⋯</b> (hoặc biểu tượng la bàn) › <b>Mở bằng Safari</b> rồi luyện nói.</span>`:"";
+const SR_OK=()=>!!SRC&&!srBlocked;
+function srWarn(){if(SR_IOS&&(SR_INAPP||!SRC))return `<span class="warn">${SR_INAPP?"Em đang mở trang trong Zalo / Facebook nên không thu âm được. ":"Trình duyệt này không thu âm được. "}Bấm <b>⋯</b> (hoặc biểu tượng la bàn) › <b>Mở bằng Safari</b> rồi luyện nói. Trên iPad / iPhone cần bật <b>Siri</b> và <b>Đọc chính tả</b>.</span>`;if(SR_IOS)return "";
  return SR_OK()?"":`<span class="warn">Trình duyệt này chưa dùng được chức năng máy nghe. Mở bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</span>`}
 function srMsg(c){const m={
  deny:SR_IOS?"Safari chưa được phép dùng micro. Vào <b>Cài đặt › Safari › Micro</b> chọn <b>Hỏi</b> hoặc <b>Cho phép</b>, tải lại trang rồi thử lại.":"Trang chưa được phép dùng micro. Hãy cho phép micro (biểu tượng 🔒 cạnh địa chỉ trang) rồi thử lại.",
- "not-allowed":0,"service-not-allowed":SR_IOS?"iPhone/iPad cần bật <b>Siri</b> và <b>Đọc chính tả</b>: Cài đặt › Siri (bật) và Cài đặt chung › Bàn phím › Bật Đọc chính tả. Hoặc dùng micro của bàn phím.":"Trình duyệt không cho dùng máy nghe. Hãy mở bằng Chrome hoặc Edge.",
+ "not-allowed":0,"service-not-allowed":SR_IOS?"iPhone/iPad cần bật <b>Siri</b> và <b>Đọc chính tả</b>: Cài đặt › Siri (bật) và Cài đặt chung › Bàn phím › Bật Đọc chính tả. Bật xong tải lại trang rồi bấm 🎤 lại.":"Trình duyệt không cho dùng máy nghe. Hãy mở bằng Chrome hoặc Edge.",
  "audio-capture":"Micro đang bị ứng dụng khác dùng (cuộc gọi, ghi âm, video…). Tắt ứng dụng đó rồi bấm 🎤 lại.",
  network:"Mạng yếu: máy nghe cần Internet. Kiểm tra mạng rồi bấm 🎤 lại.",
  "language-not-supported":"Máy chưa nghe được tiếng Trung. iPhone/iPad: thêm bàn phím Tiếng Trung (Giản thể) và bật Đọc chính tả.",
  nostart:"Máy nghe chưa khởi động được. Em đợi 1–2 giây rồi bấm 🎤 lại; vẫn không được thì tải lại trang.",
  cancel:"Đã hủy. Bấm 🎤 để nói lại.",
+ nosr:SR_IOS?"Trình duyệt này không thu âm được. Mở trang bằng <b>Safari</b> (bấm ⋯ › Mở bằng Safari) rồi bấm 🎤 lại.":"Trình duyệt này không thu âm được. Mở bằng Google Chrome hoặc Microsoft Edge.",
  empty:"Chưa nghe thấy gì, bấm 🎤 nói lại nhé (nói to, rõ, gần micro)."};
  m["not-allowed"]=m.deny;return `<span class="bad">${m[c]||m.empty}${c&&!m[c]?` <small>(mã lỗi: ${esc(c)})</small>`:""}</span>`}
-function srKbOn(){try{return SR_IOS&&localStorage.getItem("ct_srkb")==="1"}catch(e){return false}}
+try{localStorage.removeItem("ct_srkb")}catch(e){}
 function srListen(done,fail){
- if(SR_IOS&&(!SRC||srKbOn()))return srKb(done,fail,SRC?"":"nosr");
- let txt="",sess="",heard=false,closed=false,s=null,kill=0,err="",started=false,wd=0;const t0=Date.now();let last=t0;const myKey=recOn;
+ if(!SRC)return fail("nosr");
+ let txt="",sess="",heard=false,closed=false,s=null,kill=0,err="",started=false,wd=0;const t0=Date.now();let last=t0;
  if(srInst&&!SR_IOS){try{srInst.onend=srInst.onresult=srInst.onerror=null;srInst.abort()}catch(e){}srInst=null}
  let wait=0;
  try{if(speechSynthesis.speaking||speechSynthesis.pending){speechSynthesis.cancel();wait=SR_IOS?450:0}else speechSynthesis.cancel()}catch(e){}
@@ -249,8 +250,7 @@ function srListen(done,fail){
   if(s){s.onresult=s.onerror=s.onend=null;if(SR_IOS){if(srBusy&&srInst===s){try{s.stop()}catch(e){}}}else{try{s.abort()}catch(e){}if(srInst===s)srInst=null}}
   const t=(txt+sess).trim();if(t)return done(t);
   const c=err&&err!="aborted"?err:(started||!SR_IOS?"empty":"nostart");
-  if(SR_IOS){recOn=myKey;return srKb(done,fail,c)}
-  if(/not-allowed/.test(c))srBlocked=true;fail(/not-allowed/.test(c)?"deny":c)};
+  if(/not-allowed/.test(c)&&!SR_IOS)srBlocked=true;fail(c=="not-allowed"?"deny":c)};
  const over=()=>{const now=Date.now();return now-t0>SR_MAX||(heard&&now-last>SR_SIL)||(!heard&&now-t0>SR_WAIT+wait)};
  let user=false;const halt=()=>{if(closed)return;user=true;try{s&&s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,SR_IOS?1200:1500)};
  const go=()=>{if(closed)return;try{s=new SRC()}catch(e){err="nostart";return finish()}srInst=s;
@@ -265,24 +265,6 @@ function srListen(done,fail){
   if(SR_IOS)wd=setTimeout(()=>{if(!closed&&!started&&!heard){try{s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,500)}},4500)};
  const tm=setInterval(()=>{if(!closed&&!user&&over())halt()},300);
  curRec={stop:halt};if(wait)setTimeout(go,wait);else go()}
-/* Hộp "Nói qua micro của bàn phím" (iPhone/iPad): dùng Đọc chính tả của bàn phím tiếng Trung, chữ hiện vào ô rồi chấm như máy nghe. */
-let KBF=null;
-function srKb(done,fail,code){KBF={done,fail,key:recOn};let d=$("kbmic");if(!d){d=document.createElement("div");d.id="kbmic";document.body.appendChild(d)}
- curRec={stop:()=>srKbEnd(0)};d.hidden=false;const pref=srKbOn();
- d.innerHTML=`<div class="askw"><div class="card kbm" style="text-align:left;max-width:460px">
-<h3 style="margin:0 0 6px">🎙 Nói qua micro của bàn phím</h3>
-${code&&code!="nosr"?`<p style="margin:0 0 8px">${srMsg(code)}</p>`:code=="nosr"?`<p class="bad" style="margin:0 0 8px">Trình duyệt này không có máy nghe${SR_INAPP?" (đang mở trong Zalo / Facebook; nên bấm ⋯ › Mở bằng Safari)":""}. Em dùng micro của bàn phím nhé.</p>`:""}
-<ol style="margin:0 0 8px;padding-left:20px;font-size:.92em;line-height:1.5"><li>Chạm vào ô dưới để mở bàn phím.</li><li>Bấm 🌐 chuyển sang bàn phím <b>简体拼音</b> (tiếng Trung giản thể).</li><li>Chạm biểu tượng <b>🎙</b> trên bàn phím, nói câu tiếng Trung, chạm lại để dừng.</li><li>Chữ hiện ra trong ô thì bấm <b>✓ Chấm</b>.</li></ol>
-<textarea id="kbt" class="tin zh" rows="2" style="width:100%;font-size:1.2em" placeholder="Chạm vào đây rồi bấm 🎙 trên bàn phím…" lang="zh-CN"></textarea>
-<div class="row c" style="margin-top:8px"><button class="btn" onclick="srKbEnd(1)">✓ Chấm</button>${SRC?`<button class="btn o" onclick="srKbRetry()">🎤 Thử lại máy nghe</button>`:""}<button class="btn o" onclick="srKbEnd(0)">Hủy</button></div>
-<label style="display:block;margin-top:8px;font-size:.88em"><input type="checkbox" id="kbpref" ${pref?"checked":""} onchange="srKbPref(this.checked)"> Trên máy này luôn nói qua micro bàn phím</label>
-<details style="font-size:.85em;margin-top:6px"><summary>Chưa có bàn phím tiếng Trung / không thấy 🎙?</summary><p style="margin:6px 0 0">Cài đặt › Cài đặt chung › Bàn phím › Bàn phím › Thêm bàn phím mới › <b>Tiếng Trung, Giản thể</b> › <b>Bính âm – QWERTY</b>. Trong mục Bàn phím, bật <b>Đọc chính tả</b>.</p></details></div></div>`;
- const t=$("kbt");if(!code||code=="nosr"){try{t.focus()}catch(e){}}}
-function srKbPref(v){try{v?localStorage.setItem("ct_srkb","1"):localStorage.removeItem("ct_srkb")}catch(e){}}
-function srKbClose(){const d=$("kbmic");if(d){d.hidden=true;d.innerHTML=""}curRec=null;recOn=null}
-function srKbEnd(ok){const f=KBF;if(!f)return srKbClose();const t=(($("kbt")||{}).value||"").trim();KBF=null;srKbClose();
- if(ok&&t)f.done(t);else f.fail(ok?"empty":"cancel")}
-function srKbRetry(){const f=KBF;if(!f)return;KBF=null;srKbPref(false);srKbClose();recOn=f.key;srListen(f.done,f.fail)}
 function rec(i){if(curRec){try{curRec.stop()}catch(e){}return}
  const o=nsAll(LD[cur])[i],tgt=o.t.r[0];recOn=i;NSR[i]=srLiveHtml();rr();
  srListen(t=>{const m=simi(np(t),np(tgt)),ok=m>=70;
@@ -403,7 +385,7 @@ function tBody(L){const d=T.done;let h="";
  h+=`<h3 class="ab-h">Phần 2 · Nói theo tình huống (5 điểm)</h3><p class="ctx">Không có gợi ý: đọc mục đích, tự nói câu tiếng Trung. Mỗi câu được nói <b>tối đa 2 lần</b> (lấy lần tốt hơn); nói đạt hoặc dùng hết 2 lần thì máy mới hiện câu mẫu (đạt từ 60%).</p>${srWarn()?`<p>${srWarn()}</p>`:""}`;
  const all=nsAll(L);T.sp.forEach((ix,k)=>{const t=all[ix].t,nm=SPN[t.w]||[t.w,""],ok=!!T.spk[k],self=!SR_OK();
   h+=`<div class="card ns ${d?(ok?"ok":"no"):""}" id="tq-sp-${k}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[1]}</small></div><div class="ctx">${L.sit[all[ix].si].ctx}</div><div class="goal">🎯 ${t.vi}</div>
-  ${d||T.spr[k]?"":self?`<div class="bad">Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro.</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Nói xong":(T.spn||[])[k]?"🎤 Nói lại (lần 2/2)":"🎤 Nói"}</button></div>`}
+  ${d||T.spr[k]?"":self?`<div class="bad">${SR_IOS?"Phần nói cần mở trang bằng Safari, bật Siri và Đọc chính tả, cho phép micro.":"Phần nói cần mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro."}</div>`:`<div class="row"><button class="btn sm mic ${recOn==="t"+k?"rec":""}" onclick="tRec(${k})">${recOn==="t"+k?"⏹ Nói xong":(T.spn||[])[k]?"🎤 Nói lại (lần 2/2)":"🎤 Nói"}</button></div>`}
   <div class="out">${T.spo[k]||""}</div>${d&&!T.spr[k]?`<div class="bad">✗ Chưa nói</div>`:""}${d||T.spr[k]?`<div class="bub ref"><small>Câu mẫu:</small><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div></div>`:""}</div>`});
  h+=`</div>`+(d?`<div class="row c"><button class="btn" onclick="T=null;rr();scrollTo(0,0)">↻ Làm lại bài</button><button class="btn o" onclick="sub('ol');openL(${tcur})">📖 Ôn lại Bài ${tcur}</button></div>`:`<div class="row c"><button class="btn" onclick="tSubmit(false)">Nộp bài</button></div>`);
  return h}
