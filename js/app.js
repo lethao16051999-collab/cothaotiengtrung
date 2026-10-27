@@ -198,7 +198,7 @@ function vNs(L,r){const k=r.nk||{},all=nsAll(L),S=L.sit[nsS];
 <div class="stb sit">${L.sit.map((x,si)=>`<button class="${si==nsS?"on":""}" onclick="nsS=${si};rr()">${x.title}<i class="sc ${done(si)==x.turns.length?"ok":"no"}">${done(si)}/${x.turns.length}</i></button>`).join("")}</div>
 <div class="card note"><b>${S.title}</b><br>📍 ${S.ctx}</div>`+
  S.turns.map((t,ti)=>{const n=nsIdx(L,nsS,ti),st=k[n],nm=SPN[t.w]||[t.w,""];
- return `<div class="card ns ${st===1?"ok":st===0?"no":""}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[0]} · ${nm[1]}</small></div><div class="goal">🎯 ${t.vi}</div>
+ return `<div class="card ns ${st===1?"ok":st===0?"no":""}"><div class="who2"><b class="zh">${t.w}</b> <small>${nm[0]} · ${nm[1]}</small></div><div class="goal">🎯 ${t.vi}</div>${nameHint(t.r[0])}
 <div class="row"><button class="btn sm mic ${recOn===n?"rec":""}" onclick="rec(${n})">${recOn===n?"⏹ Nói xong":"🎤 Nói"}</button><button class="snd" onclick="NSH[${n}]=!NSH[${n}];rr()">💡 ${NSH[n]?"Ẩn":"Xem"} gợi ý</button><button class="snd" onclick="NSM[${n}]=!NSM[${n}];rr()">👁 ${NSM[n]?"Ẩn":"Xem"} mẫu</button></div>
 ${NSH[n]?`<div class="hints">${t.h.map(x=>`<span><b class="zh">${x[0]}</b><small>${x[1]}</small></span>`).join("")}</div>`:""}
 ${NSM[n]?`<div class="bub ref"><div class="py">${t.r[1]}</div><div class="hz">${t.r[0]}</div><div class="vi">${t.r[2]}</div>${bS(t.r[0],"🔊 Nghe mẫu")}</div>`:""}
@@ -237,7 +237,7 @@ function srMsg(c){const m={
 try{localStorage.removeItem("ct_srkb")}catch(e){}
 function srListen(done,fail){
  if(!SRC)return fail("nosr");
- let txt="",sess="",heard=false,closed=false,s=null,kill=0,err="",started=false,wd=0;const t0=Date.now();let last=t0;
+ let txt="",sess="",segA=[],segS=[],heard=false,closed=false,s=null,kill=0,err="",started=false,wd=0;const t0=Date.now();let last=t0;
  if(srInst&&!SR_IOS){try{srInst.onend=srInst.onresult=srInst.onerror=null;srInst.abort()}catch(e){}srInst=null}
  let wait=0;
  try{if(speechSynthesis.speaking||speechSynthesis.pending){speechSynthesis.cancel();wait=SR_IOS?450:0}else speechSynthesis.cancel()}catch(e){}
@@ -248,27 +248,27 @@ function srListen(done,fail){
  const shut=()=>{closed=true;clearInterval(tm);clearTimeout(kill);clearTimeout(wd);curRec=null;recOn=null};
  const finish=()=>{if(closed)return;shut();
   if(s){s.onresult=s.onerror=s.onend=null;if(SR_IOS){if(srBusy&&srInst===s){try{s.stop()}catch(e){}}}else{try{s.abort()}catch(e){}if(srInst===s)srInst=null}}
-  const t=(txt+sess).trim();if(t)return done(t);
+  const t=(txt+sess).trim(),sg=segA.concat(segS);if(t)return done(t,sg.length==1?sg[0].slice(1).map(x=>x.trim()).filter(x=>x&&x!=t):[]);
   const c=err&&err!="aborted"?err:(started||!SR_IOS?"empty":"nostart");
   if(/not-allowed/.test(c)&&!SR_IOS)srBlocked=true;fail(c=="not-allowed"?"deny":c)};
  const over=()=>{const now=Date.now();return now-t0>SR_MAX||(heard&&now-last>SR_SIL)||(!heard&&now-t0>SR_WAIT+wait)};
  let user=false;const halt=()=>{if(closed)return;user=true;try{s&&s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,SR_IOS?1200:1500)};
  const go=()=>{if(closed)return;try{s=new SRC()}catch(e){err="nostart";return finish()}srInst=s;
-  s.lang="zh-CN";s.continuous=!SR_IOS;s.interimResults=true;s.maxAlternatives=1;
+  s.lang="zh-CN";s.continuous=!SR_IOS;s.interimResults=true;s.maxAlternatives=5;
   const mark=()=>{srBusy=false;srEndT=Date.now()};s.addEventListener("end",mark);s.addEventListener("error",mark);
   s.onstart=s.onaudiostart=()=>{started=true;srBusy=true};
-  s.onresult=e=>{let f="",it="";for(let j=0;j<e.results.length;j++){const r=e.results[j][0].transcript;if(e.results[j].isFinal){if(f&&r.startsWith(f))f=r;else f+=r}else it+=r}
+  s.onresult=e=>{let f="",it="",sg=[];for(let j=0;j<e.results.length;j++){const R=e.results[j],r=R[0].transcript,al=Array.from(R,x=>x.transcript);if(R.isFinal){if(f&&r.startsWith(f)){f=r;sg=[al]}else{f+=r;sg.push(al)}}else it+=r}segS=sg;
    sess=f+it;if(sess.trim()){heard=true;last=Date.now()}live()};
   s.onerror=e=>{err=e.error||"";if(closed)return;if(/not-allowed/.test(err)&&!SR_IOS)return finish();if(SR_IOS){clearTimeout(kill);kill=setTimeout(finish,600)}};
-  s.onend=()=>{if(closed)return;txt+=sess;sess="";if(user||over()||SR_IOS||/not-allowed|audio-capture|language/.test(err))finish();else setTimeout(()=>{if(!closed)go()},120)};
+  s.onend=()=>{if(closed)return;txt+=sess;sess="";segA=segA.concat(segS);segS=[];if(user||over()||SR_IOS||/not-allowed|audio-capture|language/.test(err))finish();else setTimeout(()=>{if(!closed)go()},120)};
   srBusy=true;try{s.start()}catch(e){srBusy=false;err="nostart";return finish()}
   if(SR_IOS)wd=setTimeout(()=>{if(!closed&&!started&&!heard){try{s.stop()}catch(e){}clearTimeout(kill);kill=setTimeout(finish,500)}},4500)};
  const tm=setInterval(()=>{if(!closed&&!user&&over())halt()},300);
  curRec={stop:halt};if(wait)setTimeout(go,wait);else go()}
 function rec(i){if(curRec){try{curRec.stop()}catch(e){}return}
  const o=nsAll(LD[cur])[i],tgt=o.t.r[0];recOn=i;NSR[i]=srLiveHtml();rr();
- srListen(t=>{const m=simi(np(t),np(tgt)),ok=m>=70;
-  NSR[i]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ bị thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;nsMk(i,ok?1:0)},
+ srListen((t,a)=>{const m=sayPct(t,tgt,a),ok=m>=70;
+  NSR[i]=`<div>Máy nghe được: <span class="zh hd">${sayHeard(t,tgt,a)}</span></div><div>So với mẫu: <span class="zh hd">${sayMark(tgt,t,a)}</span> <small>(đỏ: thiếu hoặc sai âm · cam: đúng âm, sai thanh)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;nsMk(i,ok?1:0)},
  k=>{NSR[i]=srMsg(k);rr()})}
 
 /* ===== Khởi động: nhìn tranh chọn từ (L.warm) ===== */
@@ -296,7 +296,7 @@ function vHd(L){return `<div class="card note"><b>课堂活动 · Hoạt động
 <p><b>Em đóng vai:</b></p><div class="row">${A.roles.map((r,ri)=>`<button class="btn sm ${me===ri?"":"o"}" onclick="ACRL[${ai}]=${ri};rr()"><span class="zh">${r}</span> · ${(SPN[r]||["",r])[1]}</button>`).join("")}<button class="btn sm ${me===null?"":"o"}" onclick="ACRL[${ai}]=null;rr()">Xem cả đoạn mẫu</button></div>
 ${A.l.map((y,j)=>{const k=ai+"-"+j,mine=me!==null&&y[0]==A.roles[me],nm=SPN[y[0]]||[y[0],""],st=ACS[k];
  if(!mine)return `<div class="dl"><div class="who"><b>${y[0]}</b>${nm[1]}</div><div class="bub" onclick="spk(${S(y[1])})"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div></div></div>`;
- return `<div class="card ns ${st===1?"ok":st===0?"no":""}"><div class="who2"><b class="zh">${y[0]}</b> <small>${nm[1]} (em)</small></div><div class="goal">🎯 ${y[4]}</div>
+ return `<div class="card ns ${st===1?"ok":st===0?"no":""}"><div class="who2"><b class="zh">${y[0]}</b> <small>${nm[1]} (em)</small></div><div class="goal">🎯 ${y[4]}</div>${nameHint(y[1])}
 <div class="row"><button class="btn sm mic ${recOn===k?"rec":""}" onclick="acRec(${ai},${j})">${recOn===k?"⏹ Nói xong":"🎤 Nói"}</button><button class="snd" onclick="NSM['${k}']=!NSM['${k}'];rr()">👁 ${NSM[k]?"Ẩn":"Xem"} mẫu</button></div>
 ${NSM[k]?`<div class="bub ref"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div>${bS(y[1],"🔊 Nghe mẫu")}</div>`:""}<div class="out">${ACR[k]||""}</div></div>`}).join("")}
 ${A.sub?`<details class="hdsub"><summary>💡 Gợi ý thay đổi để nói theo cách của nhóm em</summary>${A.sub.map(g=>`<p><b>${g[0]}</b></p><div class="hints">${g[1].map(x=>`<span onclick="spk(${S(x[0])})"><b class="zh">${x[0]}</b><small>${x[1]}</small><em class="vi">${x[2]}</em></span>`).join("")}</div>`).join("")}</details>`:""}
@@ -306,8 +306,8 @@ function acRec(ai,j){if(curRec){try{curRec.stop()}catch(e){}return}
  const k=ai+"-"+j,tgt=LD[cur].act[ai].l[j][1];
  if(!SR_OK()){ACR[k]=`<span class="bad">Trình duyệt chưa dùng được micro. Mở bằng Chrome hoặc Edge và cho phép micro.</span>`;rr();return}
  recOn=k;ACR[k]=srLiveHtml();rr();
- srListen(t=>{const m=simi(np(t),np(tgt)),ok=m>=70;ACS[k]=ok?1:0;
-  ACR[k]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với mẫu: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;rr()},
+ srListen((t,a)=>{const m=sayPct(t,tgt,a),ok=m>=70;ACS[k]=ok?1:0;
+  ACR[k]=`<div>Máy nghe được: <span class="zh hd">${sayHeard(t,tgt,a)}</span></div><div>So với mẫu: <span class="zh hd">${sayMark(tgt,t,a)}</span> <small>(đỏ: thiếu hoặc sai âm · cam: đúng âm, sai thanh)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Tốt lắm!":"✗ Chưa đúng mẫu, thử lại nhé"} · giống câu mẫu ${m}%</div>`;rr()},
  x=>{ACR[k]=srMsg(x);rr()})}
 
 const PN={fc:"Flashcard từ vựng",gp:"Ngữ pháp · Mẫu câu",dt:"Nghe chép chính tả",ns:"Luyện nói"};
@@ -391,8 +391,8 @@ function tBody(L){const d=T.done;let h="";
  return h}
 function tRec(k){if(curRec){try{curRec.stop()}catch(e){}return}if(T.spr[k]||T.done)return;
  const L=LD[tcur],tgt=nsAll(L)[T.sp[k]].t.r[0];recOn="t"+k;T.spo[k]=srLiveHtml();rr();
- srListen(t=>{if(T.done)return;T.spn=T.spn||[];const m=simi(np(t),np(tgt)),ok=m>=60,n=(T.spn[k]||0)+1;T.spn[k]=n;T.sph=T.sph||[];if(!T.spk[k])T.sph[k]=t;T.spk[k]=!!T.spk[k]||ok;T.spr[k]=T.spk[k]||n>=2;
-  T.spo[k]=`${n>1?"<b>Lần 2:</b> ":""}Máy nghe được: <span class="zh hd">${esc(t)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":n<2?"✗ Chưa đạt · em còn 1 lần nói lại":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()},
+ srListen((t,a)=>{if(T.done)return;T.spn=T.spn||[];const m=sayPct(t,tgt,a),ok=m>=60,n=(T.spn[k]||0)+1;T.spn[k]=n;T.sph=T.sph||[];if(!T.spk[k])T.sph[k]=t;T.spk[k]=!!T.spk[k]||ok;T.spr[k]=T.spk[k]||n>=2;
+  T.spo[k]=`${n>1?"<b>Lần 2:</b> ":""}Máy nghe được: <span class="zh hd">${sayHeard(t,tgt,a)}</span> · <span class="${ok?"okt":"bad"}">${ok?"✓ Đạt":n<2?"✗ Chưa đạt · em còn 1 lần nói lại":"✗ Chưa đạt"}</span> <small>(giống câu mẫu ${m}%)</small>`;rr()},
  x=>{if(T.done)return;T.spo[k]=srMsg(x);rr()})}
 function tSubmit(auto,f){if(!T||T.done)return;
  if(!auto&&!f){const miss=T.vw.filter((_,k)=>!(T.vin[k]||"").trim()).length+T.so.filter(s=>s.pool.length).length+T.li.filter(s=>s.pick==null).length+T.sp.filter((_,k)=>T.spk[k]==null).length;if(miss)return ask(`Còn ${miss} câu chưa làm. Vẫn nộp bài?`,()=>tSubmit(false,1))}

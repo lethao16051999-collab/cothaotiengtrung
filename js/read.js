@@ -13,8 +13,8 @@ function rdScore(L,r){const all=rdAll(L),k=r.rk||{},ok=all.filter(o=>(k[o.i+"-"+
 function rdSave(key,m){const L=LD[cur],r=ldN(cur);r.rk=r.rk||{};r.rk[key]=Math.max(r.rk[key]||0,m);const s=rdScore(L,r);if(s.did>=s.all)r.rd=Math.round(s.ok/s.all*100);svN(cur,r)}
 function rdRec(i,j){if(curRec){try{curRec.stop()}catch(e){}return}
  const key=i+"-"+j,tgt=LD[cur].texts[i].l[j][1];RDON=key;RDR[key]=srLiveHtml();rr();
- srListen(t=>{RDON=null;const m=simi(rdN(t),rdN(tgt)),ok=m>=RD_OK;
-  RDR[key]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với câu gốc: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ đọc thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Đạt":"✗ Chưa đạt (cần từ "+RD_OK+"%), nghe mẫu rồi đọc lại nhé"} · giống câu gốc ${m}%</div>`;rdSave(key,m);rr()},
+ srListen((t,a)=>{RDON=null;const m=sayPct(t,tgt,a),ok=m>=RD_OK;
+  RDR[key]=`<div>Máy nghe được: <span class="zh hd">${sayHeard(t,tgt,a)}</span></div><div>So với câu gốc: <span class="zh hd">${sayMark(tgt,t,a)}</span> <small>(đỏ: đọc thiếu hoặc sai âm · cam: đúng âm, sai thanh)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Đạt":"✗ Chưa đạt (cần từ "+RD_OK+"%), nghe mẫu rồi đọc lại nhé"} · giống câu gốc ${m}%</div>`;rdSave(key,m);rr()},
  k=>{RDON=null;RDR[key]=srMsg(k);rr()})}
 function rdHtml(L,r){const T=L.texts||[];if(!T.length)return"";if(RDS>=T.length)RDS=0;
  const k=r.rk||{},s=rdScore(L,r),x=T[RDS],sp=w=>SPN[w]?SPN[w][1]:w;
@@ -25,7 +25,7 @@ ${srWarn()?`<p>${srWarn()}</p>`:""}
 <div class="stb sit">${T.map((t,i)=>`<button class="${i==RDS?"on":""}" onclick="RDS=${i};rr();$('rdbox').scrollIntoView({block:'start'})">课文 ${i+1}<i class="sc ${okN(i)==t.l.length?"ok":"no"}">${okN(i)}/${t.l.length}</i></button>`).join("")}</div>
 ${x.l.map((y,j)=>{const key=RDS+"-"+j,v=k[key];return `<div class="rdl ${v==null?"":v>=RD_OK?"ok":"no"}">
 <div class="rdw"><b>${j+1}</b><span class="zh">${y[0]}</span> <small>${sp(y[0])}</small>${v!=null?`<i class="sc ${v>=RD_OK?"ok":"no"}">${v}%</i>`:""}</div>
-<div class="hz">${y[1]}</div><div class="py">${y[2]}</div>
+<div class="hz">${y[1]}</div><div class="py">${y[2]}</div>${nameHint(y[1],"ifhide")}
 <div class="row"><button class="btn sm mic ${RDON===key?"rec":""}" onclick="rdRec(${RDS},${j})">${RDON===key?"⏹ Đọc xong":"🎤 Đọc"}</button>${bS(y[1],"🔊 Nghe mẫu")}</div>
 <div class="out">${RDR[key]||""}</div></div>`}).join("")}
 <div class="row">${RDS<T.length-1?`<button class="btn" onclick="RDS++;rr();$('rdbox').scrollIntoView({block:'start'})">Bài khóa ${RDS+2} →</button>`:""}</div>
