@@ -28,7 +28,7 @@ function wgRun(){const el=$("wgc");if(!el||typeof HanziWriter=="undefined")retur
 function wgInit(){if(!$("wgc"))return;const k=olLv+"-"+cur+"-"+fcI;if(k!==WGK){WGQ=false;WGK=k}
  wgLoad("js/hanzi-writer.min.js").then(()=>wgLoad(`${((window.NAP||{})[olLv]||{}).dir||"data/hsk"+olLv+"/"}hz.js?v=4`)).then(wgRun).catch(()=>{const e=$("wgc");if(e)e.innerHTML=`<small>Chưa tải được dữ liệu nét chữ. Tải lại trang hoặc kiểm tra mạng.</small>`})}
 const _wgFc=vFc;vFc=function(L,r){return _wgFc(L,r)+wgCard(L.words[fcI])};
-const _wgRR=rr;rr=function(){_wgRR();if(olLv<=2&&ltab=="fc")wgInit()};
+const _wgRR=rr;rr=function(){_wgRR();if(olLv<=3&&ltab=="fc")wgInit()};
 (function(){const st=document.createElement("style");st.textContent=`
 .wg h3{margin-top:0}.wgh{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:10px}
 .wgh .zh{font-size:2rem;color:var(--m)}.wgh .py{color:var(--m);font-weight:700}.wgh .vi{color:var(--t)}
