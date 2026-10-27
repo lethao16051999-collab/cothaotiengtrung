@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Trang luyện viết HSK6 3.0 · Phần 1 (viết đoạn văn ứng dụng). Mở từ "Ôn luyện theo bài" trên trang chính.
+     Sửa nội dung: chỉ cần sửa mảng LOAI trong <script> bên dưới. -->
+<title>Luyện viết HSK6 3.0 – Cô Thảo tiếng Trung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+/* Layout: sidebar thư mục bên trái (thu thành thanh cuộn ngang trên điện thoại), nội dung 5 phần bên phải; ô luyện viết kẻ ô vuông kiểu phiếu trả lời HSK */
+:root{
+  --bg:#FBF7F1; --surface:#FFFFFF; --sunk:#F4ECE2; --line:#E6D8C8;
+  --fg:#2B1A1F; --muted:#76656A; --plum:#7A1F3D; --plum-soft:#F3E3E8;
+  --gold:#B8862A; --gold-soft:#F7EBD2; --ok:#2F7A4F; --grid:#E9C9D3;
+  --f-display:"Noto Serif SC","Songti SC",serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#181214; --surface:#221A1D; --sunk:#1D1518; --line:#3A2C31;
+  --fg:#F1E7E1; --muted:#B3A1A6; --plum:#E58AA6; --plum-soft:#3A2129;
+  --gold:#E2B55A; --gold-soft:#3A2F1A; --ok:#6CC795; --grid:#4A2E37; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#181214; --surface:#221A1D; --sunk:#1D1518; --line:#3A2C31;
+  --fg:#F1E7E1; --muted:#B3A1A6; --plum:#E58AA6; --plum-soft:#3A2129;
+  --gold:#E2B55A; --gold-soft:#3A2F1A; --ok:#6CC795; --grid:#4A2E37; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.65}
+.zh{font-family:var(--f-zh)}
+.app{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1240px;margin:0 auto;gap:32px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+
+/* Sidebar */
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.brand b{font-size:19px;font-weight:700;color:var(--plum)}
+.folder{border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.folder-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--plum-soft);border-bottom:1px solid var(--line)}
+.folder-head svg{flex:none;color:var(--plum)}
+.folder-head div{display:flex;flex-direction:column;line-height:1.3}
+.folder-head strong{font-size:14px}
+.folder-head span{font-size:12px;color:var(--muted)}
+.nav{list-style:none;margin:0;padding:6px}
+.nav a{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 10px;border-radius:7px;color:var(--fg);text-decoration:none}
+.nav a:hover{background:var(--sunk)}
+.nav a[aria-current="page"]{background:var(--plum);color:#fff}
+.nav a[aria-current="page"] .n,.nav a[aria-current="page"] .vi{color:#fff;opacity:.85}
+.nav .vol{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600;padding:10px 10px 4px}
+.nav .n{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.nav .t{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.nav .t .zh{font-size:15px;font-weight:500}
+.nav .t .vi{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{font-size:11px;padding:2px 7px;border-radius:99px;background:var(--sunk);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.nav a[aria-current="page"] .pill{background:rgba(255,255,255,.2);color:#fff}
+.folder-soon{padding:10px 14px;font-size:12.5px;color:var(--muted);border:1px dashed var(--line);border-radius:10px}
+
+/* Main */
+main{min-width:0;display:flex;flex-direction:column;gap:28px}
+.head{display:flex;flex-direction:column;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.crumb{font-size:12.5px;color:var(--muted)}
+.crumb b{color:var(--gold);font-weight:600}
+.head h1{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;text-wrap:balance}
+.head h1 .zh-title{font-family:var(--f-display);font-size:40px;font-weight:700;color:var(--plum);line-height:1.15}
+.head h1 .vi-title{font-size:20px;font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12.5px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface)}
+.chip.gold{background:var(--gold-soft);border-color:transparent;color:var(--fg)}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px}
+.toc a{font-size:13px;text-decoration:none;color:var(--fg);padding:6px 12px;border-radius:7px;background:var(--surface);border:1px solid var(--line);display:flex;gap:6px;align-items:center}
+.toc a:hover{border-color:var(--plum)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--line);flex:none}
+.dot.on{background:var(--ok)}
+
+section.part{display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 16px;scroll-margin-top:20px}
+.pno{font-family:var(--f-display);font-size:30px;color:var(--gold);line-height:1;padding-top:2px;font-variant-numeric:tabular-nums}
+.pbody{min-width:0;display:flex;flex-direction:column;gap:12px}
+.pbody h2{margin:0;font-size:19px;font-weight:700;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.pbody h2 small{font-size:13px;font-weight:500;color:var(--muted)}
+.pbody p{margin:0;max-width:68ch}
+.types{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.type{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.type .zh{font-weight:500;color:var(--plum);font-size:15.5px}
+.type span{font-size:13.5px;color:var(--muted)}
+.label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+.pending{border:1.5px dashed var(--line);border-radius:10px;padding:18px;display:flex;gap:14px;align-items:flex-start;background:var(--sunk)}
+.pending svg{flex:none;color:var(--gold);margin-top:2px}
+.pending div{display:flex;flex-direction:column;gap:4px}
+.pending b{font-size:14px}
+.pending span{font-size:13.5px;color:var(--muted);max-width:60ch}
+
+/* Practice */
+.prompt{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.prompt-top{padding:14px 16px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line)}
+.prompt-top .label{color:var(--gold)}
+.prompt-top p{font-family:var(--f-zh);font-size:15.5px;line-height:1.8}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.count{font-size:13px;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:10px}
+.bar{width:120px;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+.bar.done i{background:var(--ok)}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+button{font:inherit;font-size:12.5px;padding:5px 11px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+button:hover{border-color:var(--plum)}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
+.sheet{padding:16px;overflow-x:auto}
+textarea.grid{--c:32px;display:block;margin:0 auto;resize:vertical;min-height:calc(var(--c)*8 + 2px);
+  font-family:var(--f-zh);font-size:20px;line-height:var(--c);letter-spacing:12px;padding:0 0 0 6px;
+  border:1px solid var(--grid);border-radius:2px;color:var(--fg);background-color:var(--surface);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:var(--c) var(--c);background-position:-1px -1px;background-attachment:local;word-break:break-all}
+textarea.lines{display:block;width:100%;min-height:260px;resize:vertical;font-family:var(--f-zh);font-size:17px;line-height:34px;padding:0 10px;
+  border:1px solid var(--line);border-radius:6px;color:var(--fg);background-color:var(--surface);
+  background-image:linear-gradient(transparent 33px,var(--line) 33px);background-size:100% 34px;background-attachment:local}
+.ref{padding:0 16px 16px}
+.ref details{border-top:1px dashed var(--line);padding-top:12px}
+.ref summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--plum)}
+.note{font-size:12.5px;color:var(--muted)}
+.samples{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.sample{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.sample figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;font-size:13px;color:var(--muted)}
+.sample figcaption b{color:var(--plum);font-size:15px}
+.sample figcaption .label{color:var(--gold)}
+.letter{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:22px 22px 18px;font-size:16px;line-height:2;
+  box-shadow:0 1px 0 var(--line),0 6px 18px -12px rgba(60,20,30,.35);flex:1}
+.l-title{text-align:center;font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:.2em;margin-bottom:4px}
+.l-body{margin:0;text-indent:2em}
+.l-zhi{text-indent:4em}
+.l-sign{text-align:right}
+.l-list{margin:0;padding-left:4em}
+.l-h{margin:4px 0 0;font-weight:700}
+.l-kv{margin:0;display:flex;flex-direction:column}.l-kv div{display:flex;gap:2px;min-width:0}.l-kv dt{font-weight:700;flex:none}.l-kv dd{margin:0;min-width:0}
+.l-gap{margin:0;text-align:center;font-size:13px;color:var(--muted)}
+.l-head{margin:0 0 12px;padding:0 0 10px;border-bottom:1px solid var(--line);font-size:14px;line-height:1.8;display:flex;flex-direction:column}
+.l-head div{display:flex;gap:4px;min-width:0}.l-head dt{color:var(--muted);flex:none}.l-head dd{margin:0;overflow-wrap:anywhere}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px}
+th{text-align:left;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:10px 12px;background:var(--sunk);border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td .zh{color:var(--plum);font-size:15.5px}
+.num-c{font-family:var(--f-display);color:var(--gold);font-size:18px;font-variant-numeric:tabular-nums;width:36px}
+.rule{white-space:pre-line;font-family:var(--f-body),var(--f-zh)}
+.tipgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.tipbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.tipbox .label{color:var(--gold)}
+.tipbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.tipbox li{display:flex;flex-direction:column;gap:1px;font-size:14px}
+.tipbox li b{color:var(--plum);font-weight:500;font-size:15.5px}
+.tipbox li b+span{color:var(--muted);font-size:13.5px}
+.prompts{display:flex;flex-direction:column;gap:16px}
+
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr);gap:22px;padding-block:18px 48px}
+  .side{position:static}
+  .nav{display:flex;overflow-x:auto;gap:4px}
+  .nav li{flex:none}
+  .nav .vol{align-self:center;padding:0 6px}
+  .nav a{grid-template-columns:auto auto;}
+  .nav .vi,.nav .pill{display:none}
+  .head h1 .zh-title{font-size:32px}
+  section.part{grid-template-columns:minmax(0,1fr)}
+  .pno{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1240px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 0}
+.topbar a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--plum);font-weight:600;font-size:14px}
+.topbar img{width:30px;height:30px;border-radius:50%}
+.topbar .back{color:var(--muted);font-weight:500;font-size:13px}
+body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+</style>
+</head><body>
+<div class="topbar"><a href="../"><img src="../img/logo.webp" alt="Logo">Cô Thảo tiếng Trung</a><a class="back" href="../">← Về trang chính</a></div>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><small>cô Thảo tiếng Trung</small><b>Luyện viết HSK6 3.0</b></div>
+    <div class="folder">
+      <div class="folder-head">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <div><strong>Viết đoạn văn ứng dụng</strong><span class="zh">写作 第一部分 · ≥150字</span></div>
+      </div>
+      <ul class="nav" id="nav"></ul>
+    </div>
+    <div class="folder-soon">Thư mục tiếp theo (nghị luận ≥300字) sẽ thêm sau.</div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<script>
+/* ===== DỮ LIỆU =====
+   Mỗi loại có 5 phần: intro, sample, template, tips, prompts.
+   Phần nào chưa có nội dung để null → trang hiện "Đang cập nhật".
+   prompts: [{de:"đề bài tiếng Trung", huongdan:"ghi chú (tuỳ chọn)", thamkhao:"bài tham khảo (tuỳ chọn)"}] */
+const LOAI = [
+  { id:"loai-1", zh:"请假条", vi:"Giấy xin nghỉ / Đơn xin nghỉ",
+    intro:{ text:"Là dạng thư ngắn (便条) dùng để xin phép người có trách nhiệm (thầy cô, quản lý, sếp) nghỉ học, nghỉ làm hoặc không tham gia hoạt động tập thể.",
+      group:"Phân loại theo nguyên nhân / nội dung nghỉ（根据请假原因/内容）",
+      types:[["病假条","Đơn xin nghỉ ốm: bản thân bị ốm, bị thương, đi khám bệnh hoặc phẫu thuật."],
+             ["事假条","Đơn xin nghỉ việc riêng: việc gia đình hoặc việc cá nhân chính đáng (kết hôn, đón người thân ở sân bay, dự sinh nhật cha mẹ…)."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 1, tr. 21–24",
+    sample:[
+      { label:"病假条", vi:"Nghỉ ốm · học sinh gửi thầy cô",
+        letter:{ title:"请假条", to:"张老师：",
+          body:["今天起床后我感到脑门发热，嗓子疼，全身不适。我马上到医院看病，医生说我是上呼吸道感染，给我开了一些药并建议我在家休息一天。所以明天（9月22日）上午的写作课我不能上了。特向您请假，请您准假。"],
+          closing:false, sign:"", date:"" },
+        note:"Bản trong tài liệu chưa có phần 此致敬礼, ký tên và ngày tháng." },
+      { label:"事假条", vi:"Nghỉ việc riêng · gửi viện trưởng",
+        letter:{ title:"请假条", to:"王院长：",
+          body:["我妹妹将于12月28日结婚。作为她唯一的哥哥，我非常希望能够回国协助她举办婚礼并当面祝福她。因此，我拟于12月26—29日请假四天。恳请您批准！"],
+          closing:true, sign:"赵大卫", date:"2016年12月23日" } },
+      { label:"病假条", vi:"Nghỉ ốm dài ngày · gửi chủ tịch HĐQT, có lời xin lỗi cuối đơn",
+        letter:{ title:"请假条", to:"尊敬的刘董事长：",
+          body:["近日本人身体状况欠佳，经几家医院多方会诊，未查出病因。现已联系德国一家医院，拟于5月1日赴德治病，特向您与诸位董事请假两个月，恳请批准为盼，并对在此期间因病影响公司工作深表歉意。"],
+          closing:true, sign:"高吉", date:"2016年4月19日" } }
+    ],
+    template:{
+      intro:"Khung chuẩn của một đơn xin nghỉ gồm 6 thành phần bắt buộc, theo đúng thứ tự:",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","Viết đúng 3 chữ: 请假条"],
+        ["称呼","Xưng hô","Dòng thứ 2, sát lề trái (顶格), có dấu ：","尊敬的 + họ tên / chức danh + ：\nVí dụ: 尊敬的王老师：　刘经理："],
+        ["正文","Nội dung","Lùi vào 2 ô đầu dòng","Trình bày 3 ý chính:\n① Lý do xin nghỉ chính đáng\n② Thời gian nghỉ cụ thể (từ ngày… đến ngày…)\n③ Lời đề nghị phê duyệt"],
+        ["祝颂语","Lời chúc","Viết thành 2 dòng riêng","Dòng 1: lùi 4 ô, ghi 此致 (không dấu câu)\nDòng 2: sát lề trái, ghi 敬礼！(có dấu ！)"],
+        ["署名","Ký tên","Góc dưới bên phải","Họ tên người viết, ví dụ: 赵大卫 hoặc 学生：张三"],
+        ["日期","Ngày tháng","Ngay dưới phần ký tên","Định dạng chuẩn: YYYY年MM月DD日"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Chú ý định dạng", items:[
+          {vi:"Lý do rõ ràng, ngắn gọn: chỉ nêu đúng nguyên nhân cốt lõi (bệnh tật, việc gia đình), không kể lan man hay giải thích dài dòng."},
+          {vi:"Dấu câu ở phần lời chúc: sau 此致 tuyệt đối không dùng dấu phẩy hay dấu chấm; sau 敬礼 phải có dấu chấm cảm ！"}]},
+        { title:"Mẫu câu nêu lý do nghỉ ốm", items:[
+          {zh:"遵医嘱休息[X]天/月。", vi:"Nghỉ [X] ngày/tháng theo chỉ định của bác sĩ."},
+          {zh:"因身体不适，需前往医院检查……", vi:"Do cơ thể không khoẻ, cần đến bệnh viện kiểm tra…"}]},
+        { title:"Mẫu câu nêu số ngày xin nghỉ", items:[
+          {zh:"特向您请假[X]天/周。", vi:"Nay xin phép nghỉ [X] ngày/tuần."},
+          {zh:"拟于[X]月[X]日至[X]月[X]日请假……", vi:"Dự kiến xin nghỉ từ ngày… đến ngày…"}]},
+        { title:"Mẫu câu kết, đề nghị phê duyệt (trang trọng)", items:[
+          {zh:"特此请假。", vi:"Nay làm đơn xin nghỉ."},
+          {zh:"恳请批准为盼。", vi:"Rất mong được phê duyệt."},
+          {zh:"特向您请假，并望批准。", vi:"Nay xin phép ông/bà và mong được chấp thuận."}]}
+      ]},
+    prompts:[
+      { de:"你的父母第一次来中国旅游，他们不会说汉语，你需要去机场接他们。请给老师写一张请假条，字数不少于150字。",
+        huongdan:"Tình huống 1 · Đón người thân: bố mẹ sang Trung Quốc du lịch nhưng không biết tiếng Trung, bạn phải ra sân bay đón. Viết giấy xin nghỉ gửi thầy/cô giáo." },
+      { de:"12月1日是你妈妈的五十岁生日，你想请一天假为妈妈庆祝生日。请给公司领导写一张请假条，字数不少于150字。",
+        huongdan:"Tình huống 2 · Việc gia đình: ngày 1/12 là sinh nhật tròn 50 tuổi của mẹ. Viết đơn xin nghỉ 1 ngày gửi lãnh đạo/sếp." },
+      { de:"你最近身体不舒服，需要去医院做检查。请给公司经理写一张请假条，请假一天，字数不少于150字。",
+        huongdan:"Tình huống 3 · Nghỉ khám bệnh: cơ thể không khoẻ, cần đi bệnh viện kiểm tra. Viết giấy xin nghỉ 1 ngày gửi quản lý công ty." },
+      { de:"你是一家公司的职员，因为身体原因需要做一个小手术。请给总经理写一张请假条，请假两周，字数不少于150字。",
+        huongdan:"Tình huống 4 · Nghỉ phẫu thuật: là nhân viên công ty, cần làm một ca phẫu thuật nhỏ. Viết đơn xin nghỉ 2 tuần gửi sếp/giám đốc." }
+    ] },
+  { id:"loai-2", zh:"启事", vi:"Thông báo / Bố cáo",
+    intro:{ text:"Là văn bản ứng dụng công khai do cá nhân, đoàn thể hoặc đơn vị phát đi nhằm trình bày sự việc hoặc nhờ cộng đồng giúp đỡ.",
+      group:"Phân loại theo nội dung sự việc（按内容分）",
+      types:[["寻物启事","Thông báo tìm đồ thất lạc"],["寻人启事","Thông báo tìm người"],["求租启事","Thông báo cần thuê nhà"],
+             ["出租启事","Thông báo cho thuê nhà / xe"],["出售启事","Thông báo bán đồ / thanh lý hàng hoá"],["求购启事","Thông báo cần mua đồ"],
+             ["招聘启事","Thông báo tuyển dụng"],["征婚启事","Thông báo tìm bạn đời"],["寻语伴启事","Thông báo tìm bạn luyện ngoại ngữ"]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 1, tr. 24–30",
+    sample:[
+      { label:"寻物启事", vi:"Thông báo tìm đồ thất lạc",
+        letter:{ title:"寻物启事",
+          body:["本人于2017年3月1日在中关村电子城不慎丢失手提包，包内装有本人的护照、手机、钱包以及本人的工作资料等重要物品。本人十分着急，请拾到手提包的好心人尽快打电话1390xxxxxxx与我联系。必有重谢！"],
+          sign:"失主", date:"2017年3月2日" } },
+      { label:"求租", vi:"Thông báo cần thuê nhà",
+        letter:{ title:"求租",
+          body:["本人是北京大学的留学生，求租一间30平方米左右的住房，要求冰箱、洗衣机、空调、电视等家电齐全，有床、衣柜、写字桌等家具，可以洗澡、做饭、上网。房屋地点最好在中关村附近。",
+                "本人保证遵守小区有关规定，按时交纳有关费用。愿出租者请先电话联系，预约面谈时间。请拨打电话1365xxxxxxx，找李先生。"],
+          sign:"求租人", date:"2016年11月4日" } },
+      { label:"出售启事", vi:"Thông báo bán xe đạp cũ",
+        letter:{ title:"出售二手自行车",
+          body:["我是语言大学的留学生，下个月我将回国，现出售一辆二手自行车。自行车为女式24型，黑色，六成新，好骑，有购车发票，价格面议。有意者请与我联系。",
+                "联系电话：xxxxxxxx；联系人：安娜。"],
+          sign:"安娜", date:"2017年2月5日" } },
+      { label:"招聘启事", vi:"Thông báo tuyển dụng",
+        letter:{ title:"海森公司招聘启事",
+          body:["海森公司是北京市一家中外合资的电脑公司，具有雄厚的实力和先进的技术，近年来经营成绩不俗，处于本行业的领先地位。为了进一步发展业务，决定招聘电脑专业人员10名，具体要求如下：",
+                {list:["年龄在35岁以下，性别不限。","具有计算机专业本科及以上学历。","英语水平达到国家六级。"]},
+                "有意者请持身份证及毕业证书等有关资料，于12月20日上午9点到海森公司参加面试，地点在中关村大厦xxx房间。"],
+          sign:"中外合资海森公司", date:"2016年12月1日" } }
+    ],
+    template:{
+      intro:"Một bài 启事 chuẩn gồm 3 phần bắt buộc. Khác với 请假条: không có xưng hô và không có 此致敬礼.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","Có 5 cách đặt tiêu đề:\n① Chỉ ghi 2 chữ: 启事\n② Ghi thẳng mục đích: 求租、招聘\n③ Mục đích + 启事: 寻物启事、求租启事\n④ Đơn vị + mục đích: 北京汽车公司招聘\n⑤ Đơn vị + mục đích + 启事: 海森公司招聘启事"],
+        ["正文","Nội dung","Lùi 2 ô đầu dòng; có thể chia đoạn hoặc gạch đầu dòng","• Thời gian, địa điểm, nguyên nhân, mục đích\n• Chi tiết theo từng loại: đặc điểm đồ mất / điều kiện phòng ở / tình trạng đồ bán / tiêu chuẩn tuyển dụng\n• Thông tin liên hệ (bắt buộc, ở cuối nội dung): SĐT, người liên hệ, email, địa chỉ"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Dòng 1: tên cá nhân / đơn vị, hoặc xưng vai trò như 失主、求租人\nDòng 2: ngày phát thông báo, dạng YYYY年MM月DD日"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Chú ý quan trọng", items:[
+          {vi:"Chân thực, khách quan: miêu tả đúng thực tế đồ vật, phòng ở hay điều kiện tuyển dụng, không quảng cáo sai sự thật."},
+          {vi:"Rõ ràng, ngắn gọn: đi thẳng vào vấn đề, ngôn ngữ mạch lạc, không hoa mỹ rườm rà."},
+          {vi:"Bắt buộc có thông tin liên hệ: cuối phần nội dung phải ghi rõ số điện thoại / người liên hệ để người đọc phản hồi ngay."}]},
+        { title:"寻物启事 · Tìm đồ mất", items:[
+          {zh:"本人不慎在……遗失……", vi:"Tôi không may làm mất… tại…"},
+          {zh:"哪位好心人看到或代为保存，请打电话通知我。", vi:"Vị hảo tâm nào nhìn thấy hoặc cất giữ hộ, xin gọi điện báo cho tôi."},
+          {zh:"必有重谢。／不胜感激。", vi:"Xin hậu tạ / Vô cùng cảm kích."}]},
+        { title:"求租启事 · Cần thuê nhà", items:[
+          {zh:"环境幽雅，交通便利。", vi:"Môi trường yên tĩnh, giao thông thuận tiện."},
+          {zh:"房间宽敞明亮，家具家电齐全。", vi:"Phòng rộng rãi sáng sủa, đồ đạc điện máy đầy đủ."},
+          {zh:"价格合理。", vi:"Giá cả hợp lý."}]},
+        { title:"出售启事 · Bán đồ cũ", items:[
+          {zh:"现出售……一台／一辆。", vi:"Hiện cần bán 1 chiếc…"},
+          {zh:"六成（八成）新。／能正常使用。", vi:"Mới 60% (80%) / Sử dụng bình thường."},
+          {zh:"价格面议。", vi:"Giá cả thoả thuận trực tiếp."}]},
+        { title:"招聘启事 · Tuyển dụng", items:[
+          {zh:"本公司欲招聘员工X名，条件如下：", vi:"Công ty chúng tôi cần tuyển X nhân viên, điều kiện như sau:"},
+          {zh:"待遇从优，欢迎面议。", vi:"Đãi ngộ tốt, hoan nghênh trao đổi trực tiếp."},
+          {zh:"有意者请持……于……月……日到……参加面试。", vi:"Người có nhu cầu xin mang theo… đến… vào ngày… tháng… để phỏng vấn."}]}
+      ]},
+    prompts:[
+      { de:"你的手表丢了，请写一则寻物启事，字数不少于150字。",
+        huongdan:"Đề 1 · 寻物启事: bạn bị mất chiếc đồng hồ đeo tay." },
+      { de:"你马上要回国了，想把自己的洗衣机卖掉。请写一则出售启事，字数不少于150字。",
+        huongdan:"Đề 2 · 出售启事: sắp về nước, muốn bán chiếc máy giặt của mình." },
+      { de:"你刚来中国，需要租房子住。请根据自己的需要，写一则求租启事，字数不少于150字。",
+        huongdan:"Đề 3 · 求租启事: mới sang Trung Quốc, cần thuê nhà, viết theo nhu cầu của bản thân." },
+      { de:"你们公司需要招聘两名业务经理，请写一则招聘启事，字数不少于150字。",
+        huongdan:"Đề 4 · 招聘启事: công ty cần tuyển 2 quản lý kinh doanh (业务经理)." },
+      { de:"你租了一套两居室的房子，现在需要在网上发布一则信息，找一名室友跟你合租，发布的内容包括你对室友的要求、房间设施等。请根据要求，写一则招租信息，字数不少于150字。",
+        huongdan:"Đề 5 · Đề mẫu chính thức HSK6 3.0 (写作第一部分): tìm người ở ghép, nêu yêu cầu với bạn cùng phòng và tiện nghi phòng." }
+    ] },
+  { id:"loai-3", zh:"一般书信", vi:"Thư từ thông thường & Email",
+    intro:{ text:"Là dạng văn bản ứng dụng cá nhân phổ biến nhất, dùng để liên lạc, trao đổi tình cảm, tin tức giữa cá nhân với cá nhân (bao gồm cả thư điện tử 电子邮件).",
+      group:"Phân loại theo mục đích & đối tượng（按用途/内容/对象）",
+      types:[["写给长辈/亲人","Gửi người lớn tuổi / người thân: báo cáo tình hình sinh sống, học tập xa nhà, thăm hỏi sức khoẻ."],
+             ["写给朋友/同辈/恋人","Gửi bạn bè / đồng lứa / người yêu: bày tỏ nỗi nhớ, chia sẻ cảm xúc, thăm hỏi cuộc sống."],
+             ["写给老师/学校","Gửi thầy cô / nhà trường: bày tỏ quan điểm về giáo dục, trao đổi về cuộc sống du học."],
+             ["电子邮件","Email ứng dụng: đăng ký hoạt động / dự thi, xác nhận hoặc hỏi về đặt phòng / vé, phản ánh sự cố, khiếu nại sản phẩm."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 1, tr. 29–38",
+    sample:[
+      { label:"私人书信", vi:"Thư tay · du học sinh gửi bố mẹ (tr. 32)",
+        letter:{ to:"亲爱的爸爸、妈妈：", greet:"你们好！最近身体怎么样？",
+          body:["我一切都好，你们放心吧。我刚来北京的时候，有点儿不习惯这里的天气，夏天太热，晚上不开空调我根本睡不着。真是“出门才知家乡好，喝过他乡水才知故乡的水甜”。不过现在我已经深深地被这个城市所吸引，过得非常开心。对于我来说，这里的每样事物都很新鲜，我每天都非常高兴。",
+                {gap:"…… (phần giữa: kể về sinh hoạt, du lịch, học tập, đạp xe / tập thể dục ở Bắc Kinh) ……"},
+                "好了，今天就写到这里吧，你们多注意身体，等放了寒假，我一定回去和你们团聚。"],
+          closing:{a:"祝",b:"身体健康！",indent:2}, sign:"女儿 丽莎 上", date:"2016年10月1日" },
+        note:"Tài liệu lược bớt phần giữa thư nên số chữ chỉ là của phần có trong tài liệu." },
+      { label:"电子邮件", vi:"Email đăng ký làm tình nguyện viên (tr. 35)",
+        letter:{ header:[["收件人","xxxxx@126.com"],["抄送","xxxxxx@163.com"],["主题","志愿者报名"]],
+          to:"爱心社负责人：",
+          body:["您好！我已收到贵社寄给我的暑期山区义务支教活动的通知。我非常愿意参加这次活动，为学生提供义务授课，同时也为社会做一点儿贡献。",
+                "去年暑假我曾去过宁夏山区小学义务支教，那是度过的一次最有意义的假期。看着孩子们天真无邪的眼神，听着他们琅琅的读书声，我知道他们太需要我们的关怀与帮助了。贫困山区的孩子虽然生活条件恶劣，但是他们非常渴望学习文化知识。",
+                "正像一首歌里唱的那样：“只要人人都献出一点爱，世界将变成美好的人间。”我愿意通过我微薄的力量，传递爱心。"],
+          closing:true, sign:"李文", date:"2016年6月3日" } }
+    ],
+    template:{
+      intro:"Dạng này có 2 hình thức: thư tay truyền thống (私人书信) và thư điện tử (电子邮件). Email dùng chung khung thư tay, thêm phần đầu thư.",
+      tableTitle:"Thư tay truyền thống · 6 thành phần",
+      rows:[
+        ["称呼","Xưng hô","Dòng 1, sát lề trái (顶格), thêm dấu ：","Cha mẹ / người lớn: 亲爱的爸爸、妈妈：\nBạn bè / bằng vai: 小丽：　老张：　王鹏哥：\nThầy cô / người kính trọng: 尊敬的李老师："],
+        ["问候语","Lời thăm hỏi","Dòng 2, lùi 2 ô, đứng riêng 1 dòng","您好！　最近忙吗？　家里都好吧？　祝您国庆节快乐！"],
+        ["正文","Nội dung chính","Lùi 2 ô đầu mỗi đoạn","3 đoạn nhỏ:\n① 缘起语 · mở đầu: hỏi thăm đối phương trước (người Trung Quốc coi đây là phép lịch sự)\n② 主体文 · thân bài: kể / báo cáo tình hình bản thân, nêu rõ mục đích viết thư\n③ 总结语 · kết bài: tóm lại lời nhờ / lời dặn, vd 拜托之事，请您一定帮忙。／千万别过于劳累。"],
+        ["祝颂语","Lời chúc","Viết thành 2 dòng riêng","[Từ chúc] + [nội dung chúc]\nCách 1: 祝 (lùi 2–4 ô), dòng sau 身体健康！(sát lề trái)\nCách 2: 此致 (lùi 4 ô), dòng sau 敬礼！(sát lề trái)"],
+        ["署名","Ký tên","Góc dưới bên phải","Trang trọng: 学生 张志 敬上\nThân mật: 女儿 丽莎 上 / 你的珍妮"],
+        ["日期","Ngày tháng","Ngay dưới tên người viết","YYYY年MM月DD日"]
+      ],
+      extra:[
+        { title:"Email · phần đầu thư (header)", items:[
+          {zh:"收件人", vi:"Địa chỉ email người nhận (To)."},
+          {zh:"抄送", vi:"Địa chỉ email người cùng nhận (Cc), nếu có."},
+          {zh:"主题", vi:"Ngắn gọn, khái quát nội dung, không quá 2 câu đơn. Vd: 志愿者报名、关于预订房间的咨询"}]},
+        { title:"Email · thân thư & lưu ý", items:[
+          {vi:"Thân thư theo khung thư tay: xưng hô → lời chào → nội dung ngắn gọn → lời chúc → ký tên + ngày tháng."},
+          {vi:"Ngôn ngữ email cần cô đọng, súc tích; nội dung dài nên chuyển thành file đính kèm (附件)."}]}
+      ]},
+    tips:{
+      groups:[
+        { title:"Lời chúc · gửi người lớn tuổi / thầy cô（长辈/老师）", items:[
+          {zh:"敬祝长寿", vi:"Kính chúc sống lâu."},
+          {zh:"敬祝教安", vi:"Kính chúc thầy/cô dạy học an khang."},
+          {zh:"身体健康", vi:"Sức khoẻ dồi dào."}]},
+        { title:"Lời chúc · gửi bạn bè / đồng nghiệp（平辈/同事）", items:[
+          {zh:"工作顺利　万事如意　心想事成", vi:"Công việc thuận lợi · vạn sự như ý · cầu được ước thấy."},
+          {zh:"一帆风顺　生活幸福美满", vi:"Thuận buồm xuôi gió · cuộc sống hạnh phúc viên mãn."},
+          {zh:"顺颂近祺", vi:"Nhân tiện kính chúc mọi điều tốt lành (trang trọng, dùng trong thư)."}]},
+        { title:"Lời chúc · gửi người nhỏ tuổi / học sinh（晚辈/学生）", items:[
+          {zh:"学习进步　学业锐进", vi:"Học tập tiến bộ · việc học tiến nhanh."}]},
+        { title:"Mở đầu / hồi âm thư", items:[
+          {zh:"很高兴收到你的来信。看完你的信后我的心情久久不能平静。", vi:"Rất vui nhận được thư bạn. Đọc xong thư lòng tôi mãi không thể lắng xuống."},
+          {zh:"很抱歉，过了这么久才给你回信。我最近特别忙……", vi:"Rất xin lỗi vì lâu như vậy mới hồi âm. Dạo này tôi đặc biệt bận…"},
+          {zh:"好久没通信了。你最近怎么样？我非常想念你。", vi:"Lâu rồi không thư từ. Dạo này bạn thế nào? Tôi rất nhớ bạn."}]},
+        { title:"Gửi thư cho người chưa quen (trang trọng)", items:[
+          {zh:"我是……的经理……，素昧平生，贸然去信，唐突了，请见谅。", vi:"Tôi là giám đốc… của… Chưa từng quen biết, mạo muội gửi thư, có phần đường đột, mong lượng thứ."},
+          {zh:"以上是我的一些想法，还很不成熟，请您指正。冒昧之处，请多多包涵。敬请回复，谢谢。", vi:"Trên đây là vài suy nghĩ còn chưa chín chắn, mong ngài chỉ giáo. Có gì mạo muội xin bỏ qua. Rất mong được hồi âm, xin cảm ơn."}]}
+      ]},
+    prompts:[
+      { de:"你和好朋友已经一年没见面了，听说他最近结婚了，你很想了解他的近况。请给他写一封信，字数不少于150字。",
+        huongdan:"Thư tay · Đề 1 (gửi bạn bè): một năm chưa gặp bạn thân, nghe nói bạn mới kết hôn, viết thư thăm hỏi." },
+      { de:"请给你的父母写一封信，问候他们的身体，并介绍你最近在中国的学习和生活情况，字数不少于150字。",
+        huongdan:"Thư tay · Đề 2 (gửi bố mẹ): hỏi thăm sức khoẻ, báo cáo tình hình học tập, sinh hoạt gần đây ở Trung Quốc." },
+      { de:"请给你的大学老师写一封信，谈谈你的留学生活以及你对中国大学教育的看法，字数不少于150字。",
+        huongdan:"Thư tay · Đề 3 (gửi thầy cô): chia sẻ cuộc sống du học và quan điểm về giáo dục đại học Trung Quốc." },
+      { de:"北京大学对外汉语教育学院将举办“留学生才艺大赛”，请给学院写一封电子邮件，报名参加比赛，字数不少于150字。",
+        huongdan:"Email · Đề 1 (đăng ký): gửi Viện Giáo dục Hán ngữ Đối ngoại – ĐH Bắc Kinh để đăng ký cuộc thi tài năng du học sinh." },
+      { de:"你刚买的面包里有鸡蛋壳，请给面包生产公司写一封电子邮件，反映这一问题并提出索赔，字数不少于150字。",
+        huongdan:"Email · Đề 2 (khiếu nại): bánh mì có lẫn vỏ trứng, phản ánh sự cố và yêu cầu bồi thường (索赔)." },
+      { de:"你在网上预订了一家酒店9月2日至5日的房间。请给酒店写一封电子邮件，确认是否预订成功，并提出你对房间的要求，字数不少于150字。",
+        huongdan:"Email · Đề 3 (hỏi dịch vụ): đã đặt phòng khách sạn ngày 2–5/9 trên mạng, xác nhận đặt phòng và nêu yêu cầu về phòng." }
+    ] },
+  { id:"loai-4", zh:"申请书", vi:"Đơn xin / Thư đề nghị / Đơn đăng ký",
+    intro:{ text:"Là loại thư chuyên dụng (专用书信) gửi đến cơ quan, đơn vị hoặc cá nhân có thẩm quyền để đưa ra yêu cầu, nguyện vọng.",
+      group:"Phân loại theo nội dung yêu cầu（按请求内容/用途）",
+      types:[["申请加入社团/组织","Xin gia nhập tổ chức, câu lạc bộ, đội nhóm (vd: đội leo núi)."],
+             ["申请解决问题/调整","Xin giải quyết / điều chỉnh: đổi phòng ký túc xá, điều chỉnh giờ học, lịch học kỳ."],
+             ["要求权利/资格/奖学金/职务","Xin hưởng quyền lợi: học bổng, ứng cử chức vụ, thăng tiến."],
+             ["留学生申请/延长留学","Du học / nghiên cứu: xin làm nghiên cứu sinh sau tiến sĩ, gia hạn thời gian du học."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 1, tr. 38–42",
+    sample:[
+      { label:"申请书", vi:"Đơn xin làm nghiên cứu sau tiến sĩ (tr. 38–39)",
+        letter:{ title:"申请书", to:"尊敬的李教授：", greet:"您好！",
+          body:["我有机会申请在北京大学中文系做博士后研究工作，深感荣幸。北京大学历史悠久，人才辈出，我仰慕已久。如果我能够到北京大学进一步深造，将为我的人生增加一笔重要的财富。",
+                "现在我是英国牛津大学语言文化系中国文化专业博士三年级的学生，即将毕业。",
+                {gap:"…… (phần lược: trình bày quá trình học tập, thành quả học thuật và năng lực thực tiễn) ……"},
+                "我坚信如果能给我去北京大学深造的机会，我一定能够取得更大的进步。请接受我的申请。随信附有我的简历。如有机会与您面谈，我将十分感谢。"],
+          closing:true, sign:"申请人：李吉", date:"2017年3月1日" },
+        note:"Tài liệu lược bớt một phần nội dung, số chữ chỉ tính phần có trong tài liệu." },
+      { label:"关于……的申请", vi:"Đơn xin điều chỉnh giờ học và lịch học kỳ (tr. 41–42)",
+        letter:{ title:"关于调整上课时间与学期时间的申请", to:"尊敬的校长：", greet:"您好！",
+          body:["我是汉语学院的留学生，非常冒昧地给您写这封申请信。",
+                "关于上课时间的事情想请您听听我们留学生的想法。按照学校的规定，各个院系都是早上八点上课。对于留学生来说，这个上课时间太早了！根据我的调查，大多数留学生在自己的国家都是九点才开始上课……",
+                {gap:"…… (phần lược: nêu các lý do như học sớm nghe giảng kém hiệu quả, ở ngoài trường gặp tắc đường…) ……"},
+                "如果学生上课时间改为九点的话，既可以避开上班高峰时间，也能保证学生有充足的睡眠时间，从而提高学习效率。",
+                "此外，我们的学期太长了！……",
+                {gap:"…… (phần lược: nêu tác hại của học kỳ quá dài và lợi ích khi điều chỉnh) ……"},
+                "尊敬的校长，您能否根据我们的情况改变一下留学生上课的时间以及学期时间？请您对此予以考虑。盼望早日得到您的答复。"],
+          closing:true, sign:"申请人：马中华", date:"2016年3月1日" },
+        note:"Tài liệu lược bớt một phần nội dung, số chữ chỉ tính phần có trong tài liệu." }
+    ],
+    template:{
+      intro:"Một bài 申请书 chuẩn gồm 6 phần. So với 请假条: có thêm dòng 您好！ riêng, và ký tên dạng 申请人：+ họ tên.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","Các cách đặt tiêu đề:\n① Ngắn gọn: 申请书、申请信、申请\n② Cấu trúc 关于……的申请, vd 关于调整上课时间的申请\n③ Tên đối tượng xin: 奖学金申请"],
+        ["称呼","Xưng hô","Dòng 2, sát lề trái (顶格), thêm dấu ：","尊敬的 + chức danh / họ tên + ：\nVí dụ: 尊敬的李教授：　尊敬的校长："],
+        ["问候语","Lời thăm hỏi","Dòng 3, lùi 2 ô, đứng riêng 1 dòng","您好！(kết thúc bằng dấu ！)"],
+        ["正文","Nội dung chính","Lùi 2 ô đầu mỗi đoạn","3 phần chính:\n① Giới thiệu bản thân (nếu đối phương chưa biết)\n② Nêu lý do xin: phần trọng tâm, có căn cứ thuyết phục, thái độ chân thành\n③ Lời kết: mong đối phương xem xét, chấp thuận nguyện vọng"],
+        ["祝颂语","Lời chúc","Viết thành 2 dòng riêng","Dòng 1: lùi 4 ô, ghi 此致 (không dấu câu)\nDòng 2: sát lề trái, ghi 敬礼！(có dấu ！)"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Dòng 1: 申请人：+ họ tên, vd 申请人：李吉\nDòng 2: ngày làm đơn, dạng YYYY年MM月DD日"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý quan trọng", items:[
+          {vi:"Lý do thuyết phục, thái độ chân thành: lý do xin là phần trọng tâm nhất, cần rõ ràng, logic và chân thành để người nhận chấp thuận."},
+          {vi:"Không chép lại sơ yếu lý lịch (简历): nếu đơn có đính kèm 简历 thì chỉ chọn điểm nổi bật, tránh lặp lại từng chi tiết."},
+          {vi:"Tìm hiểu kỹ yêu cầu của bên nhận: nắm tiêu chí của cơ quan, đơn vị để đưa thông tin cá nhân phù hợp."}]},
+        { title:"Mẫu câu định hình", items:[
+          {zh:"我申请加入……（组织）。", vi:"Tôi xin đăng ký tham gia… (tổ chức / câu lạc bộ)."},
+          {zh:"请允许我申请……，以解决我的实际困难。", vi:"Xin cho phép tôi được xin…, để giải quyết khó khăn thực tế của tôi."},
+          {zh:"特此申请。", vi:"Nay làm đơn này kính đề nghị."},
+          {zh:"请您认真考虑我的申请。", vi:"Kính mong ông/bà xem xét đơn xin của tôi."},
+          {zh:"恳请您早日批准我的申请。／盼望早日得到您的答复。", vi:"Rất mong ông/bà sớm phê duyệt / Rất mong sớm nhận được hồi âm."}]}
+      ]},
+    prompts:[
+      { de:"你的宿舍房间太冷了，请给学生宿舍管理办公室写一封申请，申请换一个房间，字数不少于150字。",
+        huongdan:"Tình huống 1 · Xin đổi phòng ký túc xá: phòng quá lạnh, viết đơn gửi Văn phòng Quản lý Ký túc xá." },
+      { de:"你想延长在北京大学的留学时间，请给留学生办公室写一份申请书，字数不少于150字。",
+        huongdan:"Tình huống 2 · Xin gia hạn du học: viết đơn gửi 留学生办公室 xin 延长留学时间." },
+      { de:"登山队是一个学生社团，请写一份申请书申请加入登山队，说明你的优势和加入的愿望，字数不少于150字。",
+        huongdan:"Tình huống 3 · Xin gia nhập câu lạc bộ: nêu rõ ưu thế bản thân và nguyện vọng muốn vào đội leo núi." },
+      { de:"学校将举办新年晚会，现在正在招募晚会主持人。你是一名留学生，想报名担任主持人。请写一封自荐信，字数不少于150字。",
+        huongdan:"Đề thi thật HSK6 3.0 ngày 22/9 (theo review): du học sinh ứng cử làm người dẫn chương trình 新年晚会. Đề tiếng Trung viết lại theo mô tả." }
+    ] },
+  { id:"loai-5", zh:"感谢信", vi:"Thư cảm ơn",
+    intro:{ text:"Là thư chuyên dụng dùng để bày tỏ sự tri ân đối với tập thể hoặc cá nhân đã giúp đỡ mình.",
+      group:"Phân loại theo đối tượng & sự việc（按感谢的对象与事由）",
+      types:[["写给单位/集体","Gửi tập thể / đơn vị: cảm ơn bệnh viện, bác sĩ đã cứu chữa; phòng quản lý du học sinh; cơ quan công an đã giúp đỡ."],
+             ["写给个人","Gửi cá nhân: cảm ơn người nhặt được của rơi trả lại, tình nguyện viên tại hội nghị / sự kiện."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 1, tr. 43–46",
+    sample:[
+      { label:"感谢信", vi:"Gửi tập thể · cảm ơn bệnh viện (tr. 44)",
+        letter:{ title:"感谢信", to:"新仁医院：",
+          body:["我要对贵院表示万分感谢！我是一个来北京打工的普通农民。一个月前，我的妻子突然心脏病复发，情况异常紧急。抱着一线希望，我们住进了贵院。贵院的陈佳大夫对我妻子的身体状况做了全面的检查之后，果断地决定立即手术。以我的收入，根本支付不起手术费。这时，贵院的大夫纷纷向我伸出了援助之手，给我捐助了医疗费。当我表示谢绝时，他们都说：“救人要紧，没有什么比生命更可贵。”万幸的是，手术相当成功。术后，各位护士又对我的妻子进行了精心护理，使得我妻子的病情很快好转。现在，我的妻子已经可以出院了。这对于我们全家来说，简直是个奇迹。",
+                "贵院的大夫不仅医术高，医德更高，是真正的白衣天使！我们全家都非常感动，我们无以为回报，只有把这份恩情记在心里，深深地道一声感谢。"],
+          closing:true, sign:"高壮", date:"2016年5月18日" } },
+      { label:"致……的感谢信", vi:"Cảm ơn cá nhân, gửi qua nhà trường (tr. 45)",
+        letter:{ title:"致刘小丽的感谢信", to:"xx大学语言学院：",
+          body:["我要向贵院的刘小丽同学表示衷心的感谢！刘小丽同学拾金不昧的精神令我十分感动。",
+                "我10月2日在北美餐厅吃饭，不慎将手提包遗落在饭桌上，包里有近万元现金和身份证件、信用卡、公司的文件等。这些东西对于我来说十分重要，关系到我公司的经济利益。如果手提包内的物品丢失，后果将不堪设想。事后我非常焦虑，往返几次都没有找到。正当我准备报警、挂失银行卡、作废公司的文件时，接到电话，得知手提包被贵校的一名学生捡到。这位同学捡到我的手提包后，根据包上的公司名称先与我公司取得了联系，进而通知了我。之后，这位同学及时地把手提包归还给我。看到手提包失而复得，包内物品一样不缺，我欣喜万分！更令我感动的是，为表达谢意，我拿出2000元钱递给该同学作为报答时，被这名同学婉言拒绝了。",
+                "后来，我得知该同学是贵校语言学院的学生刘小丽，她具有良好的社会公德与现代大学生高尚的品质。感谢刘小丽同学的热心与无私，也感谢贵校培养出这么优秀的人才。请接受本人向贵校以及刘小丽同学致以崇高的敬意与深深的谢意！"],
+          closing:true, sign:"北京科技公司 王云", date:"2016年10月3日" } }
+    ],
+    template:{
+      intro:"Một bài 感谢信 chuẩn gồm 5 phần. Không có dòng 您好！ riêng; xưng hô là tên tập thể hoặc cá nhân được cảm ơn.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","感谢信 hoặc 致……的感谢信\nVí dụ: 致刘小丽的感谢信"],
+        ["称呼","Xưng hô","Dòng 2, sát lề trái (顶格), thêm dấu ：","Tên tập thể hoặc cá nhân được cảm ơn\nVí dụ: 新仁医院：　xx大学语言学院："],
+        ["正文","Nội dung chính","Lùi 2 ô đầu mỗi đoạn","3 phần chính:\n① 缘起语 · mở đầu: cảm ơn ai, vì sao cảm ơn\n② 主体文 · thân bài: kể cụ thể nguyên do, diễn biến sự việc, nhấn mạnh sự giúp đỡ quý báu\n③ 结束语 · kết bài: đánh giá cao phẩm chất, hành động của đối phương, cảm ơn sâu sắc lần nữa"],
+        ["祝颂语","Lời chúc","Viết thành 2 dòng riêng","Dòng 1: lùi 4 ô, ghi 此致 (không dấu câu)\nDòng 2: sát lề trái, ghi 敬礼！(có dấu ！)"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Dòng 1: họ tên / đơn vị người viết\nDòng 2: ngày gửi thư, dạng YYYY年MM月DD日"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý quan trọng", items:[
+          {vi:"Dựa trên sự việc có thật, tình cảm chân thành: kể câu chuyện cụ thể, lòng biết ơn xuất phát từ đáy lòng."},
+          {vi:"Đánh giá thoả đáng: khen ngợi hành động của đối phương vừa phải, tránh tâng bốc quá đà làm mất tính chân thực."},
+          {vi:"Hình thức công bố: thư cảm ơn gửi tập thể có thể viết trên giấy đỏ (红纸) và dán công khai tại đơn vị."}]},
+        { title:"Mẫu câu bày tỏ lòng biết ơn", items:[
+          {zh:"向……致以崇高的敬意与衷心的感谢！", vi:"Xin gửi đến… lòng kính trọng cao cả và lời cảm ơn chân thành!"},
+          {zh:"对……深表谢意！", vi:"Xin bày tỏ lòng biết ơn sâu sắc đối với…"},
+          {zh:"特写此信表示万分的感谢！", vi:"Nay đặc biệt viết thư này để bày tỏ lòng cảm ơn vô hạn!"},
+          {zh:"感谢您／贵院／贵校对我们的支持和帮助！", vi:"Cảm ơn sự ủng hộ và giúp đỡ của ông/bà / quý viện / quý trường!"}]},
+        { title:"Mẫu câu kết thư", items:[
+          {zh:"对您的感激之情将永远存在我心间。", vi:"Lòng biết ơn đối với ông/bà sẽ mãi ghi khắc trong tim tôi."},
+          {zh:"您的这种精神非常值得我们学习！", vi:"Tinh thần này của ông/bà rất đáng để chúng tôi học tập!"},
+          {zh:"我将更加努力地工作与学习，以报答您对我的恩情。", vi:"Tôi sẽ nỗ lực làm việc và học tập hơn nữa để đền đáp ơn nghĩa của ông/bà."}]}
+      ]},
+    prompts:[
+      { de:"你在机场丢失了一台笔记本电脑，电脑里有非常重要的资料。报案后，警察很快帮你找回了电脑。请给警方写一封感谢信，字数不少于150字。",
+        huongdan:"Tình huống 1 · Cảm ơn cảnh sát: mất laptop ở sân bay (có tài liệu quan trọng), báo án xong cảnh sát nhanh chóng tìm lại được." },
+      { de:"来中国留学以后，留学生办公室给了你很多支持和帮助。请给留学生办公室写一封感谢信，字数不少于150字。",
+        huongdan:"Tình huống 2 · Cảm ơn Văn phòng Du học sinh đã hỗ trợ, giúp đỡ nhiều trong thời gian du học." },
+      { de:"你来中国参加一个大型会议，一名志愿者在会议期间热情周到地照顾和帮助你，会议结束后还带你参观了名胜古迹。请给这名志愿者写一封感谢信，字数不少于150字。",
+        huongdan:"Tình huống 3 · Cảm ơn tình nguyện viên: chăm sóc chu đáo suốt hội nghị, sau đó dẫn đi thăm danh lam thắng cảnh." }
+    ] },
+  { id:"loai-6", zh:"邀请信", vi:"Thư mời / Giấy mời",
+    intro:{ text:"Là thư chuyên dụng gửi đến người thân, bạn bè, đồng nghiệp hoặc chuyên gia, người nổi tiếng để mời tham gia một hoạt động, sự kiện.",
+      group:"Phân loại theo nội dung sự kiện（按内容/活动性质分）",
+      types:[["宴会邀请","Mời dự tiệc / yến tiệc"],["婚礼邀请 / 请柬","Mời dự lễ cưới"],
+             ["会议邀请 / 邀请函","Mời dự hội nghị, hội thảo, mời diễn thuyết / báo cáo chuyên đề"],
+             ["聚会/联谊会/欢送会邀请","Mời dự buổi giao lưu, tiệc chia tay, sinh hoạt câu lạc bộ"]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 1, tr. 47–50",
+    sample:[
+      { label:"请柬", vi:"Thiệp mời dự lễ cưới (tr. 48)",
+        letter:{ title:"请柬", to:"白晓先生暨夫人：",
+          body:["我们定于2016年8月26日中午12时在兴隆饭店举行婚礼。敬请届时参加。"],
+          sign:"范维 王艳", date:"2016年8月15日" } },
+      { label:"邀请函", vi:"Mời giáo viên dự buổi giao lưu (tr. 48)",
+        letter:{ title:"邀请函", to:"亲爱的王老师：",
+          body:["我们打算在圣诞节前夕举行一次中外学生联谊会。联谊会定在24日晚上7点开始，活动地点为学生会活动中心。",
+                "我们真诚希望您能够参加，期待您的光临。若您不能参加，请打电话xxxxxxxx告知。"],
+          closing:true, sign:"您的学生：王小亚等", date:"2016年12月20日" },
+        note:"Tài liệu ghi tiêu đề mẫu này là 请柬 / 邀请函, chưa rõ sách dùng tên nào." },
+      { label:"邀请信", vi:"Mời giáo sư báo cáo chuyên đề (tr. 49)",
+        letter:{ title:"邀请信", to:"尊敬的李友教授：",
+          body:["我们很荣幸地邀请您于本月15日到我院做一次关于当前中国经济情况的报告。报告题目和具体时间由您自行决定。如需投影或其他设备请于11日17点前告知。",
+                "非常感谢您对我院学术工作的支持，并诚挚期待着聆听您的精彩报告。"],
+          sign:"经济学院：钱德", date:"2016年6月8日" } }
+    ],
+    template:{
+      intro:"Một bài 邀请信 chuẩn gồm 4–5 thành phần; lời chúc 此致敬礼 có thể có hoặc không (xem 3 mẫu).",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","请柬、请帖、邀请信 hoặc 邀请函"],
+        ["称呼","Xưng hô","Dòng 2, sát lề trái (顶格), thêm dấu ：","Tên / chức danh người được mời\nVí dụ: 白晓先生暨夫人：　亲爱的王老师：　尊敬的李友教授："],
+        ["正文","Nội dung","Lùi 2 ô đầu mỗi đoạn","① Sự kiện và lý do tổ chức\n② Thời gian, địa điểm cụ thể\n③ Yêu cầu với khách mời (trang phục, đồ cần chuẩn bị…) và lời mong khách đến dự\n④ Yêu cầu xác nhận (nếu có): hạn chót xác nhận tham gia"],
+        ["祝颂语","Lời chúc","Viết thành 2 dòng riêng","Có thể thêm 此致 / 敬礼！"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Dòng 1: họ tên / tập thể người mời (có thể kèm SĐT liên hệ)\nDòng 2: ngày gửi thư, dạng YYYY年MM月DD日"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý quan trọng", items:[
+          {vi:"Thời gian, địa điểm phải chính xác: tránh mơ hồ về giờ giấc, phòng họp, nơi tổ chức để khách chủ động sắp xếp."},
+          {vi:"Thái độ lịch sự, đúng mực: lời mời thể hiện sự nhiệt tình và tôn trọng đối phương."},
+          {vi:"Phân biệt tính chất sự kiện: tiệc riêng (đám cưới, sinh nhật) dùng 请柬 ngắn gọn; sự kiện học thuật / công việc dùng 邀请信、邀请函 trang trọng, nêu đủ yêu cầu về thiết bị, nội dung."}]},
+        { title:"Mẫu câu định hình", items:[
+          {zh:"诚挚／荣幸地邀请……", vi:"Trân trọng / Hân hạnh kính mời…"},
+          {zh:"真诚期待您能参加。", vi:"Chân thành mong ông/bà có thể tham dự."},
+          {zh:"敬请届时参加／出席。", vi:"Kính mời đến dự đúng giờ."},
+          {zh:"敬请／恭请光临。", vi:"Trân trọng kính mời quang lâm."},
+          {zh:"请予答复。／若您不能参加，请打电话……告知。", vi:"Xin vui lòng hồi đáp / Nếu không thể tham dự, xin gọi điện báo…"}]}
+      ]},
+    prompts:[
+      { de:"你打算在家里举办一次中国菜烹饪学习活动，想邀请班里的所有同学参加。请写一封邀请信，字数不少于150字。",
+        huongdan:"Tình huống 1 · Mời học nấu ăn: tổ chức buổi học nấu món Trung Quốc tại nhà, viết thư mời công khai gửi cả lớp." },
+      { de:"班里的一位同学要提前回国了，全班同学打算为他举办一次欢送会。请给任课老师写一封邀请信，邀请老师参加，字数不少于150字。",
+        huongdan:"Tình huống 2 · Mời dự tiệc chia tay (欢送会): mời giáo viên bộ môn tham dự." },
+      { de:"你非常喜欢诗人李白，想举办一次诗酒会。请给几位有相同爱好的朋友写一封邀请信，请每人自带饮品，并准备朗诵一首李白的诗，字数不少于150字。",
+        huongdan:"Tình huống 3 · Mời dự 诗酒会: mỗi người tự mang đồ uống và chuẩn bị ngâm một bài thơ Lý Bạch." }
+    ] },
+  { id:"loai-7", zh:"贺信", vi:"Thư chúc mừng",
+    intro:{ text:"Là thư gửi đến cá nhân hoặc đơn vị để bày tỏ niềm vui, lời chúc mừng nhân dịp họ đạt được thành tựu, thăng tiến hoặc kỷ niệm sự kiện lớn.",
+      group:"Phân loại theo sự kiện chúc mừng（按祝贺的事由/对象）",
+      types:[["祝贺个人成就/获奖/科研成果","Thành tựu cá nhân: giải thưởng khoa học, công trình nghiên cứu."],
+             ["祝贺就任/升职/喜得贵子/获胜","Sự kiện cá nhân: thăng chức, sinh con, thắng giải thể thao."],
+             ["祝贺单位成立/开业/周年庆","Đơn vị / tổ chức: khai trương công ty, kỷ niệm thành lập viện / trường."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 1, tr. 50–52",
+    sample:[
+      { label:"贺信", vi:"Chúc mừng giải thưởng nghiên cứu khoa học (tr. 51)",
+        letter:{ title:"贺信", to:"夏新建先生：",
+          body:["欣闻您在儒家哲学的研究领域成就突出，大作《荀子研究》于近期获得国家哲学社会科学创新一等奖。在此向您致以衷心的祝贺！",
+                "您对学术的热情和热爱，您取得的成就，永远令人仰慕。您兢兢业业、治学不倦的作风一直都是我们学习的榜样。",
+                "祝您在学术的道路上不断攀登、再创新高！"],
+          sign:"袁军", date:"2016年12月21日" } },
+      { label:"贺信", vi:"Chúc mừng đồng nghiệp lên chức CEO · không ghi tiêu đề (tr. 51)",
+        letter:{ to:"王先生：",
+          body:["喜闻您最近就任电脑科技公司CEO。我感到非常高兴！特向您致以最诚挚的祝贺！",
+                "作为公司的元老，您一直勤恳工作。入职以来，您为公司耗费了巨大的心血，与公司共同发展，取得了骄人的成绩。您的努力得到了领导与同事的称赞，您的聪慧与才能也得到了领导的赏识，终于荣升为CEO。这是公司对您所做的贡献给予的肯定，相信您的未来更美好。",
+                "祝您前程似锦！"],
+          sign:"设计部部长：赵伟", date:"2016年8月3日" },
+        note:"Thư chúc mừng gửi cá nhân có thể không ghi tiêu đề." }
+    ],
+    template:{
+      intro:"Một bài 贺信 chuẩn gồm 5 phần. Khác các loại trước: lời chúc là một câu chúc cụ thể viết thành đoạn riêng, thường không dùng 此致敬礼.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","Thường viết 2 chữ: 贺信\n(Thư gửi cá nhân có thể không ghi tiêu đề)"],
+        ["称呼","Xưng hô","Dòng 2, sát lề trái (顶格), thêm dấu ：","Tên cá nhân hoặc cơ quan, đơn vị nhận thư\nVí dụ: 夏新建先生：　王先生："],
+        ["正文","Nội dung","Lùi 2 ô đầu mỗi đoạn","3 phần cốt lõi:\n① 缘起语 · mở đầu: nêu tin vui / sự kiện và gửi lời chúc mừng\n② 主体文 · thân bài: tán thưởng thành tựu, phân tích nguyên nhân thành công, nêu cống hiến và phẩm chất của đối phương\n③ 结束语 · kết bài: bày tỏ hy vọng vào tương lai hoặc quyết tâm của người viết"],
+        ["祝颂语","Lời chúc","Dòng riêng / đoạn riêng","Câu chúc tốt đẹp cụ thể\nVí dụ: 祝您前程似锦！　祝您在学术的道路上不断攀登、再创新高！"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Dòng 1: họ tên / chức danh, hoặc tên đơn vị chúc mừng\nDòng 2: ngày gửi thư, dạng YYYY年MM月DD日"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý quan trọng", items:[
+          {vi:"Tình cảm chân thành, đánh giá thoả đáng: thể hiện niềm vui và sự khâm phục thật lòng; nhận xét thành tựu phù hợp, khách quan, tránh ca ngợi phô trương."},
+          {vi:"Ngôn ngữ gọn gàng, súc tích: tập trung vào sự kiện vui và điểm sáng nổi bật của đối phương, không lan man."}]},
+        { title:"Mở đầu · báo tin vui", items:[
+          {zh:"欣闻／喜闻……", vi:"Vui mừng được tin…"},
+          {zh:"值此……之际", vi:"Nhân dịp…"}]},
+        { title:"Gửi lời chúc mừng", items:[
+          {zh:"致以热烈／衷心的祝贺！", vi:"Xin gửi lời chúc mừng nhiệt liệt / chân thành!"},
+          {zh:"向……致以最诚挚的祝贺！", vi:"Xin gửi đến… lời chúc mừng chân thành nhất!"}]},
+        { title:"Câu chúc kết thư", items:[
+          {zh:"祝您前程似锦！", vi:"Chúc ông/bà tiền đồ rộng mở!"},
+          {zh:"祝您取得更大进步！", vi:"Chúc ông/bà tiến bộ hơn nữa!"}]}
+      ]},
+    prompts:[
+      { de:"你的好朋友张清的新公司将于12月18日正式开业，并举办招待酒会。请给他写一封贺信，字数不少于150字。",
+        huongdan:"Đề 1 · Chúc mừng khai trương: công ty mới của bạn thân (张清) khai trương ngày 18/12 và mở tiệc chiêu đãi." },
+      { de:"北京大学对外汉语教育学院将举行建院三十周年庆祝活动。请你代表曾在这里学习过的留学生写一封贺信，字数不少于150字。",
+        huongdan:"Đề 2 · Chúc mừng kỷ niệm thành lập: đại diện du học sinh từng học tại Viện viết thư chúc mừng 30 năm thành lập." },
+      { de:"在全国运动会上，你的朋友获得了3000米越野跑比赛的金牌。请给他写一封贺信，祝贺他取得的好成绩，字数不少于150字。",
+        huongdan:"Đề 3 · Chúc mừng vô địch: bạn giành huy chương vàng chạy việt dã 3000m tại Đại hội Thể thao Toàn quốc." }
+    ] },
+  { id:"loai-8", vol:2, zh:"声明", vi:"Tờ tuyên bố / Tuyên bố công khai",
+    intro:{ text:"Khai báo công khai với xã hội, cộng đồng về một sự việc pháp lý, nhằm bảo vệ quyền lợi, tuyên bố vô hiệu hoá giấy tờ bị mất hoặc đính chính thông tin.",
+      group:"Phân loại theo nội dung",
+      types:[["遗失声明","Tuyên bố mất giấy tờ: hộ chiếu, thẻ sinh viên, giấy đăng ký kinh doanh, con dấu, hoá đơn… và tuyên bố vô hiệu (声明作废)."],
+             ["法律声明 / 严正声明","Tuyên bố pháp lý / nghiêm chính: bảo vệ bản quyền, đính chính tin đồn thất thiệt, cảnh báo hành vi vi phạm thương hiệu, quyền lợi."],
+             ["离职声明 / 身份声明","Tuyên bố chấm dứt đại diện: nhân viên đã nghỉ việc, không còn đại diện pháp lý cho công ty."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 2 (下册), tr. 21–54",
+    sample:[
+      { label:"遗失声明", vi:"Tuyên bố mất thẻ sinh viên",
+        letter:{ title:"遗失声明",
+          body:["本人阿里（国籍：埃及，护照号：E12345678）于2016年10月15日在北京市海淀区中关村附近不慎遗失北京大学留学生学生证一张，证件号：2015010023。",
+                "特此声明，该学生证自即日起作废。"],
+          sign:"声明人：阿里", date:"2016年10月16日" } }
+    ],
+    template:{
+      intro:"Một bản 声明 gồm 3 phần, ngắn và mang tính pháp lý. Không có xưng hô, không có lời chúc.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","Ghi rõ tính chất: 声明、遗失声明、严正声明、离职声明"],
+        ["正文","Nội dung chính","Lùi 2 ô đầu dòng","3 phần:\n① Thông tin chủ thể: họ tên, quốc tịch, số hộ chiếu / CMND\n② Sự việc: thời gian, địa điểm, giấy tờ / tài sản bị mất hoặc vấn đề pháp lý phát sinh\n③ Lời tuyên bố (chủ chốt): vô hiệu hoá giấy tờ hoặc giới hạn trách nhiệm pháp lý"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Dòng 1: 声明人：+ họ tên / tên công ty\nDòng 2: ngày phát hành (YYYY年MM月DD日)"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý", items:[
+          {vi:"Ngôn ngữ pháp lý, chính xác, không dùng từ mơ hồ."},
+          {vi:"Bắt buộc có thông tin nhận dạng giấy tờ: số hộ chiếu, mã sinh viên, số con dấu…"}]},
+        { title:"Mẫu câu tuyên bố", items:[
+          {zh:"特此声明，该证件自即日起作废。", vi:"Nay tuyên bố, giấy tờ trên hết hiệu lực kể từ ngày hôm nay."},
+          {zh:"自即日起，该人员的一切言行均与本公司无关，本公司概不承担任何法律责任。", vi:"Kể từ hôm nay, mọi lời nói và hành vi của người này không liên quan đến công ty; công ty không chịu bất kỳ trách nhiệm pháp lý nào."}]}
+      ]},
+    prompts:[
+      { de:"你不小心丢失了居留证（或学生证），请写一则遗失声明，字数不少于150字。",
+        huongdan:"Đề 1 · Tuyên bố mất thẻ cư trú / thẻ sinh viên." },
+      { de:"你们公司的一名员工已经离职，为了避免交易风险，请以公司的名义写一则离职声明，字数不少于150字。",
+        huongdan:"Đề 2 · Công ty tuyên bố nhân viên đã nghỉ việc (离职声明) để tránh rủi ro giao dịch." }
+    ] },
+  { id:"loai-9", vol:2, zh:"海报", vi:"Tờ phích / Poster quảng bá",
+    intro:{ text:"Tuyên truyền, thông báo trực quan, ngắn gọn về một sự kiện, hoạt động văn hoá, diễn thuyết, thể thao nhằm thu hút đông đảo người tham gia.",
+      group:"Phân loại theo nội dung",
+      types:[["学术讲座海报","Poster toạ đàm / báo cáo khoa học: chủ đề, diễn giả, thời gian, địa điểm buổi diễn thuyết."],
+             ["文体活动海报","Poster văn nghệ / thể thao: đêm nhạc, hội diễn kịch, giải thi đấu, dạ hội du học sinh."],
+             ["电影海报 / 演出海报","Poster phim / biểu diễn: lịch chiếu phim, chương trình nghệ thuật."],
+             ["商业海报 / 促销海报","Poster thương mại / khuyến mãi: quảng cáo sản phẩm, chương trình giảm giá."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 2 (下册), tr. 21–54",
+    sample:[
+      { label:"学术讲座海报", vi:"Poster buổi toạ đàm học thuật",
+        letter:{ title:"学术讲座海报",
+          body:[{kv:[["题目","跨文化交际中的语言与艺术"],["主讲人","张明 教授（北京大学中文系博士生导师）"],
+                     ["内容简介","本次讲座将结合丰富的中外文化交流实例，深入剖析跨文化交际中的语言差异、非语言符号以及文化行为规范，帮助同学们提高实际交际能力。"],
+                     ["时间","2016年10月28日（星期五）晚19:00—21:00"],["地点","人文楼201学术报告厅"],["主办单位","国际文化交流学院"]]},
+                "欢迎广大师生踊跃参加！"],
+          sign:"国际文化交流学院学生会", date:"2016年10月22日" },
+        note:"Câu 内容简介 trong tài liệu bị lẫn tiếng Việt; nửa sau câu được dịch lại sang tiếng Trung." }
+    ],
+    template:{
+      intro:"Một tờ 海报 gồm 4 phần. Nội dung trình bày theo dạng mục \"tên mục：thông tin\" để người xem tra nhanh, không viết thành đoạn văn dài.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên, viết nổi bật","海报、讲座海报、[tên sự kiện] + 海报"],
+        ["正文","Nội dung chính","Bố cục thông tin rõ ràng theo từng mục","Bắt buộc có:\n① 题目 / 活动名称 · chủ đề, tên hoạt động\n② 主讲人 / 演职人员 / 参赛对象 · diễn giả, người biểu diễn, đối tượng\n③ 内容简介 · tóm tắt nội dung (2–3 câu)\n④ 时间与地点 · cụ thể đến phút, đến phòng\n⑤ 主办单位 · đơn vị tổ chức"],
+        ["呼吁语","Lời kêu gọi","Cuối phần nội dung","欢迎广大师生光临！　欢迎大家踊跃参加！"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Tên đơn vị / ban tổ chức + ngày dán poster (YYYY年MM月DD日)"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý", items:[
+          {vi:"Trình bày trực quan, thông tin ngắn gọn, dễ tra cứu nhanh."},
+          {vi:"Thời gian và địa điểm phải tuyệt đối chính xác."}]},
+        { title:"Mẫu câu kêu gọi", items:[
+          {zh:"欢迎广大师生届时前往听讲／观赏！", vi:"Hoan nghênh thầy cô và các bạn đến nghe / thưởng thức đúng giờ!"},
+          {zh:"精彩不容错过，欢迎光临！", vi:"Đặc sắc không thể bỏ lỡ, hoan nghênh quý vị!"}]}
+      ]},
+    prompts:[
+      { de:"学校将举办“中国电影之夜”活动，放映几部优秀的中国电影。请写一张海报，介绍这次活动，字数不少于150字。",
+        huongdan:"Đề 1 · Poster đêm chiếu phim điện ảnh Trung Quốc." },
+      { de:"学院将为新来的留学生举办迎新晚会。请写一张迎新晚会海报，字数不少于150字。",
+        huongdan:"Đề 2 · Poster dạ hội chào đón tân sinh viên quốc tế (迎新晚会)." }
+    ] },
+  { id:"loai-10", vol:2, zh:"通知", vi:"Thông báo hành chính",
+    intro:{ text:"Do cơ quan, tổ chức, nhà trường hoặc cấp trên phát ra nhằm truyền đạt chỉ thị, thu xếp công việc hoặc thông báo sự việc đến cấp dưới, cộng đồng.",
+      group:"Phân loại theo nội dung",
+      types:[["会议通知","Thông báo họp / hội nghị: thời gian, địa điểm, thành phần tham dự, nội dung cuộc họp."],
+             ["活动通知 / 事务通知","Thông báo hoạt động / sự vụ: lịch nghỉ lễ, đăng ký học phần, khám sức khoẻ, vệ sinh chung, lịch thi."],
+             ["任免通知 / 机构通知","Thông báo nhân sự / tổ chức: bổ nhiệm cán bộ, thay đổi cơ cấu tổ chức."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 2 (下册), tr. 21–54",
+    sample:[
+      { label:"关于……的通知", vi:"Thông báo tổ chức cuộc thi hùng biện tiếng Hán",
+        letter:{ title:"关于举办留学生汉语演讲比赛的通知", to:"各学院、各位留学生：",
+          body:["为了丰富留学生的校园文化生活，提高大家的汉语表达能力与演讲水平，学院决定举办2016年留学生汉语演讲比赛。现将有关事项通知如下：",
+                "一、比赛主题：“我与中国”",
+                "二、参赛对象：全校在校外国留学生",
+                "三、比赛时间与地点：",
+                "1. 时间：2016年11月15日（星期二）下午14:30",
+                "2. 地点：学生活动中心三楼报告厅",
+                "四、报名方式：",
+                "请有意参赛的同学于11月10日前将报名表电子版发送至邮箱xxxx@126.com，或到留学生办公室（101室）现场报名。",
+                "欢迎广大留学生踊跃报名参加！"],
+          sign:"国际文化交流学院", date:"2016年10月20日" } }
+    ],
+    template:{
+      intro:"Một bài 通知 chuẩn gồm 5 thành phần. Văn phong công văn, không dùng 此致敬礼; người ký là đơn vị, không phải cá nhân.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","[Đơn vị phát hành] + 关于 + [sự việc] + 的 + 通知\nVí dụ: 关于举办汉语演讲比赛的通知\n国际文化交流学院关于国庆节放假的通知"],
+        ["主送单位 / 称呼","Đơn vị nhận / xưng hô","Dòng 2, sát lề trái (顶格), thêm dấu ：","Tập thể, đơn vị hoặc đối tượng nhận thông báo\nVí dụ: 各学院、各系：　各位留学生：　全体教职员工："],
+        ["正文","Nội dung chính","Lùi 2 ô đầu mỗi đoạn","3 phần cốt lõi:\n① 发文原因 · lý do / căn cứ: thường dùng 为了……、根据……，经研究决定……\n② 具体事项 · các việc cụ thể: thời gian, địa điểm, đối tượng, nội dung, yêu cầu, tiến độ, SĐT liên hệ; nên chia mục 一、二、三、\n③ 结语 · kết: 特此通知、请遵照执行、欢迎大家踊跃参加"],
+        ["署名","Ký tên đơn vị","Góc dưới bên phải","Cơ quan, tổ chức, phòng ban ban hành\nVí dụ: 留学生办公室　国际文化交流学院"],
+        ["日期","Ngày tháng","Ngay dưới tên đơn vị, căn phải","YYYY年MM月DD日"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý quan trọng", items:[
+          {vi:"Chính xác, minh bạch: thời gian, địa điểm, hạn chót đăng ký, thông tin liên hệ phải tuyệt đối chính xác."},
+          {vi:"Văn phong công văn (公文语体): trang trọng, súc tích, khách quan; không dùng khẩu ngữ hay bộc lộ cảm xúc cá nhân."},
+          {vi:"Bố cục rõ ràng: chia mục bằng số 一、二、三、… để người đọc tra cứu nhanh."}]},
+        { title:"Mở đầu thông báo", items:[
+          {zh:"为了……，经研究，决定……", vi:"Nhằm…, qua nghiên cứu, quyết định…"},
+          {zh:"根据学校规定／上级指示，现将有关事项通知如下：", vi:"Căn cứ quy định nhà trường / chỉ thị cấp trên, nay thông báo các việc liên quan như sau:"}]},
+        { title:"Triển khai thông tin", items:[
+          {zh:"现将有关事宜通知如下：", vi:"Nay thông báo các việc liên quan như sau:"},
+          {zh:"请各部门／各位同学遵照执行。", vi:"Đề nghị các bộ phận / các bạn sinh viên thực hiện theo."}]},
+        { title:"Kết thúc thông báo", items:[
+          {zh:"特此通知。", vi:"Nay thông báo."},
+          {zh:"请大家相互转告。", vi:"Mong mọi người báo cho nhau biết."},
+          {zh:"望按时参加，切勿迟到。", vi:"Mong tham gia đúng giờ, tuyệt đối không đến muộn."}]}
+      ]},
+    prompts:[
+      { de:"学校将举办一次文化节，活动包括戏曲、画画儿、象棋等文化体验项目。请写一则通知，向同学们介绍这次文化节，字数不少于150字。",
+        huongdan:"Đề thi thật HSK6 3.0 ngày 31/7/2026 tại ĐH Hà Nội (theo review): viết thông báo về một lễ hội văn hoá có các hoạt động trải nghiệm như 戏曲、画画儿、象棋. Đề tiếng Trung viết lại theo mô tả." },
+      { de:"请你以留学生办公室的名义，给全体留学生写一则春节放假通知，说明放假时间和假期安全注意事项，字数不少于150字。",
+        huongdan:"Đề 1 · Thông báo nghỉ Tết: với tư cách Văn phòng Du học sinh, thông báo lịch nghỉ Tết Nguyên Đán và lưu ý an toàn." },
+      { de:"请给新入学的留学生写一则体检通知，说明集合的时间、地点，以及办理签证延期的手续，字数不少于150字。",
+        huongdan:"Đề 2 · Thông báo khám sức khoẻ / visa: thời gian, địa điểm tập trung khám sức khoẻ và quy trình gia hạn thị thực." },
+      { de:"学校将举办国际美食节，请写一则活动通知，说明活动的时间、地点、摊位报名方式和卫生要求，字数不少于150字。",
+        huongdan:"Đề 3 · Thông báo sự kiện: Đêm hội Ẩm thực Quốc tế, nêu thời gian, địa điểm, cách đăng ký gian hàng, quy định vệ sinh." },
+      { de:"请写一则班委会会议通知，讨论组织全班秋游的计划，字数不少于150字。",
+        huongdan:"Đề 4 · Thông báo họp Ban cán sự lớp để bàn kế hoạch dã ngoại mùa thu." }
+    ] },
+  { id:"loai-11", vol:2, zh:"条据", vi:"Giấy biên nhận / Chứng từ",
+    intro:{ text:"Văn bản làm bằng chứng ghi nhận việc giao nhận tiền bạc, tài sản, vật dụng hoặc xác nhận khoản nợ giữa các bên.",
+      group:"Phân loại theo nội dung",
+      types:[["收条","Giấy biên nhận: xác nhận đã nhận tiền, tài liệu hoặc hàng hoá từ người khác."],
+             ["借条","Giấy vay / giấy mượn: xác nhận vay tiền hoặc mượn tài sản, có cam kết thời hạn trả."],
+             ["欠条","Giấy ghi nợ: xác nhận khoản nợ chưa thanh toán phát sinh từ giao dịch."],
+             ["领条","Phiếu lĩnh: xác nhận đã nhận vật tư, tiền thưởng, đồ dùng từ kho hoặc cơ quan."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 2 (下册), tr. 21–54",
+    sample:null, template:null, tips:null, prompts:null },
+  { id:"loai-12", vol:2, zh:"契约与合同", vi:"Khế ước & Hợp đồng",
+    intro:{ text:"Văn bản thoả thuận có tính ràng buộc pháp lý giữa hai hay nhiều bên nhằm xác lập, thay đổi hoặc chấm dứt quyền và nghĩa vụ dân sự, thương mại.",
+      group:"Phân loại theo nội dung",
+      types:[["房屋租赁合同","Hợp đồng thuê nhà: tiền thuê, đặt cọc, thời hạn, trách nhiệm bảo trì, điện nước."],
+             ["劳动合同 / 聘用合同","Hợp đồng lao động: mức lương, thời giờ làm việc, bảo hiểm, thử việc."],
+             ["合作协议书","Thoả thuận hợp tác: liên danh, dự án hợp tác kinh doanh."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 2 (下册), tr. 21–54",
+    sample:null, template:null, tips:null, prompts:null },
+  { id:"loai-13", vol:2, zh:"规章制度", vi:"Quy chế / Nội quy / Công ước",
+    intro:{ text:"Văn bản do tập thể, cơ quan, trường học ban hành nhằm quy định chuẩn mực hành vi, trách nhiệm và trật tự làm việc, sinh hoạt chung.",
+      group:"Phân loại theo nội dung",
+      types:[["公约 / 守则","公约: cam kết tự nguyện chung (公寓公约、环保公约). 守则: nội quy bắt buộc (学生守则、员工守则)."],
+             ["管理制度 / 规定","Quy chế, quy định quản lý: nội quy thư viện, quy chế ký túc xá, quy định phòng cháy chữa cháy."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 2 (下册), tr. 21–54",
+    sample:null, template:null, tips:null, prompts:null },
+  { id:"loai-14", vol:2, zh:"计划与总结", vi:"Kế hoạch & Báo cáo tổng kết",
+    intro:{ text:"Văn bản hoạch định công việc tương lai, hoặc đánh giá, rút kinh nghiệm về công việc đã thực hiện.",
+      group:"Phân loại theo nội dung",
+      types:[["工作计划 / 学习计划","Kế hoạch làm việc / học tập: mục tiêu, tiến độ, biện pháp thực hiện (theo tuần, tháng, học kỳ, năm)."],
+             ["工作总结 / 学习总结","Báo cáo tổng kết: kết quả đạt được, ưu nhược điểm và bài học kinh nghiệm."]]},
+    source:"An Intermediate and Advanced Chinese Writing Course for Foreigners 2 (下册), tr. 21–54",
+    sample:[
+      { label:"学习计划", vi:"Kế hoạch học tiếng Hán cá nhân một học kỳ",
+        letter:{ title:"2016—2017学年第一学期个人汉语学习计划",
+          body:["为了进一步提高汉语听、说、读、写综合能力，顺利通过HSK五级考试，特制定本学期学习计划如下：",
+                {h:"一、总体目标"},
+                "词汇量达到2500词，HSK五级考试成绩达到220分以上，能够流畅地进行日常及学术交流。",
+                {h:"二、具体措施与时间安排"},
+                "1. 听力与口语：每天坚持听汉语新闻30分钟；每周与中国语伴交流2小时。",
+                "2. 阅读与写作：每天阅读汉语报刊文章1篇；每两周撰写一篇500字以上的作文。",
+                "3. 词汇积累：每天背诵20个HSK五级新词汇并练习造句。",
+                {h:"三、阶段步骤"},
+                "9月—11月：重点突破词汇与语法专项；",
+                "12月—1月：进行全真模拟试题冲刺与查漏补缺。"],
+          sign:"计划人：阿里", date:"2016年9月5日" } }
+    ],
+    template:{
+      intro:"Kế hoạch và báo cáo tổng kết dùng chung khung 3 phần, chỉ khác nội dung thân bài. Thân bài chia mục 一、二、三.",
+      rows:[
+        ["标题","Tiêu đề","Chính giữa dòng đầu tiên","[Thời gian / đối tượng] + [nội dung] + 计划 / 总结\nVí dụ: 2016年学期学习计划　留学生会年度工作总结"],
+        ["正文","Nội dung chính","Chia mục 一、二、三 rõ ràng","A. 计划 · Kế hoạch\nMở đầu: mục đích, ý nghĩa (为了……)\nThân bài: ① 目标 mục tiêu ② 措施 biện pháp cụ thể ③ 步骤 / 时间安排 tiến độ\n\nB. 总结 · Báo cáo tổng kết\nMở đầu: khái quát tình hình chung\nThân bài: ① 主要成绩 thành tựu ② 存在的问题 hạn chế ③ 今后努力方向 phương hướng"],
+        ["署名与日期","Ký tên & ngày tháng","Góc dưới bên phải","Dòng 1: 计划人：/ 总结人：+ họ tên / đơn vị\nDòng 2: ngày lập văn bản (YYYY年MM月DD日)"]
+      ]},
+    tips:{
+      groups:[
+        { title:"Lưu ý", items:[
+          {vi:"Kế hoạch phải khả thi, biện pháp đo lường được."},
+          {vi:"Báo cáo tổng kết phải trung thực, nhìn nhận cả ưu điểm lẫn hạn chế."}]},
+        { title:"Mẫu câu cho 计划", items:[
+          {zh:"特制定本计划如下：", vi:"Nay lập kế hoạch như sau:"},
+          {zh:"按部就班，循序渐进。", vi:"Làm theo từng bước, tiến dần từ thấp lên cao."}]},
+        { title:"Mẫu câu cho 总结", items:[
+          {zh:"在过去的一学期中，取得了显著成效。", vi:"Trong học kỳ vừa qua đã đạt được kết quả rõ rệt."},
+          {zh:"尚存在以下不足，有待进一步改进。", vi:"Vẫn còn những hạn chế sau, cần tiếp tục cải thiện."}]}
+      ]},
+    prompts:[
+      { de:"请为自己制定一份HSK六级备考计划，字数不少于150字。",
+        huongdan:"Đề 1 · Kế hoạch ôn thi HSK6 (HSK六级备考计划)." },
+      { de:"请为学校汉语角写一份上学期的活动工作总结，字数不少于150字。",
+        huongdan:"Đề 2 · Báo cáo tổng kết hoạt động Góc tiếng Trung (汉语角) học kỳ vừa qua." }
+    ] }
+];
+
+const PHAN = [
+  {key:"intro",    vi:"Giới thiệu công dụng", zh:"用途与分类"},
+  {key:"sample",   vi:"Văn bản mẫu",          zh:"范文"},
+  {key:"template", vi:"Cách làm theo template", zh:"写作模板"},
+  {key:"tips",     vi:"Chú ý khi viết & mẹo", zh:"注意事项与技巧"},
+  {key:"prompts",  vi:"Đề luyện tập",         zh:"同类题目练习"}
+];
+
+const MIN_ZI = 150;
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const filled = l => PHAN.filter(p=>l[p.key]).length;
+const store = {
+  get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+};
+/* đếm chữ Hán + dấu câu toàn角 (giống cách tính số chữ khi thi) */
+const countZi = t => (t.match(/[㐀-鿿豈-﫿　-〿＀-￯]/g)||[]).length;
+
+function renderNav(cur){
+  document.getElementById("nav").innerHTML = LOAI.map((l,i)=>`
+    ${(i===0||(LOAI[i-1].vol||1)!==(l.vol||1))?`<li class="vol">Tập ${l.vol||1}${(l.vol||1)===1?" · thư từ, đơn":" · hành chính, sự vụ"}</li>`:""}
+    <li><a href="#${l.id}" ${l.id===cur?'aria-current="page"':''}>
+      <span class="n">${i+1}</span>
+      <span class="t"><span class="zh">${l.zh}</span><span class="vi">${esc(l.vi)}</span></span>
+      <span class="pill">${filled(l)}/5</span></a></li>`).join("");
+}
+
+function pending(what){
+  return `<div class="pending"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <div><b>Đang cập nhật</b><span>${what}</span></div></div>`;
+}
+
+function practiceBox(id, de, huongdan, thamkhao, no){
+  return `<div class="prompt" data-key="${id}">
+    <div class="prompt-top"><span class="label">${de?"题目 "+(no||""):"Ô luyện tập tự do"}</span>
+      <p>${de?esc(de):"Chưa có đề cho dạng này. Có thể tự đặt đề và viết thử ở đây."}</p>
+      ${huongdan?`<span class="note">${esc(huongdan)}</span>`:""}</div>
+    <div class="tools">
+      <div class="count"><span><b class="num">0</b> / ${MIN_ZI} 字</span><span class="bar"><i></i></span></div>
+      <div class="btns"><button type="button" data-act="mode">Dòng kẻ</button><button type="button" data-act="clear">Xoá bài</button></div>
+    </div>
+    <div class="sheet"><textarea id="ta-${id}" class="grid" spellcheck="false" aria-label="Ô viết bài"></textarea></div>
+    ${thamkhao?`<div class="ref"><details><summary>Xem bài tham khảo</summary><p class="zh" style="margin-top:10px;line-height:1.9">${esc(thamkhao)}</p></details></div>`:""}
+  </div>`;
+}
+
+function renderPart(l, p, idx){
+  const v = l[p.key];
+  let body = "";
+  if(p.key==="intro"){
+    body = `<p>${esc(v.text)}</p><span class="label">${esc(v.group)}</span>
+      <div class="types">${v.types.map(([z,t])=>`<div class="type"><span class="zh">${z}</span><span>${esc(t)}</span></div>`).join("")}</div>`;
+  } else if(p.key==="prompts"){
+    body = v && v.length ? `<div class="prompts">${v.map((q,i)=>practiceBox(`${l.id}-${i}`,q.de,q.huongdan,q.thamkhao,i+1)).join("")}</div>`
+         : pending("Các đề bài viết tương tự của dạng "+l.zh+" sẽ được thêm vào đây, mỗi đề kèm một ô luyện tập.") + practiceBox(`${l.id}-free`);
+  } else if(v && p.key==="sample" && Array.isArray(v)){
+    body = `<div class="samples">${v.map((s,k)=>{const L=s.letter;
+      const bodyTxt=L.body.map(b=>typeof b==="string"?b:b.list?b.list.join(""):b.kv?b.kv.map(x=>x.join("：")).join(""):b.h?b.h:"").join("");
+      const cl = L.closing===true?{a:"此致",b:"敬礼！"}:(L.closing||null);
+      const signs=[].concat(L.sign||[]);
+      const all=[L.title||"",L.to||"",L.greet||"",bodyTxt,cl?cl.a+cl.b:"",signs.join(""),L.date||""].join("");
+      return `<figure class="sample"><figcaption><span class="label">Mẫu ${k+1}</span><b class="zh">${s.label}</b><span>${esc(s.vi)}</span><span class="pill">≈ ${countZi(all)} 字</span></figcaption>
+        <div class="letter zh">
+          ${L.header?`<dl class="l-head">${L.header.map(([k,v])=>`<div><dt>${k}：</dt><dd>${v}</dd></div>`).join("")}</dl>`:""}
+          ${L.title?`<div class="l-title">${L.title}</div>`:""}${L.to?`<div class="l-to">${L.to}</div>`:""}
+          ${L.greet?`<p class="l-body">${L.greet}</p>`:""}
+          ${L.body.map(b=>typeof b==="string"?`<p class="l-body">${b}</p>`:b.list?`<ol class="l-list">${b.list.map(x=>`<li>${x}</li>`).join("")}</ol>`:b.kv?`<dl class="l-kv">${b.kv.map(([k,v])=>`<div><dt>${k}：</dt><dd>${v}</dd></div>`).join("")}</dl>`:b.h?`<p class="l-h">${b.h}</p>`:`<p class="l-gap">${esc(b.gap)}</p>`).join("")}
+          ${cl?`<div class="l-zhi" style="text-indent:${cl.indent||4}em">${cl.a}</div><div class="l-li">${cl.b}</div>`:""}
+          ${signs.map(x=>`<div class="l-sign">${x}</div>`).join("")}${L.date?`<div class="l-sign">${L.date}</div>`:""}
+        </div>${s.note?`<span class="note">${esc(s.note)}</span>`:""}</figure>`}).join("")}</div>`;
+  } else if(v && p.key==="template" && v.rows){
+    body = `<p>${esc(v.intro)}</p>${v.tableTitle?`<span class="label">${esc(v.tableTitle)}</span>`:""}<div class="tbl"><table><thead><tr><th>#</th><th>Thành phần</th><th>Vị trí trình bày</th><th>Cụm từ mẫu / quy tắc</th></tr></thead><tbody>
+      ${v.rows.map((r,k)=>`<tr><td class="num-c">${k+1}</td><td><b class="zh">${r[0]}</b><br><span class="note">${esc(r[1])}</span></td><td>${esc(r[2])}</td><td class="rule">${esc(r[3])}</td></tr>`).join("")}
+      </tbody></table></div>${v.extra?`<div class="tipgrid">${v.extra.map(g=>`<div class="tipbox"><span class="label">${esc(g.title)}</span><ul>${g.items.map(it=>`<li>${it.zh?`<b class="zh">${esc(it.zh)}</b>`:""}<span>${esc(it.vi)}</span></li>`).join("")}</ul></div>`).join("")}</div>`:""}`;
+  } else if(v && p.key==="tips" && v.groups){
+    body = `<div class="tipgrid">${v.groups.map(g=>`<div class="tipbox"><span class="label">${esc(g.title)}</span><ul>
+      ${g.items.map(it=>`<li>${it.zh?`<b class="zh">${esc(it.zh)}</b>`:""}<span>${esc(it.vi)}</span></li>`).join("")}</ul></div>`).join("")}</div>`;
+  } else {
+    body = v ? `<div class="zh" style="white-space:pre-wrap;line-height:1.9">${esc(v)}</div>`
+             : pending({sample:"Văn bản mẫu "+l.zh+" hoàn chỉnh.",template:"Khung bố cục rút ra từ văn bản mẫu: các phần bắt buộc và mẫu câu dùng được.",tips:"Lỗi hay gặp, quy ước trình bày và mẹo tiết kiệm thời gian khi thi."}[p.key]);
+  }
+  return `<section class="part" id="${l.id}-${p.key}"><div class="pno">${idx}</div>
+    <div class="pbody"><h2>${p.vi}<small class="zh">${p.zh}</small></h2>${body}</div></section>`;
+}
+
+function render(){
+  const id = (location.hash||"").slice(1);
+  const l = LOAI.find(x=>x.id===id) || LOAI[0];
+  const i = LOAI.indexOf(l);
+  renderNav(l.id);
+  document.getElementById("main").innerHTML = `
+    <header class="head">
+      <div class="crumb">Viết đoạn văn ứng dụng · Tập ${l.vol||1} · <b>Loại ${i+1}</b></div>
+      <h1><span class="zh-title">${l.zh}</span><span class="vi-title">${esc(l.vi)}</span></h1>
+      <div class="meta"><span class="chip gold">${filled(l)}/5 phần đã có nội dung</span><span class="chip zh">写作第一部分 · 不少于150字</span>${l.source?`<span class="chip">Nguồn: ${esc(l.source)}</span>`:""}</div>
+    </header>
+    <nav class="toc" aria-label="Các phần">${PHAN.map((p,k)=>`<a href="#${l.id}" data-jump="${l.id}-${p.key}"><span class="dot ${l[p.key]?"on":""}"></span>${k+1}. ${p.vi}</a>`).join("")}</nav>
+    ${PHAN.map((p,k)=>renderPart(l,p,k+1)).join("")}`;
+  wire();
+}
+
+function fitGrid(ta){
+  if(!ta.classList.contains("grid")) { ta.style.width=""; return; }
+  const box = ta.parentElement.clientWidth - 32;
+  const cols = Math.max(10, Math.min(24, Math.floor(box/32)));
+  ta.style.width = (cols*32 + 2) + "px";
+}
+
+function wire(){
+  document.querySelectorAll(".toc a").forEach(a=>a.addEventListener("click",e=>{
+    e.preventDefault(); document.getElementById(a.dataset.jump)?.scrollIntoView({behavior:"smooth"});
+  }));
+  document.querySelectorAll(".prompt").forEach(box=>{
+    const key = "hsk6-viet:"+box.dataset.key;
+    const ta = box.querySelector("textarea"), num = box.querySelector(".num"), bar = box.querySelector(".bar");
+    const upd = ()=>{ const n = countZi(ta.value); num.textContent=n;
+      bar.firstElementChild.style.width = Math.min(100,n/MIN_ZI*100)+"%"; bar.classList.toggle("done",n>=MIN_ZI); };
+    ta.value = store.get(key) || ""; upd(); fitGrid(ta);
+    ta.addEventListener("input",()=>{ store.set(key,ta.value); upd(); });
+    box.querySelector('[data-act="mode"]').addEventListener("click",e=>{
+      const g = ta.classList.toggle("grid"); ta.classList.toggle("lines",!g);
+      e.target.textContent = g?"Dòng kẻ":"Ô vuông"; fitGrid(ta);
+    });
+    const clr = box.querySelector('[data-act="clear"]');
+    clr.addEventListener("click",()=>{
+      if(clr.dataset.sure){ ta.value=""; store.set(key,""); upd(); clr.textContent="Xoá bài"; delete clr.dataset.sure; }
+      else { clr.dataset.sure=1; clr.textContent="Bấm lần nữa để xoá"; setTimeout(()=>{clr.textContent="Xoá bài";delete clr.dataset.sure},3000); }
+    });
+  });
+}
+
+window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0)});
+window.addEventListener("resize",()=>document.querySelectorAll("textarea").forEach(fitGrid));
+render();
+</script>
+</body></html>

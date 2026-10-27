@@ -8,11 +8,13 @@ const SHELF=[
  {l:3,img:"img/bia-hsk3.webp",t:"New HSK 3",s:"Trung cấp 1"},
  {l:4,img:"",t:"HSK 4",s:"Trung cấp · du học",zh:"汉语",c:"#5c1730"},
  {l:5,img:"",t:"Mở rộng H4",s:"Trung cấp · đời sống",zh:"生活",c:"#8e2a4f"},
- {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:10,tot:15}];
+ {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:10,tot:15},
+ {href:"luyen-viet-hsk6/",img:"",t:"HSK 6 · Viết",s:"Viết đoạn văn ứng dụng",zh:"写作",c:"#7a1f3d",n:11,tot:14,unit:"loại đã có"}];
+/* luyen-viet-hsk6/ = trang luyện viết HSK6 3.0 phần 1 (27/10/2026); n = số loại văn bản đã đủ 5 phần */
 /* Cuốn có href = trang ôn tập riêng (thư mục hsk1/, 24/10/2026); chỉ hiện ở Ôn luyện theo bài */
 const shN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
 function shCount(l){if(typeof napOk=="function"&&!napOk(l))return napBai(l).length;const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]).length}
-function shelfView(pk="olPick",hint="Chọn giáo trình để xem các bài ôn luyện.",cnt=shCount,unit="bài đã có"){return `<p class="shint">${hint}</p><div class="shelf">${SHELF.filter(b=>b.href?pk=="olPick":(b.l<5||LDS[5])).map(b=>{if(b.href)return `<a class="shb" href="${b.href}"><div class="shimg"><img src="${b.img}" alt="Bìa ${b.t} ${b.s}" loading="lazy"></div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ok">${b.n}/${b.tot} ${unit}</span></a>`;const n=cnt(b.l),tot=LV[b.l]||0;
+function shelfView(pk="olPick",hint="Chọn giáo trình để xem các bài ôn luyện.",cnt=shCount,unit="bài đã có"){return `<p class="shint">${hint}</p><div class="shelf">${SHELF.filter(b=>b.href?pk=="olPick":(b.l<5||LDS[5])).map(b=>{if(b.href)return `<a class="shb" href="${b.href}"><div class="shimg">${b.img?`<img src="${b.img}" alt="Bìa ${b.t} ${b.s}" loading="lazy">`:`<div class="shcv" style="--cc:${b.c}"><span class="zh">${b.zh}</span><b>${b.t}</b><i>Cô Thảo tiếng Trung</i></div>`}</div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ok">${b.n}/${b.tot} ${b.unit||unit}</span></a>`;const n=cnt(b.l),tot=LV[b.l]||0;
  const cov=b.img?`<img src="${b.img}" alt="Bìa giáo trình ${b.t}" loading="lazy">`:`<div class="shcv" style="--cc:${b.c}"><span class="zh">${b.zh}</span><b>${b.t}</b><i>Cô Thảo tiếng Trung</i></div>`;
  return `<button class="shb ${n?"":"soon"}" onclick="${pk}(${b.l})"><div class="shimg">${cov}</div><b class="sht">${b.t}</b><small>${b.s}</small><span class="pill ${n?"ok":""}">${n?`${n}/${tot} ${unit}`:"Sắp ra mắt"}</span></button>`}).join("")}</div>`}
 function olPick(l){OLPICK=true;setLv(l);scrollTo(0,0)}
