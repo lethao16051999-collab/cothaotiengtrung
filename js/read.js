@@ -15,13 +15,13 @@ function rdRec(i,j){if(curRec){try{curRec.stop()}catch(e){}return}
  const key=i+"-"+j,tgt=LD[cur].texts[i].l[j][1];RDON=key;RDR[key]=srLiveHtml();rr();
  srListen(t=>{RDON=null;const m=simi(rdN(t),rdN(tgt)),ok=m>=RD_OK;
   RDR[key]=`<div>Máy nghe được: <span class="zh hd">${esc(t)}</span></div><div>So với câu gốc: <span class="zh hd">${lcsMark(tgt,t)}</span> <small>(chữ đỏ là chữ đọc thiếu hoặc sai)</small></div><div class="${ok?"okt":"bad"}">${ok?"✓ Đạt":"✗ Chưa đạt (cần từ "+RD_OK+"%), nghe mẫu rồi đọc lại nhé"} · giống câu gốc ${m}%</div>`;rdSave(key,m);rr()},
- k=>{RDON=null;RDR[key]=k=="deny"?`<span class="bad">Trang chưa được phép dùng micro. Hãy bấm cho phép micro rồi đọc lại.</span>`:`<span class="bad">Chưa nghe thấy gì, bấm 🎤 Đọc lại nhé.</span>`;rr()})}
+ k=>{RDON=null;RDR[key]=srMsg(k);rr()})}
 function rdHtml(L,r){const T=L.texts||[];if(!T.length)return"";if(RDS>=T.length)RDS=0;
  const k=r.rk||{},s=rdScore(L,r),x=T[RDS],sp=w=>SPN[w]?SPN[w][1]:w;
  const okN=i=>T[i].l.filter((y,j)=>(k[i+"-"+j]||0)>=RD_OK).length;
  return `<div class="card rd" id="rdbox"><h3>🎙 Luyện đọc bài khóa</h3>
 <p class="ctx">Đọc to từng câu rồi bấm <b>🎤 Đọc</b>, máy nghe và so với câu gốc. Câu nào giống từ <b>${RD_OK}%</b> trở lên mới tính đạt; chưa đạt thì bấm 🔊 nghe mẫu rồi đọc lại (máy giữ lần đọc tốt nhất). Muốn tự kiểm tra kỹ hơn, bỏ chọn ☐ Pinyin ở thanh Hiển thị để chỉ nhìn chữ Hán.</p>
-${SRC&&!srBlocked?"":`<p class="warn">Trình duyệt này chưa dùng được chức năng máy nghe. Mở trang bằng Google Chrome hoặc Microsoft Edge và cho phép micro để luyện đọc.</p>`}
+${srWarn()?`<p>${srWarn()}</p>`:""}
 <div class="stb sit">${T.map((t,i)=>`<button class="${i==RDS?"on":""}" onclick="RDS=${i};rr();$('rdbox').scrollIntoView({block:'start'})">课文 ${i+1}<i class="sc ${okN(i)==t.l.length?"ok":"no"}">${okN(i)}/${t.l.length}</i></button>`).join("")}</div>
 ${x.l.map((y,j)=>{const key=RDS+"-"+j,v=k[key];return `<div class="rdl ${v==null?"":v>=RD_OK?"ok":"no"}">
 <div class="rdw"><b>${j+1}</b><span class="zh">${y[0]}</span> <small>${sp(y[0])}</small>${v!=null?`<i class="sc ${v>=RD_OK?"ok":"no"}">${v}%</i>`:""}</div>
