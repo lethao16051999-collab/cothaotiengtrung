@@ -65,22 +65,27 @@ gxSave=chSave;
 function chSave(){if(!GX||GX.prac||chMe())return;
  const done=GX.so.every(s=>s.first!=null)&&GX.tr.every(t=>t.st=="ok"||t.st=="ref");if(!done)return;
  const ok=GX.so.filter(s=>s.first).length+GX.tr.filter(t=>t.st=="ok").length,r=ldN(cur);r.gp=Math.round(ok/(GX.so.length+GX.tr.length)*100);svN(cur,r)}
-function chApply(rec){if(!rec||rec.olv!=olLv)return;const r=ldN(rec.b);const tr=rec.it.filter(x=>x.d=="tr"),pc=rec.it.filter(x=>x.d=="pc");
- const g=x=>x.g==null||x.g===""?0:+x.g;r.gp=Math.round((rec.so.ok+tr.reduce((a,x)=>a+g(x),0))/(rec.so.n+tr.length)*100);
+function chApply(rec){if(!rec||rec.olv!=olLv)return;const r=ldN(rec.b);let tr=rec.it.filter(x=>x.d=="tr"),pc=rec.it.filter(x=>x.d=="pc");
+ const g=x=>x.g==null||x.g===""?0:+x.g;tr=tr.filter(x=>x.st!="bo");pc=pc.filter(x=>x.st!="bo");const nn=rec.so.n+tr.length;
+ if(nn){r.gp=Math.round((rec.so.ok+tr.reduce((a,x)=>a+g(x),0))/nn*100);r.gpn=nn}
  r.gpw=rec.it.filter(x=>x.st=="cho").length;if(pc.length&&pc.every(x=>x.st!="cho"))r.gpt=Math.round(pc.reduce((a,x)=>a+g(x),0)/pc.length*100);svN(rec.b,r)}
 
 /* ---------- nộp bài ---------- */
-const chReady=()=>GX.so.every(s=>s.first!=null)&&GX.tr.every(t=>t.st=="ok"||t.st=="cho")&&GX.pc.every(t=>t.st=="ok"||t.st=="cho");
-function chNop(){if(!chMe())return trkOpen();if(!chReady())return ask("Em làm xong tất cả các câu (sắp xếp, dịch, miêu tả tranh) rồi mới nộp nhé.",null,1);
- const nc=GX.tr.concat(GX.pc).filter(t=>t.st=="cho").length;
- ask(`Nộp bài cho cô? Sau khi nộp em <b>không sửa được</b> nữa.${nc?` Có <b>${nc} câu</b> cô sẽ chấm.`:""}`,chNopGo)}
-function chNopGo(){const d=GXD[GX.k],lv=chLv(),b=cur;
+const chHas=t=>!!gN(t.v);
+const chReady=()=>GX.so.some(s=>s.first!=null)||GX.tr.some(chHas)||GX.pc.some(chHas);
+function chFin(kind){GX[kind].forEach((t,k)=>{if(!chHas(t)){t.st="bo";return}if(t.st=="ok"||t.st=="cho")return;
+ const d=GXD[GX.k][kind][k],refs=kind=="tr"?d.a.concat([d.r[0]]):d.r.map(r=>r[0]),pys=kind=="tr"?[d.r[1]]:d.r.map(r=>r[1]),L=chLearn((kind=="tr"?"t":"p")+k,t.v);
+ if(refs.some(a=>gH(a)===gH(t.v))||pys.some(p=>gN(p)===gN(t.v))||(L&&L.g>=1)){t.st="ok";if(L&&L.g>=1&&!refs.some(a=>gH(a)===gH(t.v)))t.lc=1}else t.st="cho"})}
+function chNop(){if(!chMe())return trkOpen();if(!chReady())return ask("Em làm ít nhất một câu rồi mới nộp nhé.",null,1);
+ const bS0=GX.so.filter(s=>s.first==null).length,bT=GX.tr.filter(t=>!chHas(t)).length,bP=GX.pc.filter(t=>!chHas(t)).length,miss=[bS0?bS0+" câu sắp xếp":"",bT?bT+" câu dịch":"",bP?bP+" tranh":""].filter(Boolean);
+ ask(`Nộp bài cho cô? Sau khi nộp em <b>không sửa được</b> nữa.${miss.length?`<br>Em chưa làm: <b>${miss.join(", ")}</b>. Phần chưa làm không tính điểm.`:""}`,chNopGo)}
+function chNopGo(){chFin("tr");chFin("pc");const d=GXD[GX.k],lv=chLv(),b=cur;
  const it=d.tr.map((x,k)=>({k:"t"+k,d:"tr",de:x.vi,ref:x.r[0],rp:x.r[1],v:GX.tr[k].v.trim(),key:chKey(GX.tr[k].v),st:GX.tr[k].st,g:GX.tr[k].st=="ok"?1:null,nx:GX.tr[k].lc?"Cô đã chấp nhận cách viết này":"",h:(GX.tr[k].h||[]).map(trkTxt)}))
   .concat(d.pc.map((x,k)=>({k:"p"+k,d:"pc",de:x.req,ref:x.r[0][0],rp:x.r[0][1],img:x.img?(GXIMG[x.img]&&!/^data:/.test(GXIMG[x.img])?GXIMG[x.img]:"img/gx/"+x.img+".webp"):"",v:GX.pc[k].v.trim(),key:chKey(GX.pc[k].v),st:GX.pc[k].st,g:GX.pc[k].st=="ok"?1:null,nx:GX.pc[k].lc?"Cô đã chấp nhận cách viết này":"",h:(GX.pc[k].h||[]).map(trkTxt)})));
- const rec={sid:"N"+trkId(),at:Date.now(),lv,olv:olLv,b,ten:chTen(),so:{ok:GX.so.filter(s=>s.first).length,n:GX.so.length},it,sent:false,seen:true};
+ const rec={sid:"N"+trkId(),at:Date.now(),lv,olv:olLv,b,ten:chTen(),so:{ok:GX.so.filter(s=>s.first).length,n:GX.so.filter(s=>s.first!=null).length,all:GX.so.length},it,sent:false,seen:true};
  chPut(chSK(lv,b),rec);chApply(rec);GX=null;rr();chUp(rec)}
 async function chUp(rec){if(!chMe()||!chSrv())return;
- try{const r=await chPost({a:"vnop",code:TRKME.code,sid:rec.sid,lv:rec.lv,b:rec.b,ten:rec.ten,so:rec.so,it:rec.it.map(x=>({k:x.k,d:x.d,de:x.de,ref:x.ref,rp:x.rp,img:x.img,v:x.v,key:x.key,st:x.st}))});
+ try{const r=await chPost({a:"vnop",code:TRKME.code,sid:rec.sid,lv:rec.lv,b:rec.b,ten:rec.ten,so:rec.so,it:rec.it.filter(x=>x.st!="bo").map(x=>({k:x.k,d:x.d,de:x.de,ref:x.ref,rp:x.rp,img:x.img,v:x.v,key:x.key,st:x.st}))});
   if(r&&r.ok&&r.v){rec.sent=true;(r.it||[]).forEach(s=>{const x=rec.it.find(y=>y.k==s.k);if(x&&x.st!="ok"){x.st=s.st;x.g=s.g;x.nx=s.nx||x.nx}});
    chPut(chSK(rec.lv,rec.b),rec);chApply(rec);trkEv({t:"Nộp bài Ngữ pháp",lv:rec.lv,b:rec.b,s:`Sắp xếp ${rec.so.ok}/${rec.so.n} · chờ cô ${rec.it.filter(x=>x.st=="cho").length} câu`});if(typeof rr=="function")rr()}
   else if(r&&r.err=="no_code"){rec.msg="Mã học viên chưa đúng, bài chưa gửi được."}
@@ -102,14 +107,14 @@ async function chPoll(force){if(!chMe()||!chSrv())return;
 /* ---------- giao diện học viên ---------- */
 function chBadge(x){return x.st=="ok"?`<span class="chb ok">✓ ${x.nx&&/chấp nhận/.test(x.nx)?"Đúng (cô đã chấp nhận)":"Đúng · máy chấm"}</span>`:x.st=="cho"?`<span class="chb wt">⏳ Chờ cô chấm</span>`:
  `<span class="chb ${+x.g>=1?"ok":+x.g>0?"mid":"no"}">${chG(+x.g)} ${x.st=="hoc"?"Máy chấm theo lần cô chấm trước":"Cô chấm"}</span>`}
-function chDone(rec){const tr=rec.it.filter(x=>x.d=="tr"),pc=rec.it.filter(x=>x.d=="pc"),wt=rec.it.filter(x=>x.st=="cho").length,g=x=>x.g==null||x.g===""?0:+x.g;
- const trs=tr.reduce((a,x)=>a+g(x),0),pcs=pc.reduce((a,x)=>a+g(x),0),tot=Math.round((rec.so.ok+trs)/(rec.so.n+tr.length)*100);
+function chDone(rec){const tr=rec.it.filter(x=>x.d=="tr"&&x.st!="bo"),pc=rec.it.filter(x=>x.d=="pc"&&x.st!="bo"),wt=rec.it.filter(x=>x.st=="cho").length,g=x=>x.g==null||x.g===""?0:+x.g;
+ const trs=tr.reduce((a,x)=>a+g(x),0),pcs=pc.reduce((a,x)=>a+g(x),0),nn=rec.so.n+tr.length,tot=nn?Math.round((rec.so.ok+trs)/nn*100):null,box=(n,v,l,w)=>`<div${n?"":` class="chno"`}>${n?`<b>${v}/${n}</b>`:`<b>—</b>`}<small>${l}${n?w:" · không làm"}</small></div>`;
  if(!rec.seen){rec.seen=true;chPut(chSK(rec.lv,rec.b),rec)}
  let h=`<div class="card chsum"><h4>📤 Em đã nộp bài lúc ${chT(rec.at)}</h4>
-<div class="chsc"><div><b>${rec.so.ok}/${rec.so.n}</b><small>Sắp xếp câu</small></div><div><b>${trs}/${tr.length}</b><small>Dịch Việt → Trung${tr.some(x=>x.st=="cho")?" (chưa đủ)":""}</small></div>${pc.length?`<div><b>${pcs}/${pc.length}</b><small>Miêu tả tranh${pc.some(x=>x.st=="cho")?" (chưa đủ)":""}</small></div>`:""}</div>
-${wt?`<p class="chwt">⏳ Còn <b>${wt} câu</b> chờ cô chấm. Điểm sẽ tự cập nhật khi cô chấm xong.${rec.sent?"":` <b class="bad">Bài chưa gửi được (mạng hoặc máy chủ), trang sẽ tự gửi lại.</b>`}</p>`:`<p class="okt">Cô đã chấm xong. Điểm phần Ngữ pháp (sắp xếp + dịch): <b>${tot}%</b>.</p>`}
+<div class="chsc">${box(rec.so.n,rec.so.ok,"Sắp xếp câu","")}${box(tr.length,trs,"Dịch Việt → Trung",tr.some(x=>x.st=="cho")?" (chờ cô)":"")}${rec.it.some(x=>x.d=="pc")?box(pc.length,pcs,"Miêu tả tranh",pc.some(x=>x.st=="cho")?" (chờ cô)":""):""}</div>
+${wt?`<p class="chwt">⏳ Còn <b>${wt} câu</b> chờ cô chấm. Điểm sẽ tự cập nhật khi cô chấm xong.${rec.sent?"":` <b class="bad">Bài chưa gửi được (mạng hoặc máy chủ), trang sẽ tự gửi lại.</b>`}</p>`:`<p class="okt">Cô đã chấm xong. ${tot!=null?`Điểm phần Ngữ pháp (sắp xếp + dịch, ${nn} câu em làm): <b>${tot}%</b>.`:""}</p>`}
 ${rec.msg?`<p class="bad">${rec.msg}</p>`:""}<div class="row"><button class="btn o sm" onclick="chPoll(1)">↻ Xem cô đã chấm chưa</button></div></div>`;
- h+=rec.it.map(x=>{const n=+x.k.slice(1)+1;return `<div class="card chit ${x.st=="cho"?"":+x.g>=1||x.st=="ok"?"ok":"no"}"><b>${x.d=="tr"?"Dịch "+n:"Tranh "+n}.</b> ${chE(x.de)}
+ h+=rec.it.filter(x=>x.st!="bo").map(x=>{const n=+x.k.slice(1)+1;return `<div class="card chit ${x.st=="cho"?"":+x.g>=1||x.st=="ok"?"ok":"no"}"><b>${x.d=="tr"?"Dịch "+n:"Tranh "+n}.</b> ${chE(x.de)}
 ${x.d=="pc"&&x.img?`<div class="gxpic chsm"><img src="${x.img}" alt="Tranh ${n}"></div>`:""}
 <div class="chmy"><small>Bài em:</small> <span class="zh">${chE(x.v)}</span></div>${chBadge(x)}${x.nx&&!/chấp nhận/.test(x.nx)?`<div class="chnx">💬 Cô nhận xét: ${chE(x.nx)}</div>`:""}
 ${x.h&&x.h.length&&x.st!="ok"&&!(+x.g>=1)?`<div class="ctx">Máy đã gợi ý: ${x.h.map(chE).join(" · ")}</div>`:""}
@@ -146,8 +151,8 @@ gxHtml=function(L){if(!GX||GX.k!=gxKey()){const rec=chRec();if(rec&&chMe()){GX=n
  h+=`<div class="card note"><b>Dạng 2 · Dịch Việt → Trung</b><br>Gõ câu tiếng Trung bằng <b>chữ Hán</b> (hoặc pinyin không dấu). Không cần gõ dấu câu. Câu trùng đáp án máy chấm luôn; câu viết khác, máy soát lỗi gợi ý rồi gửi cô chấm.</div>`;
  h+=d.tr.map((it,k)=>chItem("tr",it,k)).join("");
  if(d.pc&&d.pc.length){h+=`<div class="card note"><b>Dạng 3 · Miêu tả tranh</b><br>Xem tranh, đọc yêu cầu rồi viết câu bằng <b>chữ Hán</b> hoặc <b>pinyin không dấu</b>. Cô chấm: đúng nội dung tranh + dùng đúng cấu trúc.</div>`;h+=d.pc.map((it,k)=>chItem("pc",it,k)).join("")}
- const all=GX.so.length+GX.tr.length+GX.pc.length,dn=GX.so.filter(s=>s.first!=null).length+GX.tr.concat(GX.pc).filter(t=>t.st=="ok"||t.st=="cho"||t.st=="ref").length;
- if(chOn())h+=`<div class="card res chnop"><p>Đã làm <b>${dn}/${all}</b> câu.${chReady()?"":" Làm xong hết thì nút Nộp bài sáng lên."}</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 Nộp bài cho cô</button></div></div>`;
+ const all=GX.so.length+GX.tr.length+GX.pc.length,dn=GX.so.filter(s=>s.first!=null).length+GX.tr.concat(GX.pc).filter(chHas).length;
+ if(chOn())h+=`<div class="card res chnop"><p>Đã làm <b>${dn}/${all}</b> câu.${dn<all?" Hết giờ thì em vẫn nộp được, phần chưa làm không tính điểm.":""}</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 Nộp bài cho cô</button></div></div>`;
  else{const nS=GX.so.filter(s=>s.first!=null).length,nT=GX.tr.filter(t=>t.st=="ok"||t.st=="ref").length,tot=GX.so.length+GX.tr.length;
   if(nS+nT==tot){const ok=GX.so.filter(s=>s.first).length+GX.tr.filter(t=>t.st=="ok").length,pct=Math.round(ok/tot*100);
    h+=`<div class="card res"><div class="big ${pct>=80?"ok":"no"}">${pct}%</div><p style="text-align:center">Máy chấm được ${ok}/${tot} câu (sắp xếp + dịch trùng đáp án).${GX.prac?" Bài luyện lại không tính điểm.":""}</p><div class="row c"><button class="btn o" onclick="const p=GX.prac;GX=null;gxInit();chPrep();GX.prac=p;rr()">↻ Làm lại toàn bộ</button>${nextBtn("gp")}</div></div>`}
