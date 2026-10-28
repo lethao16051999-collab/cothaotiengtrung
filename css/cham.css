@@ -30,3 +30,4 @@
 @media (max-width:600px){.chgg{grid-template-columns:1fr}.chgb button{width:52px}}
 .chgbar label{max-width:100%;min-width:0}.chgbar select{max-width:min(100%,calc(100vw - 90px));text-overflow:ellipsis}#chg{max-width:100%;overflow-wrap:anywhere}
 .chsc .chno{opacity:.55}
+.chsub{opacity:.7}.chsub .chwt{display:inline-block;margin:4px 0}.chleft .btn{margin-top:6px}
