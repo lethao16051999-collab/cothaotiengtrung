@@ -1,0 +1,153 @@
+/* ===== Chấm bài Dịch + Miêu tả tranh · thêm 28/10/2026 =====
+   CÁCH CÀI: dán toàn bộ đoạn này vào CUỐI file Code.gs.
+   Trong hàm doPost(e), thêm dòng sau làm DÒNG ĐẦU TIÊN bên trong hàm:
+       var _ch = chamApi_(e); if (_ch) return _ch;
+   Lưu › Triển khai › Quản lý tác vụ triển khai › ✏ › Phiên bản: Phiên bản mới › Triển khai.
+   Tự tạo 2 trang tính: "Chấm bài" (mỗi câu học viên nộp một dòng) và "Đáp án học" (câu cô đã chấm, máy dùng lại). */
+var CH_SH = "Chấm bài", CH_DA = "Đáp án học";
+var CH_HD = ["Mã nộp", "Thời gian", "Mã", "Họ tên", "Lớp", "Cấp", "Bài", "Tên bài", "Câu", "Dạng", "Đề", "Đáp án tham khảo", "Phiên âm tham khảo",
+  "Bài làm", "Khóa", "Trạng thái", "Điểm", "Nhận xét", "Giờ chấm", "Ảnh", "ms"];
+var CH_DH = ["Cấp", "Bài", "Câu", "Khóa", "Điểm", "Nhận xét", "Bài làm mẫu", "Cập nhật"];
+
+function chamApi_(e) {
+  var b;
+  try { b = JSON.parse(e.postData.contents); } catch (x) { return null; }
+  if (!b || ["vnop", "vkq", "vcho", "vcham", "vdung"].indexOf(b.a) < 0) return null;
+  var out;
+  try { out = chRun_(b); } catch (x) { out = { ok: false, err: "loi", msg: String(x) }; }
+  out.v = 1;
+  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function chRun_(b) {
+  if (b.a == "vdung") return chDung_(b);
+  if (b.a == "vkq") return chKq_(b);
+  if (b.a == "vnop") return chLock_(function () { return chNop_(b); });
+  if (!chPass_(b.pass)) return { ok: false, err: "pass" };
+  if (b.a == "vcho") return chCho_(b);
+  if (b.a == "vcham") return chLock_(function () { return chCham_(b); });
+}
+
+function chLock_(f) {
+  var l = LockService.getScriptLock();
+  l.waitLock(20000);
+  try { return f(); } finally { l.releaseLock(); }
+}
+function chSheet_(name, hd) {
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(name);
+  if (!sh) {
+    sh = ss.insertSheet(name);
+    sh.getRange(1, 1, 1, hd.length).setValues([hd]).setFontWeight("bold").setBackground("#5c1730").setFontColor("#ffffff");
+    sh.setFrozenRows(1);
+    sh.getRange("A:Z").setNumberFormat("@");
+  }
+  return sh;
+}
+function chPass_(p) {
+  var sh = SpreadsheetApp.getActive().getSheetByName("Cài đặt");
+  var v = sh ? String(sh.getRange("B1").getValue()).trim() : "";
+  return !!v && String(p || "").trim() === v;
+}
+function chHv_(code) {
+  code = String(code || "").trim().toUpperCase();
+  var sh = SpreadsheetApp.getActive().getSheetByName("Học viên");
+  if (!sh || !code) return null;
+  var d = sh.getDataRange().getValues(), h = d[0].map(function (x) { return String(x).trim(); });
+  var iM = h.indexOf("Mã"), iT = h.indexOf("Họ tên"), iL = h.indexOf("Lớp");
+  if (iM < 0) iM = 0; if (iT < 0) iT = 1; if (iL < 0) iL = 2;
+  for (var i = 1; i < d.length; i++) {
+    if (String(d[i][iM]).trim().toUpperCase() == code)
+      return { code: code, name: String(d[i][iT]).replace(/\s+/g, " ").trim(), cls: String(d[i][iL]).replace(/\s+/g, " ").trim() };
+  }
+  return null;
+}
+function chTxt_(s) { s = String(s == null ? "" : s); return /^[=+\-@]/.test(s) ? "'" + s : s; }
+function chNow_() { return Utilities.formatDate(new Date(), "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm"); }
+function chRows_() {
+  var sh = chSheet_(CH_SH, CH_HD), n = sh.getLastRow();
+  return { sh: sh, d: n > 1 ? sh.getRange(2, 1, n - 1, CH_HD.length).getValues() : [] };
+}
+function chDa_() {
+  var sh = chSheet_(CH_DA, CH_DH), n = sh.getLastRow(), m = {};
+  var d = n > 1 ? sh.getRange(2, 1, n - 1, CH_DH.length).getValues() : [];
+  d.forEach(function (r, i) { m[[r[0], r[1], r[2], r[3]].join("|")] = { row: i + 2, g: r[4], nx: r[5] }; });
+  return { sh: sh, m: m };
+}
+
+/* học viên nộp bài */
+function chNop_(b) {
+  var hv = chHv_(b.code);
+  if (!hv) return { ok: false, err: "no_code" };
+  var R = chRows_(), i, out = [];
+  for (i = 0; i < R.d.length; i++) if (R.d[i][0] == b.sid) {   /* đã nhận rồi (gửi lại) */
+    R.d.forEach(function (r) { if (r[0] == b.sid) out.push({ k: r[8], st: r[15] == "Chờ cô" ? "cho" : r[15] == "Cô chấm" ? "co" : "hoc", g: r[16] === "" ? null : +r[16], nx: r[17] }); });
+    return { ok: true, it: out, dup: true };
+  }
+  var DA = chDa_().m, now = chNow_(), ms = Date.now(), rows = [];
+  (b.it || []).forEach(function (x) {
+    var st = "Chờ cô", g = "", nx = "", gat = "";
+    if (x.st == "ok") { st = "Máy chấm"; g = 1; gat = now; }
+    else {
+      var L = DA[[b.lv, b.b, x.k, x.key].join("|")];
+      if (L && L.g !== "") { st = "Máy chấm (theo cô)"; g = +L.g; nx = L.nx; gat = now; }
+    }
+    rows.push([b.sid, now, hv.code, hv.name, hv.cls, b.lv, b.b, chTxt_(b.ten), x.k, x.d == "pc" ? "Miêu tả tranh" : "Dịch",
+      chTxt_(x.de), chTxt_(x.ref), chTxt_(x.rp), chTxt_(x.v), chTxt_(x.key), st, g, chTxt_(nx), gat, chTxt_(x.img || ""), ms]);
+    out.push({ k: x.k, st: st == "Chờ cô" ? "cho" : st == "Máy chấm" ? "ok" : "hoc", g: g === "" ? null : g, nx: nx });
+  });
+  if (rows.length) R.sh.getRange(R.sh.getLastRow() + 1, 1, rows.length, CH_HD.length).setValues(rows);
+  return { ok: true, it: out };
+}
+
+/* học viên xem kết quả cô chấm */
+function chKq_(b) {
+  var code = String(b.code || "").trim().toUpperCase(), want = {}, kq = {};
+  (b.sids || []).forEach(function (s) { want[s] = 1; });
+  chRows_().d.forEach(function (r) {
+    if (!want[r[0]] || String(r[2]).toUpperCase() != code) return;
+    (kq[r[0]] = kq[r[0]] || []).push({ k: r[8], st: r[15] == "Chờ cô" ? "cho" : r[15] == "Cô chấm" ? "co" : "hoc", g: r[16] === "" ? null : +r[16], nx: r[17] });
+  });
+  return { ok: true, kq: kq };
+}
+
+/* đáp án cô đã chấm của một bài (máy dùng để chấm luôn cho học viên) */
+function chDung_(b) {
+  var ds = [], sh = SpreadsheetApp.getActive().getSheetByName(CH_DA);
+  if (!sh || sh.getLastRow() < 2) return { ok: true, ds: ds };
+  sh.getRange(2, 1, sh.getLastRow() - 1, CH_DH.length).getValues().forEach(function (r) {
+    if (String(r[0]) == String(b.lv) && String(r[1]) == String(b.b) && r[4] !== "") ds.push({ k: r[2], key: r[3], g: +r[4], nx: r[5] });
+  });
+  return { ok: true, ds: ds };
+}
+
+/* cô xem bài nộp */
+function chCho_(b) {
+  var from = Date.now() - (b.days || 30) * 864e5, rows = [];
+  chRows_().d.forEach(function (r) {
+    if (!(r[15] == "Chờ cô" || +r[20] >= from)) return;
+    rows.push({ sid: r[0], at: +r[20], code: r[2], name: r[3], cls: r[4], lv: +r[5], b: +r[6], ten: r[7], k: r[8], d: r[9] == "Miêu tả tranh" ? "pc" : "tr",
+      de: r[10], ref: r[11], rp: r[12], v: r[13], key: r[14], st: r[15], g: r[16] === "" ? "" : +r[16], nx: r[17], img: r[19] });
+  });
+  if (rows.length > 4000) rows = rows.slice(-4000);
+  return { ok: true, rows: rows };
+}
+
+/* cô chấm: ghi điểm + nhớ vào "Đáp án học" */
+function chCham_(b) {
+  var R = chRows_(), idx = {}, now = chNow_(), D = chDa_(), n = 0, add = [];
+  R.d.forEach(function (r, i) { idx[r[0] + "|" + r[8]] = i; });
+  (b.marks || []).forEach(function (m) {
+    var i = idx[m.sid + "|" + m.k];
+    if (i == null) return;
+    var r = R.d[i], g = m.g === "" || m.g == null ? "" : +m.g;
+    R.sh.getRange(i + 2, 16, 1, 4).setValues([[g === "" ? "Chờ cô" : "Cô chấm", g, chTxt_(m.nx || ""), g === "" ? "" : now]]);
+    n++;
+    if (g === "") return;
+    var key = [r[5], r[6], r[8], r[14]].join("|"), L = D.m[key], val = [r[5], r[6], r[8], chTxt_(r[14]), g, chTxt_(m.nx || ""), chTxt_(r[13]), now];
+    if (L && L.row > 0) { D.sh.getRange(L.row, 1, 1, CH_DH.length).setValues([val]); L.g = g; }
+    else if (L) add[L.ai] = val;
+    else { D.m[key] = { row: -1, ai: add.length, g: g }; add.push(val); }
+  });
+  if (add.length) D.sh.getRange(D.sh.getLastRow() + 1, 1, add.length, CH_DH.length).setValues(add);
+  return { ok: true, n: n };
+}

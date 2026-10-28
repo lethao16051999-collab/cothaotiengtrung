@@ -1,0 +1,31 @@
+/* Chấm bài Dịch + Miêu tả tranh · 28/10/2026 (js/cham.js) */
+.chhint{margin-top:8px;padding:10px 12px;border-radius:12px;background:#fff7e0;border:1px solid #e6c766;color:#5a4300}
+.chhint ul{margin:4px 0 4px 18px;padding:0}.chhint li{margin:2px 0}.chhint small{color:#7a6420}
+.chwt{margin-top:8px;padding:8px 12px;border-radius:12px;background:#eef3fb;border:1px solid #b9c9e6;color:#24406e}
+.chwt small{color:#4b5f80}
+.chb{display:inline-block;margin:6px 0;padding:3px 10px;border-radius:999px;font-weight:700;font-size:.9rem}
+.chb.ok{background:#e3f4e9;color:#2e7d4f}.chb.mid{background:#fff1d6;color:#9a6200}.chb.no{background:#fbe4e7;color:#b23a48}.chb.wt{background:#eef3fb;color:#24406e}
+.chsum h4{margin:0 0 8px}.chsc{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}
+.chsc>div{flex:1 1 120px;text-align:center;padding:10px;border-radius:14px;background:var(--k);border:1px solid var(--b)}
+.chsc b{display:block;font-size:1.5rem;color:var(--m)}.chsc small{color:var(--sub)}
+.chit.ok{border-left:5px solid #2e7d4f}.chit.no{border-left:5px solid #b23a48}
+.chmy{margin-top:6px}.chmy .zh{font-size:1.15rem}
+.chnx{margin:4px 0;padding:6px 10px;border-radius:10px;background:#fbe4e7;color:#7d1f2c}
+.gxpic.chsm img{max-width:300px}
+.chnop{text-align:center}.chnop .btn[disabled]{opacity:.5;cursor:not-allowed}
+.chcnt{display:inline-block;min-width:20px;padding:0 6px;border-radius:999px;background:#b23a48;color:#fff;font-style:normal;font-size:.8rem;line-height:20px}
+.chgbar{flex-wrap:wrap}.chgbar select{max-width:100%}.chsv{color:#2e7d4f;font-weight:600}
+.chgq{padding:14px}.chgh{margin-bottom:6px}.chgref{margin:6px 0 10px;padding:6px 10px;border-radius:10px;background:var(--k);font-size:.95rem}
+.chgg{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px;border-radius:12px;border:1px solid var(--b);margin:8px 0;border-left:5px solid #b9c9e6;background:var(--c)}
+.chgg.ok{border-left-color:#2e7d4f}.chgg.mid{border-left-color:#d79a1e}.chgg.no{border-left-color:#b23a48}.chgg.p{border-left-color:#24406e}
+.chga .zh{font-size:1.2rem}.chgw{font-size:.85rem;color:var(--sub);margin-top:2px}
+.chgb{display:flex;gap:6px;align-items:start}
+.chgb button{width:44px;height:40px;border-radius:12px;border:2px solid var(--b);background:var(--c2,#fff);font-size:1.15rem;font-weight:800;cursor:pointer;color:var(--t)}
+.chgb button.g1.on{background:#2e7d4f;border-color:#2e7d4f;color:#fff}.chgb button.g05.on{background:#d79a1e;border-color:#d79a1e;color:#fff}.chgb button.g0.on{background:#b23a48;border-color:#b23a48;color:#fff}
+.chgc{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
+.chgc button{padding:4px 10px;border-radius:999px;border:1px solid var(--b);background:transparent;font-size:.82rem;cursor:pointer;color:var(--t)}
+.chgc button.on{background:var(--m);color:#fff;border-color:var(--m)}
+.chgi{flex:1 1 180px;min-width:140px;padding:5px 10px;border-radius:999px;border:1px solid var(--b);font-size:.85rem;background:transparent;color:var(--t)}
+.chcode{max-height:260px;overflow:auto;background:#1e1e1e;color:#e8e8e8;padding:10px;border-radius:10px;font-size:.75rem;white-space:pre}
+@media (max-width:600px){.chgg{grid-template-columns:1fr}.chgb button{width:52px}}
+.chgbar label{max-width:100%;min-width:0}.chgbar select{max-width:min(100%,calc(100vw - 90px));text-overflow:ellipsis}#chg{max-width:100%;overflow-wrap:anywhere}
