@@ -143,8 +143,8 @@ ${low.length?`<p class="bad">Hiểu dưới 3★: ${low.map(x=>gvE(nm(x.code))+"
 ${qs.length?`<div class="gvqs"><b>Học viên muốn hỏi cô</b>${qs.map(x=>`<div><small>${gvE(nm(x.code))} · ${gvE(x.t)}</small><div>${gvE(x.q)}</div></div>`).join("")}</div>`:""}
 ${miss.length?`<small class="ctx">Có mặt nhưng chưa gửi phiếu: ${miss.map(c=>gvE(nm(c))).join(", ")}</small>`:""}</div>`}).join("")+(Object.keys(G).length>gs.length?`<div class="row c"><button class="btn o" onclick="gvSet('more',GV.more+10)">Xem thêm buổi cũ</button></div>`:"")}
 
-/* lối vào: chân trang + #theodoi */
-(function(){const f=document.querySelector("footer");if(f&&!$("gvlink"))f.insertAdjacentHTML("beforeend",` · <a id="gvlink" href="#" onclick="gvOpen();return false">Dành cho giáo viên</a>`);
+/* lối vào: menu "⚙ Quản trị" (sau Khóa học, 29/10) + #theodoi */
+(function(){const nv=$("nav");if(nv&&!nv.querySelector('[data-id="gv"]')){const b=document.createElement("button");b.dataset.id="gv";b.className="gvnav";b.textContent="⚙ Quản trị";b.onclick=()=>{gvOpen();typeof mMenu=="function"&&mMenu(false)};const c=nv.querySelector('[data-id="courses"]');c&&c.nextSibling?nv.insertBefore(b,c.nextSibling):nv.appendChild(b)}
  gvSec();if(/theodoi/.test(location.hash))gvOpen();addEventListener("hashchange",()=>{if(/theodoi/.test(location.hash))gvOpen()});
  const st=document.createElement("style");st.textContent=`
 footer #gvlink{color:var(--m);text-decoration:none;font-weight:700}#gv .gvlog{max-width:420px}#gv .gvlog .tin{width:100%;box-sizing:border-box;margin:6px 0}.gvck{display:flex;gap:6px;align-items:center;margin:4px 0 10px;font-size:.9rem}
