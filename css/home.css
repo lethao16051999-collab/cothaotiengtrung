@@ -1,5 +1,5 @@
 /* Trang chủ dạng cột nút dọc (23/10/2026) + ẩn mục menu cô gạch */
-#nilearn,nav button[data-id="share"],nav button[data-id="notes"]{display:none!important}
+#nilearn,nav button[data-id="share"],nav button[data-id="notes"],nav button[data-id="refs"],nav button[data-id="vaolop"]{display:none!important}
 .hero.hm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:center;text-align:center;padding:36px 32px}
 .hm-col{display:flex;flex-direction:column;gap:14px;position:relative;order:-1}
 .hm-b{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:12px 20px;border:0;border-radius:18px;background:#fbf5e6;color:#5c1730;font:800 1.25rem var(--ui,Nunito,sans-serif);text-align:left;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.18),0 8px 18px rgba(0,0,0,.18);transition:transform .12s,box-shadow .12s,background .12s}
