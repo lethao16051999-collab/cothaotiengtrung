@@ -1,0 +1,142 @@
+/* ===== Nhận xét nhóm · Luyện nói theo nhiệm vụ · thêm 29/10/2026 =====
+   CÁCH CÀI: dán toàn bộ đoạn này vào CUỐI file Code.gs (Mã.gs).
+   Trong hàm doPost(e), thêm dòng sau làm DÒNG ĐẦU TIÊN bên trong hàm (cùng chỗ với nenApi_, chamApi_):
+       var _nh = nhomApi_(e); if (_nh) return _nh;
+   Lưu › Triển khai › Quản lý tác vụ triển khai › ✏ › Phiên bản: Phiên bản mới › Triển khai (địa chỉ giữ nguyên).
+   Tự tạo trang tính "Nhận xét nhóm": mỗi bạn trong nhóm một dòng (cùng Mã nhóm), cô nhận xét một lần cho cả nhóm. */
+var NH_SH = "Nhận xét nhóm";
+var NH_HD = ["Mã nhóm", "Thời gian", "Lớp", "Cấp", "Bộ ôn", "Thẻ", "Nhiệm vụ", "Cả nhóm", "Mã", "Họ tên", "Vai", "Trạng thái", "Báo cáo của nhóm",
+  "Hoàn thành nhiệm vụ", "Ngữ pháp trọng tâm", "Phát âm · thanh điệu", "Trôi chảy", "Hỏi – đáp, phối hợp", "Báo cáo kết quả",
+  "Tổng", "Nhận xét của cô", "Giờ nhận xét", "ms", "JSON"];
+var NH_LV = ["Chưa đạt", "Đạt", "Tốt"];
+
+function nhomApi_(e) {
+  var b;
+  try { b = JSON.parse(e.postData.contents); } catch (x) { return null; }
+  if (!b || ["nlop", "ngui", "nkq", "ncho", "nnx"].indexOf(b.a) < 0) return null;
+  var out;
+  try { out = nhRun_(b); } catch (x) { out = { ok: false, err: "loi", msg: String(x) }; }
+  out.nh = 1;
+  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function nhRun_(b) {
+  if (b.a == "nlop") return nhLop_(b);
+  if (b.a == "nkq") return nhKq_(b);
+  if (b.a == "ngui") return nhLock_(function () { return nhGui_(b); });
+  if (!nhPass_(b.pass)) return { ok: false, err: "pass" };
+  if (b.a == "ncho") return nhCho_(b);
+  if (b.a == "nnx") return nhLock_(function () { return nhNx_(b); });
+}
+
+function nhLock_(f) { var l = LockService.getScriptLock(); l.waitLock(20000); try { return f(); } finally { l.releaseLock(); } }
+function nhPass_(p) {
+  var sh = SpreadsheetApp.getActive().getSheetByName("Cài đặt");
+  var v = sh ? String(sh.getRange("B1").getValue()).trim() : "";
+  return !!v && String(p || "").trim() === v;
+}
+function nhTxt_(s) { s = String(s == null ? "" : s); return /^[=+\-@]/.test(s) ? "'" + s : s; }
+function nhNow_() { return Utilities.formatDate(new Date(), "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm"); }
+function nhSheet_() {
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(NH_SH);
+  if (!sh) {
+    sh = ss.insertSheet(NH_SH);
+    sh.getRange(1, 1, 1, NH_HD.length).setValues([NH_HD]).setFontWeight("bold").setBackground("#5c1730").setFontColor("#ffffff");
+    sh.setFrozenRows(1);
+    sh.getRange("A:Z").setNumberFormat("@");
+    sh.setColumnWidth(13, 260); sh.setColumnWidth(21, 260);
+  }
+  return sh;
+}
+function nhRows_() {
+  var sh = nhSheet_(), n = sh.getLastRow();
+  return { sh: sh, d: n > 1 ? sh.getRange(2, 1, n - 1, NH_HD.length).getValues() : [] };
+}
+/* danh sách học viên: {MÃ: {code, name, cls, st}} */
+function nhHvAll_() {
+  var sh = SpreadsheetApp.getActive().getSheetByName("Học viên"), m = {};
+  if (!sh || sh.getLastRow() < 2) return m;
+  var d = sh.getDataRange().getValues(), h = d[0].map(function (x) { return String(x).trim(); });
+  var iM = h.indexOf("Mã"), iT = h.indexOf("Họ tên"), iL = h.indexOf("Lớp"), iS = h.indexOf("Trạng thái");
+  if (iM < 0) iM = 0; if (iT < 0) iT = 1; if (iL < 0) iL = 2;
+  for (var i = 1; i < d.length; i++) {
+    var c = String(d[i][iM]).trim().toUpperCase();
+    if (c) m[c] = { code: c, name: String(d[i][iT]).replace(/\s+/g, " ").trim(), cls: String(d[i][iL]).replace(/\s+/g, " ").trim(), st: iS >= 0 ? String(d[i][iS]).trim() : "" };
+  }
+  return m;
+}
+
+/* học viên đã nhập mã: lấy danh sách bạn cùng lớp để chọn vào nhóm */
+function nhLop_(b) {
+  var all = nhHvAll_(), me = all[String(b.code || "").trim().toUpperCase()];
+  if (!me) return { ok: false, err: "no_code" };
+  var hv = [];
+  Object.keys(all).forEach(function (k) { var h = all[k]; if (h.cls == me.cls && h.st != "Nghỉ") hv.push({ code: h.code, name: h.name }); });
+  hv.sort(function (x, y) { return x.name.split(" ").pop().localeCompare(y.name.split(" ").pop(), "vi"); });
+  return { ok: true, cls: me.cls, hv: hv };
+}
+
+/* nhóm gửi (hoặc cập nhật) thông tin: tạo / ghi đè các dòng cùng Mã nhóm, giữ nguyên nhận xét của cô */
+function nhGui_(b) {
+  var g = b.g;
+  if (!g || !g.gid || !g.m || !g.m.length) return { ok: false, err: "data" };
+  var all = nhHvAll_(), cls = String(g.cls || "");
+  g.m.forEach(function (x) { var h = x.c && all[String(x.c).toUpperCase()]; if (h) { x.n = h.name; if (!cls) cls = h.cls; } });
+  var R = nhRows_(), i0 = -1, n = 0;
+  R.d.forEach(function (r, i) { if (r[0] == g.gid) { if (i0 < 0) i0 = i; n++; } });
+  var old = i0 >= 0 ? R.d[i0] : null, ev = old ? old.slice(13, 22) : ["", "", "", "", "", "", "", "", ""];
+  var at = old ? old[1] : nhNow_(), ms = old ? old[22] : Date.now();
+  var ca = g.m.map(function (x) { return x.n + (x.r ? " (" + x.r + ")" : ""); }).join(", ");
+  var js = JSON.stringify({ m: g.m, set: g.set, zh: g.zh, dev: g.dev || "" });
+  var rows = g.m.map(function (x) {
+    return [g.gid, at, nhTxt_(cls), g.lv, nhTxt_(g.st), g.tid, nhTxt_(g.tt), nhTxt_(ca), x.c || (x.t ? "GV" : ""), nhTxt_(x.n), x.r || "",
+      g.stt || "Đang làm", nhTxt_(g.rep || "")].concat(ev).concat([ms, js]);
+  });
+  if (i0 >= 0 && n == rows.length) R.sh.getRange(i0 + 2, 1, n, NH_HD.length).setValues(rows);
+  else {
+    if (i0 >= 0) R.sh.deleteRows(i0 + 2, n);
+    R.sh.getRange(R.sh.getLastRow() + 1, 1, rows.length, NH_HD.length).setValues(rows);
+  }
+  return { ok: true, cls: cls };
+}
+
+function nhEv_(r) {
+  var bm = r.slice(13, 19).map(function (v) { var k = NH_LV.indexOf(String(v)); return k < 0 ? null : k; });
+  if (!bm.some(function (v) { return v != null; }) && !r[20]) return null;
+  return { bm: bm, nx: String(r[20] || ""), at: String(r[21] || "") };
+}
+
+/* học viên xem nhận xét của cô */
+function nhKq_(b) {
+  var want = {}, kq = {};
+  (b.gids || []).forEach(function (s) { want[s] = 1; });
+  nhRows_().d.forEach(function (r) { if (want[r[0]] && !kq[r[0]]) { var e = nhEv_(r); if (e) kq[r[0]] = e; } });
+  return { ok: true, kq: kq };
+}
+
+/* cô xem danh sách nhóm */
+function nhCho_(b) {
+  var from = Date.now() - (b.days || 30) * 864e5, G = {}, list = [];
+  nhRows_().d.forEach(function (r) {
+    if (+r[22] < from) return;
+    var g = G[r[0]];
+    if (!g) {
+      var js = {}; try { js = JSON.parse(r[23] || "{}"); } catch (x) {}
+      g = G[r[0]] = { gid: r[0], at: +r[22], t: r[1], cls: r[2], lv: +r[3], st: r[4], tid: r[5], tt: r[6], zh: js.zh || "", stt: r[11], rep: r[12], m: [], ev: nhEv_(r) };
+      list.push(g);
+    }
+    g.m.push({ c: r[8] == "GV" ? "" : r[8], n: r[9], r: r[10], t: r[8] == "GV" ? 1 : 0 });
+  });
+  if (list.length > 800) list = list.slice(-800);
+  return { ok: true, g: list };
+}
+
+/* cô lưu nhận xét: bm = 6 số (0 Chưa đạt, 1 Đạt, 2 Tốt, null chưa chấm), nx = chú thích */
+function nhNx_(b) {
+  var R = nhRows_(), n = 0, now = nhNow_(), bm = (b.bm || []).slice(0, 6), tot = 0, has = 0;
+  while (bm.length < 6) bm.push(null);
+  var txt = bm.map(function (v) { if (v == null || v === "") return ""; has++; tot += +v; return NH_LV[+v]; });
+  var val = [txt.concat([has ? tot + "/" + (has * 2) : "", nhTxt_(b.nx || ""), now])];
+  R.d.forEach(function (r, i) { if (r[0] == b.gid) { R.sh.getRange(i + 2, 14, 1, 9).setValues(val); n++; } });
+  return { ok: n > 0, n: n, at: now };
+}
