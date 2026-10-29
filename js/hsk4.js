@@ -19,6 +19,9 @@ const pct=(a,b)=>b?Math.round(a/b*100):null;
 const h4Save=f=>{const r=ldN(cur);f(r);svN(cur,r)};
 function h4t(t){if(H.rec)try{H.rec.stop()}catch(e){}H.t=t;rr();const e=$("ltabs");if(e)e.scrollIntoView({block:"nearest"})}
 const h4Next=k=>{const i=H4T.findIndex(t=>t[0]==k);return i<H4T.length-1?`<div class="row"><button class="btn" onclick="h4t('${H4T[i+1][0]}')">Tiếp: ${H4T[i+1][1]} →</button></div>`:""};
+let h4HP=true,h4HV=true;try{const a=localStorage.getItem("ct_h4hpy"),b=localStorage.getItem("ct_h4hvi");if(a!=null)h4HP=a=="1";if(b!=null)h4HV=b=="1"}catch(e){}
+function h4PvT(k){if(k=="p")h4HP=!h4HP;else h4HV=!h4HV;try{localStorage.setItem("ct_h4hpy",h4HP?"1":"0");localStorage.setItem("ct_h4hvi",h4HV?"1":"0")}catch(e){}rr()}
+const h4PvBar=()=>`<div class="pvbar"><span>Hiển thị:</span><button class="tg ${h4HP?"":"on"}" onclick="h4PvT('p')" aria-pressed="${!h4HP}">${h4HP?"☐":"☑"} Pinyin</button><button class="tg ${h4HV?"":"on"}" onclick="h4PvT('v')" aria-pressed="${!h4HV}">${h4HV?"☐":"☑"} Tiếng Việt</button><small>áp dụng cho mọi phần của bài</small></div>`;
 const h4Tog=(k,lb)=>`<button class="btn o sm" onclick="H.${k}=!H.${k};rr()">${H[k]?"Ẩn":"Hiện"} ${lb}</button>`;
 /* Sao chép nội dung ô gõ (khung trang chặn clipboard thì bôi đen để học viên tự chép) */
 function h4Copy(id){const t=$(id);if(!t)return;const v=t.value;if(!v.trim())return ask("Chưa có nội dung để sao chép.",null,1);
@@ -32,27 +35,27 @@ const h4CopyBtn=id=>`<button class="btn o sm" onclick="h4Copy('${id}')">📋 Sao
 function h4View(){const L=HL(),r=ldN(cur);
  return `<div class="lhead"><span class="no">${cur}</span><div><small>${lvN(olLv)} · Bài ${cur} · Trung cấp</small><div class="zh lt2">${L.t}</div><small>${L.tp}</small><div>${L.vi}</div></div>${vBtn()}</div>
 ${vBar()}<div class="stb" id="ltabs">${H4T.map(t=>{const k=H4K[t[0]],v=k?r[k]:null;return `<button class="${t[0]==H.t?"on":""}" onclick="h4t('${t[0]}')">${t[1]}${v!=null?` <i class="sc ${v>=80?"ok":"no"}">${v}%</i>`:""}</button>`}).join("")}</div>
-<div class="stack h4" id="lbody">${({tv:h4Tv,bk:h4Bk,gp:h4Gp,nd:h4Nd,ns:h4Ns,vt:h4Vt,sum:h4Sum})[H.t](L,r)}</div>`}
+${h4PvBar()}<div class="stack h4 ${h4HP?"hidepy h4nopy":""} ${h4HV?"hidevi h4novi":""}" id="lbody">${({tv:h4Tv,bk:h4Bk,gp:h4Gp,nd:h4Nd,ns:h4Ns,vt:h4Vt,sum:h4Sum})[H.t](L,r)}</div>`}
 
 /* ---------- 1. Khởi động · Từ vựng ---------- */
 function h4Tv(L,r){const W=L.warm,ws=L.words.map((w,j)=>j).filter(j=>H.fcF<0||L.words[j][4]==H.fcF);
  if(!ws.includes(H.fcI))H.fcI=ws[0];const w=L.words[H.fcI],k=r.fck||{},m=Object.values(k).filter(x=>x===1).length,n=L.words.length,cmk=r.cmk||{};
- let h=`<div class="card note"><b>🎯 Mục tiêu bài học</b><ol class="h4goal">${L.goals.map(g=>`<li><span class="zh">${g.zh}</span><small>${g.vi}</small></li>`).join("")}</ol></div>`;
+ let h=`<div class="card note"><b>🎯 Mục tiêu bài học</b><ol class="h4goal">${L.goals.map(g=>`<li><span class="zh">${g.zh}</span><small class="h4vi">${g.vi}</small></li>`).join("")}</ol></div>`;
  h+=`<div class="card"><h3>热身 · Khởi động</h3><p><b>1. Chọn từ đúng cho mỗi hình.</b></p><div class="h4pics">${W.pic.map((p,i)=>{const v=H.wm[i],ok=v!=null&&W.opts[v].split("|")[0]==p[1];
   return `<div class="h4pic ${v==null?"":ok?"ok":"no"}"><div class="ic">${p[0]}</div><select class="tin" onchange="H.wm[${i}]=this.value===''?null:+this.value;rr()"><option value="">— chọn —</option>${W.opts.map((o,j)=>`<option value="${j}" ${v===j?"selected":""}>${o.split("|")[0]}</option>`).join("")}</select>${v==null?"":ok?`<small class="okt">✓ ${W.opts[v].split("|")[1]}</small>`:`<small class="bad">✗ Thử lại</small>`}</div>`}).join("")}</div>
 <p><b>2. Hai bạn một nhóm, hỏi đáp theo thực tế của mình.</b></p>${W.q.map(q=>`<div class="bub ref"><div class="hz">${q[0]} ${bS(q[0])}</div><div class="vi" style="display:block">${q[1]}</div><details><summary>Câu trả lời mẫu</summary><div class="zh">${q[2]} ${bS(q[2])}</div></details></div>`).join("")}</div>`;
  h+=`<div class="card"><h3>🃏 Thẻ từ – học theo cụm</h3><p class="ctx">Mặt trước chỉ có chữ Hán. Lật thẻ để xem phiên âm, nghĩa, cụm từ hay dùng và âm Hán Việt. Thẻ có dấu ⚠️ là từ dễ hiểu sai nghĩa.</p>
 <div class="row">${["Tất cả","Bài khóa 1","Bài khóa 2","Bài khóa 3","Bài khóa 4"].map((t,i)=>`<button class="btn sm ${H.fcF==i-1?"":"o"}" onclick="H.fcF=${i-1};H.fcS=false;rr()">${t}</button>`).join("")}</div>
 <div class="fc h4fc" onclick="H.fcS=!H.fcS;rr()">${H.fcS?`<div><div class="h">${w[0]}</div><div class="py">${w[1]}</div><b>${w[3]}</b> <small>(${w[2]})</small>
-<div class="h4col">${w[5].map(c=>{const[a,b]=c.split("|");return `<span><span class="zh">${a}</span> <small>${b}</small> ${bS(a)}</span>`}).join("")}</div>
+<div class="h4col">${w[5].map(c=>{const[a,b]=c.split("|");return `<span><span class="zh">${a}</span> <small class="h4py">${b}</small> ${bS(a)}</span>`}).join("")}</div>
 <div class="h4hv">Hán Việt: <b>${w[6]}</b></div>${w[7]?`<div class="h4warn">⚠️ ${w[7]}</div>`:""}</div>`:`<div><div class="h">${w[0]}</div>${w[7]?`<div class="h4warn sm">⚠️</div>`:""}<small style="color:var(--sub)">Chạm để lật thẻ</small></div>`}</div>
 <div class="row c">${bS(w[0],"🔊 Nghe")}<button class="btn o" onclick="h4Fc(-1)">←</button><button class="btn" onclick="h4FcMk(1)">✓ Đã nhớ</button><button class="btn o" onclick="h4FcMk(0)">✗ Chưa nhớ</button><button class="btn o" onclick="h4Fc(1)">→</button></div>
 <p>Thẻ ${ws.indexOf(H.fcI)+1}/${ws.length} · Đã nhớ ${m}/${n} từ${r.fk==null?` · Đánh dấu đủ ${n} thẻ để tính điểm`:` · Điểm thẻ từ: <b>${r.fk}%</b>`}</p>
 <div class="chips">${ws.map(j=>`<span class="chip ${k[j]===1?"ok":k[j]===0?"no":""} ${j==H.fcI?"cur":""}" onclick="H.fcI=${j};H.fcS=false;rr()">${L.words[j][0]}</span>`).join("")}</div></div>`;
  h+=`<div class="card"><h3>🔗 Test cụm từ</h3><p class="ctx">Từ trọng tâm kết hợp được với những từ nào? <b>Có thể chọn nhiều đáp án.</b> Chọn xong bấm Kiểm tra. Điểm tính theo lần kiểm tra đầu.</p>${L.cm.map((q,i)=>{const sel=H.cm[i]||[],d=H.cmD[i],ok=d&&sel.length==q.a.length&&q.a.every(x=>sel.includes(x));
-  return `<div class="q ${d?ok?"ok":"no":""}" style="padding:10px 0"><b>${i+1}.</b> <span class="zh hd">${q.w}</span> <small>${q.py}</small> ${bS(q.w)} <span class="ctx">+ …?</span>
+  return `<div class="q ${d?ok?"ok":"no":""}" style="padding:10px 0"><b>${i+1}.</b> <span class="zh hd">${q.w}</span> <small class="h4py">${q.py}</small> ${bS(q.w)} <span class="ctx">+ …?</span>
 <div class="opts">${q.o.map((o,j)=>{const[a,b]=o.split("|"),on=sel.includes(j),good=q.a.includes(j);return `<button class="opt h4m ${on?"sel":""} ${d&&good?"right":""} ${d&&on&&!good?"wrong":""}" ${d?"disabled":""} onclick="h4CmT(${i},${j})"><span class="h4box">${on?"☑":"☐"}</span> <span class="zh">${a}</span>${d?`<small class="opy">${b}</small>`:""}</button>`}).join("")}</div>
-${d?`<div class="${ok?"okt":"bad"}">${ok?"✓ Đúng hết!":"✗ Chưa đúng. Ô xanh là các từ kết hợp được."} <span class="ctx">${q.e}</span></div><div class="row"><button class="btn o sm" onclick="H.cm[${i}]=[];H.cmD[${i}]=0;rr()">Làm lại</button></div>`:`<div class="row"><button class="btn sm" onclick="h4CmCk(${i})">Kiểm tra</button></div>`}</div>`}).join("")}
+${d?`<div class="${ok?"okt":"bad"}">${ok?"✓ Đúng hết!":"✗ Chưa đúng. Ô xanh là các từ kết hợp được."} <span class="ctx h4vi">${q.e}</span></div><div class="row"><button class="btn o sm" onclick="H.cm[${i}]=[];H.cmD[${i}]=0;rr()">Làm lại</button></div>`:`<div class="row"><button class="btn sm" onclick="h4CmCk(${i})">Kiểm tra</button></div>`}</div>`}).join("")}
 <p>${r.cm!=null?`Điểm test cụm từ: <b>${r.cm}%</b>`:`<span class="ctx">Đã làm ${Object.keys(cmk).length}/${L.cm.length} câu.</span>`}</p></div>`;
  h+=r.fc!=null?`<p>Điểm phần Từ vựng (thẻ từ + cụm từ): <b>${r.fc}%</b></p>`:`<p class="ctx">Điểm phần Từ vựng tính khi đã xong cả thẻ từ và test cụm từ.</p>`;
  return h+h4Next("tv")}
@@ -67,8 +70,7 @@ function h4CmCk(i){const q=HL().cm[i],sel=H.cm[i]||[];if(!sel.length)return ask(
 /* ---------- 2. Bài khóa ---------- */
 function h4Bk(L,r){const bq=r.bq||{};
  let h=`<div class="card note">Ở trình độ trung cấp, em <b>nghe trước – trả lời câu hỏi – rồi mới xem chữ</b>. Phiên âm và nghĩa tiếng Việt mặc định ẩn; chỉ bật khi thật cần. Chạm vào từng câu để nghe riêng câu đó.</div>
-<div class="row">${h4Tog("py","phiên âm")}${h4Tog("vi","nghĩa tiếng Việt")}</div>
-<div class="${H.py?"":"hidepy"} ${H.vi?"":"hidevi"}">`;
+<div>`;
  h+=L.texts.map((x,i)=>{const all=x.q.every((q,j)=>bq[i+"-"+j]!=null),show=x.task=="read"||H.show[i]||all;
   return `<div class="card"><h3>课文 ${i+1} · Bài khóa ${i+1}</h3><p class="ctx">📍 <span class="zh">${x.ctx}</span><br>${x.cv}</p>
 <div class="h4task">${x.task=="read"?`<b>📖 Đọc nhanh đoạn văn (khoảng 2 phút) rồi trả lời.</b>`:`<b>🎧 Bước 1: Nghe cả bài, chưa nhìn chữ, rồi trả lời.</b><div class="pbar" id="pb${i}">${pbHtml(i)}</div>`}
@@ -76,7 +78,7 @@ ${x.q.map((q,j)=>{const a=bq[i+"-"+j];return `<div class="q ${a==null?"":a===q.a
 ${show?`${x.task=="read"?`<div class="pbar" id="pb${i}">${pbHtml(i)}</div>`:`<p class="ctx"><b>Bước 2:</b> Đọc theo bài khóa, chú ý từ mới và cấu trúc.</p>`}
 <div class="${x.para?"h4para":""}">${x.l.map((y,j)=>x.para?`${y[0]=="¶"?`<div class="h4gap"></div>`:""}<div class="bub" id="bub${i}-${j}" onclick="spk(${S(y[1])})"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div></div>`:
 `<div class="dl"><div class="who"><b>${y[0]}</b>${SPN4[y[0]]||""}</div><div class="bub" id="bub${i}-${j}" onclick="spk(${S(y[1])})"><div class="py">${y[2]}</div><div class="hz">${y[1]}</div><div class="vi">${y[3]}</div></div></div>`).join("")}</div>
-<details><summary>Từ mới bài khóa ${i+1}</summary><table class="wt">${L.words.filter(w=>w[4]==i).map(w=>`<tr><td class="zh">${w[0]} ${bS(w[0])}</td><td>${w[1]}</td><td><small>${w[2]}</small> ${w[3]}</td></tr>`).join("")}</table></details>`
+<details><summary>Từ mới bài khóa ${i+1}</summary><table class="wt">${L.words.filter(w=>w[4]==i).map(w=>`<tr><td class="zh">${w[0]} ${bS(w[0])}</td><td class="h4py">${w[1]}</td><td class="h4vi"><small>${w[2]}</small> ${w[3]}</td></tr>`).join("")}</table></details>`
 :`<div class="row"><button class="btn o sm" onclick="H.show[${i}]=1;rr()">👀 Hiện bài khóa</button><small class="ctx">Hoặc trả lời xong câu hỏi, bài khóa tự hiện.</small></div>`}</div>`}).join("");
  return h+`</div><p class="ctx">🎧 Hiện dùng giọng đọc máy. Khi cô gửi file nghe giáo trình, trang sẽ phát file thật.</p>`+h4Next("bk")}
 function h4Bq(i,j,k){h4Save(r=>{r.bq=r.bq||{};if(r.bq[i+"-"+j]==null)r.bq[i+"-"+j]=k});rr()}
@@ -84,8 +86,8 @@ function h4Bq(i,j,k){h4Save(r=>{r.bq=r.bq||{};if(r.bq[i+"-"+j]==null)r.bq[i+"-"+
 /* ---------- 3. Ngữ pháp ---------- */
 function h4SoInit(L){H.so=L.so.map(it=>{let p;for(let k=0;k<12;k++){p=shuf(it.t.map((_,i)=>i));if(!it.ok.map(gH).includes(gH(p.map(i=>it.t[i]).join(""))))break}return{pool:p,ch:[],st:null}})}
 function h4Gp(L,r){if(!H.so)h4SoInit(L);const trk=r.trk||{};
- let h=`<div class="card note">${GPN} Mỗi điểm: công thức → ví dụ (chạm để nghe) → lỗi người Việt hay mắc. Phiên âm và nghĩa ví dụ mặc định ẩn, cần thì bấm hiện.</div>
-<div class="row">${h4Tog("gpPy","phiên âm")}${h4Tog("gpVi","nghĩa tiếng Việt")}</div><div class="${H.gpPy?"":"h4nopy"} ${H.gpVi?"":"h4novi"}">`;
+ let h=`<div class="card note">${GPN} Mỗi điểm: công thức → ví dụ (chạm để nghe) → lỗi người Việt hay mắc. Phiên âm và nghĩa mặc định ẩn; muốn xem thì bật ☑ Pinyin, ☑ Tiếng Việt ở thanh Hiển thị.</div>
+<div>`;
  h+=L.gp.map(g=>`<div class="card gpb"><h4>${g.h}</h4><div class="fm">${g.f[0]}<small>${g.f[1]}</small></div><p>${g.d}</p><ul>${g.ex.map(e=>`<li onclick="spk(${S(e[0])})" style="cursor:pointer">${Z(e[0],e[1])}<div class="h4vi">${e[2]}</div> 🔊</li>`).join("")}</ul><p class="warn">${g.w}</p></div>`).join("")+`</div>`;
  h+=`<div class="card note"><b>Dạng A · Sắp xếp từ thành câu</b> (giống phần 完成句子 của đề HSK 4)<br>Chạm các từ theo đúng thứ tự. Chạm từ đã chọn để bỏ ra.</div>`;
  h+=L.so.map((it,k)=>{const s=H.so[k],ok=s.st===true,bad=s.st===false;return `<div class="card q ${ok?"ok":bad?"no":""}"><b>Câu ${k+1}.</b>
@@ -119,7 +121,7 @@ const h4NdTot=L=>L.n1.length+L.n2.length+L.d1.q.length+L.d2.a.length;
 function h4NdMk(key,ok){h4Save(r=>{r.nd=r.nd||{};if(r.nd[key]==null)r.nd[key]=ok?1:0;const L=HL(),tot=h4NdTot(L),ks=Object.keys(r.nd).filter(k=>!/^d3-/.test(k));
  if(ks.length>=tot)r.dt=pct(ks.filter(k=>r.nd[k]===1).length,tot)})}
 function h4Nd(L,r){const nd=r.nd||{};let h=`<div class="card note">Phần này luyện mục tiêu 1 và 3: nghe lấy thông tin, đọc hiểu đoạn văn. Các dạng bài giống đề HSK 4 (nghe – 选词填空 – sắp xếp đoạn). Điểm tính theo lần làm đầu. Phiên âm mặc định ẩn.</div>
-<div class="row">${h4Tog("ndPy","phiên âm")}</div><div class="${H.ndPy?"":"h4nopy"}">`;
+<div>`;
  h+=`<div class="card"><h3>🎧 Nghe 1 · Nghe điền từ còn thiếu</h3><p class="ctx">Bấm nghe (nghe tối đa vài lần), gõ từ còn thiếu bằng chữ Hán hoặc pinyin không dấu.</p>${L.n1.map((x,i)=>{const d=H.n1D[i];
   return `<div class="q ${d==null?"":d?"ok":"no"}" style="padding:10px 0"><b>${i+1}.</b> ${bS(x[0],"🔊 Nghe")} <span class="zh">${x[1]}</span><div class="py h4py">${x[4]}</div><div class="row"><input class="tin" style="max-width:220px" value="${esc(H.n1[i]||"")}" oninput="H.n1[${i}]=this.value" ${d!=null?"disabled":""}>${d==null?`<button class="btn sm" onclick="h4N1(${i})">Kiểm tra</button>`:""}</div>${d==null?"":`<div class="${d?"okt":"bad"}">${d?"✓ Đúng.":"✗ Chưa đúng."} Đáp án: <span class="zh">${x[2]}</span> · <span class="zh">${x[0]}</span></div>`}</div>`}).join("")}</div>`;
  h+=`<div class="card"><h3>🎧 Nghe 2 · Chép nguyên câu</h3><p class="ctx">Ba câu ví dụ ngữ pháp quan trọng. Nghe rồi gõ lại cả câu bằng chữ Hán (không cần dấu câu). Đạt khi đúng từ 90% số chữ.</p>${L.n2.map((x,i)=>{const d=H.n2D[i];const m=d!=null?simi(hanOnly(H.n2[i]),hanOnly(x)):0;
@@ -154,15 +156,15 @@ ${H.rpM[k]?`<div class="zh">${h4Tgt(y[1])} ${bS(h4Tgt(y[1]))}</div><div class="p
  h+=`<p>Mức 1: đạt ${done}/${need.length} lượt${r.ns!=null?` · Điểm nói: <b>${r.ns}%</b>`:" · Nói đủ các lượt của vai đã chọn để tính điểm"}.</p>`;
  const RT=L.retell,T=L.texts[RT.t];
  h+=`<div class="card"><h3>Mức 2 · Kể lại bài khóa ${RT.t+1} (复述)</h3><p class="ctx">Nhìn chuỗi từ khóa, kể lại nội dung bằng lời của em. Không cần thuộc lòng nguyên văn.</p>
-<ol class="h4steps">${RT.steps.map(s=>`<li><span class="zh">${s[0]}</span><small>${s[1]}</small></li>`).join("")}</ol>${h4LongUI("rt")}
+<ol class="h4steps">${RT.steps.map(s=>`<li><span class="zh">${s[0]}</span><small class="h4py">${s[1]}</small></li>`).join("")}</ol>${h4LongUI("rt")}
 ${H.rt.done?`<div class="h4fb"><div>Số chữ: <b>${hanN(H.rt.txt)}</b>${H.rt.sec?` · Thời gian nói: <b>${H.rt.sec} giây</b>`:""}</div><div>Từ khóa đã dùng: ${RT.kw.map(m=>`<span class="pill ${kwHas(H.rt.txt,m)?"ok":""}">${kwHas(H.rt.txt,m)?"✓":"○"} <span class="zh">${m[0]}</span></span>`).join("")}</div>
 <p class="ctx">Dùng được từ 7/${RT.kw.length} từ khóa là kể khá đầy đủ.</p><details><summary>Đối chiếu với bài khóa ${RT.t+1}</summary><div class="zh">${T.l.map(y=>y[1]).join("")}</div></details></div>`:""}</div>`;
  if(L.tasks)return h+h4Tasks(L,r)+h4Next("ns");
  const K=L.talk;
- h+=`<div class="card"><h3>Mức 3 · Trình bày: <span class="zh">${K.title}</span></h3><p>${K.vi}</p><p><b>Dàn ý gợi ý:</b></p><ol class="h4steps">${K.out.map(s=>`<li><span class="zh">${s[0]}</span><small>${s[1]}</small></li>`).join("")}</ol>${h4LongUI("tk")}
+ h+=`<div class="card"><h3>Mức 3 · Trình bày: <span class="zh">${K.title}</span></h3><p>${K.vi}</p><p><b>Dàn ý gợi ý:</b></p><ol class="h4steps">${K.out.map(s=>`<li><span class="zh">${s[0]}</span><small class="h4vi">${s[1]}</small></li>`).join("")}</ol>${h4LongUI("tk")}
 ${H.tk.done?`<div class="h4fb"><div>Số chữ: <b>${hanN(H.tk.txt)}</b>${H.tk.sec?` · Thời gian nói: <b>${H.tk.sec} giây</b>`:""} <small class="ctx">(nói khoảng 1 phút thường được 80–120 chữ)</small></div>
 <div>Cấu trúc bắt buộc: ${K.req.map(q=>`<span class="pill ${grpOk(H.tk.txt,q.slice(1))?"ok":""}">${grpOk(H.tk.txt,q.slice(1))?"✓":"○"} <span class="zh">${q[0]}</span></span>`).join("")}</div>
-<details open><summary>Bài nói mẫu</summary><div class="zh">${K.m[0]} ${bS(K.m[0])}</div><div class="py" style="display:block">${K.m[1]}</div><div class="ctx">${K.m[2]}</div></details>
+<details open><summary>Bài nói mẫu</summary><div class="zh">${K.m[0]} ${bS(K.m[0])}</div><div class="py" style="display:block">${K.m[1]}</div><div class="ctx h4vi">${K.m[2]}</div></details>
 <p class="ctx">📲 Muốn cô nghe và sửa phát âm: ghi âm bài nói trên điện thoại rồi gửi cô qua Zalo.</p></div>`:""}</div>`;
  return h+h4Next("ns")}
 function h4LongUI(k){const o=H[k],on=H.recK===k,noSR=!SRC||srBlocked;
@@ -189,7 +191,7 @@ function h4RpScore(){const L=HL(),need=h4RpNeed(L);h4Save(r=>{const nk=r.nk||{};
 function h4Vt(L,r){const P=L.para;if(H.para==null)H.para=r.vp||"";if(H.v1t==null)H.v1t=r.v1t||"";
  let h=`<div class="card note">Phần này luyện mục tiêu 2: <b>viết</b> về chuyên ngành và dự định nghề nghiệp. Máy kiểm tra từ, cấu trúc và đếm chữ; nội dung cô sẽ chữa khi em gửi bài. Làm xong bấm <b>📋 Sao chép bài</b> rồi dán vào Zalo gửi cô.</div>`;
  h+=`<div class="card"><h3>Dạng 1 · 看图，用词造句 Nhìn tranh, dùng từ cho sẵn đặt câu</h3><p class="ctx">Mỗi tranh đặt một câu có từ cho sẵn, <b>viết tất cả vào một khung, mỗi câu một dòng</b>. Tranh tạm minh họa bằng biểu tượng; sẽ thay bằng tranh trong sách.</p>
-<div class="h4pics">${L.v1.map((it,i)=>`<div class="h4pic"><div class="ic">${it.ic}</div><b>(${i+1}) <span class="zh hd">${it.w}</span></b><small>${it.py}</small><small class="ctx">${it.sc}</small></div>`).join("")}</div>
+<div class="h4pics">${L.v1.map((it,i)=>`<div class="h4pic"><div class="ic">${it.ic}</div><b>(${i+1}) <span class="zh hd">${it.w}</span></b><small class="h4py">${it.py}</small><small class="ctx">${it.sc}</small></div>`).join("")}</div>
 <textarea class="tin h4ta" rows="4" id="h4ta-v1" oninput="H.v1t=this.value" placeholder="(1) ……&#10;(2) ……&#10;(3) ……">${esc(H.v1t)}</textarea>
 <div class="row"><button class="btn sm" onclick="h4V1()">✅ Kiểm tra</button>${h4CopyBtn("h4ta-v1")}</div>
 ${H.v1D?`<div class="h4fb"><div>Từ đã dùng: ${L.v1.map(it=>{const ok=kwHas(H.v1t,[it.w,gN(it.py)]);return `<span class="pill ${ok?"ok":""}">${ok?"✓":"○"} <span class="zh">${it.w}</span></span>`}).join("")}</div><div class="ans"><b>Câu tham khảo:</b>${L.v1.map((it,i)=>`<div><b>(${i+1})</b> ${it.r.map(x=>`<span class="zh">${x}</span> ${bS(x)}`).join(" · ")}</div>`).join("")}</div></div>`:""}</div>`;
@@ -199,7 +201,7 @@ ${H.v1D?`<div class="h4fb"><div>Từ đã dùng: ${L.v1.map(it=>{const ok=kwHas(
 <p><b>Tự kiểm tra trước khi nộp:</b></p>${P.self.map((s,i)=>`<label class="h4chk"><input type="checkbox" ${H.self[i]?"checked":""} onchange="H.self[${i}]=this.checked"> ${s}</label>`).join("")}
 <div class="row"><button class="btn" onclick="h4ParaSub()">Nộp bài</button>${h4CopyBtn("h4ta-p")}</div>
 ${H.paraD||r.vp?`<div class="h4fb">${r.vp?`<div class="okt">✓ Đã lưu bài trên máy này (${hanN(r.vp)} chữ).</div>`:""}<p>📲 Bấm <b>📋 Sao chép bài</b> rồi dán vào Zalo gửi cô để cô chữa nội dung và cách dùng từ.</p>
-<details><summary>Bài tham khảo</summary><div class="zh">${P.m[0]} ${bS(P.m[0])}</div><div class="ctx">${P.m[1]}</div></details></div>`:""}</div>`;
+<details><summary>Bài tham khảo</summary><div class="zh">${P.m[0]} ${bS(P.m[0])}</div><div class="ctx h4vi">${P.m[1]}</div></details></div>`:""}</div>`;
  h+=r.vt!=null?`<p>Điểm phần viết: <b>${r.vt}%</b> <small class="ctx">(dạng 1 dùng đủ 3 từ: 60%; dạng 2 đủ ${P.min} chữ và đủ 2 cấu trúc đầu: 40%)</small></p>`:`<p class="ctx">Kiểm tra dạng 1 và nộp đoạn văn để tính điểm.</p>`;
  return h+h4Next("vt")}
 function h4PLh(){const P=HL().para,c=hanN(H.para);return `<div>Số chữ Hán: <b class="${c>=P.min?"okt":""}">${c}</b> / ${P.min}–${P.max||100}</div><div>${P.req.map(q=>`<span class="pill ${grpOk(H.para,q.slice(1))?"ok":""}">${grpOk(H.para,q.slice(1))?"✓":"○"} <span class="zh">${q[0]}</span></span>`).join("")}</div>`}
@@ -222,7 +224,7 @@ function h4Sum(L,r){const bq=r.bq||{},nd=r.nd||{};
  const bar=(lb,v,t)=>`<div class="bar"><span>${lb}</span><div class="tr"><i style="width:${v||0}%" class="${v>=80?"ok":"no"}"></i></div><b>${v==null?"chưa làm":v+"%"}</b>${v==null||v<80?`<button class="btn o sm" onclick="h4t('${t}')">${v==null?"Làm":"Ôn lại"}</button>`:"<span>✓</span>"}</div>`;
  let h=`<div class="card note">Tổng kết theo <b>mục tiêu bài học</b>: mỗi mục tiêu đạt khi các phần liên quan đều từ 80% trở lên.</div>`;
  h+=G.map((g,i)=>{const vs=g.map(x=>x[1]),miss=vs.some(v=>v==null),av=vs.filter(v=>v!=null),a=av.length?Math.round(av.reduce((s,v)=>s+v,0)/av.length):null,ok=!miss&&vs.every(v=>v>=80);
-  return `<div class="card h4g ${ok?"ok":""}"><div class="h4gh"><span class="h4gn">${ok?"✓":i+1}</span><div><b>Mục tiêu ${i+1}</b><div class="zh">${L.goals[i].zh}</div><small>${L.goals[i].vi}</small></div><div class="h4gp ${ok?"okt":""}">${a==null?"—":a+"%"}</div></div>
+  return `<div class="card h4g ${ok?"ok":""}"><div class="h4gh"><span class="h4gn">${ok?"✓":i+1}</span><div><b>Mục tiêu ${i+1}</b><div class="zh">${L.goals[i].zh}</div><small class="h4vi">${L.goals[i].vi}</small></div><div class="h4gp ${ok?"okt":""}">${a==null?"—":a+"%"}</div></div>
 ${g.map(x=>bar(x[0],x[1],x[2])).join("")}<p class="${ok?"okt":"ctx"}">${ok?"🎉 Đã đạt mục tiêu này.":miss?"Còn phần chưa làm, làm xong để biết đã đạt chưa.":"Chưa đạt: ôn lại các phần dưới 80%."}</p></div>`}).join("");
  h+=`<div class="card"><b>Điểm theo từng tab</b>${Object.keys(H4N).map(k=>bar(H4N[k],r[k],Object.keys(H4K).find(t=>H4K[t]==k))).join("")}</div>`;
  return h}
@@ -252,5 +254,5 @@ function h4Tasks(L,r){const ti=H.tki||0,T=L.tasks[ti],k="tk"+ti;if(!H[k])H[k]={t
 ${h4LongUI(k)}
 ${o.done?`<div class="h4fb"><div>Số chữ: <b>${hanN(o.txt)}</b>${o.sec?` · Thời gian nói: <b>${o.sec} giây</b>`:""}</div>
 <div>Cấu trúc bắt buộc: ${T.req.map(q=>`<span class="pill ${grpOk(o.txt,q.slice(1))?"ok":""}">${grpOk(o.txt,q.slice(1))?"✓":"○"} <span class="zh">${q[0]}</span></span>`).join("")}</div>
-<details><summary>Bài mẫu gợi ý</summary><div class="zh" style="white-space:pre-line">${T.m[0]}</div> ${bS(T.m[0].replace(/\n/g,""))}<div class="ctx">${T.m[1]}</div></details>
+<details><summary>Bài mẫu gợi ý</summary><div class="zh" style="white-space:pre-line">${T.m[0]}</div> ${bS(T.m[0].replace(/\n/g,""))}<div class="ctx h4vi">${T.m[1]}</div></details>
 <p class="ctx">📲 Bấm <b>📋 Sao chép bài</b> rồi dán vào Zalo gửi cô; muốn cô sửa phát âm thì gửi kèm ghi âm.</p></div>`:""}</div>`}

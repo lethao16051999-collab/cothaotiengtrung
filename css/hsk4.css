@@ -32,3 +32,7 @@
 .gpb li .h4vi{color:var(--sub)}.py.h4py{color:var(--m);font-size:.88rem;margin:2px 0 4px}
 .opt.h4m{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.h4box{font-size:1.15rem;color:var(--m)}
 .opt.wrong{background:rgba(178,58,72,.14);border-color:#b23a48}
+/* 29/10: thanh Hiển thị Pinyin / Tiếng Việt cho HSK4, Mở rộng H4 (kể cả chữ đang hiện bằng style="display:block") */
+#lbody.h4.hidepy .py,#lbody.h4.hidepy .h4py,#lbody.h4.hidepy .opy{display:none!important}
+#lbody.h4.hidevi .vi,#lbody.h4.hidevi .h4vi{display:none!important}
+#lbody.h4.hidepy .h4fc .py{display:block!important}#lbody.h4.hidepy .h4fc .h4py{display:inline!important}
