@@ -18,7 +18,7 @@ var LT3=[
 "我听说有的熊猫出国了|Con nghe nói có một số con gấu trúc đã ra nước ngoài",
 "我要多向认真的人学习|Mình sẽ học hỏi từ những người cẩn thận",
 "我学会了包饺子|Cháu đã học được cách gói sủi cảo"];
-Object.assign(SPN,{"刘明":["Liú Míng","Lưu Minh"],"王一雪":["Wáng Yīxuě","Vương Nhất Tuyết"],"白家月":["Bái Jiāyuè","Bạch Gia Nguyệt"],"李文":["Lǐ Wén","Lý Văn"],"服务员":["fúwùyuán","Nhân viên"],"王先生":["Wáng xiānsheng","Anh Vương"],"同事":["tóngshì","Đồng nghiệp"],"杨同乐":["Yáng Tónglè","Dương Đồng Lạc"],"王一飞":["Wáng Yīfēi","Vương Nhất Phi"],"小李":["Xiǎo Lǐ","Tiểu Lý"],"店员":["diànyuán","Nhân viên bán hàng"],"陈天中":["Chén Tiānzhōng","Trần Thiên Trung"],"安妮":["Ānnī","An Ni"]});
+Object.assign(SPN,{"刘明":["Liú Míng","Lưu Minh"],"王一雪":["Wáng Yīxuě","Vương Nhất Tuyết"],"白家月":["Bái Jiāyuè","Bạch Gia Nguyệt"],"李文":["Lǐ Wén","Lý Văn"],"服务员":["fúwùyuán","Nhân viên"],"王先生":["Wáng xiānsheng","Anh Vương"],"同事":["tóngshì","Đồng nghiệp"],"杨同乐":["Yáng Tónglè","Dương Đồng Lạc"],"王一飞":["Wáng Yīfēi","Vương Nhất Phi"],"小李":["Xiǎo Lǐ","Tiểu Lý"],"店员":["diànyuán","Nhân viên bán hàng"],"陈天中":["Chén Tiānzhōng","Trần Thiên Trung"],"安妮":["Ānnī","An Ni"],"同学":["tóngxué","Bạn học"],"刘小雪":["Liú Xiǎoxuě","Lưu Tiểu Tuyết"],"李老师":["Lǐ lǎoshī","Cô Lý"],"我":["wǒ","Bạn"],"经理":["jīnglǐ","Giám đốc"]});
 var LD3={};
 /* Danh sách file của cấp này (tải khi học viên mở HSK 3, js/kho.js). Thêm bài N: tạo data/hsk3/bNN.js, thêm N vào "bai", tăng "v". */
-var NAP=window.NAP||{};NAP[3]={dir:"data/hsk3/",bai:[1,2,3,4,5,6,7,8],them:["wg.js","nv.js"],ts:true,v:4};
+var NAP=window.NAP||{};NAP[3]={dir:"data/hsk3/",bai:[1,2,3,4,5,6,7,8,9,10,11],them:["wg.js","nv.js"],ts:true,v:5};
