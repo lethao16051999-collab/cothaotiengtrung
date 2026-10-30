@@ -6,8 +6,8 @@ const SHELF=[
  {l:1,img:"img/bia-hsk1.webp",t:"New HSK 1",s:"Sơ cấp 1"},
  {l:2,img:"img/bia-hsk2.webp",t:"New HSK 2",s:"Sơ cấp 2"},
  {l:3,img:"img/bia-hsk3.webp",t:"New HSK 3",s:"Trung cấp 1"},
- {l:4,img:"",t:"HSK 4",s:"Trung cấp · du học",zh:"汉语",c:"#5c1730"},
- {l:5,img:"",t:"Mở rộng H4",s:"Trung cấp · đời sống",zh:"生活",c:"#8e2a4f"},
+ {l:4,img:"img/bia-hsk4.webp",t:"HSK 4",s:"Trung cấp · du học"},
+ {l:5,img:"img/bia-hsk4.webp",t:"Mở rộng H4",s:"Trung cấp · đời sống"},
  {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:10,tot:15},
  {href:"luyen-viet-hsk6/",img:"",t:"HSK 6 · Viết",s:"Viết đoạn văn ứng dụng",zh:"写作",c:"#7a1f3d",n:11,tot:14,unit:"loại đã có"}];
 /* luyen-viet-hsk6/ = trang luyện viết HSK6 3.0 phần 1 (27/10/2026); n = số loại văn bản đã đủ 5 phần */
