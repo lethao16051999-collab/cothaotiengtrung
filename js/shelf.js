@@ -9,7 +9,9 @@ const SHELF=[
  {l:4,img:"img/bia-hsk4.webp",t:"HSK 4",s:"Trung cấp · du học"},
  {l:5,img:"img/bia-hsk4.webp",t:"Mở rộng H4",s:"Trung cấp · đời sống"},
  {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:10,tot:15},
- {href:"luyen-viet-hsk6/",img:"",t:"HSK 6 · Viết",s:"Viết đoạn văn ứng dụng",zh:"写作",c:"#7a1f3d",n:11,tot:14,unit:"loại đã có"}];
+ {href:"luyen-viet-hsk6/",img:"",t:"HSK 6 · Viết",s:"Viết đoạn văn ứng dụng",zh:"写作",c:"#7a1f3d",n:11,tot:14,unit:"loại đã có"},
+ {href:"on-hsk5/",img:"",t:"Ôn HSK 5",s:"Luyện đề thật HSK真题集 五级",zh:"五级",c:"#9b2c50",n:4,tot:5,unit:"đề đã có"}];
+/* on-hsk5/ = trang Ôn HSK 5, danh sách các trang luyện đề 1–2, 3, 4 (30/10/2026) */
 /* luyen-viet-hsk6/ = trang luyện viết HSK6 3.0 phần 1 (27/10/2026); n = số loại văn bản đã đủ 5 phần */
 /* Cuốn có href = trang ôn tập riêng (thư mục hsk1/, 24/10/2026); chỉ hiện ở Ôn luyện theo bài */
 const shN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
