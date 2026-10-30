@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Trang Ôn HSK 5: danh sách các trang luyện đề HSK真题集 五级 (2014). Mở từ "Ôn luyện theo bài" trên trang chính.
+     Thêm đề mới: thêm một mục vào mảng DE trong script bên dưới. -->
+<title>Ôn HSK 5 – Cô Thảo tiếng Trung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+/* Layout: một cột, mỗi đề là một dòng phiếu (mã đề · nội dung · nút mở) */
+:root{
+  --bg:#FBF7F1; --surface:#FFFFFF; --line:#E6D8C8;
+  --fg:#2B1A1F; --muted:#76656A; --plum:#7A1F3D; --plum-soft:#F3E3E8;
+  --gold:#B8862A; --gold-soft:#F7EBD2; --ok:#2F7A4F;
+  --f-display:"Noto Serif SC","Songti SC",serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-zh:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#181214; --surface:#221A1D; --line:#3A2C31;
+  --fg:#F1E7E1; --muted:#B3A1A6; --plum:#E58AA6; --plum-soft:#3A2129;
+  --gold:#E2B55A; --gold-soft:#3A2F1A; --ok:#6CC795; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#181214; --surface:#221A1D; --line:#3A2C31;
+  --fg:#F1E7E1; --muted:#B3A1A6; --plum:#E58AA6; --plum-soft:#3A2129;
+  --gold:#E2B55A; --gold-soft:#3A2F1A; --ok:#6CC795; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.65}
+.zh{font-family:var(--f-zh)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px;display:flex;flex-direction:column;gap:18px}
+.back{align-self:flex-start;color:var(--plum);font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 14px}
+.back:hover,.back:focus-visible{border-color:var(--plum);outline:none}
+.head{display:flex;gap:18px;align-items:center}
+.seal{flex:none;width:76px;height:96px;border-radius:10px;background:linear-gradient(160deg,var(--plum),#2a0a17);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;border-left:5px solid var(--gold);box-shadow:0 6px 16px rgba(0,0,0,.2)}
+.seal .zh{font-family:var(--f-display);font-size:26px;color:var(--gold);line-height:1.1}
+.seal small{font-size:10px;opacity:.85}
+.head h1{margin:0;font-size:26px;color:var(--plum);text-wrap:balance;line-height:1.25}
+.head p{margin:4px 0 0;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:12px}
+.de{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.de:hover,.de:focus-visible{border-color:var(--plum);transform:translateY(-2px);outline:none}
+.code{min-width:88px;font-variant-numeric:tabular-nums;font-weight:700;color:var(--plum);background:var(--plum-soft);border-radius:8px;padding:6px 10px;text-align:center;line-height:1.3}
+.code small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.de b{display:block;font-size:16px}
+.de p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.tag{display:inline-block;background:var(--gold-soft);color:var(--gold);border-radius:999px;padding:0 8px;font-size:12px;font-weight:700;margin-left:6px;vertical-align:2px}
+.go{color:var(--plum);font-weight:700;white-space:nowrap}
+.de.soon{opacity:.6;pointer-events:none}
+.note{color:var(--muted);font-size:13px}
+@media (max-width:520px){.de{grid-template-columns:auto minmax(0,1fr)}.go{grid-column:2}.head h1{font-size:22px}}
+@media (prefers-reduced-motion:reduce){.de{transition:none}.de:hover{transform:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="../">← Trang cô Thảo tiếng Trung</a>
+  <div class="head">
+    <div class="seal"><span class="zh">五级</span><small>HSK 5</small></div>
+    <div><h1>Ôn HSK 5</h1><p>Luyện theo bộ đề thật <span class="zh">HSK真题集 五级</span> (2014): từ vựng trọng điểm, dạng bài hay sai và luyện viết của từng đề.</p></div>
+  </div>
+  <div class="list" id="list"></div>
+  <p class="note">Mỗi trang lưu tiến độ ngay trên máy của em (XP, sao, sổ lỗi sai).</p>
+</main>
+<script>
+const DE=[
+ {code:"Đề 4",ma:"H51224",href:"../thu-thach-hsk5-de4.html",t:"Thử thách HSK5 · Đề 4",d:"Flashcard 4 chủ đề × 30 từ có liên kết, 3 trò ôn tập, sắp xếp câu (91–98), viết đoạn văn câu 99 và câu 100.",tag:"Mới"},
+ {code:"Đề 3",ma:"H51223",href:"../thu-thach-hsk5-de3.html",t:"Thử thách HSK5 · Đề 3",d:"Điền từ vào đoạn văn, chọn câu đúng, đọc hiểu, flashcard 4 chủ đề × 30 từ."},
+ {code:"Đề 1–2",ma:"H51221–22",href:"../thu-thach-hsk5.html",t:"Thử thách từ vựng HSK5",d:"11 cặp từ dễ nhầm, 43 từ trọng tâm, 3 trò ôn tập và bài test gõ phiên âm."},
+ {code:"Đề 5",ma:"H51225",href:"",t:"Đề 5",d:"Đang biên soạn."}
+];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+document.getElementById("list").innerHTML=DE.map(x=>`<a class="de ${x.href?"":"soon"}" ${x.href?`href="${x.href}"`:'aria-disabled="true"'}>
+  <span class="code">${esc(x.code)}<small>${esc(x.ma)}</small></span>
+  <span><b>${esc(x.t)}${x.tag?`<span class="tag">${esc(x.tag)}</span>`:""}</b><p>${esc(x.d)}</p></span>
+  <span class="go">${x.href?"Mở →":"Sắp ra mắt"}</span></a>`).join("");
+</script>
+</body>
+</html>
