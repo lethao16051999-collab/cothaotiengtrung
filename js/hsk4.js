@@ -256,3 +256,20 @@ ${o.done?`<div class="h4fb"><div>Số chữ: <b>${hanN(o.txt)}</b>${o.sec?` · T
 <div>Cấu trúc bắt buộc: ${T.req.map(q=>`<span class="pill ${grpOk(o.txt,q.slice(1))?"ok":""}">${grpOk(o.txt,q.slice(1))?"✓":"○"} <span class="zh">${q[0]}</span></span>`).join("")}</div>
 <details><summary>Bài mẫu gợi ý</summary><div class="zh" style="white-space:pre-line">${T.m[0]}</div> ${bS(T.m[0].replace(/\n/g,""))}<div class="ctx h4vi">${T.m[1]}</div></details>
 <p class="ctx">📲 Bấm <b>📋 Sao chép bài</b> rồi dán vào Zalo gửi cô; muốn cô sửa phát âm thì gửi kèm ghi âm.</p></div>`:""}</div>`}
+
+/* ---------- Phiên âm tự thêm (30/10/2026) ----------
+   Chữ Hán trong bài (câu hỏi, đáp án, ngữ cảnh, câu nghe, thẻ sắp xếp, lời đóng vai…) chưa có pinyin
+   thì tra bảng APY (khai ở cuối file bài: var APY=Object.assign(window.APY||{},{"chữ Hán":"pinyin"})) và gắn
+   <small class="h4py apy"> ngay sau. Bật/tắt chung bằng thanh "Hiển thị: Pinyin". Câu chưa có trong APY thì để nguyên. */
+const APYC=/(^|\s)(py|h4py|opy|tpy|apy)(\s|$)/;
+const apyKey=e=>{const c=e.cloneNode(true);c.querySelectorAll("select").forEach(s=>s.replaceWith("____"));c.querySelectorAll("button,small,.py,.h4py,.opy,.apy").forEach(s=>s.remove());
+ return c.textContent.replace(/🔊/g,"").replace(/[ \t ]+/g,"").replace(/\n+/g,"\n").trim()};
+const apyHas=e=>{const p=e.parentElement;if(p&&p.classList.contains("zp"))return true;
+ for(const s of [e.previousElementSibling,e.nextElementSibling])if(s&&APYC.test(s.className))return true;return !!e.querySelector(".py,.h4py,.opy,.apy")};
+function h4Apy(){const b=$("lbody");if(!b||!b.classList.contains("h4"))return;const A=window.APY||{},M=window.APYMISS;
+ b.querySelectorAll(".zh,.hz,button.tok").forEach(e=>{if(e.closest(".h4fc,.chips,.h4m,.h4pics,select,textarea,.apy"))return;
+  const k=apyKey(e);if(!/[一-鿿]/.test(k)||/[A-Za-zÀ-ỹ]/.test(k)||apyHas(e))return;
+  const p=A[k];if(!p){if(M)M.add(k);return}
+  const s=document.createElement("small"),blk=e.tagName!="SPAN"||k.length>5;s.className="h4py apy"+(blk?" apyb":"");s.textContent=p;
+  if(e.tagName=="SPAN")e.after(s);else e.appendChild(s)})}
+{const _rrA=rr;rr=function(){const v=_rrA.apply(this,arguments);try{h4Apy()}catch(e){}return v}}
