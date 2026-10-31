@@ -5,7 +5,7 @@
    Câu cô đã chấm được ghi vào trang tính "Đáp án học": bạn sau viết giống thế thì máy chấm theo cô.
    Máy chủ: đoạn mã chamApi_ (file huong-dan/cham-api.gs.txt) dán vào Code.gs.
    Nạp SAU js/track.js (và sau js/theodoi.js nếu trang có). Ghi đè gxHtml, gxSave, gxTrCheck, gxPcSub của js/app.js. ===== */
-const CHV=1,CHOK={},CHG={tab:false,data:null,busy:false,err:"",mode:"cho",bai:"",hide:false,q:{},tc:{},qt:null,saving:false,saved:0,cnt:null,code:""};
+const CHV=2,CHOK={},CHG={tab:false,data:null,busy:false,err:"",mode:"cho",bai:"",hide:false,q:{},tc:{},qt:null,saving:false,saved:0,cnt:null,code:""};
 const chLv=()=>typeof trkLv=="function"?trkLv():olLv;
 const chSrv=()=>typeof TRK_API!="undefined"&&!!TRK_API;
 const chMe=()=>typeof trkIn=="function"&&trkIn();
@@ -77,7 +77,8 @@ const chReady=()=>GX.so.some(s=>s.first!=null&&!s.sub)||GX.tr.some(chNew)||GX.pc
 function chFin(kind){GX[kind].forEach((t,k)=>{if(t.st=="sub")return;if(!chHas(t)){t.st="bo";return}if(t.st=="ok"||t.st=="cho")return;
  const d=GXD[GX.k][kind][k],refs=kind=="tr"?d.a.concat([d.r[0]]):d.r.map(r=>r[0]),pys=kind=="tr"?[d.r[1]]:d.r.map(r=>r[1]),L=chLearn((kind=="tr"?"t":"p")+k,t.v);
  if(refs.some(a=>gH(a)===gH(t.v))||pys.some(p=>gN(p)===gN(t.v))||(L&&L.g>=1)){t.st="ok";if(L&&L.g>=1&&!refs.some(a=>gH(a)===gH(t.v)))t.lc=1}else t.st="cho"})}
-function chNop(){if(!chMe())return trkOpen();if(!chReady())return ask("Em làm ít nhất một câu rồi mới nộp nhé.",null,1);
+let CHWAIT=false;
+function chNop(){if(!chMe()){if(!(typeof trkOn=="function"&&trkOn()))return;CHWAIT=true;return trkOpen()}CHWAIT=false;if(!chReady())return ask("Em làm ít nhất một câu rồi mới nộp nhé.",null,1);
  const bS0=GX.so.filter(s=>s.first==null).length,bT=GX.tr.filter(t=>!chHas(t)).length,bP=GX.pc.filter(t=>!chHas(t)).length,miss=[bS0?bS0+" câu sắp xếp":"",bT?bT+" câu dịch":"",bP?bP+" tranh":""].filter(Boolean);
  ask(`${GX.cont?"Nộp tiếp phần em vừa làm":"Nộp bài cho cô"}? Sau khi nộp em <b>không sửa được</b> câu đã nộp.${miss.length?`<br>Em chưa làm: <b>${miss.join(", ")}</b>. Phần chưa làm không tính điểm, buổi sau em vẫn nộp tiếp được.`:""}`,chNopGo)}
 function chItObj(kind,x,k,sid){const t=GX[kind][k],tr=kind=="tr";return {k:(tr?"t":"p")+k,d:kind,de:tr?x.vi:x.req,ref:tr?x.r[0]:x.r[0][0],rp:tr?x.r[1]:x.r[0][1],
@@ -150,7 +151,7 @@ function chItem(kind,it,k){const t=GX[kind][k],st=t.st,tr=kind=="tr",lock=st=="o
  if(st=="ok")fb=`<div class="okt">✓ Đúng rồi!${t.lc?" (Cô đã chấp nhận cách viết này.)":""}</div>`+(GX.prac||!chMe()?refH:"");
  else if(st=="hint")fb=`<div class="chhint"><b>🔎 Máy soát giúp em:</b><ul>${t.h.map(x=>`<li>${x}</li>`).join("")}</ul><small>Đây chỉ là gợi ý. Em sửa rồi bấm Kiểm tra lại, hoặc giữ nguyên và gửi cô chấm.</small></div>`;
  else if(st=="cho")fb=`<div class="chwt">⏳ Câu này cô sẽ chấm sau khi em nộp bài.${t.h&&t.h.length?` <small>(Máy vẫn còn lưu ý: ${t.h.map(trkTxt).join(" · ")})</small>`:""}</div>`;
- else if(st=="ref")fb=`<div class="ctx">${GX.prac?"Đang luyện lại: em tự đối chiếu với đáp án.":"Câu của em khác đáp án mẫu, có thể vẫn đúng. Em nhập <b>mã học viên</b> để cô chấm giúp."}</div>${t.h&&t.h.length?`<div class="chhint"><ul>${t.h.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:""}`+refH;
+ else if(st=="ref"){const gui=!GX.prac&&typeof trkOn=="function"&&trkOn();fb=`<div class="ctx">${GX.prac?"Đang luyện lại: em tự đối chiếu với đáp án.":gui?"⏳ Câu của em khác đáp án mẫu, có thể vẫn đúng. Em bấm <b>📤 Nộp bài cho cô</b> ở cuối bài để cô chấm câu này.":"Câu của em khác đáp án mẫu, có thể vẫn đúng."}</div>${t.h&&t.h.length?`<div class="chhint"><ul>${t.h.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:""}`+(gui?(t.sa?refH:`<div class="row"><button class="btn o sm" onclick="GX.${kind}[${k}].sa=1;rr()">👁 Xem đáp án tham khảo</button><small class="ctx">Nên nộp cho cô chấm trước rồi hãy xem.</small></div>`):refH)}
  const btn=st=="ok"||st=="ref"?(GX.prac||!chMe()?`<button class="btn o sm" onclick="chEdit('${kind}',${k})">↻ Làm lại</button>`:`<button class="btn o sm" onclick="chEdit('${kind}',${k})">✎ Sửa</button>`)
   :st=="cho"?`<button class="btn o sm" onclick="chEdit('${kind}',${k})">✎ Sửa câu này</button>`
   :st=="hint"?`<button class="btn sm" onclick="chCheck('${kind}',${k})">Kiểm tra lại</button>${chOn()?`<button class="btn o sm" onclick="chSend('${kind}',${k})">Giữ nguyên, gửi cô chấm</button>`:""}`
@@ -159,7 +160,8 @@ function chItem(kind,it,k){const t=GX[kind][k],st=t.st,tr=kind=="tr",lock=st=="o
 
 const _gxHtml=gxHtml;
 gxHtml=function(L){if(!GX||GX.k!=gxKey()){const rec=chRec();if(rec&&chMe()){GX=null;return chDone(rec)}gxInit()}
- chPrep();const rec=chRec();if(rec&&chMe()&&!GX.prac&&!GX.cont){GX=null;return chDone(rec)}
+ chPrep();const rec=chRec();if(rec&&chMe()&&!GX.prac&&!GX.cont){GX=null;CHWAIT=false;return chDone(rec)}
+ if(CHWAIT&&chMe()){CHWAIT=false;setTimeout(chNop,300)}
  const d=GXD[GX.k];let h="";
  if(GX.cont)h+=`<div class="card note">➕ Em đang <b>làm tiếp phần chưa làm</b>. Câu đã nộp được khóa lại. Làm xong bấm <b>Nộp tiếp</b> ở cuối. <button class="btn o sm" onclick="GX=null;rr()">← Xem bài đã nộp</button></div>`;
  else if(GX.prac)h+=`<div class="card note">↻ Em đang <b>luyện lại</b>, không tính điểm, không gửi cô. <button class="btn o sm" onclick="GX=null;rr()">← Xem bài đã nộp</button></div>`;
@@ -174,7 +176,8 @@ gxHtml=function(L){if(!GX||GX.k!=gxKey()){const rec=chRec();if(rec&&chMe()){GX=n
  if(d.pc&&d.pc.length){h+=`<div class="card note"><b>Dạng 3 · Miêu tả tranh</b><br>Xem tranh, đọc yêu cầu rồi viết câu bằng <b>chữ Hán</b> hoặc <b>pinyin không dấu</b>. Cô chấm: đúng nội dung tranh + dùng đúng cấu trúc.</div>`;h+=d.pc.map((it,k)=>chItem("pc",it,k)).join("")}
  const all=GX.so.length+GX.tr.length+GX.pc.length,dn=GX.so.filter(s=>s.first!=null).length+GX.tr.concat(GX.pc).filter(chHas).length;
  if(chOn())h+=`<div class="card res chnop"><p>Đã làm <b>${dn}/${all}</b> câu.${dn<all?" Hết giờ thì em vẫn nộp được, phần chưa làm không tính điểm.":""}</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 ${GX.cont?"Nộp tiếp cho cô":"Nộp bài cho cô"}</button></div></div>`;
- else{const nS=GX.so.filter(s=>s.first!=null).length,nT=GX.tr.filter(t=>t.st=="ok"||t.st=="ref").length,tot=GX.so.length+GX.tr.length;
+ else{if(!GX.prac&&typeof trkOn=="function"&&trkOn())h+=`<div class="card res chnop"><p>Đã làm <b>${dn}/${all}</b> câu. Máy chỉ chấm được câu trùng đáp án; câu em viết khác, <b>cô sẽ chấm</b> khi em nộp bài.</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 Nộp bài cho cô</button></div><small class="ctx">Cần <b>mã học viên</b> cô Thảo đã gửi. Bấm nộp, nhập mã, bài em làm vẫn giữ nguyên.</small></div>`;
+  const nS=GX.so.filter(s=>s.first!=null).length,nT=GX.tr.filter(t=>t.st=="ok"||t.st=="ref").length,tot=GX.so.length+GX.tr.length;
   if(nS+nT==tot){const ok=GX.so.filter(s=>s.first).length+GX.tr.filter(t=>t.st=="ok").length,pct=Math.round(ok/tot*100);
    h+=`<div class="card res"><div class="big ${pct>=80?"ok":"no"}">${pct}%</div><p style="text-align:center">Máy chấm được ${ok}/${tot} câu (sắp xếp + dịch trùng đáp án).${GX.prac?" Bài luyện lại không tính điểm.":""}</p><div class="row c"><button class="btn o" onclick="const p=GX.prac;GX=null;gxInit();chPrep();GX.prac=p;rr()">↻ Làm lại toàn bộ</button>${nextBtn("gp")}</div></div>`}
   else h+=`<p class="ctx">Đã làm ${nS+nT}/${tot} câu tính điểm (dạng 1 và 2).</p>`}
