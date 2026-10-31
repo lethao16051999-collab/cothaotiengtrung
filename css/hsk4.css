@@ -41,3 +41,6 @@
 .apy.apyb{display:block;margin:2px 0 0;white-space:pre-line}
 button.tok .apy.apyb{font-size:.72rem;margin-top:1px}
 .h4nopy .apy,#lbody.h4.hidepy .apy{display:none!important}
+
+/* 31/10: phiên âm mặt trước thẻ từ + dãy chip từ (bật/tắt bằng ☑ Pinyin) */
+.h4fc .fpy{font-size:1.05rem;margin-top:4px}.chips .chip .apy{display:block;font-size:.68rem;line-height:1.1;margin-top:1px}
