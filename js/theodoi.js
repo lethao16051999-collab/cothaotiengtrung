@@ -38,8 +38,8 @@ function gvDraw(){const s=gvSec(),D=GV.data;
 <label>Thời gian <select onchange="gvSet('days',+this.value,1)">${[7,30,60,120,365].map(d=>`<option value="${d}" ${d==GV.days?"selected":""}>${d} ngày qua</option>`).join("")}</select></label>
 <button class="btn sm" onclick="gvLoad()" ${GV.busy?"disabled":""}>${GV.busy?"Đang tải…":"↻ Tải lại"}</button><button class="btn o sm" onclick="gvLogout()">Thoát</button>
 <small>Cập nhật lúc ${gvT(D.now)}</small></div>${GV.err?`<p class="bad">${GV.err}</p>`:""}
-<div class="stb gvtabs">${[["tq","👥 Tổng quan"],["dd","✋ Điểm danh"],["dg","📝 Tự đánh giá"],["td","📈 Tiến độ theo bài"],["ls","⚠️ Lỗi hay gặp"]].map(t=>`<button class="${GV.tab==t[0]&&!GV.stu?"on":""}" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>
-${GV.stu?gvStu(F,GV.stu):({tq:gvTq,dd:gvDd,dg:gvDg,td:gvTd,ls:gvLs})[GV.tab](F)}`}
+<div class="stb gvtabs">${[["tq","👥 Tổng quan"],["dd","✋ Điểm danh"],["dg","📝 Tự đánh giá"],["td","📈 Tiến độ theo bài"],["ls","⚠️ Lỗi hay gặp"],["hp","💰 Học phí"]].map(t=>`<button class="${GV.tab==t[0]&&!GV.stu?"on":""}" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>
+${GV.stu?gvStu(F,GV.stu):({tq:gvTq,dd:gvDd,dg:gvDg,td:gvTd,ls:gvLs,hp:gvHp})[GV.tab](F)}`}
 
 /* ---------- Tổng quan ---------- */
 function gvPer(F,code){const tt=F.tt.filter(x=>x.code==code),tc=F.tc.filter(x=>x.code==code),last=Math.max(0,...tc.map(x=>x.at),...tt.map(x=>x.at||0),(GV.data.hv.find(h=>h.code==code)||{}).last||0);
@@ -143,6 +143,27 @@ ${low.length?`<p class="bad">Hiểu dưới 3★: ${low.map(x=>gvE(nm(x.code))+"
 ${qs.length?`<div class="gvqs"><b>Học viên muốn hỏi cô</b>${qs.map(x=>`<div><small>${gvE(nm(x.code))} · ${gvE(x.t)}</small><div>${gvE(x.q)}</div></div>`).join("")}</div>`:""}
 ${miss.length?`<small class="ctx">Có mặt nhưng chưa gửi phiếu: ${miss.map(c=>gvE(nm(c))).join(", ")}</small>`:""}</div>`}).join("")+(Object.keys(G).length>gs.length?`<div class="row c"><button class="btn o" onclick="gvSet('more',GV.more+10)">Xem thêm buổi cũ</button></div>`:"")}
 
+/* ---------- Học phí (31/10/2026) ----------
+   Bảng thu học phí nằm trong Google Sheets riêng của cô (2 trang: Kèm nhóm · Kèm 1-1).
+   HP_URL: link Google Sheet cố định (để chế độ chia sẻ "Hạn chế" để chỉ cô mở được).
+   Cô cũng có thể dán link ngay trong tab, lưu trên máy (ct_hp_url). */
+const HP_URL="";
+const hpUrl=()=>{let u="";try{u=localStorage.getItem("ct_hp_url")||""}catch(e){}return u||HP_URL};
+function hpSave(){const v=($("hpin").value||"").trim();if(v&&!/^https:\/\/docs\.google\.com\/spreadsheets\//.test(v)){GV.hpErr="Link chưa đúng: cần link Google Sheets (bắt đầu bằng https://docs.google.com/spreadsheets/…).";gvDraw();return}
+ GV.hpErr="";try{v?localStorage.setItem("ct_hp_url",v):localStorage.removeItem("ct_hp_url")}catch(e){}GV.hpEdit=false;gvDraw()}
+function gvHp(){const u=hpUrl(),ed=u&&u.replace(/[#?].*$/,"").replace(/\/(edit|view|htmlview|pubhtml).*$/,"")+"/edit";
+ const cols=[["Kèm theo nhóm","Tên · Lớp · Học phí · Đã thu / Chưa thu · Note · Phí giáo trình · Chi phí khác · Chi phí thực"],["Kèm 1-1","Tên · Lớp · Ngày học · Học phí · Đã thu / Chưa thu · Note · Phí giáo trình · Chi phí khác · Chi phí thực"]];
+ const form=`<div class="card hpset"><b>${u?"Đổi link Google Sheet":"Gắn link Google Sheet bảng học phí"}</b>
+<input class="tin" id="hpin" placeholder="https://docs.google.com/spreadsheets/d/…" value="${gvE(u)}" onkeydown="if(event.key=='Enter')hpSave()">
+<div class="row"><button class="btn sm" onclick="hpSave()">Lưu link</button>${u?`<button class="btn o sm" onclick="GV.hpEdit=false;gvDraw()">Hủy</button>`:""}</div>
+${GV.hpErr?`<p class="bad">${GV.hpErr}</p>`:""}<small class="ctx">Link lưu trên máy này. Mở Google Sheet › Chia sẻ › để “Hạn chế” (chỉ cô xem được) › Sao chép đường liên kết rồi dán vào đây.</small></div>`;
+ return `<div class="card hphd"><div><b>Bảng thu học phí</b><small>Hai trang trong cùng một file Google Sheets: <b>Kèm nhóm</b> và <b>Kèm 1-1</b> (thêm cột Ngày học). Cột Chi phí thực tự tính = Học phí + Phí giáo trình + Chi phí khác.</small></div>
+${u?`<div class="row"><a class="btn" href="${gvE(ed)}" target="_blank" rel="noopener">📊 Mở bảng học phí ↗</a><button class="btn o sm" onclick="GV.hpEdit=true;gvDraw()">✏ Đổi link</button></div>`:""}</div>
+${!u||GV.hpEdit?form:""}
+<div class="hpcols">${cols.map(c=>`<div class="card"><b>${c[0]}</b><small>${c[1]}</small></div>`).join("")}</div>
+${u?`<div class="card hpfr"><iframe src="${gvE(ed)}?rm=minimal" loading="lazy" title="Bảng thu học phí"></iframe></div>
+<p class="ctx">Khung trên hiện bảng khi máy này đang đăng nhập đúng tài khoản Google của cô. Nếu khung trống hoặc báo cần quyền truy cập, bấm <b>Mở bảng học phí ↗</b>.</p>`:""}`}
+
 /* lối vào: menu "⚙ Quản trị" (sau Khóa học, 29/10) + #theodoi */
 (function(){const nv=$("nav");if(nv&&!nv.querySelector('[data-id="gv"]')){const b=document.createElement("button");b.dataset.id="gv";b.className="gvnav";b.textContent="⚙ Quản trị";b.onclick=()=>{gvOpen();typeof mMenu=="function"&&mMenu(false)};const c=nv.querySelector('[data-id="courses"]');c&&c.nextSibling?nv.insertBefore(b,c.nextSibling):nv.appendChild(b)}
  gvSec();if(/theodoi/.test(location.hash))gvOpen();addEventListener("hashchange",()=>{if(/theodoi/.test(location.hash))gvOpen()});
@@ -168,4 +189,7 @@ td.gvy{color:#2e7d4f;font-weight:800}td.gvx{color:#b23a48;font-weight:800;backgr
 .gvq{margin:4px 0;color:var(--t)}.gvc{font-size:1.1rem;color:#2e7d4f}.gvcnt{text-align:center;flex:none}.gvcnt b{display:block;font-size:1.4rem;color:#b23a48}.gvcnt small{color:var(--sub)}
 .gvans{margin:8px 0 4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.gvans>span{background:#fff6f6;border:1px solid #e3a3a3;border-radius:10px;padding:2px 8px}.gvans i{color:#b23a48;font-style:normal;font-size:.8rem}.gvwho{color:var(--sub)}
 .gvact{padding-left:18px;margin:6px 0 0}.gvact li{margin:6px 0}.gvact small{color:var(--sub)}.gvel{border-top:1px dashed var(--b);padding:8px 0}.gvel small{color:var(--sub)}
-@media(max-width:600px){.gvpins{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gvpin{padding:10px}.gvpn{font-size:1.8rem;letter-spacing:.1em}.gvdt{font-size:.82rem}.gvdt th,.gvdt td{padding:6px 4px}.gvdt td:not(:first-child),.gvdt th:not(:first-child){width:22%}.gvdt td small{font-size:.7rem}.gvbr{grid-template-columns:110px 1fr 32px}.gvst b{font-size:1.3rem}}`;document.head.appendChild(st)})();
+.hphd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}.hphd small{display:block;color:var(--sub);margin-top:4px}.hphd a.btn{text-decoration:none}
+.hpset .tin{width:100%;box-sizing:border-box;margin:8px 0}.hpcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:12px}.hpcols .card{margin:0}.hpcols small{display:block;color:var(--sub);margin-top:4px}
+.hpfr{padding:0;overflow:hidden}.hpfr iframe{display:block;width:100%;height:72vh;border:0}
+@media(max-width:600px){.hpfr iframe{height:65vh}.gvpins{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.gvpin{padding:10px}.gvpn{font-size:1.8rem;letter-spacing:.1em}.gvdt{font-size:.82rem}.gvdt th,.gvdt td{padding:6px 4px}.gvdt td:not(:first-child),.gvdt th:not(:first-child){width:22%}.gvdt td small{font-size:.7rem}.gvbr{grid-template-columns:110px 1fr 32px}.gvst b{font-size:1.3rem}}`;document.head.appendChild(st)})();
