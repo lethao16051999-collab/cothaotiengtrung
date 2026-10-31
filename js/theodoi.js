@@ -152,13 +152,13 @@ const hpUrl=()=>{let u="";try{u=localStorage.getItem("ct_hp_url")||""}catch(e){}
 function hpSave(){const v=($("hpin").value||"").trim();if(v&&!/^https:\/\/docs\.google\.com\/spreadsheets\//.test(v)){GV.hpErr="Link chưa đúng: cần link Google Sheets (bắt đầu bằng https://docs.google.com/spreadsheets/…).";gvDraw();return}
  GV.hpErr="";try{v?localStorage.setItem("ct_hp_url",v):localStorage.removeItem("ct_hp_url")}catch(e){}GV.hpEdit=false;gvDraw()}
 function gvHp(){const u=hpUrl(),ed=u&&u.replace(/[#?].*$/,"").replace(/\/(edit|view|htmlview|pubhtml).*$/,"")+"/edit";
- const cols=[["Kèm theo nhóm","Tên · Lớp · Học phí · Đã thu / Chưa thu · Note · Phí giáo trình · Chi phí khác · Chi phí thực"],["Kèm 1-1","Tên · Lớp · Ngày học · Học phí · Đã thu / Chưa thu · Note · Phí giáo trình · Chi phí khác · Chi phí thực"]];
+ const cols=[["Kèm theo nhóm","Tên · Lớp · Học phí · Đã thu / Chưa thu · Note · Phí giáo trình · Chi phí khác · Chi phí thực"],["Kèm 1-1","Tên · Lớp · Ngày học · Học phí · Đã thu / Chưa thu · Note · Phí giáo trình · Chi phí khác · Chi phí thực"],["Lương giáo viên","Tên giáo viên · Lớp phụ trách · Tháng · Số buổi dạy · Lương / buổi · Thưởng / phụ cấp · Khấu trừ · Thực nhận · Đã trả / Chưa trả · Ngày trả · Note"]];
  const form=`<div class="card hpset"><b>${u?"Đổi link Google Sheet":"Gắn link Google Sheet bảng học phí"}</b>
 <input class="tin" id="hpin" placeholder="https://docs.google.com/spreadsheets/d/…" value="${gvE(u)}" onkeydown="if(event.key=='Enter')hpSave()">
 <div class="row"><button class="btn sm" onclick="hpSave()">Lưu link</button>${u?`<button class="btn o sm" onclick="GV.hpEdit=false;gvDraw()">Hủy</button>`:""}</div>
 ${GV.hpErr?`<p class="bad">${GV.hpErr}</p>`:""}<small class="ctx">Link lưu trên máy này. Mở Google Sheet › Chia sẻ › để “Hạn chế” (chỉ cô xem được) › Sao chép đường liên kết rồi dán vào đây.</small></div>`;
- return `<div class="card hphd"><div><b>Bảng thu học phí</b><small>Hai trang trong cùng một file Google Sheets: <b>Kèm nhóm</b> và <b>Kèm 1-1</b> (thêm cột Ngày học). Cột Chi phí thực tự tính = Học phí + Phí giáo trình + Chi phí khác.</small></div>
-${u?`<div class="row"><a class="btn" href="${gvE(ed)}" target="_blank" rel="noopener">📊 Mở bảng học phí ↗</a><button class="btn o sm" onclick="GV.hpEdit=true;gvDraw()">✏ Đổi link</button></div>`:""}</div>
+ return `<div class="card hphd"><div><b>Bảng thu học phí · Lương giáo viên</b><small>Ba trang trong cùng một file Google Sheets: <b>Kèm nhóm</b>, <b>Kèm 1-1</b> (thêm cột Ngày học) và <b>Lương giáo viên</b>. Chi phí thực = Học phí + Phí giáo trình + Chi phí khác; Thực nhận = Số buổi × Lương / buổi + Thưởng − Khấu trừ.</small></div>
+${u?`<div class="row"><a class="btn" href="${gvE(ed)}" target="_blank" rel="noopener">📊 Mở bảng học phí · lương ↗</a><button class="btn o sm" onclick="GV.hpEdit=true;gvDraw()">✏ Đổi link</button></div>`:""}</div>
 ${!u||GV.hpEdit?form:""}
 <div class="hpcols">${cols.map(c=>`<div class="card"><b>${c[0]}</b><small>${c[1]}</small></div>`).join("")}</div>
 ${u?`<div class="card hpfr"><iframe src="${gvE(ed)}?rm=minimal" loading="lazy" title="Bảng thu học phí"></iframe></div>
