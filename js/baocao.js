@@ -47,11 +47,11 @@ function bcParts(lv,b){if(typeof NB_P12=="undefined"||typeof LDS=="undefined")re
 function bcStu(h,W,les,cls,ses){const D=GV.data,inW=t=>t>=W.s&&t<W.e;
  const tc=D.tc.filter(x=>x.code==h.code&&inW(x.at)),days=new Set(tc.map(x=>new Date(x.at).toDateString())).size;
  const min=Math.round(tc.filter(x=>x.t=="Học bài"||x.t=="Làm test").reduce((a,x)=>a+(x.m||0),0));
- const dd=D.dd||[],abs=ses.filter(d=>!dd.some(x=>x.d==d&&x.code==h.code));
+ const dd=D.dd||[],abs=ses.filter(d=>!dd.some(x=>x.d==d&&x.code==h.code)),st=(d)=>typeof qtDdSt=="function"?qtDdSt(cls,d,h.code):"",ex=abs.filter(d=>st(d)=="phep"),late=ses.filter(d=>st(d)=="muon");
  const tests=tc.filter(x=>x.t=="Nộp test").sort((a,b)=>a.at-b.at);
  const errs=D.ls.filter(e=>e.code==h.code&&inW(e.at)),bySec={};errs.forEach(e=>bySec[e.sec]=(bySec[e.sec]||0)+1);
  const dg=(D.dg||[]).filter(x=>x.code==h.code&&x.d>=W.ds&&x.d<W.de),stars=dg.map(x=>x.star).filter(Boolean);
- const R={days,min,abs,ses:ses.length,tests,errs:errs.length,weakSec:Object.keys(bySec).sort((a,b)=>bySec[b]-bySec[a]).slice(0,2).map(k=>k+" ("+bySec[k]+" câu)"),
+ const R={days,min,abs,ex,late,ses:ses.length,tests,errs:errs.length,weakSec:Object.keys(bySec).sort((a,b)=>bySec[b]-bySec[a]).slice(0,2).map(k=>k+" ("+bySec[k]+" câu)"),
   star:stars.length?Math.round(stars.reduce((a,b)=>a+b,0)/stars.length*10)/10:null,les};
  if(les){const r=D.tt.find(x=>x.code==h.code&&x.lv==les.lv&&x.b==les.b),P=bcParts(les.lv,les.b)||Object.keys(PNM).filter(k=>k!="test"&&r&&r[k]!=null).map(k=>[k,PNM[k]]);
   const done=P.filter(p=>r&&r[p[0]]!=null);R.avg=r&&r.avg!=null?Math.round(r.avg):null;
@@ -65,7 +65,7 @@ function bcStu(h,W,les,cls,ses){const D=GV.data,inW=t=>t>=W.s&&t<W.e;
 function bcMsg(h,R,W,cls){const ph=(BCS.to[cls]||"ph")=="ph",ng=ph?"con":"em",L=[];
  L.push(ph?`Kính gửi phụ huynh bạn ${h.name}!`:`Chào ${h.name}!`);
  L.push(`Cô Thảo gửi ${ph?"kết quả học tiếng Trung của con":"em kết quả học"} tuần ${W.txt} (lớp ${cls}):`);
- if(R.ses)L.push(`• Đi học: ${R.ses-R.abs.length}/${R.ses} buổi`+(R.abs.length?` (vắng ${R.abs.map(d=>BC_TH[new Date(d+"T12:00:00").getDay()]+" "+d.slice(8,10)+"/"+d.slice(5,7)).join(", ")})`:"")+".");
+ if(R.ses)L.push(`• Đi học: ${R.ses-R.abs.length}/${R.ses} buổi`+(R.abs.length?` (vắng ${R.abs.map(d=>BC_TH[new Date(d+"T12:00:00").getDay()]+" "+d.slice(8,10)+"/"+d.slice(5,7)+((R.ex||[]).includes(d)?" có phép":"")).join(", ")})`:"")+((R.late||[]).length?`, đi muộn ${R.late.length} buổi`:"")+".");
  if(R.les){const t=bcTitle(R.les);
   if(R.st=="ok")L.push(`• Bài về nhà ${t}: ✅ ${ng} đã hoàn thành`+(R.avg!=null?`, điểm trung bình ${R.avg}%`:"")+".");
   else if(R.st=="low"){let s=`• Bài về nhà ${t}: 🟠 ${ng} mới làm một phần`;const x=[];if(R.miss.length)x.push("còn thiếu "+R.miss.join(", "));if(R.low.length)x.push("chưa đạt 80%: "+R.low.join(", "));L.push(s+(x.length?" — "+x.join("; "):"")+".")}

@@ -121,7 +121,7 @@ ${pr.length?`<details><summary>${ab.length?`Chưa điểm danh (${ab.length})`:"
  if(!ds.length)return h+`<div class="card">Lớp ${gvE(l.cls)} chưa có buổi điểm danh nào trong ${GV.days} ngày qua.</div>`;
  const at=(c,d)=>dd.find(x=>x.code==c&&x.d==d);
  return h+`<h3 class="ab-h">Lịch sử điểm danh · ${gvE(l.cls)}</h3><div class="card gvtw"><table class="gvt gvm"><thead><tr><th>Học viên</th>${ds.map(d=>`<th>${gvDay(d)}</th>`).join("")}<th>Có mặt</th></tr></thead><tbody>
-${l.hv.map(hv=>{const n=ds.filter(d=>at(hv.code,d)).length;return `<tr><td onclick="GV.stu='${hv.code}';gvDraw()"><b>${gvE(hv.name)}</b></td>${ds.map(d=>{const x=at(hv.code,d);return x?`<td class="gvy">✓<small>${gvE(x.t)}</small></td>`:`<td class="gvx">✗</td>`}).join("")}<td>${gvSc(Math.round(n/ds.length*100))}<small>${n}/${ds.length}</small></td></tr>`}).join("")}
+${l.hv.map(hv=>{const n=ds.filter(d=>at(hv.code,d)).length;return `<tr><td onclick="GV.stu='${hv.code}';gvDraw()"><b>${gvE(hv.name)}</b></td>${ds.map(d=>{const x=at(hv.code,d);return x?`<td class="gvy">${x.late?"⏰":"✓"}<small>${gvE(x.t)}</small></td>`:typeof qtDdSt=="function"&&qtDdSt(l.cls,d,hv.code)=="phep"?`<td class="gvx">P<small>có phép</small></td>`:`<td class="gvx">✗</td>`}).join("")}<td>${gvSc(Math.round(n/ds.length*100))}<small>${n}/${ds.length}</small></td></tr>`}).join("")}
 <tr class="gvavg"><td>Sĩ số có mặt</td>${ds.map(d=>`<td>${l.hv.filter(hv=>at(hv.code,d)).length}/${l.hv.length}</td>`).join("")}<td></td></tr></tbody></table></div>
 <p class="ctx">Một ngày được tính là buổi học khi có ít nhất một bạn trong lớp điểm danh.</p>`}
 
