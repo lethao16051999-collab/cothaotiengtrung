@@ -38,8 +38,8 @@ function gvDraw(){const s=gvSec(),D=GV.data;
 <label>Thời gian <select onchange="gvSet('days',+this.value,1)">${[7,30,60,120,365].map(d=>`<option value="${d}" ${d==GV.days?"selected":""}>${d} ngày qua</option>`).join("")}</select></label>
 <button class="btn sm" onclick="gvLoad()" ${GV.busy?"disabled":""}>${GV.busy?"Đang tải…":"↻ Tải lại"}</button><button class="btn o sm" onclick="gvLogout()">Thoát</button>
 <small>Cập nhật lúc ${gvT(D.now)}</small></div>${GV.err?`<p class="bad">${GV.err}</p>`:""}
-<div class="stb gvtabs">${[["tq","👥 Tổng quan"],["dd","✋ Điểm danh"],["dg","📝 Tự đánh giá"],["bc","📅 Báo cáo tuần"],["td","📈 Tiến độ theo bài"],["ls","⚠️ Lỗi hay gặp"],["hp","💰 Học phí"]].map(t=>`<button class="${GV.tab==t[0]&&!GV.stu?"on":""}" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>
-${GV.stu?gvStu(F,GV.stu):({tq:gvTq,dd:gvDd,dg:gvDg,bc:typeof gvBc=="function"?gvBc:gvTq,td:gvTd,ls:gvLs,hp:gvHp})[GV.tab](F)}`}
+<div class="stb gvtabs">${(typeof qtHn=="function"?[["hn","🏠 Hôm nay"],["lop","👥 Lớp"],["ct","📅 Chốt tuần"],["ts","🎯 Tuyển sinh"],["hp","💰 Học phí"]]:[["tq","👥 Tổng quan"],["dd","✋ Điểm danh"],["dg","📝 Tự đánh giá"],["bc","📅 Báo cáo tuần"],["ls","⚠️ Lỗi hay gặp"],["hp","💰 Học phí"]]).map(t=>`<button class="${GV.tab==t[0]&&!GV.stu?"on":""}" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>
+${GV.stu?gvStu(F,GV.stu):(({tq:gvTq,dd:gvDd,dg:gvDg,bc:typeof gvBc=="function"?gvBc:gvTq,td:gvTd,ls:gvLs,hp:gvHp,hn:window.qtHn,lop:window.qtLop,ct:window.qtCt,ts:window.qtTs})[GV.tab]||gvTq)(F)}`}
 
 /* ---------- Tổng quan ---------- */
 function gvPer(F,code){const tt=F.tt.filter(x=>x.code==code),tc=F.tc.filter(x=>x.code==code),last=Math.max(0,...tc.map(x=>x.at),...tt.map(x=>x.at||0),(GV.data.hv.find(h=>h.code==code)||{}).last||0);
