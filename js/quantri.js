@@ -72,11 +72,16 @@ const qtL=cls=>{const L=QT.d.lt[cls];return L&&!L.hide?L:null};
 function qtIsDay(L,s){return(L.ex||[]).includes(s)||((L.days||[]).includes(qtD(s).getDay())&&!(L.off||[]).includes(s))}
 function qtNext(L,s,dir){let x=s;for(let i=0;i<400;i++){x=qtAdd(x,dir);if(qtIsDay(L,x))return x}return null}
 /* [{s, d, han}] theo thứ tự buổi */
+function qtFixed(L){return!!((L.days||[]).length||(L.ex||[]).length)}
+/* [{s, d, han}] theo thứ tự buổi. Lịch cố định: tính từ mốc theo thứ học; buổi có ngày riêng (s.dt) dùng ngày đó và các buổi sau tính tiếp từ đó.
+   Lịch không cố định (không tick thứ nào): mỗi buổi dùng ngày cô điền (s.dt). */
 function qtSched(L){if(!L||!L.s)return[];const S=L.s.slice().sort((a,b)=>a.n-b.n),map={};
- if(L.an&&L.an.d&&L.an.n!=null){const n0=+L.an.n,ns=S.map(x=>x.n);map[n0]=L.an.d;
-  let d=L.an.d;for(let n=n0+1;n<=Math.max(n0,...ns);n++){d=qtNext(L,d,1);if(!d)break;map[n]=d}
-  d=L.an.d;for(let n=n0-1;n>=Math.min(n0,...ns);n--){d=qtNext(L,d,-1);if(!d)break;map[n]=d}}
- return S.map((s,i)=>{const d=map[s.n]||"",nx=S[i+1]&&map[S[i+1].n],en=QT.d.en[qtKey(L,d)];
+ if(qtFixed(L)&&L.an&&L.an.d&&L.an.n!=null){const n0=+L.an.n;
+  S.filter(x=>x.n==n0).forEach(x=>map[x.n]=x.dt||L.an.d);
+  let d=(S.find(x=>x.n==n0)||{}).dt||L.an.d;S.filter(x=>x.n>n0).forEach(x=>{d=x.dt||(d&&qtNext(L,d,1));map[x.n]=d||""});
+  d=L.an.d;S.filter(x=>x.n<n0).reverse().forEach(x=>{d=x.dt||(d&&qtNext(L,d,-1));map[x.n]=d||""})}
+ else S.forEach(x=>map[x.n]=x.dt||"");
+ return S.map((s,i)=>{const d=map[s.n]||"",nx=S.slice(i+1).map(y=>map[y.n]).find(Boolean),en=QT.d.en[qtKey(L,d)];
   return{s,d,han:(en&&en.han)||(nx?qtAdd(nx,-1):d?qtAdd(d,6):"")}})}
 function qtKey(L,d){const c=Object.keys(QT.d.lt).find(k=>QT.d.lt[k]===L);return c+"|"+d}
 const qtHid=c=>!!(QT.d.lt[c]&&QT.d.lt[c].hide);
@@ -103,7 +108,7 @@ function qtReq(cls,to){const L=qtL(cls);if(!L)return[];const seen={};
 /* tình trạng một học viên trong lớp */
 function qtStu(h,cls,to){to=to||qtToday();const T=qtToday(),req=qtReq(cls,to),from=qtYmd(new Date(Date.now()-GV.days*864e5));
  const items=req.map(x=>{const S=qtLesSt(h.code,x.s.w);return Object.assign({w:x.s.w,han:x.han,d:x.d,n:x.s.n,over:x.han&&x.han<T},S)});
- const held=qtSched(qtL(cls)).filter(x=>x.d&&x.d<=to&&x.d<=T&&x.d>=from).map(x=>x.d),dd=GV.data.dd||[];
+ const dd=GV.data.dd||[],cs=new Set(qtHv(cls).map(x=>x.code)),held=qtSched(qtL(cls)).filter(x=>x.d&&x.d<=to&&x.d>=from&&(x.d<T||(x.d==T&&dd.some(z=>z.d==T&&cs.has(z.code))))).map(x=>x.d);
  const pres=held.filter(d=>dd.some(x=>x.d==d&&x.code==h.code)),abs=held.filter(d=>!pres.includes(d));
  const bad=items.filter(x=>x.st!="ok"),st=!bad.length?"ok":bad.some(x=>x.over)?"no":"low";
  return{items,bad,held,pres,abs,st}}
@@ -162,7 +167,7 @@ function qtDdPanel(c,d){const hv=qtHv(c),self=(GV.data._dd0||[]).filter(x=>x.d==
   return `<label class="${s?"self":""}"><input type="checkbox" value="${h.code}" ${s||mine.includes(h.code)?"checked":""} ${s?"disabled":""}> ${gvE(h.name)}${s?" <small>(tự điểm danh)</small>":""}</label>`}).join("")||"<span class='ctx'>Lớp chưa có học viên.</span>"}</div>
 <div class="row"><button class="btn o sm" onclick="document.querySelectorAll('#qtdd input:not(:disabled)').forEach(i=>i.checked=true)">Chọn cả lớp</button><button class="btn sm" onclick="qtDdSave(${qtJ(c)},'${d}')">💾 Lưu điểm danh</button><button class="btn o sm" onclick="QT.ui.dd=null;gvDraw()">Đóng</button></div></div>`}
 function qtDdSave(c,d){const cs=[...document.querySelectorAll("#qtdd input:not(:disabled)")].filter(i=>i.checked).map(i=>i.value);qtPut("dd",c+"|"+d,{c:cs});QT.ui.dd=null;qtSync();gvDraw()}
-function qtOff(c,d){const L=qtL(c);if(!L)return;ask(`Đánh dấu ${qtTD(d)} lớp ${gvE(c)} <b>nghỉ</b>? Buổi đó và các buổi sau tự lùi một buổi.`,()=>{const o=Object.assign({},L);o.off=[...new Set([...(L.off||[]),d])];
+function qtOff(c,d){const L=qtL(c);if(!L)return;ask(`Đánh dấu ${qtTD(d)} lớp ${gvE(c)} <b>nghỉ</b>? Buổi đó và các buổi sau tự lùi một buổi.`,()=>{const o=JSON.parse(JSON.stringify(L));delete o._t;delete o._sv;o.off=[...new Set([...(L.off||[]),d])];(o.s||[]).forEach(x=>{if(x.dt==d)delete x.dt});
  if(o.an&&o.an.d==d){const nx=qtNext(o,d,1);o.an={n:o.an.n,d:nx}}qtPut("lt",c,o);gvDraw()})}
 
 /* ---------- kết thúc buổi: giao bài ---------- */
@@ -252,22 +257,23 @@ function qtKtSet(c,d,code,k,v){const K=qtKtGet(c,d,code);K.r[code][k]=v;qtPut("k
 function qtKtNx(c,d,code,v){const K=qtKtGet(c,d,code);K.r[code].nx=v;qtPut("kt",c+"|"+d,K);const hh=GV.data.hv.find(x=>x.code==code),m=$("qtm_kt_"+code);if(m&&hh)m.textContent=qtKtMsg(c,d,hh)}
 
 /* ---------- sửa lộ trình ---------- */
-function qtEdSec(c,L,S){const o=L||{days:[],time:"",lv:1,an:null,off:[],ex:[],s:[]},op=QT.ui.ed==c,T=qtToday();
+function qtEdSec(c,L,S){const o=L||{days:[],time:"",lv:1,an:null,off:[],ex:[],s:[]},op=QT.ui.ed==c,T=qtToday(),fx=qtFixed(o);
  const lvs=[[1,"HSK 1"],[6,"GT chuẩn HSK1"],[2,"HSK 2"],[3,"HSK 3"],[4,"HSK 4"],[5,"Mở rộng H4"]];
  return `<details class="card qted" ${op?"open":""} ontoggle="QT.ui.ed=this.open?${qtJ(c)}:null"><summary><b>🗓 Lộ trình lớp ${gvE(c)}</b> <small>(${S.length} buổi · sửa, thêm buổi, báo nghỉ)</small></summary>
-<div class="qtedg"><div class="qtf"><span>Lịch học</span><div class="qtdays">${[1,2,3,4,5,6,0].map(d=>`<label><input type="checkbox" ${(o.days||[]).includes(d)?"checked":""} onchange="qtEd(${qtJ(c)},'day',${d},this.checked)">${QT_TH[d]}</label>`).join("")}</div></div>
+${fx?"":`<div class="card note">Lớp <b>không có lịch cố định</b>: cô điền ngày ở cột <b>Ngày</b> cho từng buổi (buổi chưa có ngày sẽ không hiện ở Hôm nay / Chốt tuần). Muốn ngày tự tính thì tick thứ học bên dưới và điền mốc.</div>`}
+<div class="qtedg"><div class="qtf"><span>Lịch học <small class="ctx">(không tick thứ nào = lịch linh hoạt)</small></span><div class="qtdays">${[1,2,3,4,5,6,0].map(d=>`<label><input type="checkbox" ${(o.days||[]).includes(d)?"checked":""} onchange="qtEd(${qtJ(c)},'day',${d},this.checked)">${QT_TH[d]}</label>`).join("")}</div></div>
 <label class="qtf">Giờ <input class="tin" type="time" value="${gvE(o.time||"")}" onchange="qtEd(${qtJ(c)},'time',this.value)"></label>
 <label class="qtf">Cấp bài web mặc định <select class="tin" onchange="qtEd(${qtJ(c)},'lv',+this.value)">${lvs.map(l=>`<option value="${l[0]}" ${l[0]==o.lv?"selected":""}>${l[1]}</option>`).join("")}</select></label>
-<div class="qtf"><span>Mốc tính ngày: buổi số … học ngày …</span><div class="row"><input class="tin qtn" type="number" min="1" value="${o.an?o.an.n:""}" onchange="qtEd(${qtJ(c)},'ann',this.value)"><input class="tin" type="date" value="${o.an?o.an.d:""}" onchange="qtEd(${qtJ(c)},'and',this.value)"></div></div></div>
+${fx?"":"<!--"}<div class="qtf"><span>Mốc tính ngày: buổi số … học ngày …</span><div class="row"><input class="tin qtn" type="number" min="1" value="${o.an?o.an.n:""}" onchange="qtEd(${qtJ(c)},'ann',this.value)"><input class="tin" type="date" value="${o.an?o.an.d:""}" onchange="qtEd(${qtJ(c)},'and',this.value)"></div></div>${fx?"":"-->"}</div>
 ${(o.off||[]).length||(o.ex||[]).length?`<p>${(o.off||[]).map(d=>`<span class="pill">Nghỉ ${qtTD(d)} <a onclick="qtEd(${qtJ(c)},'unoff','${d}')">✕</a></span>`).join("")}${(o.ex||[]).map(d=>`<span class="pill">Học bù ${qtTD(d)} <a onclick="qtEd(${qtJ(c)},'unex','${d}')">✕</a></span>`).join("")}</p>`:""}
-<div class="row"><label class="qtf in">Thêm buổi học bù <input type="date" class="tin" onchange="this.value&&qtEd(${qtJ(c)},'ex',this.value)"></label><label class="qtf in">Báo nghỉ ngày <input type="date" class="tin" onchange="this.value&&qtEd(${qtJ(c)},'off',this.value)"></label></div>
+${fx?"":"<!--"}<div class="row"><label class="qtf in">Thêm buổi học bù <input type="date" class="tin" onchange="this.value&&qtEd(${qtJ(c)},'ex',this.value)"></label><label class="qtf in">Báo nghỉ ngày <input type="date" class="tin" onchange="this.value&&qtEd(${qtJ(c)},'off',this.value)"></label></div>${fx?"":"-->"}
 <div class="gvtw"><table class="gvt qtet"><thead><tr><th>Buổi</th><th>Ngày</th><th>Chủ đề</th><th>Nội dung</th><th>Bài trên web</th><th>Loại</th><th></th></tr></thead><tbody>
-${S.map(x=>`<tr class="${x.d&&x.d<T?"past":x.d==T?"now":""}"><td><b>${x.s.n}</b></td><td>${x.d?qtTD(x.d):"—"}</td>
+${S.map(x=>`<tr class="${x.d&&x.d<T?"past":x.d==T?"now":""}"><td><b>${x.s.n}</b></td><td class="qtdt ${x.s.dt?"own":""}"><input class="tin" type="date" value="${x.d}" title="${x.s.dt?"Ngày cô tự đặt":"Ngày tự tính theo lịch"}" onchange="qtEdS(${qtJ(c)},${x.s.n},'dt',this.value)"><small>${x.d?QT_TH[qtD(x.d).getDay()]:"chưa có ngày"}${x.s.dt&&fx?` · <a onclick="qtEdS(${qtJ(c)},${x.s.n},'dt','')">↺ theo lịch</a>`:""}</small></td>
 <td><input class="tin" value="${gvE(x.s.cd)}" onchange="qtEdS(${qtJ(c)},${x.s.n},'cd',this.value)"></td><td><input class="tin" value="${gvE(x.s.nd)}" onchange="qtEdS(${qtJ(c)},${x.s.n},'nd',this.value)"></td>
 <td><select class="tin" onchange="qtEdS(${qtJ(c)},${x.s.n},'w',this.value)"><option value="">—</option>${qtLesOpts().map(w=>`<option value="${w}" ${w==x.s.w?"selected":""}>${gvE(qtLesT(w,1))}</option>`).join("")}</select></td>
 <td><select class="tin" onchange="qtEdS(${qtJ(c)},${x.s.n},'k',this.value)">${Object.keys(QT_K).map(k=>`<option value="${k}" ${k==x.s.k?"selected":""}>${QT_K[k]}</option>`).join("")}</select></td>
-<td class="qtact">${x.d&&x.d>=T?`<button class="btn o sm" title="Ngày này nghỉ, lùi các buổi sau" onclick="qtOff(${qtJ(c)},'${x.d}')">Nghỉ</button>`:""}<button class="btn o sm" title="Xóa buổi" onclick="qtEdS(${qtJ(c)},${x.s.n},'del')">✕</button></td></tr>`).join("")||`<tr><td colspan="7" class="ctx">Chưa có buổi nào.</td></tr>`}</tbody></table></div>
-<div class="row"><button class="btn o sm" onclick="qtEd(${qtJ(c)},'add')">➕ Thêm 1 buổi cuối</button></div>
+<td class="qtact">${fx&&x.d&&x.d>=T?`<button class="btn o sm" title="Ngày này nghỉ, lùi các buổi sau" onclick="qtOff(${qtJ(c)},'${x.d}')">Nghỉ</button>`:""}<button class="btn o sm" title="Xóa buổi" onclick="qtEdS(${qtJ(c)},${x.s.n},'del')">✕</button></td></tr>`).join("")||`<tr><td colspan="7" class="ctx">Chưa có buổi nào.</td></tr>`}</tbody></table></div>
+<div class="row"><button class="btn o sm" onclick="qtEd(${qtJ(c)},'add')">➕ Thêm 1 buổi cuối</button><label class="qtf in">Tạo sẵn <input class="tin qtn" type="number" min="1" max="60" id="qtaddn" value="10"> buổi</label><button class="btn o sm" onclick="qtEd(${qtJ(c)},'addn',+$('qtaddn').value)">➕ Tạo</button></div>
 <div class="qtf"><span>Dán nhanh lộ trình (mỗi dòng một buổi: <i>Buổi 6 ⇥ Mua sắm ⇥ Bài 4</i>, dán thẳng từ Excel / Zalo được)</span><textarea class="tin" id="qtpaste" rows="4" placeholder="Buổi 1		Bài 1&#10;Buổi 2	Tới một nơi mới	Bài 2&#10;Buổi 26		Kiểm tra"></textarea>
 <div class="row"><button class="btn sm" onclick="qtPaste(${qtJ(c)},0)">Thay toàn bộ lộ trình</button><button class="btn o sm" onclick="qtPaste(${qtJ(c)},1)">Thêm / ghi đè các buổi này</button></div></div>
 <div class="row qtdel"><button class="btn o sm" onclick="qtHide(${qtJ(c)},1)">🗑 Ẩn lớp này (lớp đã kết thúc / không dạy nữa)</button></div>
@@ -279,9 +285,12 @@ function qtEd(c,k,a,b){const o=qtLc(c);QT.ui.ed=c;
  else if(k=="ann"){o.an=Object.assign({d:qtToday()},o.an||{},{n:+a})}else if(k=="and"){o.an=Object.assign({n:(o.s[0]||{n:1}).n},o.an||{},{d:a})}
  else if(k=="off"){o.off=[...new Set([...o.off,a])];o.ex=o.ex.filter(x=>x!=a)}else if(k=="unoff")o.off=o.off.filter(x=>x!=a);
  else if(k=="ex"){o.ex=[...new Set([...o.ex,a])];o.off=o.off.filter(x=>x!=a)}else if(k=="unex")o.ex=o.ex.filter(x=>x!=a);
- else if(k=="add"){const n=o.s.length?Math.max(...o.s.map(x=>x.n))+1:1;o.s.push({n,cd:"",nd:"",w:"",k:"hoc"});if(!o.an)o.an={n,d:qtToday()}}
+ else if(k=="addn"){const N=Math.max(1,Math.min(60,a|0));let n=o.s.length?Math.max(...o.s.map(x=>x.n)):0;for(let i=0;i<N;i++)o.s.push({n:++n,cd:"",nd:"",w:"",k:"hoc"});if(!o.an&&qtFixed(o))o.an={n:o.s[0].n,d:qtToday()}}
+ else if(k=="add"){const n=o.s.length?Math.max(...o.s.map(x=>x.n))+1:1;o.s.push({n,cd:"",nd:"",w:"",k:"hoc"});if(!o.an&&qtFixed(o))o.an={n,d:qtToday()}}
  qtPut("lt",c,o);gvDraw()}
-function qtEdS(c,n,k,v){const o=qtLc(c);QT.ui.ed=c;if(k=="del"){ask(`Xóa buổi ${n} khỏi lộ trình ${gvE(c)}?`,()=>{o.s=o.s.filter(x=>x.n!=n);qtPut("lt",c,o);gvDraw()});return}
+function qtEdS(c,n,k,v){const o=qtLc(c);if(k=="dt"){const s=o.s.find(x=>x.n==n);if(!s)return;
+  const auto=qtFixed(o)?qtSched(Object.assign({},o,{s:o.s.map(x=>x.n==n?Object.assign({},x,{dt:""}):x)})).find(x=>x.s.n==n):null;
+  if(!v||(auto&&auto.d==v))delete s.dt;else s.dt=v;QT.ui.ed=c;qtPut("lt",c,o);gvDraw();return}QT.ui.ed=c;if(k=="del"){ask(`Xóa buổi ${n} khỏi lộ trình ${gvE(c)}?`,()=>{o.s=o.s.filter(x=>x.n!=n);qtPut("lt",c,o);gvDraw()});return}
  const s=o.s.find(x=>x.n==n);if(!s)return;s[k]=v;if(k=="nd"&&!s.w){const r=qtRow(n,s.cd,v,o.lv);s.w=r.w;s.k=r.k}qtPut("lt",c,o);gvDraw()}
 function qtPaste(c,merge){const t=($("qtpaste")||{}).value||"",o=qtLc(c),rows=[];
  t.split(/\r?\n/).forEach(line=>{if(!line.trim())return;const m=line.match(/^\s*(?:buổi\s*)?(\d+)\s*[\t:.\-–]?\s*(.*)$/i);if(!m)return;
@@ -380,6 +389,6 @@ if(typeof gvDraw=="function"){
 .qtf{display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:.88rem;margin:4px 0}.qtf .tin{margin:2px 0;font-weight:400}.qtf.in{flex-direction:row;align-items:center;gap:6px}.qtf.in .tin{width:auto}
 .qtdays{display:flex;flex-wrap:wrap;gap:8px}.qtdays label{display:flex;gap:3px;align-items:center;font-weight:500}.qtn{max-width:90px}
 .qtet .tin{padding:6px 8px;font-size:.85rem;min-width:110px}.qtet td{vertical-align:middle}.qtet tbody tr{cursor:default}.qtet tr.past{opacity:.6}.qtet tr.now{background:#fff8e1}.qtact{white-space:nowrap}
-.qtnew{display:flex;flex-direction:column;gap:6px}.qtnew .tin{margin:0}.qtdel{margin-top:14px}.qtppt.done span{text-decoration:line-through;opacity:.6}.qtppt{cursor:pointer}
+.qtnew{display:flex;flex-direction:column;gap:6px}.qtnew .tin{margin:0}.qtdel{margin-top:14px}.qtdt .tin{min-width:130px}.qtdt small{display:block;color:var(--sub);font-size:.72rem}.qtdt.own .tin{border-color:var(--g);background:#fff8e1}.qtdt a{cursor:pointer;color:var(--m)}.qtppt.done span{text-decoration:line-through;opacity:.6}.qtppt{cursor:pointer}
 .qtts.due{border:1px solid #e3a3a3;background:#fff6f6}.qtts small{display:block;margin-top:3px}.qtts select{font:inherit;border-radius:10px;border:1px solid var(--b);padding:3px 6px}
 @media(max-width:600px){.qtcards,.qtlist{grid-template-columns:1fr}.qtsum .btn{margin-left:0}.qtnx{text-align:left}.qtck{grid-template-columns:1fr 1fr}.qtlv button{padding:4px 6px}}`;document.head.appendChild(st)})();
