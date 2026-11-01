@@ -22,7 +22,7 @@ const QT_SEED={
   ["","Ôn tập"],["","Ôn tập luyện nói"],["Thể thao – vận động","Bài 7"],["","Bài 8"],["","Bài 9"],["","Ôn tập"],["","Ôn tập luyện nói"],["","Bài 10"],["","Bài 11"],["","Bài 12"],
   ["","Ôn tập"],["","Ôn tập luyện nói"],["","Bài 13"],["","Bài 14"],["","Bài 15"],["","Ôn tập"],["","Ôn tập"],["","Kiểm tra"]].map((x,i)=>qtRow(i+1,x[0],x[1],2))},
  "K41 HSK3":{days:[1,4],time:"19:00",lv:3,an:{n:27,d:"2026-11-02"},off:[],ex:[],s:[["","Bài 20"],["","Ôn tập bài 18–19–20"],["","Ôn tập tổng hợp"],["","Kiểm tra đầu ra HSK3"]].map((x,i)=>qtRow(27+i,x[0],x[1],3))},
- "K45 HSK3":{days:[3,5],time:"20:30",lv:3,an:{n:1,d:"2026-11-09"},off:[],ex:[],s:Array.from({length:40},(_,i)=>({n:i+1,cd:"",nd:"",w:"",k:"hoc"}))},
+ "K45 HSK3":{days:[1,3],time:"20:30",lv:3,an:{n:1,d:"2026-11-09"},off:[],ex:[],s:Array.from({length:40},(_,i)=>({n:i+1,cd:"",nd:"",w:"",k:"hoc"}))},
  "K48 HSK2":{days:[3,5],time:"09:00",lv:2,an:{n:3,d:"2026-11-04"},off:[],ex:[],s:null}};
 QT_SEED["K48 HSK2"].s=JSON.parse(JSON.stringify(QT_SEED["K46 HSK2"].s));
 /* một dòng lộ trình từ chữ: "Bài 4" → bài web cấp lv (nếu bài đó có trên web), "Kiểm tra" → buổi kiểm tra, "Ôn tập…" → ôn */
@@ -61,7 +61,8 @@ async function qtLoad(){if(!GV.pass||typeof trkPost!="function")return;QT.busy=t
     const cur=L[it.k];if(!cur||!QT.dirty[it.t+"\u0001"+it.k]||(cur._t||0)<=(+it.ts||0)){L[it.k]=v;delete QT.dirty[it.t+"\u0001"+it.k]}});qtLocal()}
   else QT.srv=false}catch(e){QT.srv=false}
  QT.busy=false;qtSeed();qtSync();if(QT.srv)qtFlush()}
-function qtSeed(){Object.keys(QT_SEED).forEach(c=>{if(!QT.d.lt[c]){QT.d.lt[c]=Object.assign(JSON.parse(JSON.stringify(QT_SEED[c])),{_t:1});QT.dirty["lt\u0001"+c]=1}});qtLocal()}
+const QT_SV=2;/* tăng khi sửa QT_SEED: lộ trình nạp sẵn mà cô chưa sửa (_t=1) sẽ được thay bằng bản mới */
+function qtSeed(){Object.keys(QT_SEED).forEach(c=>{const o=QT.d.lt[c];if(!o||(o._t===1&&o._sv!==QT_SV)){QT.d.lt[c]=Object.assign(JSON.parse(JSON.stringify(QT_SEED[c])),{_t:1,_sv:QT_SV});QT.dirty["lt\u0001"+c]=1}});qtLocal()}
 /* điểm danh cô ghi → gộp vào GV.data.dd để Báo cáo tuần, Điểm danh, Tổng quan cùng thấy */
 function qtSync(){const D=GV.data;if(!D)return;if(!D._dd0)D._dd0=(D.dd||[]).slice();const dd=D._dd0.slice();
  Object.keys(QT.d.dd).forEach(k=>{const [cls,d]=k.split("|"),v=QT.d.dd[k];(v.c||[]).forEach(code=>{if(!dd.some(x=>x.d==d&&x.code==code))dd.push({d,code,cls,t:"cô ghi"})})});D.dd=dd}
