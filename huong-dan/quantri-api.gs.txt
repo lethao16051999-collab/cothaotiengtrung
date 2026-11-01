@@ -1,0 +1,72 @@
+/* ===== Quản trị theo tuần (lộ trình, điểm danh cô ghi, kiểm tra định kỳ, tuyển sinh) · thêm 01/11/2026 =====
+   CÁCH CÀI (làm một lần):
+   1. Mở Google Sheets "Sổ theo dõi học viên" › Tiện ích mở rộng › Apps Script.
+   2. Dán toàn bộ đoạn này vào CUỐI file Code.gs (Mã.gs).
+   3. Trong hàm doPost(e), thêm dòng sau làm DÒNG ĐẦU TIÊN bên trong hàm (cùng chỗ với các dòng chamApi_, nhomApi_ nếu có):
+         var _qt = quantriApi_(e); if (_qt) return _qt;
+   4. Lưu › Triển khai › Quản lý tác vụ triển khai › ✏ › Phiên bản: Phiên bản mới › Triển khai (địa chỉ giữ nguyên).
+   5. Trên trang web: ⚙ Quản trị › ↻ Tải lại. Dòng xanh "đã lưu trên Google Sheets" là xong.
+   Tự tạo trang tính "Quản trị (dữ liệu)": mỗi dòng một mục (Loại · Khóa · Dữ liệu · Cập nhật). Cô KHÔNG cần sửa tay trang này.
+   Loại: lt = lộ trình lớp · dd = điểm danh cô ghi · kt = phiếu kiểm tra định kỳ · ts = tuyển sinh · en = giao bài sau buổi · ppt = PPT đã soạn.
+   Cần mật khẩu ô B1 trang "Cài đặt" (giống Bảng theo dõi). */
+var QT_SH = "Quản trị (dữ liệu)";
+var QT_HD = ["Loại", "Khóa", "Dữ liệu", "Cập nhật (ms)", "Cập nhật"];
+
+function quantriApi_(e) {
+  var b;
+  try { b = JSON.parse(e.postData.contents); } catch (x) { return null; }
+  if (!b || ["qtget", "qtset"].indexOf(b.a) < 0) return null;
+  var out;
+  try { out = qtRun_(b); } catch (x) { out = { ok: false, err: "loi", msg: String(x) }; }
+  out.qt = 1;
+  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function qtRun_(b) {
+  if (!qtPass_(b.pass)) return { ok: false, err: "pass" };
+  if (b.a == "qtget") return qtGet_();
+  var l = LockService.getScriptLock(); l.waitLock(20000);
+  try { return qtSet_(b.items || []); } finally { l.releaseLock(); }
+}
+function qtPass_(p) {
+  var sh = SpreadsheetApp.getActive().getSheetByName("Cài đặt");
+  var v = sh ? String(sh.getRange("B1").getValue()).trim() : "";
+  return !!v && String(p || "").trim() === v;
+}
+function qtSheet_() {
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(QT_SH);
+  if (!sh) {
+    sh = ss.insertSheet(QT_SH);
+    sh.getRange(1, 1, 1, QT_HD.length).setValues([QT_HD]).setFontWeight("bold").setBackground("#5c1730").setFontColor("#ffffff");
+    sh.setFrozenRows(1);
+    sh.getRange("A:E").setNumberFormat("@");
+    sh.setColumnWidth(2, 160); sh.setColumnWidth(3, 420);
+  }
+  return sh;
+}
+function qtGet_() {
+  var sh = qtSheet_(), n = sh.getLastRow(), items = [];
+  if (n > 1) sh.getRange(2, 1, n - 1, 4).getValues().forEach(function (r) {
+    if (r[0] && r[1] !== "") items.push({ t: String(r[0]), k: String(r[1]), v: String(r[2]), ts: +r[3] || 0 });
+  });
+  return { ok: true, items: items };
+}
+/* items: [{t, k, v (chuỗi JSON), ts}] — chỉ ghi khi mới hơn bản đang có */
+function qtSet_(items) {
+  var sh = qtSheet_(), n = sh.getLastRow(), d = n > 1 ? sh.getRange(2, 1, n - 1, 4).getValues() : [], idx = {}, add = [], saved = 0;
+  d.forEach(function (r, i) { idx[r[0] + "\u0001" + r[1]] = i; });
+  var now = Utilities.formatDate(new Date(), "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm");
+  items.forEach(function (it) {
+    if (!it || !it.t || it.k == null) return;
+    var v = String(it.v || ""); if (v.length > 49000) return;
+    var row = [String(it.t), String(it.k), v, String(+it.ts || Date.now()), now], i = idx[it.t + "\u0001" + it.k];
+    if (i != null && i < 0) { add[-i - 1] = row; }
+    else if (i != null) {
+      if ((+d[i][3] || 0) > (+it.ts || 0)) return;
+      sh.getRange(i + 2, 1, 1, 5).setValues([row]);
+    } else { add.push(row); idx[it.t + "\u0001" + it.k] = -add.length; }
+    saved++;
+  });
+  if (add.length) sh.getRange(sh.getLastRow() + 1, 1, add.length, 5).setValues(add);
+  return { ok: true, saved: saved };
+}
