@@ -64,8 +64,14 @@ async function qtLoad(){if(!GV.pass||typeof trkPost!="function")return;QT.busy=t
 const QT_SV=2;/* tăng khi sửa QT_SEED: lộ trình nạp sẵn mà cô chưa sửa (_t=1) sẽ được thay bằng bản mới */
 function qtSeed(){Object.keys(QT_SEED).forEach(c=>{const o=QT.d.lt[c];if(!o||(o._t===1&&o._sv!==QT_SV)){QT.d.lt[c]=Object.assign(JSON.parse(JSON.stringify(QT_SEED[c])),{_t:1,_sv:QT_SV});QT.dirty["lt\u0001"+c]=1}});qtLocal()}
 /* điểm danh cô ghi → gộp vào GV.data.dd để Báo cáo tuần, Điểm danh, Tổng quan cùng thấy */
-function qtSync(){const D=GV.data;if(!D)return;if(!D._dd0)D._dd0=(D.dd||[]).slice();const dd=D._dd0.slice();
- Object.keys(QT.d.dd).forEach(k=>{const [cls,d]=k.split("|"),v=QT.d.dd[k];(v.c||[]).forEach(code=>{if(!dd.some(x=>x.d==d&&x.code==code))dd.push({d,code,cls,t:"cô ghi"})})});D.dd=dd}
+/* QT.d.dd["lớp|ngày"] = {c:[có mặt, gồm cả đi muộn], m:[đi muộn], p:[vắng có phép], x:[bạn tự điểm danh nhưng cô sửa thành vắng]} */
+function qtSync(){const D=GV.data;if(!D)return;if(!D._dd0)D._dd0=(D.dd||[]).slice();
+ const V=(cls,d)=>QT.d.dd[cls+"|"+d]||{},dd=D._dd0.filter(x=>!(V(x.cls,x.d).x||[]).includes(x.code)&&!Object.keys(QT.d.dd).some(k=>k.endsWith("|"+x.d)&&(QT.d.dd[k].x||[]).includes(x.code)))
+  .map(x=>{const v=Object.keys(QT.d.dd).filter(k=>k.endsWith("|"+x.d)).map(k=>QT.d.dd[k]).find(v=>(v.m||[]).includes(x.code));return v?Object.assign({},x,{late:1,t:((x.t||"")+" muộn").trim()}):x});
+ Object.keys(QT.d.dd).forEach(k=>{const i=k.lastIndexOf("|"),cls=k.slice(0,i),d=k.slice(i+1),v=QT.d.dd[k];(v.c||[]).forEach(code=>{if(!dd.some(x=>x.d==d&&x.code==code)){const m=(v.m||[]).includes(code);dd.push({d,code,cls,t:m?"cô ghi · muộn":"cô ghi",late:m?1:0})}})});D.dd=dd}
+/* trạng thái 1 bạn trong 1 buổi: co / muon / phep / vang */
+function qtDdSt(cls,d,code){const v=QT.d.dd[cls+"|"+d]||{},dd=(GV.data&&GV.data.dd)||[];
+ if((v.p||[]).includes(code))return"phep";const x=dd.find(z=>z.d==d&&z.code==code);if(!x)return"vang";return x.late?"muon":"co"}
 
 /* ---------- lộ trình ---------- */
 const qtL=cls=>{const L=QT.d.lt[cls];return L&&!L.hide?L:null};
@@ -108,10 +114,12 @@ function qtReq(cls,to){const L=qtL(cls);if(!L)return[];const seen={};
 /* tình trạng một học viên trong lớp */
 function qtStu(h,cls,to){to=to||qtToday();const T=qtToday(),req=qtReq(cls,to),from=qtYmd(new Date(Date.now()-GV.days*864e5));
  const items=req.map(x=>{const S=qtLesSt(h.code,x.s.w);return Object.assign({w:x.s.w,han:x.han,d:x.d,n:x.s.n,over:x.han&&x.han<T},S)});
- const dd=GV.data.dd||[],cs=new Set(qtHv(cls).map(x=>x.code)),held=qtSched(qtL(cls)).filter(x=>x.d&&x.d<=to&&x.d>=from&&(x.d<T||(x.d==T&&dd.some(z=>z.d==T&&cs.has(z.code))))).map(x=>x.d);
- const pres=held.filter(d=>dd.some(x=>x.d==d&&x.code==h.code)),abs=held.filter(d=>!pres.includes(d));
+ const dd=GV.data.dd||[],cs=new Set(qtHv(cls).map(x=>x.code)),held=[...new Set(qtSched(qtL(cls)).filter(x=>x.d&&x.d<=to&&x.d>=from&&(x.d<T||(x.d==T&&dd.some(z=>z.d==T&&cs.has(z.code))))).map(x=>x.d).concat(qtDdExtra(cls).filter(d=>d<=to&&d>=from)))].sort();
+ const pres=held.filter(d=>dd.some(x=>x.d==d&&x.code==h.code)),abs=held.filter(d=>!pres.includes(d)),late=pres.filter(d=>qtDdSt(cls,d,h.code)=="muon"),ex=abs.filter(d=>qtDdSt(cls,d,h.code)=="phep");
  const bad=items.filter(x=>x.st!="ok"),st=!bad.length?"ok":bad.some(x=>x.over)?"no":"low";
- return{items,bad,held,pres,abs,st}}
+ return{items,bad,held,pres,abs,late,ex,st}}
+/* ngày cô điểm danh ngoài lộ trình (học bù, buổi thêm) */
+function qtDdExtra(cls){const L=qtL(cls),S=L?qtSched(L).map(x=>x.d):[];return Object.keys(QT.d.dd).filter(k=>k.startsWith(cls+"|")).map(k=>k.slice(cls.length+1)).filter(d=>!S.includes(d)&&((QT.d.dd[cls+"|"+d].c||[]).length||(QT.d.dd[cls+"|"+d].p||[]).length))}
 
 /* ---------- copy ---------- */
 async function qtCopy(t,btn){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
@@ -129,18 +137,22 @@ function qtSrvBar(){const n=Object.keys(QT.dirty).length;
 
 /* ================= 🏠 HÔM NAY ================= */
 function qtHn(F){const T=qtToday(),D=GV.data,cls=qtCls().filter(c=>!GV.cls||c==GV.cls),now=new Date(),hm=qtP(now.getHours())+":"+qtP(now.getMinutes());
- const today=[],miss=[],due=[],kts=[];
+ const today=[],miss=[],due=[],kts=[],past=[];
  cls.forEach(c=>{const L=qtL(c),hv=qtHv(c);if(!L)return;const S=qtSched(L),dd=D.dd||[];
   const x=S.find(y=>y.d==T);if(x)today.push({c,L,x,hv});else if(!S.length&&(L.days||[]).includes(now.getDay())&&!(L.off||[]).includes(T))today.push({c,L,x:null,hv});
-  S.filter(y=>y.d&&y.d<T&&qtDiff(T,y.d)<=7&&hv.length&&!dd.some(z=>z.d==y.d&&hv.some(h=>h.code==z.code))).forEach(y=>miss.push({c,y}));
+  S.filter(y=>y.d&&y.d<T&&qtDiff(T,y.d)<=14&&hv.length&&!dd.some(z=>z.d==y.d&&hv.some(h=>h.code==z.code))).forEach(y=>miss.push({c,y}));
   S.filter(y=>y.s.w&&(y.han==T||y.han==qtAdd(T,1))&&y.d<=T).forEach(y=>{const nd=hv.filter(h=>qtLesSt(h.code,y.s.w).st!="ok");if(nd.length)due.push({c,y,nd})});
-  S.filter(y=>y.s.k=="kt"&&y.d>=T&&qtDiff(y.d,T)<=7).forEach(y=>kts.push({c,y}))});
+  S.filter(y=>y.s.k=="kt"&&y.d>=T&&qtDiff(y.d,T)<=7).forEach(y=>kts.push({c,y}));
+  S.filter(y=>y.d&&y.d<T&&qtDiff(T,y.d)<=14&&hv.some(h=>dd.some(z=>z.d==y.d&&z.code==h.code))).map(y=>({c,d:y.d,n:"Buổi "+y.s.n})).concat(qtDdExtra(c).filter(d=>d<T&&qtDiff(T,d)<=14).map(d=>({c,d,n:"Buổi thêm"}))).forEach(o=>past.push(Object.assign(o,{hv})))});
+ past.sort((a,b)=>b.d.localeCompare(a.d)||a.c.localeCompare(b.c,"vi"));
  today.sort((a,b)=>qtTime(a.L).localeCompare(qtTime(b.L)));
  const ts=((QT.d.ts.all||{}).list||[]).filter(p=>p.hen&&p.hen<=T&&!["Đã đăng ký","Không học"].includes(p.st));
  const chg=typeof CHG!="undefined"&&CHG.cnt||0,nh=typeof nhtCnt=="function"?nhtCnt():0,sun=now.getDay()==0;
  let h=`${qtSrvBar()}<div class="qthd"><b>${QT_TH[now.getDay()]}, ${qtDM(T)}/${T.slice(0,4)}</b>${sun?`<button class="btn sm" onclick="GV.tab='ct';gvDraw()">📅 Chủ nhật: chốt tuần →</button>`:""}</div>`;
  h+=`<h3 class="ab-h">Lớp hôm nay</h3>`+(today.length?`<div class="qtcards">${today.map(o=>qtTodayCard(o,T,hm)).join("")}</div>`:`<div class="card ctx">Hôm nay không có buổi học nào theo lộ trình${GV.cls?" của lớp này":""}.</div>`);
  if(miss.length)h+=`<div class="card qtwarn"><b>⚠️ Buổi học chưa điểm danh</b>${miss.map(m=>`<div class="qtln"><span>${gvE(m.c)} · ${qtTD(m.y.d)} · Buổi ${m.y.s.n}</span><span class="row"><button class="btn sm" onclick="qtDdOpen(${qtJ(m.c)},'${m.y.d}')">✋ Điểm danh</button><button class="btn o sm" onclick="qtOff(${qtJ(m.c)},'${m.y.d}')">Buổi này nghỉ</button></span></div>${QT.ui.dd==m.c+"|"+m.y.d?qtDdPanel(m.c,m.y.d):""}`).join("")}</div>`;
+ if(past.length){const op=past.some(o=>QT.ui.dd==o.c+"|"+o.d);h+=`<details class="card qtpast" ${op?"open":""}><summary><b>✏️ Sửa điểm danh 2 tuần qua</b> <small>(thêm bạn đến muộn, đánh dấu có phép…)</small></summary>${past.map(o=>{const p=o.hv.filter(h=>qtDdSt(o.c,o.d,h.code)!="vang"&&qtDdSt(o.c,o.d,h.code)!="phep").length;
+  return `<div class="qtln"><span>${gvE(o.c)} · ${qtTD(o.d)} · ${o.n}</span><span class="qtst">có mặt ${p}/${o.hv.length}${qtDdBadge(o.c,o.d,o.hv)} <button class="btn o sm" onclick="qtDdOpen(${qtJ(o.c)},'${o.d}')">✋ Sửa</button></span></div>${QT.ui.dd==o.c+"|"+o.d?qtDdPanel(o.c,o.d):""}`}).join("")}</details>`}
  const todo=[];
  if(chg)todo.push(`<button class="qtchip" onclick="GV.stu=null;GV.tab='cc';typeof chgLoad=='function'&&chgLoad();gvDraw()">✍ ${chg} bài chờ chấm</button>`);
  if(nh)todo.push(`<button class="qtchip" onclick="GV.stu=null;GV.tab='nh';typeof nhtLoad=='function'&&nhtLoad();gvDraw()">🎭 ${nh} nhóm chờ nhận xét</button>`);
@@ -162,11 +174,17 @@ const qtSesT=s=>[s.cd,s.nd].filter(Boolean).join(" — ")||QT_K[s.k]||"";
 
 /* ---------- điểm danh nhanh ---------- */
 function qtDdOpen(c,d){QT.ui.dd=QT.ui.dd==c+"|"+d?null:c+"|"+d;QT.ui.en=null;gvDraw()}
-function qtDdPanel(c,d){const hv=qtHv(c),self=(GV.data._dd0||[]).filter(x=>x.d==d),mine=(QT.d.dd[c+"|"+d]||{}).c||[];
- return `<div class="qtpan" id="qtdd"><b>Điểm danh ${gvE(c)} · ${qtTD(d)}</b><div class="qtck">${hv.map(h=>{const s=self.some(x=>x.code==h.code);
-  return `<label class="${s?"self":""}"><input type="checkbox" value="${h.code}" ${s||mine.includes(h.code)?"checked":""} ${s?"disabled":""}> ${gvE(h.name)}${s?" <small>(tự điểm danh)</small>":""}</label>`}).join("")||"<span class='ctx'>Lớp chưa có học viên.</span>"}</div>
-<div class="row"><button class="btn o sm" onclick="document.querySelectorAll('#qtdd input:not(:disabled)').forEach(i=>i.checked=true)">Chọn cả lớp</button><button class="btn sm" onclick="qtDdSave(${qtJ(c)},'${d}')">💾 Lưu điểm danh</button><button class="btn o sm" onclick="QT.ui.dd=null;gvDraw()">Đóng</button></div></div>`}
-function qtDdSave(c,d){const cs=[...document.querySelectorAll("#qtdd input:not(:disabled)")].filter(i=>i.checked).map(i=>i.value);qtPut("dd",c+"|"+d,{c:cs});QT.ui.dd=null;qtSync();gvDraw()}
+const QT_DS=[["co","✓ Có mặt"],["muon","⏰ Đi muộn"],["phep","📝 Có phép"],["vang","✗ Vắng"]];
+function qtDdBadge(c,d,hv){const m=hv.filter(h=>qtDdSt(c,d,h.code)=="muon").length,p=hv.filter(h=>qtDdSt(c,d,h.code)=="phep").length;return (m?` <small>· ⏰ ${m} muộn</small>`:"")+(p?` <small>· 📝 ${p} có phép</small>`:"")}
+function qtDdPanel(c,d){const hv=qtHv(c),self=(GV.data._dd0||[]).filter(x=>x.d==d);
+ return `<div class="qtpan" id="qtdd"><b>Điểm danh ${gvE(c)} · ${qtTD(d)}</b><div class="qtdl">${hv.map(h=>{const s=self.find(x=>x.code==h.code),v=QT.d.dd[c+"|"+d]||{},cur=(v.x||[]).includes(h.code)?"vang":qtDdSt(c,d,h.code);
+  return `<div class="qtdr ${cur}" data-code="${h.code}" data-self="${s?1:0}"><span>${gvE(h.name)}${s?` <small>(tự điểm danh${s.t&&/\d/.test(s.t)?" "+gvE(s.t.replace(/\s*muộn$/,"")):""})</small>`:""}</span><span class="qtrd">${QT_DS.map(o=>`<button type="button" class="${o[0]}${cur==o[0]?" on":""}" onclick="qtDdPick(this,'${o[0]}')">${o[1]}</button>`).join("")}</span></div>`}).join("")||"<span class='ctx'>Lớp chưa có học viên.</span>"}</div>
+<div class="row"><button class="btn o sm" onclick="document.querySelectorAll('#qtdd .qtdr.vang').forEach(r=>qtDdPick(r.querySelector('.co'),'co'))">Các bạn còn lại: có mặt</button><button class="btn sm" onclick="qtDdSave(${qtJ(c)},'${d}')">💾 Lưu điểm danh</button><button class="btn o sm" onclick="QT.ui.dd=null;gvDraw()">Đóng</button></div>
+<small class="ctx">Đi muộn vẫn tính là có mặt. Có phép vẫn tính vắng, nhưng ghi rõ "có phép" trong báo cáo.</small></div>`}
+function qtDdPick(b,v){const r=b.closest(".qtdr");r.className="qtdr "+v;r.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.classList.contains(v)))}
+function qtDdSave(c,d){const o={c:[],m:[],p:[],x:[]};document.querySelectorAll("#qtdd .qtdr").forEach(r=>{const k=r.dataset.code,v=r.className.split(" ")[1],self=r.dataset.self=="1";
+  if(v=="co"||v=="muon"){if(!self)o.c.push(k);if(v=="muon")o.m.push(k)}else{if(v=="phep")o.p.push(k);if(self)o.x.push(k)}});
+ qtPut("dd",c+"|"+d,o);QT.ui.dd=null;qtSync();gvDraw()}
 function qtOff(c,d){const L=qtL(c);if(!L)return;ask(`Đánh dấu ${qtTD(d)} lớp ${gvE(c)} <b>nghỉ</b>? Buổi đó và các buổi sau tự lùi một buổi.`,()=>{const o=JSON.parse(JSON.stringify(L));delete o._t;delete o._sv;o.off=[...new Set([...(L.off||[]),d])];(o.s||[]).forEach(x=>{if(x.dt==d)delete x.dt});
  if(o.an&&o.an.d==d){const nx=qtNext(o,d,1);o.an={n:o.an.n,d:nx}}qtPut("lt",c,o);gvDraw()})}
 
@@ -195,15 +213,19 @@ function qtLop(F){const cls=qtCls();
   return `<button class="card" onclick="gvSet('cls',${qtJ(c)})"><b>${gvE(c)}</b><small>${hv.length} học viên${L&&L.days?" · "+L.days.map(d=>QT_TH[d]).join("+")+(L.time?" "+L.time:""):""}</small>${nx?`<small>Buổi tới: ${qtTD(nx.d)} · ${gvE(qtSesT(nx.s))}</small>`:`<small class="ctx">${S.length?"Đã học hết lộ trình":"Chưa có lộ trình"}</small>`}${bad?`<small class="bad">🔴 ${bad} bạn quá hạn bài</small>`:""}</button>`}).join("")}
 <div class="card qtnew"><b>➕ Thêm lớp mới</b><input class="tin" id="qtnewc" placeholder="Ví dụ: K50 HSK1" onkeydown="if(event.key=='Enter')qtNewCls()"><button class="btn sm" onclick="qtNewCls()">Tạo lớp</button><small class="ctx">Tên lớp nên giống cột Lớp ở trang tính Học viên.</small></div></div>
 ${(()=>{const hd=Object.keys(QT.d.lt).filter(qtHid).sort();return hd.length?`<div class="card"><b>Lớp đã ẩn</b> <small class="ctx">(lớp đã kết thúc; lộ trình, điểm danh, phiếu kiểm tra vẫn giữ)</small><div class="row">${hd.map(c=>`<button class="btn o sm" onclick="qtHide(${qtJ(c)},0)">↩ Hiện lại ${gvE(c)}</button>`).join("")}</div></div>`:""})()}${qtMore()}`;
- const c=GV.cls,L=qtL(c),hv=qtHv(c),S=qtSched(L),T=qtToday(),mon=qtMon(T),sun=qtAdd(mon,6),wk=S.filter(x=>x.d>=mon&&x.d<=sun),dd=GV.data.dd||[];
+ const c=GV.cls,L=qtL(c),hv=qtHv(c),S=qtSched(L),T=qtToday(),lw=QT.ui.lw||0,mon=qtAdd(qtMon(T),7*lw),sun=qtAdd(mon,6),dd=GV.data.dd||[],
+  wk=S.filter(x=>x.d>=mon&&x.d<=sun).concat(qtDdExtra(c).filter(d=>d>=mon&&d<=sun).map(d=>({d,s:{n:"thêm",cd:"Buổi học thêm / học bù",k:"hoc"},xt:1}))).sort((a,b)=>a.d.localeCompare(b.d)),
+  wkT=lw==0?"Tuần này":lw==-1?"Tuần trước":lw==1?"Tuần sau":(lw<0?-lw+" tuần trước":"");
  const last=S.filter(x=>x.d&&x.d<=T).pop(),nx=S.find(x=>x.d>T),end=S.length?S[S.length-1]:null;
  const per=hv.map(h=>({h,R:qtStu(h,c)})),ord={no:0,low:1,ok:2};per.sort((a,b)=>ord[a.R.st]-ord[b.R.st]);
  let h=`${qtSrvBar()}<div class="card qtlh"><div><b class="qtbig">${gvE(c)}</b><small>${L&&L.days&&L.days.length?L.days.map(d=>QT_TH[d]).join(" + ")+(L.time?" · "+L.time:""):"Chưa có lịch"} · ${hv.length} học viên</small>
 ${end&&end.d?`<small>Lộ trình: ${S.length} buổi, kết thúc ${qtTD(end.d)}${last?` · đã học đến buổi ${last.s.n}`:""}</small>`:""}</div>
 ${nx?`<div class="qtnx"><small>Buổi tới</small><b>${qtTD(nx.d)}</b><small>Buổi ${nx.s.n} · ${gvE(qtSesT(nx.s))}</small></div>`:""}</div>`;
- h+=`<h3 class="ab-h">Tuần này (${qtDM(mon)} – ${qtDM(sun)})</h3>`+(wk.length?`<div class="card qtwk">${wk.map(x=>{const p=hv.filter(hh=>dd.some(z=>z.d==x.d&&z.code==hh.code)).length,st=x.d<T?(p?`✓ có mặt ${p}/${hv.length}`:`<span class="bad">chưa điểm danh</span>`):x.d==T?"<b>hôm nay</b>":"sắp tới";
-  return `<div class="qtln ${x.d<T?"past":""}"><span><b>${qtTD(x.d)}</b> · Buổi ${x.s.n} · ${gvE(qtSesT(x.s))}${x.s.w?` <small>· web: ${gvE(qtLesT(x.s.w,1))}</small>`:""}${x.s.k=="kt"?` <span class="pill">📝 Kiểm tra</span>`:""}</span><span class="qtst">${st} ${x.d<=T?`<button class="btn o sm" onclick="qtDdOpen(${qtJ(c)},'${x.d}')">✋</button>`:""}</span></div>${QT.ui.dd==c+"|"+x.d?qtDdPanel(c,x.d):""}`}).join("")}</div>`
+ const oth=QT.ui.dd&&QT.ui.dd.startsWith(c+"|")?QT.ui.dd.slice(c.length+1):"",othShow=oth&&!wk.some(x=>x.d==oth);
+ h+=`<div class="qtwkh"><h3 class="ab-h">${wkT} (${qtDM(mon)} – ${qtDM(sun)})</h3><span class="row"><button class="btn o sm" ${lw<=-8?"disabled":""} onclick="QT.ui.lw=${lw-1};gvDraw()">‹ Tuần trước</button>${lw?`<button class="btn o sm" onclick="QT.ui.lw=0;gvDraw()">Tuần này</button>`:""}<button class="btn o sm" ${lw>=1?"disabled":""} onclick="QT.ui.lw=${lw+1};gvDraw()">Tuần sau ›</button></span></div>`+(wk.length?`<div class="card qtwk">${wk.map(x=>{const p=hv.filter(hh=>dd.some(z=>z.d==x.d&&z.code==hh.code)).length,st=x.d<T?(p?`✓ có mặt ${p}/${hv.length}${qtDdBadge(c,x.d,hv)}`:`<span class="bad">chưa điểm danh</span>`):x.d==T?`<b>hôm nay</b>${p?` · có mặt ${p}/${hv.length}`:""}`:"sắp tới";
+  return `<div class="qtln ${x.d<T?"past":""}"><span><b>${qtTD(x.d)}</b> · ${x.xt?"":"Buổi "}${x.s.n} · ${gvE(qtSesT(x.s))}${x.s.w?` <small>· web: ${gvE(qtLesT(x.s.w,1))}</small>`:""}${x.s.k=="kt"?` <span class="pill">📝 Kiểm tra</span>`:""}</span><span class="qtst">${st} ${x.d<=T?`<button class="btn o sm" onclick="qtDdOpen(${qtJ(c)},'${x.d}')">✋ ${x.d<T&&p?"Sửa":"Điểm danh"}</button>`:""}</span></div>${QT.ui.dd==c+"|"+x.d?qtDdPanel(c,x.d):""}`}).join("")}</div>`
   :`<div class="card ctx">${S.length?"Tuần này lớp không có buổi theo lộ trình.":"Lớp chưa có lộ trình — mở mục Lộ trình bên dưới để nhập."}</div>`);
+ h+=`<div class="card qtoth"><label class="qtf in">✋ Điểm danh ngày khác (học bù, buổi thêm) <input class="tin" type="date" id="qtothd" max="${T}" value="${othShow?oth:""}"></label><button class="btn o sm" onclick="const v=$('qtothd').value;if(v){QT.ui.dd=${qtJ(c)}+'|'+v;QT.ui.en=null;gvDraw()}">Mở</button>${othShow?qtDdPanel(c,oth):""}</div>`;
  const bad=per.filter(p=>p.R.bad.length),G=k=>per.filter(p=>p.R.st==k);
  const L2=[`📌 Lớp ${c} — bài trên web còn thiếu (đến ${qtDM(T)}):`];bad.forEach(p=>L2.push(`• ${p.h.name}: ${p.R.bad.map(x=>qtLesT(x.w,1).replace(/^.*· /,"")+" ("+QT_ST[x.st].replace(/^\S+ /,"")+")").join(", ")}`));
  L2.push(nx?`Các em hoàn thành trước buổi ${qtTD(nx.d)} nhé! — Cô Thảo`:"Các em hoàn thành sớm nhé! — Cô Thảo");
@@ -218,7 +240,7 @@ function qtStuCard(h,R,c,nx){const ph=(typeof BCS!="undefined"&&(BCS.to[c]||"ph"
  L.push(nx?`${ph?"Nhờ phụ huynh nhắc con":"Em"} hoàn thành trước buổi học ${qtTD(nx.d)} ${ph?"giúp cô ạ":"nhé"}.`:`${ph?"Nhờ phụ huynh nhắc con":"Em"} hoàn thành sớm ${ph?"giúp cô ạ":"nhé"}.`);L.push("— Cô Thảo tiếng Trung");
  const cc=R.held.length?`<span class="qtcc ${R.abs.length?"no":"ok"}">Đi học ${R.pres.length}/${R.held.length}</span>`:"";
  return `<div class="card qtsc ${R.st}"><div class="qtsch"><a onclick="GV.stu='${h.code}';gvDraw()"><b>${gvE(h.name)}</b></a>${cc}</div>
-${R.abs.length?`<small class="ctx">Vắng: ${R.abs.map(qtTD).join(", ")}</small>`:""}
+${R.abs.length?`<small class="ctx">Vắng: ${R.abs.map(d=>qtTD(d)+(R.ex.includes(d)?" (có phép)":"")).join(", ")}</small>`:""}${R.late.length?`<small class="ctx">⏰ Đi muộn: ${R.late.map(qtTD).join(", ")}</small>`:""}
 ${R.items.length?`<div class="qtles">${R.items.map(x=>`<span class="qtl ${x.st}${x.over&&x.st!="ok"?" over":""}" title="${gvE(qtLesT(x.w))}">${gvE(qtLesT(x.w,1).replace(/^.*· /,""))}: ${QT_ST[x.st]}${x.st=="ok"&&x.avg!=null?" "+x.avg+"%":""}${x.st=="do"&&x.miss.length?` <small>thiếu ${gvE(x.miss.join(", "))}</small>`:""}${x.st=="low"?` <small>${gvE(x.low.join(", "))}</small>`:""}</span>`).join("")}</div>`:`<small class="ctx">Chưa có bài trên web phải làm.</small>`}
 ${R.bad.length?`<details><summary>Tin nhắc riêng</summary>${qtMsgBox(id,L.join("\n"))}<button class="btn sm" onclick="qtCp('${id}',this)">📋 Sao chép</button></details>`:""}</div>`}
 function qtMore(){return `<div class="qtmore"><small>Xem thêm:</small>${[["tq","Tổng quan"],["dd","Lịch sử điểm danh"],["dg","Phiếu tự đánh giá"],["ls","Lỗi hay gặp"]].map(t=>`<button class="btn o sm" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>`}
@@ -371,6 +393,11 @@ if(typeof gvDraw=="function"){
 .qttdh{display:flex;justify-content:space-between;gap:8px}.qttdh small{display:block;color:var(--sub)}.qtpin{font-weight:900;letter-spacing:.12em;color:var(--m);font-size:1.3rem}
 .qtdd{margin:8px 0;font-size:.95rem}.qtdd.ok{color:#2e7d4f}.qtdd.no{color:#b23a48;font-weight:800}
 .qtpan{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--k);border:1px solid var(--b)}.qtck{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;margin:8px 0}.qtck label{display:flex;gap:6px;align-items:center}.qtck .self{color:#2e7d4f}.qtck small{color:var(--sub)}
+.qtdl{display:grid;gap:6px;margin:8px 0}.qtdr{display:flex;justify-content:space-between;align-items:center;gap:6px 10px;flex-wrap:wrap;padding:6px 8px;border-radius:10px;background:var(--c);border-left:4px solid var(--b)}.qtdr small{color:var(--sub)}
+.qtdr.co{border-left-color:#2e7d4f}.qtdr.muon{border-left-color:var(--g)}.qtdr.phep{border-left-color:#5a7bb5}.qtdr.vang{border-left-color:#b23a48}
+.qtrd{display:flex;gap:4px;flex-wrap:wrap}.qtrd button{border:1px solid var(--b);background:var(--k);border-radius:10px;padding:5px 9px;font:500 .82rem inherit;cursor:pointer}
+.qtrd button.on{color:#fff;font-weight:700;border-color:transparent}.qtrd .co.on{background:#2e7d4f}.qtrd .muon.on{background:#c9a227}.qtrd .phep.on{background:#5a7bb5}.qtrd .vang.on{background:#b23a48}
+.qtwkh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.qtwkh .ab-h{margin-bottom:6px}.qtoth{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.qtoth .qtf{flex-wrap:wrap;margin:0}.qtoth .tin{margin:0}.qtoth .qtpan{flex-basis:100%}.qtsc>small.ctx{display:block}.qtpast summary{cursor:pointer}.qtpast summary small{color:var(--sub)}.qtpast[open] summary{margin-bottom:6px}
 .qtwarn{background:#fff6f6;border:1px dashed #e3a3a3}.qtln{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0;border-bottom:1px dashed var(--b)}.qtln:last-child{border-bottom:0}.qtln.past{opacity:.75}.qtln small{color:var(--sub)}.qtst{display:flex;gap:6px;align-items:center;font-size:.88rem}
 .qtchips{display:flex;flex-wrap:wrap;gap:8px}.qtchip{border:1px solid var(--g);background:#fff8e1;border-radius:20px;padding:7px 14px;font:600 .9rem inherit;cursor:pointer}
 .qtpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}.qtpick .card{margin:0;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:3px;font:inherit;border:1px solid var(--b)}.qtpick small{color:var(--sub)}.qtpick small.bad{color:#b23a48}
