@@ -68,7 +68,7 @@ function qtSync(){const D=GV.data;if(!D)return;if(!D._dd0)D._dd0=(D.dd||[]).slic
  Object.keys(QT.d.dd).forEach(k=>{const [cls,d]=k.split("|"),v=QT.d.dd[k];(v.c||[]).forEach(code=>{if(!dd.some(x=>x.d==d&&x.code==code))dd.push({d,code,cls,t:"cô ghi"})})});D.dd=dd}
 
 /* ---------- lộ trình ---------- */
-const qtL=cls=>QT.d.lt[cls]||null;
+const qtL=cls=>{const L=QT.d.lt[cls];return L&&!L.hide?L:null};
 function qtIsDay(L,s){return(L.ex||[]).includes(s)||((L.days||[]).includes(qtD(s).getDay())&&!(L.off||[]).includes(s))}
 function qtNext(L,s,dir){let x=s;for(let i=0;i<400;i++){x=qtAdd(x,dir);if(qtIsDay(L,x))return x}return null}
 /* [{s, d, han}] theo thứ tự buổi */
@@ -79,7 +79,8 @@ function qtSched(L){if(!L||!L.s)return[];const S=L.s.slice().sort((a,b)=>a.n-b.n
  return S.map((s,i)=>{const d=map[s.n]||"",nx=S[i+1]&&map[S[i+1].n],en=QT.d.en[qtKey(L,d)];
   return{s,d,han:(en&&en.han)||(nx?qtAdd(nx,-1):d?qtAdd(d,6):"")}})}
 function qtKey(L,d){const c=Object.keys(QT.d.lt).find(k=>QT.d.lt[k]===L);return c+"|"+d}
-const qtCls=()=>{const D=GV.data,a=new Set(D.hv.filter(h=>h.st!="Nghỉ").map(h=>h.cls).filter(Boolean));Object.keys(QT.d.lt).forEach(c=>a.add(c));return[...a].sort((x,y)=>x.localeCompare(y,"vi"))};
+const qtHid=c=>!!(QT.d.lt[c]&&QT.d.lt[c].hide);
+const qtCls=()=>{const D=GV.data,a=new Set(D.hv.filter(h=>h.st!="Nghỉ").map(h=>h.cls).filter(Boolean));Object.keys(QT.d.lt).forEach(c=>a.add(c));return[...a].filter(c=>!qtHid(c)).sort((x,y)=>x.localeCompare(y,"vi"))};
 const qtHv=cls=>GV.data.hv.filter(h=>h.cls==cls&&h.st!="Nghỉ").sort((a,b)=>a.name.split(" ").pop().localeCompare(b.name.split(" ").pop(),"vi"));
 const qtTime=L=>L&&L.time?L.time:"";
 
@@ -186,7 +187,9 @@ function qtEnDone(c,d){const e=Object.assign({},QT.d.en[c+"|"+d]||{});if(!e.ok){
 /* ================= 👥 LỚP ================= */
 function qtLop(F){const cls=qtCls();
  if(!GV.cls||!cls.includes(GV.cls))return `${qtSrvBar()}<div class="card note">Chọn một lớp để xem tuần này học gì, chuyên cần và ai còn thiếu bài.</div><div class="qtpick">${cls.map(c=>{const L=qtL(c),hv=qtHv(c),bad=hv.filter(h=>qtStu(h,c).st=="no").length,S=qtSched(L),T=qtToday(),nx=S.find(x=>x.d>=T);
-  return `<button class="card" onclick="gvSet('cls',${qtJ(c)})"><b>${gvE(c)}</b><small>${hv.length} học viên${L&&L.days?" · "+L.days.map(d=>QT_TH[d]).join("+")+(L.time?" "+L.time:""):""}</small>${nx?`<small>Buổi tới: ${qtTD(nx.d)} · ${gvE(qtSesT(nx.s))}</small>`:`<small class="ctx">${S.length?"Đã học hết lộ trình":"Chưa có lộ trình"}</small>`}${bad?`<small class="bad">🔴 ${bad} bạn quá hạn bài</small>`:""}</button>`}).join("")}</div>${qtMore()}`;
+  return `<button class="card" onclick="gvSet('cls',${qtJ(c)})"><b>${gvE(c)}</b><small>${hv.length} học viên${L&&L.days?" · "+L.days.map(d=>QT_TH[d]).join("+")+(L.time?" "+L.time:""):""}</small>${nx?`<small>Buổi tới: ${qtTD(nx.d)} · ${gvE(qtSesT(nx.s))}</small>`:`<small class="ctx">${S.length?"Đã học hết lộ trình":"Chưa có lộ trình"}</small>`}${bad?`<small class="bad">🔴 ${bad} bạn quá hạn bài</small>`:""}</button>`}).join("")}
+<div class="card qtnew"><b>➕ Thêm lớp mới</b><input class="tin" id="qtnewc" placeholder="Ví dụ: K50 HSK1" onkeydown="if(event.key=='Enter')qtNewCls()"><button class="btn sm" onclick="qtNewCls()">Tạo lớp</button><small class="ctx">Tên lớp nên giống cột Lớp ở trang tính Học viên.</small></div></div>
+${(()=>{const hd=Object.keys(QT.d.lt).filter(qtHid).sort();return hd.length?`<div class="card"><b>Lớp đã ẩn</b> <small class="ctx">(lớp đã kết thúc; lộ trình, điểm danh, phiếu kiểm tra vẫn giữ)</small><div class="row">${hd.map(c=>`<button class="btn o sm" onclick="qtHide(${qtJ(c)},0)">↩ Hiện lại ${gvE(c)}</button>`).join("")}</div></div>`:""})()}${qtMore()}`;
  const c=GV.cls,L=qtL(c),hv=qtHv(c),S=qtSched(L),T=qtToday(),mon=qtMon(T),sun=qtAdd(mon,6),wk=S.filter(x=>x.d>=mon&&x.d<=sun),dd=GV.data.dd||[];
  const last=S.filter(x=>x.d&&x.d<=T).pop(),nx=S.find(x=>x.d>T),end=S.length?S[S.length-1]:null;
  const per=hv.map(h=>({h,R:qtStu(h,c)})),ord={no:0,low:1,ok:2};per.sort((a,b)=>ord[a.R.st]-ord[b.R.st]);
@@ -267,6 +270,7 @@ ${S.map(x=>`<tr class="${x.d&&x.d<T?"past":x.d==T?"now":""}"><td><b>${x.s.n}</b>
 <div class="row"><button class="btn o sm" onclick="qtEd(${qtJ(c)},'add')">➕ Thêm 1 buổi cuối</button></div>
 <div class="qtf"><span>Dán nhanh lộ trình (mỗi dòng một buổi: <i>Buổi 6 ⇥ Mua sắm ⇥ Bài 4</i>, dán thẳng từ Excel / Zalo được)</span><textarea class="tin" id="qtpaste" rows="4" placeholder="Buổi 1		Bài 1&#10;Buổi 2	Tới một nơi mới	Bài 2&#10;Buổi 26		Kiểm tra"></textarea>
 <div class="row"><button class="btn sm" onclick="qtPaste(${qtJ(c)},0)">Thay toàn bộ lộ trình</button><button class="btn o sm" onclick="qtPaste(${qtJ(c)},1)">Thêm / ghi đè các buổi này</button></div></div>
+<div class="row qtdel"><button class="btn o sm" onclick="qtHide(${qtJ(c)},1)">🗑 Ẩn lớp này (lớp đã kết thúc / không dạy nữa)</button></div>
 <p class="ctx">Ngày các buổi tự tính từ <b>mốc</b> theo lịch học, bỏ qua ngày nghỉ. Lộ trình đổi ở đây là đổi cho mọi máy (khi đã cài Google Sheets).</p></details>`}
 function qtLc(c){const L=qtL(c);const o=JSON.parse(JSON.stringify(L||{days:[],time:"",lv:1,an:null,off:[],ex:[],s:[]}));delete o._t;o.off=o.off||[];o.ex=o.ex||[];o.s=o.s||[];return o}
 function qtEd(c,k,a,b){const o=qtLc(c);QT.ui.ed=c;
@@ -288,6 +292,12 @@ function qtPaste(c,merge){const t=($("qtpaste")||{}).value||"",o=qtLc(c),rows=[]
  if(merge){rows.forEach(r=>{const i=o.s.findIndex(x=>x.n==r.n);i>=0?o.s[i]=r:o.s.push(r)})}else o.s=rows;
  if(!o.an)o.an={n:rows[0].n,d:qtToday()};QT.ui.ed=c;qtPut("lt",c,o);
  ask(`Đã nhập ${rows.length} buổi.${o.an?` Ngày đang tính từ mốc: buổi ${o.an.n} = ${qtTD(o.an.d)}. Nếu chưa đúng, cô sửa ô <b>Mốc tính ngày</b>.`:""}`,null,1);gvDraw()}
+
+function qtNewCls(){const n=(($("qtnewc")||{}).value||"").replace(/\s+/g," ").trim();if(!n)return;
+ const o=QT.d.lt[n];if(o&&o.hide){qtHide(n,0);return}if(qtCls().includes(n)){gvSet("cls",n);return}
+ qtPut("lt",n,{days:[],time:"",lv:1,an:null,off:[],ex:[],s:[]});QT.ui.ed=n;GV.cls=n;gvDraw()}
+function qtHide(c,on){const go=()=>{const o=JSON.parse(JSON.stringify(QT.d.lt[c]||{days:[],time:"",lv:1,an:null,off:[],ex:[],s:[]}));delete o._t;delete o._sv;if(on)o.hide=1;else delete o.hide;qtPut("lt",c,o);GV.cls=on?"":c;gvDraw()};
+ on?ask(`Ẩn lớp <b>${gvE(c)}</b> khỏi tab Hôm nay, Lớp, Chốt tuần? Dữ liệu vẫn giữ, cô hiện lại được ở cuối tab Lớp. (Học viên lớp này cô đổi Trạng thái thành "Nghỉ" ở trang tính Học viên.)`,go):go()}
 
 /* ================= 📅 CHỐT TUẦN ================= */
 function qtCt(F){const T=qtToday(),sun=new Date().getDay()==0;if(QT.ui.wk==null)QT.ui.wk=sun?1:0;
@@ -370,6 +380,6 @@ if(typeof gvDraw=="function"){
 .qtf{display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:.88rem;margin:4px 0}.qtf .tin{margin:2px 0;font-weight:400}.qtf.in{flex-direction:row;align-items:center;gap:6px}.qtf.in .tin{width:auto}
 .qtdays{display:flex;flex-wrap:wrap;gap:8px}.qtdays label{display:flex;gap:3px;align-items:center;font-weight:500}.qtn{max-width:90px}
 .qtet .tin{padding:6px 8px;font-size:.85rem;min-width:110px}.qtet td{vertical-align:middle}.qtet tbody tr{cursor:default}.qtet tr.past{opacity:.6}.qtet tr.now{background:#fff8e1}.qtact{white-space:nowrap}
-.qtppt.done span{text-decoration:line-through;opacity:.6}.qtppt{cursor:pointer}
+.qtnew{display:flex;flex-direction:column;gap:6px}.qtnew .tin{margin:0}.qtdel{margin-top:14px}.qtppt.done span{text-decoration:line-through;opacity:.6}.qtppt{cursor:pointer}
 .qtts.due{border:1px solid #e3a3a3;background:#fff6f6}.qtts small{display:block;margin-top:3px}.qtts select{font:inherit;border-radius:10px;border:1px solid var(--b);padding:3px 6px}
 @media(max-width:600px){.qtcards,.qtlist{grid-template-columns:1fr}.qtsum .btn{margin-left:0}.qtnx{text-align:left}.qtck{grid-template-columns:1fr 1fr}.qtlv button{padding:4px 6px}}`;document.head.appendChild(st)})();
