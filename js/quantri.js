@@ -375,14 +375,15 @@ function tkbHtml(){TKB=tkbGet();const ed=!!QT.ui.tkbEd;
  const head=`<tr><th>Ca</th>${TKB_D.map(d=>`<th>${d}</th>`).join("")}${ed?"<th></th>":""}</tr>`;
  const body=TKB.rows.map((r,ri)=>`<tr><th>${ed?`<input class="tin" value="${gvE(r.lb)}" oninput="TKB.rows[${ri}].lb=this.value;tkbSave()">`:gvE(r.lb)}</th>${TKB_D.map((d,i)=>{const k=r.id+"|"+i,v=TKB.c[k]||{x:"",s:0};
   return ed?`<td class="s${v.s||0}"><textarea class="tin" rows="3" placeholder="${d}" oninput="tkbCell(${qtJ(k)}).x=this.value;tkbSave()">${gvE(v.x)}</textarea></td>`
-   :`<td class="s${v.s||0}" onclick="tkbTap(this,${qtJ(k)})" title="Bấm để đổi màu"><span>${gvE(v.x)}</span></td>`}).join("")}${ed?`<td><button class="btn o sm" title="Xóa ca này" onclick="tkbDel(${ri})">🗑</button></td>`:""}</tr>`).join("");
+   :`<td class="s${v.s||0}" onclick="tkbTap(this,${qtJ(k)})" title="Bấm để đổi màu"><span>${gvE(v.x)}</span></td>`}).join("")}${ed?`<td class="tkbact"><button class="btn o sm" title="Chuyển lên" ${ri?"":"disabled"} onclick="tkbMv(${ri},-1)">▲</button><button class="btn o sm" title="Chuyển xuống" ${ri<TKB.rows.length-1?"":"disabled"} onclick="tkbMv(${ri},1)">▼</button><button class="btn o sm" title="Thêm ca ngay dưới ca này" onclick="tkbAdd(${ri})">➕</button><button class="btn o sm" title="Xóa ca này" onclick="tkbDel(${ri})">🗑</button></td>`:""}</tr>`).join("");
  return `<details class="card tkbw" ${QT.ui.tkbC?"":"open"} ontoggle="QT.ui.tkbC=!this.open"><summary>🗓 Thời khóa biểu cố định cả tuần</summary>
 <div class="row tkbbar"><button class="btn sm ${ed?"o":""}" onclick="QT.ui.tkbEd=0;gvDraw()">🎨 Đánh dấu màu</button><button class="btn sm ${ed?"":"o"}" onclick="QT.ui.tkbEd=1;gvDraw()">✏️ Sửa chữ</button>
-<small>${ed?"Gõ thẳng vào ô, tự lưu. Xong thì bấm 🎨 Đánh dấu màu.":"Bấm vào ô để đổi màu: "+TKB_ST.map((t,i)=>TKB_IC[i]+" "+t).join(" → ")+" → ⬜"}</small></div>
+<small>${ed?"Gõ thẳng vào ô, tự lưu. Cột cuối: ▲ ▼ chuyển ca lên / xuống · ➕ thêm ca ngay dưới · 🗑 xóa ca. Xong thì bấm 🎨 Đánh dấu màu.":"Bấm vào ô để đổi màu: "+TKB_ST.map((t,i)=>TKB_IC[i]+" "+t).join(" → ")+" → ⬜"}</small></div>
 ${tkbSum()}<div class="tkbsc"><table class="tkb ${ed?"ed":""}"><thead>${head}</thead><tbody>${body}</tbody></table></div>
-${ed?`<div class="row"><button class="btn o sm" onclick="tkbAdd()">➕ Thêm ca</button><button class="btn o sm" onclick="tkbReset()">↺ Về bảng ban đầu</button></div>`:""}</details>`}
+${ed?`<div class="row"><button class="btn o sm" onclick="tkbAdd()">➕ Thêm ca cuối bảng</button><button class="btn o sm" onclick="tkbReset()">↺ Về bảng ban đầu</button></div>`:""}</details>`}
 function tkbTap(el,k){const v=tkbCell(k);v.s=((v.s||0)+1)%TKB_ST.length;el.className="s"+v.s;tkbSave();const b=document.querySelector(".tkbsum");if(b)b.outerHTML=tkbSum()}
-function tkbAdd(){TKB.rows.push({id:"r"+Date.now().toString(36),lb:"Ca mới"});tkbSave();gvDraw()}
+function tkbAdd(i){const r={id:"r"+Date.now().toString(36),lb:"Ca mới"};if(i==null)TKB.rows.push(r);else TKB.rows.splice(i+1,0,r);tkbSave();gvDraw()}
+function tkbMv(i,d){const j=i+d;if(j<0||j>=TKB.rows.length)return;const r=TKB.rows.splice(i,1)[0];TKB.rows.splice(j,0,r);tkbSave();gvDraw()}
 function tkbDel(i){const r=TKB.rows[i];ask(`Xóa ca <b>${gvE(r.lb)}</b> và chữ trong các ô của ca này?`,()=>{TKB.rows.splice(i,1);Object.keys(TKB.c).forEach(k=>{if(k.startsWith(r.id+"|"))delete TKB.c[k]});tkbSave();gvDraw()})}
 function tkbReset(){ask("Đưa thời khóa biểu về bảng ban đầu (theo ảnh cô gửi 02/11)? Các chỉnh sửa sau đó sẽ mất.",()=>{TKB=tkbSeed();tkbSave();gvDraw()})}
 
@@ -465,7 +466,7 @@ if(typeof gvDraw=="function"){
 .tkbsum{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.tkbp{font-size:.82rem;border-radius:10px;padding:3px 9px;border:1px solid var(--b)}.tkbfree{flex-basis:100%;font-size:.85rem;color:var(--sub)}.tkbfree b{color:var(--t)}
 .tkbsc{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--b);border-radius:12px}
 .tkb{border-collapse:collapse;width:100%;min-width:760px;table-layout:fixed;font-size:.82rem}.tkb th,.tkb td{border:1px solid var(--b);padding:6px;vertical-align:top;text-align:left}
-.tkb thead th{background:var(--m);color:#fff;text-align:center;font-size:.85rem}.tkb thead th:first-child{width:118px}.tkb.ed thead th:last-child{width:46px}
+.tkb thead th{background:var(--m);color:#fff;text-align:center;font-size:.85rem}.tkb thead th:first-child{width:118px}.tkb.ed thead th:last-child{width:76px}.tkb.ed thead th:first-child{width:150px}.tkbact{text-align:center!important}.tkbact .btn{min-width:30px;padding:3px 6px;margin:1px}.tkbact .btn:disabled{opacity:.35}
 .tkb tbody th{background:var(--k);font-weight:700;position:sticky;left:0;z-index:1}.tkb td{height:64px;white-space:pre-line;line-height:1.35;transition:background .15s}
 .tkb:not(.ed) td{cursor:pointer;user-select:none}.tkb:not(.ed) td:active{filter:brightness(.92)}
 .tkb .s0,.tkbp.s0{background:transparent}.tkb .s1,.tkbp.s1{background:rgba(201,162,39,.32)}.tkb .s1 span{font-weight:700}.tkb .s2,.tkbp.s2{background:rgba(66,133,214,.22)}.tkb .s3,.tkbp.s3{background:rgba(214,74,74,.32)}.tkb .s4,.tkbp.s4{background:rgba(120,120,120,.25)}.tkb .s4 span{text-decoration:line-through;opacity:.75}
