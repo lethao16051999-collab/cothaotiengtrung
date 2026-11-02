@@ -6,6 +6,7 @@
    - Kiểm tra định kỳ: Nghe, Nói, Đọc, Đọc chữ Hán, Tương tác (Tốt / Khá / Đạt / Cần cố gắng) + chuyên cần + kết quả web + nhận xét → tin phụ huynh.
    - Tuyển sinh: người hỏi học, nguồn, trạng thái, hẹn gọi lại; lớp sắp hết khóa.
    Lưu: Google Sheets (API qtget / qtset — đoạn mã huong-dan/quantri-api.gs.txt), dự phòng trên máy (ct_qt) khi chưa cài.
+   02/11/2026: lớp học song song 2 quyển HSK1 (K49) — mọi tin nhắc ghi rõ 📙 QUYỂN CAM (Giáo trình chuẩn) / 📘 QUYỂN XANH (New HSK 1), xếp cam trước, xanh sau.
    Nạp SAU js/theodoi.js, cham.js, nhom.js, baocao.js. ===== */
 const QT_TH=["CN","T2","T3","T4","T5","T6","T7"],QT_KT=["Nghe","Nói","Đọc","Đọc chữ Hán","Tương tác"],QT_LV=["Tốt","Khá","Đạt","Cần cố gắng"];
 const QT_TS_ST=["Mới hỏi","Đã tư vấn","Học thử","Đã đăng ký","Không học"],QT_TS_NG=["Facebook","TikTok","YouTube","Zalo","Người quen giới thiệu","Học viên cũ","Khác"];
@@ -99,6 +100,23 @@ const qtTime=L=>L&&L.time?L.time:"";
 function qtLesOpts(){const o=[];[1,2,3,4,5].forEach(lv=>{const b=(typeof NAP!="undefined"&&NAP[lv]&&NAP[lv].bai)||Object.keys((LDS||{})[lv]||{}).map(Number);b.forEach(n=>o.push(lv+"-"+n))});QT_L6.forEach(n=>o.push("6-"+n));return o}
 function qtLesT(w,short){if(!w)return"";const [lv,b]=w.split("-").map(Number);const T=((typeof LTS!="undefined"&&LTS[lv])||[])[b-1];
  return(lv==6?"GT chuẩn HSK1":gvLv(lv))+" · Bài "+b+(!short&&T?" ("+String(T).split("|")[0]+")":"")}
+/* lớp học song song 2 quyển HSK1 (thêm 02/11/2026, lớp K49): 📙 bìa CAM = Giáo trình chuẩn (cấp web 6), 📘 bìa XANH = New HSK 1 (cấp web 1).
+   Lớp "2 quyển" = lộ trình ghi cấp GT chuẩn hoặc có bài web 6-…; buổi không gắn bài web mà ghi "Chủ đề…" / "3.0" coi là quyển xanh.
+   Mọi tin nhắc của lớp này ghi rõ màu bìa, xếp quyển CAM trước rồi đến quyển XANH. */
+const QT_BK={cam:{i:"📙",t:"QUYỂN CAM",n:"Giáo trình chuẩn HSK1",web:"HSK1 · Giáo trình chuẩn"},xanh:{i:"📘",t:"QUYỂN XANH",n:"New HSK 1",web:"New HSK 1"}},QT_BKO=["cam","xanh",""];
+function qtBk(w,s){if(w){const lv=+String(w).split("-")[0];return lv==6?"cam":lv==1?"xanh":""}
+ if(s){if(s.w)return qtBk(s.w);return /3\.0|chủ đề/i.test([s.cd,s.nd].join(" "))?"xanh":""}return""}
+const qtTwo=c=>{const L=qtL(c);return!!L&&(L.lv==6||(L.s||[]).some(y=>/^6-/.test(y.w||"")))};
+const qtBkH=k=>`${QT_BK[k].i} ${QT_BK[k].t} (${QT_BK[k].n})`;
+const qtBkS=(k,t)=>k?`${QT_BK[k].i} Quyển ${k=="cam"?"cam":"xanh"} · ${t}`:t;
+const qtNoBk=t=>String(t).replace(/^[^·]*· /,"");
+/* tên bài kèm màu quyển (lớp 2 quyển) hoặc như cũ */
+const qtLesB=(c,w,short)=>qtTwo(c)?qtBkS(qtBk(w),qtNoBk(qtLesT(w,short))):qtLesT(w,short);
+/* lớp 2 quyển: bỏ ghi chú riêng của cô ("HSK1 3.0 · bản web") khỏi tin gửi học viên */
+const qtSesC=s=>s.cd&&/3\.0|bản web/i.test(s.nd||"")?s.cd:qtSesT(s);
+const qtSesB=(c,s)=>qtTwo(c)?qtBkS(qtBk(s.w,s),qtSesC(s)):qtSesT(s);
+/* gom theo quyển: cam trước, xanh sau, còn lại cuối */
+const qtByBk=(arr,f)=>QT_BKO.map(k=>({k,a:arr.filter(x=>(f(x)||"")==k)})).filter(o=>o.a.length);
 const QT_NAP={};
 function qtNeed(lv){if(typeof napOk=="function"&&lv!=6&&!napOk(lv)&&!QT_NAP[lv]){QT_NAP[lv]=1;napLv(lv).then(()=>{["hn","lop","ct"].includes(GV.tab)&&gvDraw()},()=>{})}}
 /* tình trạng một bài của một học viên: ok / do (làm dở) / low (<80%) / no (chưa làm) */
@@ -160,7 +178,7 @@ function qtHn(F){const T=qtToday(),D=GV.data,cls=qtCls().filter(c=>!GV.cls||c==G
  kts.forEach(k=>todo.push(`<button class="qtchip" onclick="GV.cls=${qtJ(k.c)};QT.ui.kt='${k.y.d}';QT.ui.kto=${qtJ(k.c)};GV.tab='lop';gvDraw()">📝 ${gvE(k.c)} kiểm tra ${qtTD(k.y.d)}</button>`));
  if(todo.length)h+=`<h3 class="ab-h">Việc chờ cô</h3><div class="qtchips">${todo.join("")}</div>`;
  if(due.length)h+=`<h3 class="ab-h">⏰ Sắp hết hạn nộp</h3>${due.map(o=>{const id="due_"+o.c+o.y.d,L=[];
-  L.push(`📌 Lớp ${o.c}: bài "${qtLesT(o.y.s.w,1)}" trên web hạn nộp ${o.y.han==T?"HÔM NAY":"ngày mai"} (${qtTD(o.y.han)}).`);L.push("Các bạn chưa xong: "+o.nd.map(h=>h.name).join(", ")+".");L.push("Các em làm đủ các phần, đạt từ 80% nhé! — Cô Thảo");
+  L.push(`📌 Lớp ${o.c}: bài "${qtLesB(o.c,o.y.s.w,1)}" trên web hạn nộp ${o.y.han==T?"HÔM NAY":"ngày mai"} (${qtTD(o.y.han)}).`);if(qtTwo(o.c)&&qtBk(o.y.s.w))L.push(`(Trên web chọn mục "${QT_BK[qtBk(o.y.s.w)].web}".)`);L.push("Các bạn chưa xong: "+o.nd.map(h=>h.name).join(", ")+".");L.push("Các em làm đủ các phần, đạt từ 80% nhé! — Cô Thảo");
   return `<div class="card"><b>${gvE(o.c)}</b> · ${gvE(qtLesT(o.y.s.w))} · hạn ${qtTD(o.y.han)}<p>Chưa xong (${o.nd.length}): ${o.nd.map(h=>`<a onclick="GV.stu='${h.code}';gvDraw()">${gvE(h.name)}</a>`).join(", ")}</p>${qtMsgBox(id,L.join("\n"))}<button class="btn sm" onclick="qtCp('${qtA(id)}',this)">📋 Sao chép tin nhắc nhóm lớp</button></div>`}).join("")}`;
  return h+`<p class="ctx">Lịch "Lớp hôm nay" lấy theo lộ trình ở tab <b>👥 Lớp</b>. Lớp chưa có lộ trình thì vào tab Lớp › Lộ trình để nhập.</p>`}
 function qtTodayCard(o,T,hm){const {c,L,x,hv}=o,dd=GV.data.dd||[],pr=hv.filter(h=>dd.some(z=>z.d==T&&z.code==h.code)),t=qtTime(L),late=t&&hm>=t;
@@ -192,11 +210,23 @@ function qtOff(c,d){const L=qtL(c);if(!L)return;ask(`Đánh dấu ${qtTD(d)} l�
 function qtEnOpen(c,d){QT.ui.en=QT.ui.en==c+"|"+d?null:c+"|"+d;QT.ui.dd=null;gvDraw()}
 function qtEnMsg(c,x){const e=QT.d.en[c+"|"+x.d]||{},w=e.w!=null?e.w:x.s.w,han=e.han||x.han,L=[];
  L.push("NHIỆM VỤ VỀ NHÀ");L.push("");
+ const nb=qtSched(qtL(c)).find(y=>y.d&&y.d>x.d);
+ if(qtTwo(c)){const B={cam:[],xanh:[],"":[]};
+  if(w){const k=qtBk(w),bn=String(w).split("-")[1];
+   B[k].push(`• Trên web cô Thảo${k?` (mục "${QT_BK[k].web}")`:""}: ${k?qtNoBk(qtLesT(w)):qtLesT(w)} — làm đủ các phần, bao gồm cả test nhanh đạt từ 80%.`);
+   B[k].push(`• Ghi từ vựng bài ${bn}${k?" quyển "+(k=="cam"?"cam":"xanh"):""} vào vở, mỗi chữ 2-3 dòng + đặt câu với từ đó, buổi sau cô sẽ kiểm tra đột xuất.`)}
+  else{const k=qtBk("",x.s);if(k)B[k].push(`• Ôn lại bài hôm nay: ${qtSesC(x.s)}.`)}
+  if(nb){const k=qtBk(nb.s.w,nb.s),t=nb.s.w?(k?qtNoBk(qtLesT(nb.s.w)):qtLesT(nb.s.w)):qtSesC(nb.s);if(t)B[k].push(`• Chuẩn bị buổi sau (${qtTD(nb.d)}): ${t}.`)}
+  ["cam","xanh"].forEach(k=>{if(B[k].length){L.push(qtBkH(k));B[k].forEach(t=>L.push(t));L.push("")}});
+  B[""].forEach(t=>L.push(t));
+  if(e.x){const k=qtBk(w,x.s);String(e.x).split(/\n+/).filter(Boolean).forEach(t=>B[k].push("• "+t.trim()))}
+  if(L.length==2)L.push("• Ôn lại bài hôm nay.");
+  while(L[L.length-1]==="")L.pop();
+  if(han)L.push(`⏰ Hạn nộp: hết ngày ${qtTD(han)}.`);L.push("Các em nhìn đúng màu bìa để mở đúng quyển nhé!");return L.join("\n")}
  if(w){const bn=String(w).split("-")[1];L.push(`• Trên web cô Thảo: ${qtLesT(w)} — làm đủ các phần, bao gồm cả test nhanh đạt từ 80%.`);
   L.push(`• Ghi từ vựng của bài ${bn} vào vở, mỗi chữ 2-3 dòng + đặt câu với từ đó, buổi sau cô sẽ kiểm tra đột xuất.`)}
  if(e.x)String(e.x).split(/\n+/).filter(Boolean).forEach(s=>L.push("• "+s.trim()));
  if(!w&&!e.x)L.push("• Ôn lại bài hôm nay.");
- const nb=qtSched(qtL(c)).find(y=>y.d&&y.d>x.d);
  if(nb){const t=nb.s.w?qtLesT(nb.s.w):qtSesT(nb.s);if(t)L.push(`• Chuẩn bị bài: ${t}.`)}
  if(han)L.push(`⏰ Hạn nộp: hết ngày ${qtTD(han)}.`);return L.join("\n")}
 function qtEnPanel(c,x){const e=QT.d.en[c+"|"+x.d]||{},w=e.w!=null?e.w:x.s.w,han=e.han||x.han,id="en_"+c+x.d;
@@ -230,7 +260,10 @@ ${nx?`<div class="qtnx"><small>Buổi tới</small><b>${qtTD(nx.d)}</b><small>Bu
   :`<div class="card ctx">${S.length?"Tuần này lớp không có buổi theo lộ trình.":"Lớp chưa có lộ trình — mở mục Lộ trình bên dưới để nhập."}</div>`);
  h+=`<div class="card qtoth"><label class="qtf in">✋ Điểm danh ngày khác (học bù, buổi thêm) <input class="tin" type="date" id="qtothd" max="${T}" value="${othShow?oth:""}"></label><button class="btn o sm" onclick="const v=$('qtothd').value;if(v){QT.ui.dd=${qtJ(c)}+'|'+v;QT.ui.en=null;gvDraw()}">Mở</button>${othShow?qtDdPanel(c,oth):""}</div>`;
  const bad=per.filter(p=>p.R.bad.length),G=k=>per.filter(p=>p.R.st==k);
- const L2=[`📌 Lớp ${c} — bài trên web còn thiếu (đến ${qtDM(T)}):`];bad.forEach(p=>L2.push(`• ${p.h.name}: ${p.R.bad.map(x=>qtLesT(x.w,1).replace(/^.*· /,"")+" ("+QT_ST[x.st].replace(/^\S+ /,"")+")").join(", ")}`));
+ const L2=[`📌 Lớp ${c} — bài trên web còn thiếu (đến ${qtDM(T)}):`],bl=(p,a)=>`• ${p.h.name}: ${a.map(x=>qtLesT(x.w,1).replace(/^.*· /,"")+" ("+QT_ST[x.st].replace(/^\S+ /,"")+")").join(", ")}`;
+ if(qtTwo(c)){QT_BKO.forEach(k=>{const rs=bad.map(p=>({p,a:p.R.bad.filter(x=>qtBk(x.w)==k)})).filter(o=>o.a.length);if(!rs.length)return;L2.push("");
+   if(k){L2.push(qtBkH(k));L2.push(`(Trên web chọn mục "${QT_BK[k].web}")`)}rs.forEach(o=>L2.push(bl(o.p,o.a)))});L2.push("")}
+ else bad.forEach(p=>L2.push(bl(p,p.R.bad)));
  L2.push(nx?`Các em hoàn thành trước buổi ${qtTD(nx.d)} nhé! — Cô Thảo`:"Các em hoàn thành sớm nhé! — Cô Thảo");
  h+=`<h3 class="ab-h">Học viên · bài tập · chuyên cần</h3><div class="card qtsum"><span class="ok">✅ Đủ bài ${G("ok").length}</span><span class="low">🟠 Còn thiếu, chưa quá hạn ${G("low").length}</span><span class="no">🔴 Quá hạn ${G("no").length}</span>
 ${bad.length?`<button class="btn sm" onclick="qtCp('lop_${qtA(c)}',this)">📋 Tin nhắc cả nhóm lớp</button>`:""}</div>${bad.length?`<div hidden>${qtMsgBox("lop_"+c,L2.join("\n"))}</div>`:""}
@@ -239,12 +272,14 @@ ${bad.length?`<button class="btn sm" onclick="qtCp('lop_${qtA(c)}',this)">📋 T
  h+=qtKtSec(c,S,hv)+qtEdSec(c,L,S)+qtMore();return h}
 function qtStuCard(h,R,c,nx){const ph=(typeof BCS!="undefined"&&(BCS.to[c]||"ph"))=="ph",id="nh_"+h.code;
  const L=[ph?`Kính gửi phụ huynh bạn ${h.name}!`:`Chào ${h.name}!`,`Cô Thảo nhắc ${ph?"con":"em"} bài trên web còn thiếu (lớp ${c}):`];
- R.bad.forEach(x=>L.push(`• ${qtLesT(x.w)}: ${QT_ST[x.st].replace(/^\S+ /,"")}${x.miss.length&&x.st=="do"?" — còn thiếu "+x.miss.join(", "):""}${x.low.length?" — chưa đạt 80%: "+x.low.join(", "):""}${x.han?` (hạn ${qtDM(x.han)}${x.over?", đã quá hạn":""})`:""}`));
+ const two=qtTwo(c),ln=(x,t)=>`• ${t}: ${QT_ST[x.st].replace(/^\S+ /,"")}${x.miss.length&&x.st=="do"?" — còn thiếu "+x.miss.join(", "):""}${x.low.length?" — chưa đạt 80%: "+x.low.join(", "):""}${x.han?` (hạn ${qtDM(x.han)}${x.over?", đã quá hạn":""})`:""}`;
+ if(two){qtByBk(R.bad,x=>qtBk(x.w)).forEach(o=>{L.push("");if(o.k){L.push(qtBkH(o.k));L.push(`(Trên web chọn mục "${QT_BK[o.k].web}")`)}o.a.forEach(x=>L.push(ln(x,o.k?qtNoBk(qtLesT(x.w)):qtLesT(x.w))))});L.push("")}
+ else R.bad.forEach(x=>L.push(ln(x,qtLesT(x.w))));
  L.push(nx?`${ph?"Nhờ phụ huynh nhắc con":"Em"} hoàn thành trước buổi học ${qtTD(nx.d)} ${ph?"giúp cô ạ":"nhé"}.`:`${ph?"Nhờ phụ huynh nhắc con":"Em"} hoàn thành sớm ${ph?"giúp cô ạ":"nhé"}.`);L.push("— Cô Thảo tiếng Trung");
  const cc=R.held.length?`<span class="qtcc ${R.abs.length?"no":"ok"}">Đi học ${R.pres.length}/${R.held.length}</span>`:"";
  return `<div class="card qtsc ${R.st}"><div class="qtsch"><a onclick="GV.stu='${h.code}';gvDraw()"><b>${gvE(h.name)}</b></a>${cc}</div>
 ${R.abs.length?`<small class="ctx">Vắng: ${R.abs.map(d=>qtTD(d)+(R.ex.includes(d)?" (có phép)":"")).join(", ")}</small>`:""}${R.late.length?`<small class="ctx">⏰ Đi muộn: ${R.late.map(qtTD).join(", ")}</small>`:""}
-${R.items.length?`<div class="qtles">${R.items.map(x=>`<span class="qtl ${x.st}${x.over&&x.st!="ok"?" over":""}" title="${gvE(qtLesT(x.w))}">${gvE(qtLesT(x.w,1).replace(/^.*· /,""))}: ${QT_ST[x.st]}${x.st=="ok"&&x.avg!=null?" "+x.avg+"%":""}${x.st=="do"&&x.miss.length?` <small>thiếu ${gvE(x.miss.join(", "))}</small>`:""}${x.st=="low"?` <small>${gvE(x.low.join(", "))}</small>`:""}</span>`).join("")}</div>`:`<small class="ctx">Chưa có bài trên web phải làm.</small>`}
+${R.items.length?`<div class="qtles">${(two?qtByBk(R.items,x=>qtBk(x.w)).flatMap(o=>o.a):R.items).map(x=>`<span class="qtl ${x.st}${x.over&&x.st!="ok"?" over":""}" title="${gvE(qtLesB(c,x.w))}">${two&&qtBk(x.w)?QT_BK[qtBk(x.w)].i+" ":""}${gvE(qtLesT(x.w,1).replace(/^.*· /,""))}: ${QT_ST[x.st]}${x.st=="ok"&&x.avg!=null?" "+x.avg+"%":""}${x.st=="do"&&x.miss.length?` <small>thiếu ${gvE(x.miss.join(", "))}</small>`:""}${x.st=="low"?` <small>${gvE(x.low.join(", "))}</small>`:""}</span>`).join("")}</div>`:`<small class="ctx">Chưa có bài trên web phải làm.</small>`}
 ${R.bad.length?`<details><summary>Tin nhắc riêng</summary>${qtMsgBox(id,L.join("\n"))}<button class="btn sm" onclick="qtCp('${id}',this)">📋 Sao chép</button></details>`:""}</div>`}
 function qtMore(){return `<div class="qtmore"><small>Xem thêm:</small>${[["tq","Tổng quan"],["dd","Lịch sử điểm danh"],["dg","Phiếu tự đánh giá"],["ls","Lỗi hay gặp"]].map(t=>`<button class="btn o sm" onclick="GV.stu=null;gvSet('tab','${t[0]}')">${t[1]}</button>`).join("")}</div>`}
 
@@ -338,8 +373,8 @@ function qtCt(F){const T=qtToday(),sun=new Date().getDay()==0;if(QT.ui.wk==null)
  const mon=qtAdd(qtMon(T),7*QT.ui.wk),end=qtAdd(mon,6),cls=qtCls().filter(c=>!GV.cls||c==GV.cls),all=[];
  const per=cls.map(c=>{const L=qtL(c),S=qtSched(L).filter(x=>x.d>=mon&&x.d<=end);S.forEach(x=>all.push({c,x}));return{c,L,S}}).filter(o=>o.S.length);
  all.sort((a,b)=>a.x.d.localeCompare(b.x.d)||qtTime(qtL(a.c)).localeCompare(qtTime(qtL(b.c))));
- const msg=o=>{const L=[`📅 Lịch học lớp ${o.c} tuần ${qtDM(mon)} – ${qtDM(end)}:`];o.S.forEach(x=>L.push(`• ${qtTD(x.d)}${qtTime(o.L)?" "+qtTime(o.L):""} — Buổi ${x.s.n}: ${qtSesT(x.s)}${x.s.k=="kt"?" (KIỂM TRA)":""}`));
-  const pv=qtSched(o.L).filter(x=>x.d<mon&&x.s.w).pop();if(pv)L.push(`Trước buổi đầu tuần, các em hoàn thành bài trên web: ${qtLesT(pv.s.w)}.`);L.push("— Cô Thảo tiếng Trung");return L.join("\n")};
+ const msg=o=>{const L=[`📅 Lịch học lớp ${o.c} tuần ${qtDM(mon)} – ${qtDM(end)}:`];o.S.forEach(x=>L.push(`• ${qtTD(x.d)}${qtTime(o.L)?" "+qtTime(o.L):""} — Buổi ${x.s.n}: ${qtSesB(o.c,x.s)}${x.s.k=="kt"?" (KIỂM TRA)":""}`));
+  const pv=qtSched(o.L).filter(x=>x.d<mon&&x.s.w).pop();if(pv)L.push(`Trước buổi đầu tuần, các em hoàn thành bài trên web: ${qtLesB(o.c,pv.s.w)}.`);if(qtTwo(o.c))L.push("📙 = quyển bìa cam (Giáo trình chuẩn HSK1) · 📘 = quyển bìa xanh (New HSK 1).");L.push("— Cô Thảo tiếng Trung");return L.join("\n")};
  let h=`${qtSrvBar()}<div class="row">${["Tuần này","Tuần sau"].map((t,i)=>`<button class="btn sm ${QT.ui.wk==i?"":"o"}" onclick="QT.ui.wk=${i};gvDraw()">${t}</button>`).join("")}<b>${qtDM(mon)} – ${qtDM(end)}</b></div>
 <div class="card note">Tối Chủ nhật: (1) gửi lịch tuần mới cho từng lớp · (2) xem PPT cần soạn · (3) gửi báo cáo tuần cho phụ huynh ở phía dưới.</div>
 `+tkbHtml()+`<h3 class="ab-h">1. Thông báo lịch · tiến độ từng lớp</h3>`+(per.length?`<div class="qtlist">${per.map(o=>`<div class="card"><b>${gvE(o.c)}</b>${qtMsgBox("ct_"+o.c,msg(o))}<button class="btn sm" onclick="qtCp('ct_${qtA(o.c)}',this)">📋 Sao chép gửi nhóm lớp</button></div>`).join("")}</div>`:`<div class="card ctx">Tuần này chưa có buổi nào theo lộ trình.</div>`);
