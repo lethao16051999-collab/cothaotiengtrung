@@ -30,7 +30,7 @@ function qtRow(n,cd,nd,lv){nd=String(nd||"").trim();cd=String(cd||"").trim();con
  if(w&&!qtLesOpts().includes(w))w="";
  return{n,cd,nd,w,k:/kiểm tra/i.test(nd)?"kt":/^ôn/i.test(nd)?"on":"hoc"}}
 
-let QT={d:{lt:{},dd:{},kt:{},ts:{},en:{},ppt:{}},dirty:{},srv:null,err:"",busy:false,ui:{wk:null}};
+let QT={d:{lt:{},dd:{},kt:{},ts:{},en:{},ppt:{},tkb:{}},dirty:{},srv:null,err:"",busy:false,ui:{wk:null}};
 try{const o=JSON.parse(localStorage.getItem("ct_qt")||"{}");if(o.d)Object.keys(QT.d).forEach(k=>QT.d[k]=o.d[k]||{});QT.dirty=o.dirty||{}}catch(e){}
 const qtLocal=()=>{try{localStorage.setItem("ct_qt",JSON.stringify({d:QT.d,dirty:QT.dirty}))}catch(e){}};
 const qtA=s=>gvE(s).replace(/'/g,"&#39;");
@@ -191,11 +191,14 @@ function qtOff(c,d){const L=qtL(c);if(!L)return;ask(`Đánh dấu ${qtTD(d)} l�
 /* ---------- kết thúc buổi: giao bài ---------- */
 function qtEnOpen(c,d){QT.ui.en=QT.ui.en==c+"|"+d?null:c+"|"+d;QT.ui.dd=null;gvDraw()}
 function qtEnMsg(c,x){const e=QT.d.en[c+"|"+x.d]||{},w=e.w!=null?e.w:x.s.w,han=e.han||x.han,L=[];
- L.push(`📚 Lớp ${c} · Buổi ${x.s.n} (${qtTD(x.d)}): ${qtSesT(x.s)}`);L.push("Bài về nhà:");
- if(w)L.push(`• Trên web cô Thảo: ${qtLesT(w)} — làm đủ các phần, đạt từ 80%.`);
+ L.push("NHIỆM VỤ VỀ NHÀ");L.push("");
+ if(w){const bn=String(w).split("-")[1];L.push(`• Trên web cô Thảo: ${qtLesT(w)} — làm đủ các phần, bao gồm cả test nhanh đạt từ 80%.`);
+  L.push(`• Ghi từ vựng của bài ${bn} vào vở, mỗi chữ 2-3 dòng + đặt câu với từ đó, buổi sau cô sẽ kiểm tra đột xuất.`)}
  if(e.x)String(e.x).split(/\n+/).filter(Boolean).forEach(s=>L.push("• "+s.trim()));
  if(!w&&!e.x)L.push("• Ôn lại bài hôm nay.");
- if(han)L.push(`⏰ Hạn nộp: hết ngày ${qtTD(han)}.`);L.push("— Cô Thảo tiếng Trung");return L.join("\n")}
+ const nb=qtSched(qtL(c)).find(y=>y.d&&y.d>x.d);
+ if(nb){const t=nb.s.w?qtLesT(nb.s.w):qtSesT(nb.s);if(t)L.push(`• Chuẩn bị bài: ${t}.`)}
+ if(han)L.push(`⏰ Hạn nộp: hết ngày ${qtTD(han)}.`);return L.join("\n")}
 function qtEnPanel(c,x){const e=QT.d.en[c+"|"+x.d]||{},w=e.w!=null?e.w:x.s.w,han=e.han||x.han,id="en_"+c+x.d;
  return `<div class="qtpan"><b>Giao bài sau buổi ${x.s.n}</b>
 <label class="qtf">Bài trên web <select onchange="qtEn(${qtJ(c)},'${x.d}','w',this.value)"><option value="">(không giao bài web)</option>${qtLesOpts().map(o=>`<option value="${o}" ${o==w?"selected":""}>${gvE(qtLesT(o))}</option>`).join("")}</select></label>
@@ -339,9 +342,49 @@ function qtCt(F){const T=qtToday(),sun=new Date().getDay()==0;if(QT.ui.wk==null)
   const pv=qtSched(o.L).filter(x=>x.d<mon&&x.s.w).pop();if(pv)L.push(`Trước buổi đầu tuần, các em hoàn thành bài trên web: ${qtLesT(pv.s.w)}.`);L.push("— Cô Thảo tiếng Trung");return L.join("\n")};
  let h=`${qtSrvBar()}<div class="row">${["Tuần này","Tuần sau"].map((t,i)=>`<button class="btn sm ${QT.ui.wk==i?"":"o"}" onclick="QT.ui.wk=${i};gvDraw()">${t}</button>`).join("")}<b>${qtDM(mon)} – ${qtDM(end)}</b></div>
 <div class="card note">Tối Chủ nhật: (1) gửi lịch tuần mới cho từng lớp · (2) xem PPT cần soạn · (3) gửi báo cáo tuần cho phụ huynh ở phía dưới.</div>
-<h3 class="ab-h">1. Thông báo lịch · tiến độ từng lớp</h3>`+(per.length?`<div class="qtlist">${per.map(o=>`<div class="card"><b>${gvE(o.c)}</b>${qtMsgBox("ct_"+o.c,msg(o))}<button class="btn sm" onclick="qtCp('ct_${qtA(o.c)}',this)">📋 Sao chép gửi nhóm lớp</button></div>`).join("")}</div>`:`<div class="card ctx">Tuần này chưa có buổi nào theo lộ trình.</div>`);
+`+tkbHtml()+`<h3 class="ab-h">1. Thông báo lịch · tiến độ từng lớp</h3>`+(per.length?`<div class="qtlist">${per.map(o=>`<div class="card"><b>${gvE(o.c)}</b>${qtMsgBox("ct_"+o.c,msg(o))}<button class="btn sm" onclick="qtCp('ct_${qtA(o.c)}',this)">📋 Sao chép gửi nhóm lớp</button></div>`).join("")}</div>`:`<div class="card ctx">Tuần này chưa có buổi nào theo lộ trình.</div>`);
  h+=`<h3 class="ab-h">2. PPT cần soạn</h3><div class="card">${all.map(o=>{const k=o.c+"|"+o.x.d,ok=(QT.d.ppt[k]||{}).ok;return `<label class="qtln qtppt ${ok?"done":""}"><span><input type="checkbox" ${ok?"checked":""} onchange="qtPut('ppt',${qtJ(k)},{ok:this.checked?1:0});this.closest('label').classList.toggle('done',this.checked)"> <b>${qtTD(o.x.d)}</b> · ${gvE(o.c)} · Buổi ${o.x.s.n}: ${gvE(qtSesT(o.x.s))}</span>${o.x.s.k!="hoc"?`<small class="pill">${QT_K[o.x.s.k]}</small>`:""}</label>`}).join("")||`<span class="ctx">Không có buổi nào.</span>`}</div>`;
  return h+`<h3 class="ab-h">3. Báo cáo tuần gửi phụ huynh</h3>`+(typeof gvBc=="function"?gvBc(F):"")}
+
+/* ================= 🗓 THỜI KHÓA BIỂU CỐ ĐỊNH (Chốt tuần · thêm 02/11/2026) =================
+   Bảng ca × thứ như bảng Excel của cô. Chế độ "Đánh dấu": bấm ô → đổi màu (Trống → Đã mở → Dự kiến → Lớp mới sắp mở → Tạm nghỉ → Trống).
+   Chế độ "Sửa chữ": gõ trực tiếp vào ô, đổi tên ca, thêm / xóa ca. Lưu: QT.d.tkb.all = {rows:[{id,lb}], c:{"id|thứ":{x,s}}} (qtset loại tkb). */
+const TKB_D=["T2","T3","T4","T5","T6","T7","CN"];
+const TKB_ST=["Trống","Đã mở","Dự kiến · chưa chốt","Lớp mới sắp mở","Tạm nghỉ"],TKB_IC=["⬜","🟡","🔵","🔴","⚫"];
+function tkbSeed(){const N="Nhà trống — có thể cân nhắc thuê giáo viên dạy thay nếu dạy lớp doanh nghiệp; còn không thì mình dạy",
+ DN="Dự kiến có thể dạy lớp doanh nghiệp\n(mất thời gian đi từ 4h30 – 7h30)\nHiện tại lớp này chưa chốt",MOI="Mở lớp mới HSK1 tại nhà\ndự kiến vào 12/11";
+ const rows=[{id:"sa",lb:"Sáng (9h – 10h30)"},{id:"ch",lb:"Chiều (2h – 3h30)"},{id:"t1",lb:"Tối (7h – 8h30)"},{id:"t2",lb:"Tối (8h30 – 10h)"}],c={};
+ const put=(r,d,x,st)=>c[r+"|"+d]={x,s:st};
+ put("sa",2,"K44 HSK2 (2 bạn)",1);put("sa",3,"GIÀU (3h30)\n(có thể chuyển)",1);put("sa",4,"K44 HSK2 (2 bạn)",1);put("sa",6,N,0);
+ put("ch",1,DN,2);put("ch",3,DN,2);
+ put("t1",0,"K41 HSK3 (cố định lên H4)",1);put("t1",1,N,0);put("t1",2,"K46 HSK2 (cố định)",1);
+ put("t1",3,"K41 HSK3 (cố định lên H4)\ncó thể chuyển sang tối thứ 7 nếu đi dạy doanh nghiệp",1);put("t1",4,"K46 HSK2 (cố định)",1);
+ put("t1",5,"K41 HSK3 (cố định lên H4)\ncó thể chuyển sang tối thứ 7",2);
+ put("t2",0,"K45 HSK2 (cố định lên H3)",1);put("t2",1,"K49 HSK1 (cố định lên H2)",1);put("t2",2,"K45 HSK2 (cố định lên H3)",1);
+ put("t2",3,MOI,3);put("t2",4,"K49 HSK1 (cố định lên H2)",1);put("t2",5,MOI,3);
+ return{rows,c}}
+let TKB=null;
+function tkbGet(){const o=QT.d.tkb.all;return JSON.parse(JSON.stringify(o&&o.rows?{rows:o.rows,c:o.c||{}}:tkbSeed()))}
+function tkbSave(){qtPut("tkb","all",{rows:TKB.rows,c:TKB.c})}
+const tkbCell=k=>TKB.c[k]||(TKB.c[k]={x:"",s:0});
+function tkbSum(){const n=[0,0,0,0,0],free=[];
+ TKB.rows.forEach(r=>{const f=[];TKB_D.forEach((d,i)=>{const v=TKB.c[r.id+"|"+i]||{s:0,x:""};if(v.s||v.x.trim())n[v.s||0]++;if(!v.s)f.push(d)});if(f.length)free.push(`<b>${gvE(r.lb)}</b>: ${f.join(", ")}`)});
+ return `<div class="tkbsum">${[1,2,3,4].map(i=>`<span class="tkbp s${i}">${TKB_IC[i]} ${TKB_ST[i]}: <b>${n[i]}</b> ca</span>`).join("")}
+<div class="tkbfree">⬜ Ca còn trống: ${free.join(" · ")||"không còn ca trống"}</div></div>`}
+function tkbHtml(){TKB=tkbGet();const ed=!!QT.ui.tkbEd;
+ const head=`<tr><th>Ca</th>${TKB_D.map(d=>`<th>${d}</th>`).join("")}${ed?"<th></th>":""}</tr>`;
+ const body=TKB.rows.map((r,ri)=>`<tr><th>${ed?`<input class="tin" value="${gvE(r.lb)}" oninput="TKB.rows[${ri}].lb=this.value;tkbSave()">`:gvE(r.lb)}</th>${TKB_D.map((d,i)=>{const k=r.id+"|"+i,v=TKB.c[k]||{x:"",s:0};
+  return ed?`<td class="s${v.s||0}"><textarea class="tin" rows="3" placeholder="${d}" oninput="tkbCell(${qtJ(k)}).x=this.value;tkbSave()">${gvE(v.x)}</textarea></td>`
+   :`<td class="s${v.s||0}" onclick="tkbTap(this,${qtJ(k)})" title="Bấm để đổi màu"><span>${gvE(v.x)}</span></td>`}).join("")}${ed?`<td><button class="btn o sm" title="Xóa ca này" onclick="tkbDel(${ri})">🗑</button></td>`:""}</tr>`).join("");
+ return `<details class="card tkbw" ${QT.ui.tkbC?"":"open"} ontoggle="QT.ui.tkbC=!this.open"><summary>🗓 Thời khóa biểu cố định cả tuần</summary>
+<div class="row tkbbar"><button class="btn sm ${ed?"o":""}" onclick="QT.ui.tkbEd=0;gvDraw()">🎨 Đánh dấu màu</button><button class="btn sm ${ed?"":"o"}" onclick="QT.ui.tkbEd=1;gvDraw()">✏️ Sửa chữ</button>
+<small>${ed?"Gõ thẳng vào ô, tự lưu. Xong thì bấm 🎨 Đánh dấu màu.":"Bấm vào ô để đổi màu: "+TKB_ST.map((t,i)=>TKB_IC[i]+" "+t).join(" → ")+" → ⬜"}</small></div>
+${tkbSum()}<div class="tkbsc"><table class="tkb ${ed?"ed":""}"><thead>${head}</thead><tbody>${body}</tbody></table></div>
+${ed?`<div class="row"><button class="btn o sm" onclick="tkbAdd()">➕ Thêm ca</button><button class="btn o sm" onclick="tkbReset()">↺ Về bảng ban đầu</button></div>`:""}</details>`}
+function tkbTap(el,k){const v=tkbCell(k);v.s=((v.s||0)+1)%TKB_ST.length;el.className="s"+v.s;tkbSave();const b=document.querySelector(".tkbsum");if(b)b.outerHTML=tkbSum()}
+function tkbAdd(){TKB.rows.push({id:"r"+Date.now().toString(36),lb:"Ca mới"});tkbSave();gvDraw()}
+function tkbDel(i){const r=TKB.rows[i];ask(`Xóa ca <b>${gvE(r.lb)}</b> và chữ trong các ô của ca này?`,()=>{TKB.rows.splice(i,1);Object.keys(TKB.c).forEach(k=>{if(k.startsWith(r.id+"|"))delete TKB.c[k]});tkbSave();gvDraw()})}
+function tkbReset(){ask("Đưa thời khóa biểu về bảng ban đầu (theo ảnh cô gửi 02/11)? Các chỉnh sửa sau đó sẽ mất.",()=>{TKB=tkbSeed();tkbSave();gvDraw()})}
 
 /* ================= 🎯 TUYỂN SINH ================= */
 function qtTsL(){return JSON.parse(JSON.stringify((QT.d.ts.all||{}).list||[]))}
@@ -418,4 +461,13 @@ if(typeof gvDraw=="function"){
 .qtet .tin{padding:6px 8px;font-size:.85rem;min-width:110px}.qtet td{vertical-align:middle}.qtet tbody tr{cursor:default}.qtet tr.past{opacity:.6}.qtet tr.now{background:#fff8e1}.qtact{white-space:nowrap}
 .qtnew{display:flex;flex-direction:column;gap:6px}.qtnew .tin{margin:0}.qtdel{margin-top:14px}.qtdt .tin{min-width:130px}.qtdt small{display:block;color:var(--sub);font-size:.72rem}.qtdt.own .tin{border-color:var(--g);background:#fff8e1}.qtdt a{cursor:pointer;color:var(--m)}.qtppt.done span{text-decoration:line-through;opacity:.6}.qtppt{cursor:pointer}
 .qtts.due{border:1px solid #e3a3a3;background:#fff6f6}.qtts small{display:block;margin-top:3px}.qtts select{font:inherit;border-radius:10px;border:1px solid var(--b);padding:3px 6px}
+.tkbw>summary{cursor:pointer;font-weight:700;color:var(--m);font-size:1.02rem}.tkbw[open]>summary{margin-bottom:8px}.tkbbar{align-items:center;gap:6px;flex-wrap:wrap}.tkbbar small{color:var(--sub);flex-basis:100%}
+.tkbsum{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.tkbp{font-size:.82rem;border-radius:10px;padding:3px 9px;border:1px solid var(--b)}.tkbfree{flex-basis:100%;font-size:.85rem;color:var(--sub)}.tkbfree b{color:var(--t)}
+.tkbsc{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--b);border-radius:12px}
+.tkb{border-collapse:collapse;width:100%;min-width:760px;table-layout:fixed;font-size:.82rem}.tkb th,.tkb td{border:1px solid var(--b);padding:6px;vertical-align:top;text-align:left}
+.tkb thead th{background:var(--m);color:#fff;text-align:center;font-size:.85rem}.tkb thead th:first-child{width:118px}.tkb.ed thead th:last-child{width:46px}
+.tkb tbody th{background:var(--k);font-weight:700;position:sticky;left:0;z-index:1}.tkb td{height:64px;white-space:pre-line;line-height:1.35;transition:background .15s}
+.tkb:not(.ed) td{cursor:pointer;user-select:none}.tkb:not(.ed) td:active{filter:brightness(.92)}
+.tkb .s0,.tkbp.s0{background:transparent}.tkb .s1,.tkbp.s1{background:rgba(201,162,39,.32)}.tkb .s1 span{font-weight:700}.tkb .s2,.tkbp.s2{background:rgba(66,133,214,.22)}.tkb .s3,.tkbp.s3{background:rgba(214,74,74,.32)}.tkb .s4,.tkbp.s4{background:rgba(120,120,120,.25)}.tkb .s4 span{text-decoration:line-through;opacity:.75}
+.tkb.ed td textarea{width:100%;min-height:58px;font-size:.8rem;padding:4px;resize:vertical;margin:0;background:rgba(255,255,255,.7)}.tkb.ed th .tin{width:100%;font-size:.8rem;padding:4px;margin:0}
 @media(max-width:600px){.qtcards,.qtlist{grid-template-columns:1fr}.qtsum .btn{margin-left:0}.qtnx{text-align:left}.qtck{grid-template-columns:1fr 1fr}.qtlv button{padding:4px 6px}}`;document.head.appendChild(st)})();
