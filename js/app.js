@@ -175,7 +175,7 @@ function qDone(key,f){const qs=QS[key],a=QA[key];if(!f&&Object.keys(a).length<qs
  QD[key]=true;const pct=Math.round(qs.filter((q,i)=>a[i]!=null&&q.o[a[i]]===q.c).length/qs.length*100);
  if(key[0]=="g"){const r=ldN(cur);r.gp=pct;svN(cur,r)}else{const n=+key.slice(1),r=ldN(n);r.test=pct;svN(n,r)}rr()}
 
-function vGp(L){return `<div class="card note">${L.gpNote||"Bài 1 trong sách chưa có mục ngữ pháp riêng. Dưới đây là các mẫu câu trọng tâm cần nắm, kèm lỗi người Việt hay mắc."}</div>`+
+function vGp(L){if(L.gpWip)return `<div class="card note">📐 <b>Mục Ngữ pháp · Mẫu câu của bài này đang được cô Thảo soạn lại</b> theo dạng luyện mới (nhớ công thức → sắp xếp → tạo câu) và sẽ cập nhật sớm. Em học các phần khác trước nhé.</div>`+nextBtn("gp");return `<div class="card note">${L.gpNote||"Bài 1 trong sách chưa có mục ngữ pháp riêng. Dưới đây là các mẫu câu trọng tâm cần nắm, kèm lỗi người Việt hay mắc."}</div>`+
  L.gp.map(g=>`<div class="card gpb"><h4>${g.h}</h4>${g.b}</div>`).join("")+`<h3 class="ab-h">Luyện tập</h3>`+(GXD[gxKey()]?gxHtml(L):quizHtml("gp",L.gq)+(QD.gp?nextBtn("gp"):""))}
 
 let DTV={},DTR={},DTD=false;
@@ -311,7 +311,7 @@ function acRec(ai,j){if(curRec){try{curRec.stop()}catch(e){}return}
  x=>{ACR[k]=srMsg(x);rr()})}
 
 const PN={fc:"Flashcard từ vựng",gp:"Ngữ pháp · Mẫu câu",dt:"Nghe chép chính tả",ns:"Luyện nói"};
-function vSum(L,r){const ks=Object.keys(PN),avg=avgOf(r),weak=ks.filter(k=>r[k]!=null&&r[k]<80),todo=ks.filter(k=>r[k]==null);
+function vSum(L,r){const ks=Object.keys(PN).filter(k=>!(L.gpWip&&k=="gp")),avg=avgOf(r),weak=ks.filter(k=>r[k]!=null&&r[k]<80),todo=ks.filter(k=>r[k]==null);
  const msg=todo.length?`Còn ${todo.length} phần chưa làm: ${todo.map(k=>PN[k]).join(", ")}.`:weak.length?`Cần ôn lại: <b>${weak.map(k=>PN[k]).join(", ")}</b> (dưới 80%).`:`🎉 Hoàn thành Bài ${cur}! Làm test nhanh để chốt bài nhé.`;
  return `<div class="card"><div class="big ${avg!=null&&avg>=80&&!todo.length?"ok":"no"}">${avg==null?"—":avg+"%"}</div><p style="text-align:center">${msg}</p></div>
 <div class="card">${ks.map(k=>`<div class="bar"><span>${PN[k]}</span><div class="tr"><i style="width:${r[k]||0}%" class="${r[k]>=80?"ok":"no"}"></i></div><b>${r[k]==null?"chưa làm":r[k]+"%"}</b>${r[k]==null||r[k]<80?`<button class="btn o sm" onclick="lt('${k}')">${r[k]==null?"Làm":"Ôn lại"}</button>`:"<span>✓</span>"}</div>`).join("")}

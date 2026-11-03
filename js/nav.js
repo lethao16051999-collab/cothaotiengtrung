@@ -14,7 +14,7 @@ function navTop(){const b=$("lbody"),e=$("ltabs");if(!b)return;const hd=parseFlo
 function navTab(t){NAVO=false;(navH4()?h4t:lt)(t)}
 function navOpen(n){if(n===cur)return;NAVO=false;openL(n)}
 function navSide(){const r=ldN(cur),ls=navLessons(),i=ls.indexOf(cur),prev=ls[i-1],next=ls[i+1],tabs=navTabs(),ct=navCur();
- const ks=tabs.map(t=>navKey(t[0])).filter(Boolean),done=ks.filter(k=>r[k]!=null).length,avg=navAvg(r),T=LTS[olLv]||[];
+ const ks=tabs.map(t=>navKey(t[0])).filter(k=>k&&!(k=="gp"&&LD[cur]&&LD[cur].gpWip)),done=ks.filter(k=>r[k]!=null).length,avg=navAvg(r),T=LTS[olLv]||[];
  return `<aside class="lside ${NAVO?"open":""}" aria-label="Mục lục bài học">
 <button class="lsx" onclick="NAVO=false;rr()" aria-label="Đóng mục lục">✕</button>
 <button class="lsall" onclick="NAVO=false;closeL()">⌂ Tất cả bài học</button>
