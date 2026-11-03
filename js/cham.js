@@ -210,17 +210,17 @@ function chgHtml(){
  const list=Object.values(bais).sort((a,b)=>b.p-a.p||a.lv-b.lv||a.b-b.b);
  if(!list.length)return `<div class="card"><p>Chưa có bài nộp nào${GV.cls?" của lớp "+chE(GV.cls):""} trong ${Math.max(GV.days,30)} ngày qua.</p><button class="btn sm" onclick="chgLoad()">↻ Tải lại</button></div>`;
  if(!CHG.bai||!bais[CHG.bai])CHG.bai=list[0].lv+"-"+list[0].b;
- const B=bais[CHG.bai];let h=`<div class="gvbar chgbar"><label>Bài <select onchange="CHG.bai=this.value;chgDraw()">${list.map(x=>`<option value="${x.lv}-${x.b}" ${x.lv+"-"+x.b==CHG.bai?"selected":""}>${chgLvN(x.lv)} · Bài ${x.b}${x.ten?" · "+chE(x.ten):""} — ${x.p?x.p+" câu chờ chấm":"đã chấm xong"} (${x.sv.size} bạn)</option>`).join("")}</select></label>
+ const B=bais[CHG.bai];let h=`<div class="gvbar chgbar"><label>Bài <select onchange="CHG.bai=this.value;chgDraw()">${list.map(x=>`<option value="${x.lv}-${x.b}" ${x.lv+"-"+x.b==CHG.bai?"selected":""}>${chgLvN(x.lv)} · ${x.b>100?"":"Bài "+x.b}${x.ten?(x.b>100?"":" · ")+chE(x.ten):""} — ${x.p?x.p+" câu chờ chấm":"đã chấm xong"} (${x.sv.size} bạn)</option>`).join("")}</select></label>
 <label>Xem <select onchange="CHG.mode=this.value;chgDraw()"><option value="cho" ${CHG.mode=="cho"?"selected":""}>Câu chờ chấm</option><option value="all" ${CHG.mode=="all"?"selected":""}>Tất cả (sửa điểm đã chấm)</option></select></label>
 <label class="gvck"><input type="checkbox" ${CHG.hide?"checked":""} onchange="CHG.hide=this.checked;chgDraw()"> Ẩn tên (chiếu lên lớp)</label>
 <button class="btn sm" onclick="chgLoad()" ${CHG.busy?"disabled":""}>${CHG.busy?"Đang tải…":"↻ Tải lại"}</button><small class="chsv">${CHG.saving?"Đang lưu…":Object.keys(CHG.q).length?"Chưa lưu…":CHG.saved?"✓ Đã lưu "+chT(CHG.saved).split(" ")[0]:""}</small></div>`;
- const R=rows.filter(x=>x.lv+"-"+x.b==CHG.bai),ks=[...new Set(R.map(x=>x.k))].sort((a,b)=>(a[0]==b[0]?0:a[0]=="t"?-1:1)||(+a.slice(1))-(+b.slice(1)));
+ const R=rows.filter(x=>x.lv+"-"+x.b==CHG.bai),ks=[...new Set(R.map(x=>x.k))].sort((a,b)=>("tqnp".indexOf(a[0])-"tqnp".indexOf(b[0]))||(+a.slice(1))-(+b.slice(1)));
  h+=`<p class="ctx">Câu giống nhau đã gộp một dòng: bấm một lần là chấm cho cả nhóm. Cô chấm xong, lần sau bạn khác viết giống thế máy tự chấm theo cô. ✓ = đúng (tranh: đúng nội dung + đúng cấu trúc), ½ = gần đúng, ✗ = sai.</p>`;
  let shown=0;
  ks.forEach(k=>{const rk=R.filter(x=>x.k==k),f=rk[0],grp={};rk.forEach(x=>{(grp[x.key]=grp[x.key]||[]).push(x)});
   let G=Object.values(grp);if(CHG.mode=="cho")G=G.filter(g=>g.some(x=>pend(x)||CHG.tc[x.sid+"|"+x.k]));if(!G.length)return;shown++;
   G.sort((a,b)=>(b.some(pend)-a.some(pend))||b.length-a.length);
-  h+=`<div class="card chgq"><div class="chgh"><b>${f.d=="tr"?"Dịch "+(+k.slice(1)+1):"Tranh "+(+k.slice(1)+1)}.</b> ${chE(f.de)}</div>
+  h+=`<div class="card chgq"><div class="chgh"><b>${f.d=="tr"?({q:"Câu hỏi ",n:"Nói "})[k[0]]||"Dịch ":"Tranh "}${+k.slice(1)+1}.</b> ${chE(f.de)}</div>
 ${f.d=="pc"&&f.img?`<div class="gxpic chsm"><img src="${chE(f.img)}" alt=""></div>`:""}
 <div class="chgref">Đáp án tham khảo: <span class="zh">${chE(f.ref)}</span> <small class="py">${chE(f.rp||"")}</small></div>
 ${G.map(g=>{const x=g[0],ids=g.map(y=>y.sid+"|"+y.k),cg=g.find(y=>y.g!==""&&y.g!=null),gv=cg?+cg.g:null,nx=cg?cg.nx||"":"",p=g.some(pend),mac=g.every(y=>/Máy/.test(y.st));
