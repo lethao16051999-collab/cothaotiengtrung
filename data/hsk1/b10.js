@@ -1,0 +1,117 @@
+/* ===== HSK1 Bài 10: 这儿的苹果真便宜！ (sách trang 070–077) =====
+   Mục Ngữ pháp · Mẫu câu: cô Thảo đang soạn lại (gpWip) — bài này chưa có gp / GXD. ===== */
+Object.assign(SPN,{"王一雪":["Wáng Yīxuě","Vương Nhất Tuyết"],"刘明":["Liú Míng","Lưu Minh"],"售货员":["shòuhuòyuán","Nhân viên bán hàng"],"C":["C","Người C"]});
+LD1[10]={t:"这儿的苹果真便宜！",tp:"Zhèr de píngguǒ zhēn piányi!",vi:"Táo ở đây rẻ thật!",
+gpWip:true,
+goals:["Nghe hiểu, đọc hiểu và trao đổi đơn giản về giá cả hàng hoá.","Nắm vững cách sử dụng của câu vị ngữ tính từ.","Nắm vững cách dùng của đại từ nghi vấn “怎么样”.","Nhận biết được đồng Nhân dân tệ."],
+texts:[
+{ctx:"Vương Nhất Tuyết mua cốc ở một cửa hàng nhỏ.",a:"10-1",l:[
+["王一雪","请问，有杯子吗？","Qǐngwèn, yǒu bēizi ma?","Xin hỏi, ở đây có bán cốc không?"],
+["售货员","有，杯子在这边。","Yǒu, bēizi zài zhèbiān.","Có ạ, cốc ở phía bên này."],
+["王一雪","多少钱一个？","Duōshao qián yí ge?","Bao nhiêu tiền một chiếc vậy?"],
+["售货员","这些五块钱一个，那些十块钱一个。","Zhèxiē wǔ kuài qián yí ge, nàxiē shí kuài qián yí ge.","Những chiếc này 5 đồng một chiếc, còn những chiếc kia 10 đồng một chiếc."],
+["王一雪","我买这个吧。","Wǒ mǎi zhège ba.","Tôi lấy chiếc này."]]},
+{ctx:"Vương Nhất Tuyết đang mua hoa quả ở chợ.",a:"10-3",l:[
+["王一雪","这儿的水果真不少！","Zhèr de shuǐguǒ zhēn bù shǎo!","Hoa quả ở đây nhiều nhỉ!"],
+["售货员","您想买什么？","Nín xiǎng mǎi shénme?","Chị muốn mua gì?"],
+["王一雪","我想买两斤苹果。","Wǒ xiǎng mǎi liǎng jīn píngguǒ.","Tôi muốn mua hai cân táo."],
+["售货员","苹果三块五一斤。这些七块二，七块钱吧。","Píngguǒ sān kuài wǔ yì jīn. Zhèxiē qī kuài èr, qī kuài qián ba.","Táo 3 đồng rưỡi một cân. Chỗ này 7,2 đồng, lấy chị 7 đồng nhé."],
+["王一雪","好的，这儿的苹果真便宜！","Hǎo de, zhèr de píngguǒ zhēn piányi!","Vâng, táo ở đây rẻ thật!"]]},
+{ctx:"Lưu Minh và Vương Nhất Tuyết đang mua quần áo cho các con trong trung tâm thương mại.",a:"10-5",l:[
+["王一雪","这家商店衣服真多！这件一百元，怎么样？","Zhè jiā shāngdiàn yīfu zhēn duō! Zhè jiàn yìbǎi yuán, zěnmeyàng?","Cửa hàng này nhiều quần áo thật đấy! Chiếc này 100 đồng, anh thấy thế nào?"],
+["刘明","好看，也不贵。","Hǎokàn, yě bú guì.","Đẹp đấy, mà cũng không đắt."],
+["王一雪","小雪能穿，买一件吧。","Xiǎoxuě néng chuān, mǎi yí jiàn ba.","Tiểu Tuyết mặc được đấy, mua một chiếc nhé."],
+["刘明","好的。小明能穿吗？","Hǎo de. Xiǎomíng néng chuān ma?","Ừ. Tiểu Minh có mặc được không?"],
+["王一雪","不能。这些是女孩子穿的衣服，男孩子的衣服在那儿。","Bù néng. Zhèxiē shì nǚ háizi chuān de yīfu, nán háizi de yīfu zài nàr.","Không được đâu. Những cái này là quần áo dành cho bé gái. Quần áo dành cho bé trai ở đằng kia cơ."],
+["刘明","好的。","Hǎo de.","Ừ nhỉ."]]}],
+words:[
+["杯子","bēizi","danh từ","cốc, ly",0],["售货员","shòuhuòyuán","danh từ","nhân viên bán hàng",0],["这边","zhèbiān","đại từ","bên này, phía này",0],["钱","qián","danh từ","tiền",0],["这些","zhèxiē","đại từ","những cái này",0],["块","kuài","lượng từ","đồng (đơn vị tiền tệ)",0],["那些","nàxiē","đại từ","những cái kia",0],
+["这儿","zhèr","đại từ","ở đây, chỗ này",1],["水果","shuǐguǒ","danh từ","hoa quả, trái cây",1],["少","shǎo","tính từ","ít",1],["斤","jīn","lượng từ","cân (đơn vị đo lường của Trung Quốc, 1 cân bằng 0,5 kg)",1],["苹果","píngguǒ","danh từ","táo",1],["便宜","piányi","tính từ","rẻ",1],
+["商店","shāngdiàn","danh từ","cửa hàng",2],["衣服","yīfu","danh từ","quần áo",2],["件","jiàn","lượng từ","chiếc, cái (dùng cho quần áo)",2],["元","yuán","lượng từ","đồng (nhân dân tệ)",2],["怎么样","zěnmeyàng","đại từ","thế nào, như thế nào",2],["贵","guì","tính từ","đắt",2],["穿","chuān","động từ","mặc",2],["女","nǚ","tính từ","nữ, con gái",2],["男","nán","tính từ","nam, con trai",2],["那儿","nàr","đại từ","ở kia, chỗ đó",2]],
+gp:[],
+gq:[],
+dt:[["请问，有杯子吗？","Qǐngwèn, yǒu bēizi ma?"],["杯子在这边。","Bēizi zài zhèbiān."],["多少钱一个？","Duōshao qián yí ge?"],["这些五块钱一个。","Zhèxiē wǔ kuài qián yí ge."],["这儿的水果真不少！","Zhèr de shuǐguǒ zhēn bù shǎo!"],["我想买两斤苹果。","Wǒ xiǎng mǎi liǎng jīn píngguǒ."],["苹果三块五一斤。","Píngguǒ sān kuài wǔ yì jīn."],["这儿的苹果真便宜！","Zhèr de píngguǒ zhēn piányi!"],["这件一百元，怎么样？","Zhè jiàn yìbǎi yuán, zěnmeyàng?"],["好看，也不贵。","Hǎokàn, yě bú guì."]],
+tsort:[
+{t:["多少","钱","一个","？"],ok:["多少钱一个？","一个多少钱？"],p:"Duōshao qián yí ge?",e:"Hỏi giá: 多少钱 + 一 + lượng từ? (hoặc 一个多少钱？)"},
+{t:["苹果","三块五","一斤","。"],ok:["苹果三块五一斤。"],p:"Píngguǒ sān kuài wǔ yì jīn.",e:"Món hàng + giá + 一 + đơn vị."},
+{t:["这儿","的","苹果","真","便宜","！"],ok:["这儿的苹果真便宜！"],p:"Zhèr de píngguǒ zhēn piányi!",e:"Tính từ làm vị ngữ, không cần 是."},
+{t:["这件","衣服","怎么样","？"],ok:["这件衣服怎么样？"],p:"Zhè jiàn yīfu zěnmeyàng?",e:"……怎么样？ hỏi ý kiến; đã có 怎么样 thì không thêm 吗."},
+{t:["男孩子","的","衣服","在","那儿","。"],ok:["男孩子的衣服在那儿。"],p:"Nán háizi de yīfu zài nàr.",e:"Đồ vật + 在 + nơi chốn."}],
+tlis:[
+{a:"请问，有杯子吗？",o:["有，杯子在这边。|Yǒu, bēizi zài zhèbiān.","五块钱一个。|Wǔ kuài qián yí ge.","我买这个吧。|Wǒ mǎi zhège ba."]},
+{a:"多少钱一个？",o:["十块钱一个。|Shí kuài qián yí ge.","我想买两斤苹果。|Wǒ xiǎng mǎi liǎng jīn píngguǒ.","好看，也不贵。|Hǎokàn, yě bú guì."]},
+{a:"这件衣服怎么样？",o:["好看，也不贵。|Hǎokàn, yě bú guì.","在那儿。|Zài nàr.","三块五一斤。|Sān kuài wǔ yì jīn."]},
+{a:"苹果三块五一斤。",qz:"苹果多少钱一斤？",qp:"Píngguǒ duōshao qián yì jīn?",o:["三块五|sān kuài wǔ","三块|sān kuài","七块二|qī kuài èr"]},
+{a:"这些是女孩子穿的衣服，男孩子的衣服在那儿。",qz:"男孩子的衣服在哪儿？",qp:"Nán háizi de yīfu zài nǎr?",o:["在那儿|zài nàr","在这儿|zài zhèr","在这边|zài zhèbiān"]}],
+sit:[
+{title:"Tình huống 1 · Mua cốc ở cửa hàng nhỏ",ctx:"Vương Nhất Tuyết vào một cửa hàng nhỏ, hỏi mua cốc.",turns:[
+{w:"王一雪",vi:"Lịch sự hỏi cửa hàng có cốc không.",h:[["请问","qǐngwèn"],["有杯子吗","yǒu bēizi ma"]],r:["请问，有杯子吗？","Qǐngwèn, yǒu bēizi ma?","Xin hỏi, ở đây có bán cốc không?"]},
+{w:"售货员",vi:"Đáp có, cốc ở phía bên này.",h:[["有","yǒu"],["杯子","bēizi"],["在这边","zài zhèbiān"]],r:["有，杯子在这边。","Yǒu, bēizi zài zhèbiān.","Có ạ, cốc ở phía bên này."]},
+{w:"王一雪",vi:"Hỏi bao nhiêu tiền một chiếc.",h:[["多少钱","duōshao qián"],["一个","yí ge"]],r:["多少钱一个？","Duōshao qián yí ge?","Bao nhiêu tiền một chiếc vậy?"]},
+{w:"售货员",vi:"Những chiếc này 5 đồng một chiếc, những chiếc kia 10 đồng một chiếc.",h:[["这些","zhèxiē"],["五块钱一个","wǔ kuài qián yí ge"],["那些","nàxiē"],["十块钱一个","shí kuài qián yí ge"]],r:["这些五块钱一个，那些十块钱一个。","Zhèxiē wǔ kuài qián yí ge, nàxiē shí kuài qián yí ge.","Những chiếc này 5 đồng một chiếc, những chiếc kia 10 đồng một chiếc."]},
+{w:"王一雪",vi:"Chọn: tôi lấy chiếc này.",h:[["我","wǒ"],["买这个","mǎi zhège"],["吧","ba"]],r:["我买这个吧。","Wǒ mǎi zhège ba.","Tôi lấy chiếc này."]}]},
+{title:"Tình huống 2 · Mua táo ở chợ",ctx:"Vương Nhất Tuyết đi chợ mua hoa quả.",turns:[
+{w:"王一雪",vi:"Khen hoa quả ở đây nhiều.",h:[["这儿的水果","zhèr de shuǐguǒ"],["真不少","zhēn bù shǎo"]],r:["这儿的水果真不少！","Zhèr de shuǐguǒ zhēn bù shǎo!","Hoa quả ở đây nhiều nhỉ!"]},
+{w:"售货员",vi:"Hỏi chị muốn mua gì (dùng 您).",h:[["您","nín"],["想买","xiǎng mǎi"],["什么","shénme"]],r:["您想买什么？","Nín xiǎng mǎi shénme?","Chị muốn mua gì?"]},
+{w:"王一雪",vi:"Nói muốn mua hai cân táo.",h:[["我想买","wǒ xiǎng mǎi"],["两斤","liǎng jīn"],["苹果","píngguǒ"]],r:["我想买两斤苹果。","Wǒ xiǎng mǎi liǎng jīn píngguǒ.","Tôi muốn mua hai cân táo."]},
+{w:"售货员",vi:"Táo 3 đồng rưỡi một cân; chỗ này 7,2 đồng, lấy 7 đồng thôi.",h:[["苹果","píngguǒ"],["三块五一斤","sān kuài wǔ yì jīn"],["这些七块二","zhèxiē qī kuài èr"],["七块钱吧","qī kuài qián ba"]],r:["苹果三块五一斤。这些七块二，七块钱吧。","Píngguǒ sān kuài wǔ yì jīn. Zhèxiē qī kuài èr, qī kuài qián ba.","Táo 3 đồng rưỡi một cân. Chỗ này 7,2 đồng, lấy chị 7 đồng nhé."]},
+{w:"王一雪",vi:"Đồng ý, khen táo ở đây rẻ thật.",h:[["好的","hǎo de"],["这儿的苹果","zhèr de píngguǒ"],["真便宜","zhēn piányi"]],r:["好的，这儿的苹果真便宜！","Hǎo de, zhèr de píngguǒ zhēn piányi!","Vâng, táo ở đây rẻ thật!"]}]},
+{title:"Tình huống 3 · Mua quần áo cho con",ctx:"Lưu Minh và Vương Nhất Tuyết mua quần áo cho các con trong trung tâm thương mại.",turns:[
+{w:"王一雪",vi:"Khen cửa hàng nhiều quần áo; nói chiếc này 100 đồng, hỏi anh thấy thế nào.",h:[["这家商店","zhè jiā shāngdiàn"],["衣服真多","yīfu zhēn duō"],["这件一百元","zhè jiàn yìbǎi yuán"],["怎么样","zěnmeyàng"]],r:["这家商店衣服真多！这件一百元，怎么样？","Zhè jiā shāngdiàn yīfu zhēn duō! Zhè jiàn yìbǎi yuán, zěnmeyàng?","Cửa hàng này nhiều quần áo thật đấy! Chiếc này 100 đồng, anh thấy thế nào?"]},
+{w:"刘明",vi:"Khen đẹp, mà cũng không đắt.",h:[["好看","hǎokàn"],["也不贵","yě bú guì"]],r:["好看，也不贵。","Hǎokàn, yě bú guì.","Đẹp đấy, mà cũng không đắt."]},
+{w:"王一雪",vi:"Nói Tiểu Tuyết mặc được, mua một chiếc nhé.",h:[["小雪能穿","Xiǎoxuě néng chuān"],["买一件吧","mǎi yí jiàn ba"]],r:["小雪能穿，买一件吧。","Xiǎoxuě néng chuān, mǎi yí jiàn ba.","Tiểu Tuyết mặc được đấy, mua một chiếc nhé."]},
+{w:"刘明",vi:"Đồng ý, hỏi Tiểu Minh có mặc được không.",h:[["好的","hǎo de"],["小明","Xiǎomíng"],["能穿吗","néng chuān ma"]],r:["好的。小明能穿吗？","Hǎo de. Xiǎomíng néng chuān ma?","Ừ. Tiểu Minh có mặc được không?"]},
+{w:"王一雪",vi:"Không được; đây là quần áo bé gái, quần áo bé trai ở đằng kia.",h:[["不能","bù néng"],["这些是女孩子穿的衣服","zhèxiē shì nǚ háizi chuān de yīfu"],["男孩子的衣服","nán háizi de yīfu"],["在那儿","zài nàr"]],r:["不能。这些是女孩子穿的衣服，男孩子的衣服在那儿。","Bù néng. Zhèxiē shì nǚ háizi chuān de yīfu, nán háizi de yīfu zài nàr.","Không được đâu. Những cái này là quần áo bé gái. Quần áo bé trai ở đằng kia cơ."]},
+{w:"刘明",vi:"Đáp: ừ.",h:[["好的","hǎo de"]],r:["好的。","Hǎo de.","Ừ nhỉ."]}]},
+{title:"Tình huống 4 · Vận dụng: mua quà ở cửa hàng gần trường",ctx:"Bạn vào một cửa hàng gần trường mua cốc và áo làm quà cho bạn gái cùng lớp; hỏi giá, hỏi ý kiến rồi chọn mua.",turns:[
+{w:"我",vi:"Lịch sự hỏi cửa hàng có cốc không.",h:[["请问","qǐngwèn"],["有杯子吗","yǒu bēizi ma"]],r:["请问，有杯子吗？","Qǐngwèn, yǒu bēizi ma?","Xin hỏi, có cốc không ạ?"]},
+{w:"售货员",vi:"Có, cốc ở đằng kia.",h:[["有","yǒu"],["杯子","bēizi"],["在那儿","zài nàr"]],r:["有，杯子在那儿。","Yǒu, bēizi zài nàr.","Có, cốc ở đằng kia."]},
+{w:"我",vi:"Chỉ vào chiếc cốc, hỏi chiếc này bao nhiêu tiền.",h:[["这个杯子","zhège bēizi"],["多少钱","duōshao qián"]],r:["这个杯子多少钱？","Zhège bēizi duōshao qián?","Chiếc cốc này bao nhiêu tiền?"]},
+{w:"售货员",vi:"Trả lời: 8 đồng rưỡi (八块五).",h:[["八块五","bā kuài wǔ"]],r:["八块五。","Bā kuài wǔ.","8 đồng rưỡi."]},
+{w:"我",vi:"Chỉ chiếc áo màu hồng, hỏi chiếc áo này thế nào (để bạn gái mặc được không).",h:[["这件衣服","zhè jiàn yīfu"],["怎么样","zěnmeyàng"]],r:["这件衣服怎么样？","Zhè jiàn yīfu zěnmeyàng?","Chiếc áo này thế nào ạ?"]},
+{w:"售货员",vi:"Khen áo rất đẹp, không đắt, 60 đồng một chiếc.",h:[["很好看","hěn hǎokàn"],["不贵","bú guì"],["六十块一件","liùshí kuài yí jiàn"]],r:["很好看，不贵，六十块一件。","Hěn hǎokàn, bú guì, liùshí kuài yí jiàn.","Rất đẹp, không đắt, 60 đồng một chiếc."]},
+{w:"我",vi:"Chốt mua: một chiếc cốc và một chiếc áo.",h:[["我买","wǒ mǎi"],["一个杯子","yí ge bēizi"],["一件衣服","yí jiàn yīfu"]],r:["我买一个杯子、一件衣服吧。","Wǒ mǎi yí ge bēizi, yí jiàn yīfu ba.","Cháu lấy một chiếc cốc và một chiếc áo nhé."]}]}],
+act:[
+{title:"角色扮演 · Ở cửa hàng",ctx:"Ba người một nhóm: một người đóng vai nhân viên bán hàng, hai người đóng vai khách hàng; hội thoại theo nội dung ba bài khóa (hỏi có hàng không, hỏi giá, mặc cả, hỏi ý kiến bạn, chọn mua).",
+req:["三人一组，一个人扮演售货员，两个人扮演顾客，仿照本课三篇课文的内容对话。","Sān rén yì zǔ, yí ge rén bànyǎn shòuhuòyuán, liǎng ge rén bànyǎn gùkè, fǎngzhào běn kè sān piān kèwén de nèiróng duìhuà.","Ba người một nhóm, một người đóng vai nhân viên bán hàng, hai người còn lại đóng vai khách hàng, hội thoại với nhau dựa theo nội dung ba bài khoá trong bài học này."],
+roles:["售货员","A","B"],
+l:[
+["售货员","您想买什么？","Nín xiǎng mǎi shénme?","Anh chị muốn mua gì ạ?","Chào khách, hỏi khách muốn mua gì."],
+["A","请问，有水果吗？","Qǐngwèn, yǒu shuǐguǒ ma?","Xin hỏi, có hoa quả không?","Hỏi có bán hoa quả không."],
+["售货员","有，水果在这边。苹果四块一斤。","Yǒu, shuǐguǒ zài zhèbiān. Píngguǒ sì kuài yì jīn.","Có, hoa quả ở phía này. Táo 4 đồng một cân.","Chỉ chỗ và báo giá."],
+["A","这儿的苹果真便宜！我想买两斤。","Zhèr de píngguǒ zhēn piányi! Wǒ xiǎng mǎi liǎng jīn.","Táo ở đây rẻ thật! Tôi muốn mua hai cân.","Khen rẻ, nói số lượng muốn mua."],
+["B","这件衣服怎么样？","Zhè jiàn yīfu zěnmeyàng?","Chiếc áo này thế nào?","Cầm một chiếc áo, hỏi ý kiến bạn A."],
+["A","很好看。多少钱一件？","Hěn hǎokàn. Duōshao qián yí jiàn?","Rất đẹp. Bao nhiêu tiền một chiếc?","Khen rồi hỏi giá nhân viên."],
+["售货员","一百二十元一件。","Yìbǎi èrshí yuán yí jiàn.","120 đồng một chiếc.","Báo giá."],
+["B","太贵了！那些呢？","Tài guì le! Nàxiē ne?","Đắt quá! Còn những chiếc kia?","Chê đắt, hỏi giá những chiếc khác."],
+["售货员","那些不贵，五十块一件。","Nàxiē bú guì, wǔshí kuài yí jiàn.","Những chiếc kia không đắt, 50 đồng một chiếc.","Báo giá rẻ hơn."],
+["B","好的，我买一件吧。","Hǎo de, wǒ mǎi yí jiàn ba.","Được, tôi mua một chiếc nhé.","Chốt mua."]],
+note:"Sách chỉ nêu yêu cầu đóng vai theo ba bài khóa; toàn bộ lời hội thoại mẫu do cô Thảo soạn. Từ 顾客 (gùkè, khách hàng) có trong đề bài của sách. 太……了 đã học ở Bài 3.",
+sub:[["Câu hỏi của khách",[["请问，有杯子吗？","Qǐngwèn, yǒu bēizi ma?","Xin hỏi, có cốc không?"],["多少钱一斤？","Duōshao qián yì jīn?","Bao nhiêu tiền một cân?"],["这个怎么样？","Zhège zěnmeyàng?","Cái này thế nào?"]]],
+["Câu của nhân viên",[["杯子在那儿。","Bēizi zài nàr.","Cốc ở đằng kia."],["这些五块钱一个。","Zhèxiē wǔ kuài qián yí ge.","Những cái này 5 đồng một cái."],["这件衣服不贵。","Zhè jiàn yīfu bú guì.","Chiếc áo này không đắt."]]]]}]};
+var TKP=Object.assign(window.TKP||{},{"多少":"duōshao","钱":"qián","一个":"yí ge","苹果":"píngguǒ","三块五":"sān kuài wǔ","一斤":"yì jīn","这儿":"zhèr","的":"de","真":"zhēn","便宜":"piányi","这件":"zhè jiàn","衣服":"yīfu","怎么样":"zěnmeyàng","男孩子":"nán háizi","在":"zài","那儿":"nàr"});
+/* Flashcard · Hướng dẫn viết: [mẹo nhớ theo bộ thủ, [câu ví dụ, pinyin, nghĩa]]. Câu ví dụ chỉ dùng từ Bài 1–10. */
+var WG=Object.assign(window.WG||{},{"1-10":{
+"杯子":["杯: bộ <b>木</b> (gỗ) + 不 → cốc (cốc xưa làm bằng gỗ). 子 đọc nhẹ: bēizi. 杯 thanh 1, đọc ngang, đừng đọc thành bèi.",["这个杯子很好看。","Zhège bēizi hěn hǎokàn.","Chiếc cốc này rất đẹp."]],
+"售货员":["售: 隹 (con chim) + <b>口</b> → rao bán. 货: 化 + <b>贝</b> (vỏ sò = tiền) → hàng hoá. 员: <b>口</b> + <b>贝</b> → người làm việc. Người bán hàng hoá → nhân viên bán hàng.",["售货员，这个多少钱？","Shòuhuòyuán, zhège duōshao qián?","Chị bán hàng ơi, cái này bao nhiêu tiền?"]],
+"这边":["这 (này) + 边 (bộ <b>辶</b> → phía, bên). Bên này. Cặp nhớ: 这边 / 那边 (Bài 6).",["苹果在这边。","Píngguǒ zài zhèbiān.","Táo ở phía bên này."]],
+"钱":["Bộ <b>钅</b> (kim loại) + 戋: tiền xưa đúc bằng kim loại → tiền. Hỏi giá: 多少钱？",["这个杯子多少钱？","Zhège bēizi duōshao qián?","Chiếc cốc này bao nhiêu tiền?"]],
+"这些":["这 (này) + 些 (một vài, Bài 6) → những cái này. Đã có 这些 thì không thêm 个: nói 这些杯子, không nói 这些个杯子.",["这些衣服很便宜。","Zhèxiē yīfu hěn piányi.","Những bộ quần áo này rất rẻ."]],
+"块":["Bộ <b>土</b> (đất) + 夬 → cục, miếng; khẩu ngữ chỉ đồng tiền. Đừng nhầm với 快 (kuài – nhanh, bộ 忄). 块 thanh 4.",["苹果五块钱一斤。","Píngguǒ wǔ kuài qián yì jīn.","Táo 5 đồng một cân."]],
+"那些":["那 (kia) + 些 → những cái kia. Cặp nhớ: 这些 (những cái này) / 那些 (những cái kia).",["那些杯子十块钱一个。","Nàxiē bēizi shí kuài qián yí ge.","Những chiếc cốc kia 10 đồng một chiếc."]],
+"这儿":["这 (này) + 儿 → ở đây, chỗ này (= 这里). Chỉ nơi chốn, không đi với lượng từ: nói 这个水果, không nói 这儿个.",["这儿的水果真好吃。","Zhèr de shuǐguǒ zhēn hǎochī.","Hoa quả ở đây ngon thật."]],
+"水果":["水: hình dòng nước chảy → nước. 果: <b>田</b> (quả) trên cây <b>木</b> → quả. Quả mọng nước → hoa quả. Đừng nhầm 果 với 课 (tiết học).",["我很喜欢水果。","Wǒ hěn xǐhuan shuǐguǒ.","Mình rất thích hoa quả."]],
+"少":["小 (nhỏ) + nét phẩy dài bên dưới → bớt đi, ít. Ngược nghĩa: 多 (nhiều). 不少 = không ít, khá nhiều.",["这儿的水果真不少！","Zhèr de shuǐguǒ zhēn bù shǎo!","Hoa quả ở đây nhiều thật!"]],
+"斤":["Hình chiếc rìu → đơn vị cân của Trung Quốc: 1 斤 = 0,5 kg. Mua 2 cân nói 两斤, không nói 二斤.",["我想买两斤苹果。","Wǒ xiǎng mǎi liǎng jīn píngguǒ.","Mình muốn mua hai cân táo."]],
+"苹果":["苹: bộ <b>艹</b> (cỏ, cây) + 平 → cây táo. 果: quả. Quả táo. 苹 thanh 2, 果 thanh 3: píngguǒ.",["这儿的苹果真便宜！","Zhèr de píngguǒ zhēn piányi!","Táo ở đây rẻ thật!"]],
+"便宜":["便: bộ <b>亻</b> (người) + 更 → tiện. 宜: mái <b>宀</b> + 且 → hợp. Nghĩa “rẻ” thì đọc piányi (không đọc biànyí).",["这个杯子很便宜。","Zhège bēizi hěn piányi.","Chiếc cốc này rất rẻ."]],
+"商店":["商: buôn bán. 店: mái che <b>广</b> + 占 → cửa hàng (Bài 7). Nơi buôn bán → cửa hàng. 商 thanh 1, 店 thanh 4 đọc dứt khoát.",["这家商店的衣服很多。","Zhè jiā shāngdiàn de yīfu hěn duō.","Cửa hàng này có rất nhiều quần áo."]],
+"衣服":["衣: hình cổ áo và vạt áo → áo. 服: bộ <b>月</b> + 𠬝 → quần áo. 服 đọc nhẹ: yīfu.",["我想买一件衣服。","Wǒ xiǎng mǎi yí jiàn yīfu.","Mình muốn mua một chiếc áo."]],
+"件":["Bộ <b>亻</b> (người) + 牛 (con bò) → món, chiếc. Lượng từ cho quần áo (và việc): 一件衣服.",["这件衣服一百元。","Zhè jiàn yīfu yìbǎi yuán.","Chiếc áo này 100 đồng."]],
+"元":["二 + 儿 → đồng (nhân dân tệ), dùng trong văn viết, giá ghi trên nhãn. Nói chuyện thường dùng 块. Đừng nhầm với 远 (xa) hay 院 (viện).",["这个杯子十元。","Zhège bēizi shí yuán.","Chiếc cốc này 10 đồng."]],
+"怎么样":["怎么 (thế nào, Bài 6) + 样 (bộ <b>木</b> + 羊 → kiểu, dạng) → thế nào, ra sao. Đặt cuối câu để hỏi ý kiến; không thêm 吗.",["这件衣服怎么样？","Zhè jiàn yīfu zěnmeyàng?","Chiếc áo này thế nào?"]],
+"贵":["中 trên + <b>贝</b> (vỏ sò = tiền) dưới: nhiều tiền → đắt, quý. Thanh 4 đọc dứt khoát. Ngược nghĩa: 便宜.",["这件衣服不贵。","Zhè jiàn yīfu bú guì.","Chiếc áo này không đắt."]],
+"穿":["穴 (hang, lỗ) + 牙 (răng): xuyên qua lỗ → mặc (xỏ tay, chân qua áo quần).",["小雪能穿这件衣服。","Xiǎoxuě néng chuān zhè jiàn yīfu.","Tiểu Tuyết mặc được chiếc áo này."]],
+"女":["Hình người phụ nữ ngồi khoanh tay → nữ. Chữ có bộ 女 thường liên quan phụ nữ: 她, 妈妈, 姐姐, 妹妹.",["这些是女孩子的衣服。","Zhèxiē shì nǚ háizi de yīfu.","Những cái này là quần áo bé gái."]],
+"男":["<b>田</b> (ruộng) trên + <b>力</b> (sức) dưới: người dùng sức làm ruộng → nam. Ngược: 女.",["男孩子的衣服在那儿。","Nán háizi de yīfu zài nàr.","Quần áo bé trai ở đằng kia."]],
+"那儿":["那 (kia) + 儿 → ở kia, chỗ đó (= 那里). Đọc nàr thanh 4; đừng nhầm với 哪儿 (nǎr – đâu?) có bộ 口.",["杯子在那儿。","Bēizi zài nàr.","Cốc ở đằng kia."]]}});
