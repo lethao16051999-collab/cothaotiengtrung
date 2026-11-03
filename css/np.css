@@ -1,0 +1,56 @@
+/* Ngữ pháp HSK1 dạng mới (js/np1.js) */
+.npintro{font-size:.97rem}
+.nptoc{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
+.nptoc button{border:1px solid var(--b);background:#fff;color:var(--m);border-radius:999px;padding:6px 12px;font:600 .85rem var(--ui);cursor:pointer;text-align:left}
+.nptoc button.on{background:rgba(46,125,79,.12);border-color:rgba(46,125,79,.4);color:#2e7d4f}
+.nptoc button.half{background:rgba(201,162,39,.16);border-color:rgba(201,162,39,.5);color:#7a5f08}
+.npt{border-top:4px solid var(--m);scroll-margin-top:70px}
+.nphd{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.npn{font:800 .74rem var(--ui);letter-spacing:.06em;text-transform:uppercase;color:#7a5f08}
+.nphd h4{margin:0;font-size:1.15rem}
+.npcd{background:rgba(201,162,39,.12);border:1px solid rgba(201,162,39,.35);border-radius:14px;padding:10px 14px;margin:4px 0 12px}
+.npcd p{margin:4px 0 0}
+.npsec{font:800 .8rem var(--ui);letter-spacing:.04em;text-transform:uppercase;color:var(--sub);margin:8px 0 6px}
+.npfs{display:grid;gap:12px;margin:0 0 14px}
+.npfr{border-left:3px solid var(--b);padding-left:10px}
+.npfr .gfr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.npfr .fm{margin:0;padding:6px 12px;font-size:1.04rem}
+.npex{margin:6px 0 0 4px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px 8px}
+.npex .vi{flex-basis:100%;color:var(--sub);font-size:.94rem}
+.npw{padding:6px 0;border-bottom:1px dashed rgba(178,58,72,.25)}.npw:last-child{border:0}
+.npwx{color:#b23a48;display:flex;gap:6px;align-items:flex-start}.npwx .zh{text-decoration:line-through;text-decoration-thickness:1px}
+.npwo{color:#2e7d4f;display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap}
+.npw .vi{color:var(--sub);font-size:.93rem}
+.npx,.npre{margin-top:10px}
+.npx summary,.npre summary{cursor:pointer;font:700 .92rem var(--ui);color:var(--m);padding:6px 0}
+.npx p{margin:6px 0}
+.npgate{margin-top:14px;padding-top:10px;border-top:1px solid var(--b)}
+.npmini{background:var(--k);border:1px dashed var(--b);border-radius:12px;padding:8px 12px;margin:4px 0 10px;font-size:.95rem}
+.npmini>div{margin-top:5px}.npmini .gfl{display:inline-block;min-width:96px;font:700 .74rem var(--ui);padding:3px 8px;border-radius:999px;text-align:center}
+.npb{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:18px 0 8px;font:800 1rem var(--ui);color:var(--m)}
+.npb span{background:var(--m);color:#fff;border-radius:999px;padding:3px 10px;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase}
+.npb small{font:500 .85rem var(--ui);color:var(--sub)}
+.npbx span{background:#c9a227}
+.npl{font:700 .9rem var(--ui);color:var(--sub)}
+.npvi{margin:6px 0 2px}
+.npq0{margin:8px 0;font-size:1.1rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.npo{display:grid;gap:8px;margin:8px 0}
+.npop{text-align:left;border:1.5px solid var(--b);background:#fff;border-radius:12px;padding:9px 12px;cursor:pointer;font-size:1.02rem;color:inherit}
+.npop:hover:not([disabled]){border-color:var(--m)}
+.npop.ok{border-color:#2e7d4f;background:rgba(46,125,79,.1)}.npop.no{border-color:#b23a48;background:rgba(178,58,72,.08)}.npop.dim{opacity:.55}
+.npop .zp{margin:0}
+.npw0{margin:6px 0}
+.npchen{display:flex;flex-wrap:wrap;align-items:flex-end;gap:4px;margin:10px 0;line-height:1.2}
+.nptk .zp{margin:0}
+.npgap{min-width:30px;height:34px;border:1.5px dashed var(--m);background:#fff;color:var(--m);border-radius:10px;cursor:pointer;font:700 1rem var(--ui);padding:0 6px}
+.npgap.ok{border-style:solid;border-color:#2e7d4f;background:rgba(46,125,79,.12);color:#2e7d4f;font-family:inherit}
+.npgap.no{border-style:solid;border-color:#b23a48;background:rgba(178,58,72,.1);color:#b23a48}
+.npgap.dim{opacity:.35}
+.npe{margin-top:6px;color:var(--sub)}
+.nprs{font-size:.97rem}.nprs.ok{border-color:rgba(46,125,79,.4)}.nprs.no{border-color:rgba(178,58,72,.35)}
+.npnx{margin:6px 0 22px}
+.npok{margin:-4px 0 18px}
+.opy{color:var(--sub);font-size:.85em;font-style:italic}
+@media (max-width:600px){.npop{font-size:.98rem}.npfr .fm{font-size:.98rem}.npgap{min-width:28px}}
+.npz,.npz *{display:inline!important}.npz .zh{font-size:1.05em}
+.npop[disabled]{color:inherit;cursor:default}.npop.ok[disabled],.npop.no[disabled]{opacity:1}
