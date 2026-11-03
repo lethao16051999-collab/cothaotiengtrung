@@ -33,7 +33,7 @@ function cdMax(s){const o={};s.secs.forEach(sc=>{const n=sc.kind=="fill"?cdFillN
 function cdDraft(s){const d=cdJ(cdDK(s),null)||{};d.f=d.f||{};d.v=d.v||{};return d}
 const cdSaveD=()=>{const s=cdSet();if(s&&CDV)cdPut(cdDK(s),CDV)};
 function cdOpen(k){CDON=k;CDSHOW={};CDPRAC=false;CDV=cdDraft(cdSet());rr();scrollTo(0,0);cdPoll()}
-function cdClose(){CDON=null;CDV=null;rr();scrollTo(0,0)}
+function cdClose(){clearInterval(CDTM);CDTM=null;CDON=null;CDV=null;rr();scrollTo(0,0)}
 function cdF(k,el){CDV.f[k]=el.value;cdSaveD()}
 function cdIn(k,el){CDV.v[k]=el.value;cdSaveD()}
 function cdQHint(k,el){const s=cdSet(),it=cdItems(s).find(x=>x.k==k),v=(el.value||"").trim(),b=$("cdh_"+k);if(!b)return;
@@ -44,6 +44,18 @@ function cdMic(k){if(CDMIC)return;if(typeof srListen!="function")return ask("Tr�
  CDMIC=k;const b=$("cdm_"+k);if(b){b.textContent="⏺ Đang nghe…";b.disabled=true}
  srListen(t=>{CDMIC=null;CDV.v[k]=t;cdSaveD();rr()},c=>{CDMIC=null;rr();ask((typeof srMsg=="function"&&srMsg(c))||"Máy chưa nghe được, em thử lại hoặc gõ vào ô nhé.",null,1)})}
 function cdTog(id){CDSHOW[id]=!CDSHOW[id];rr()}
+/* ---------- đồng hồ làm bài: tính từ lúc bấm Bắt đầu (lưu trong bài đang làm, tải lại trang vẫn chạy tiếp); hết giờ tự nộp ---------- */
+let CDTM=null;
+const cdLeft=s=>CDV&&CDV.st?Math.max(0,Math.round((CDV.st+s.time*60000-Date.now())/1000)):s.time*60;
+const cdFmt=x=>`${Math.floor(x/60)}:${String(x%60).padStart(2,"0")}`;
+function cdStart(){const s=cdSet();if(!s)return;CDV.st=Date.now();cdSaveD();rr();scrollTo(0,0)}
+function cdTick(){const s=cdSet(),e=$("cdtm");if(!s||!s.time||!CDV||!CDV.st||CDPRAC||cdJ(cdNK(s),null)){clearInterval(CDTM);CDTM=null;return}
+ const l=cdLeft(s);if(e){e.querySelector("b").textContent=cdFmt(l);e.classList.toggle("warn",l<=300);const bar=e.querySelector("i");if(bar)bar.style.width=(100*l/(s.time*60))+"%"}
+ if(l<=0){clearInterval(CDTM);CDTM=null;cdOver()}}
+function cdOver(){const s=cdSet();if(!s||CDV.over)return;CDV.over=1;cdSaveD();
+ if(cdMe()){const g=cdGrade(s);ask(`⏰ Hết ${s.time} phút! Máy đã tự nộp bài của em cho cô.`,null,1);cdNopGo(g)}
+ else{rr();ask(`⏰ Hết ${s.time} phút! Em không sửa bài được nữa. Bấm <b>Nộp bài cho cô</b> và nhập mã học viên để gửi bài.`,null,1)}}
+function cdTimer(){if(!CDTM)CDTM=setInterval(cdTick,1000)}
 
 /* ---------- chấm và nộp ---------- */
 function cdGrade(s){const fill=[],its=[];const sc=s.secs.find(x=>x.kind=="fill");
@@ -61,7 +73,7 @@ function cdNop(){const s=cdSet();if(!s)return;
  const miss=[bF?bF+" câu điền từ":"",...s.secs.filter(sc=>sc.kind!="fill").map(sc=>{const n=bo.filter(x=>x.sec==sc.id).length;return n?n+" câu "+({tr:"dịch",qa:"trả lời",say:"nói"})[sc.kind]:""})].filter(Boolean);
  ask(`Nộp bài cho cô? Sau khi nộp em <b>không sửa được</b> nữa.${miss.length?`<br>Em còn bỏ trống: <b>${miss.join(", ")}</b> (câu trống được 0 điểm).`:""}`,()=>cdNopGo(g))}
 function cdNopGo(g){const s=cdSet(),sid="N"+trkId(),now=Date.now();
- const rec={sid,at:now,lv:cdLv(),b:s.b,ten:s.t,fill:g.fill,it:g.its,sent:false};cdPut(cdNK(s),rec);
+ const rec={sid,at:now,lv:cdLv(),b:s.b,ten:s.t,fill:g.fill,it:g.its,sent:false,dur:CDV&&CDV.st?Math.min(s.time||999,Math.max(1,Math.round((now-CDV.st)/60000))):null,over:!!(CDV&&CDV.over)};cdPut(cdNK(s),rec);
  g.fill.forEach((x,i)=>{if(x.v&&!x.ok&&typeof trkErr=="function"){const sc=s.secs.find(c=>c.kind=="fill");let n=0,q="";sc.groups.forEach(gg=>gg.items.forEach(it=>{if(n++==i)q=it[0]}));trkErr("Chuyên đề · Điền từ",q,x.v,x.a,s.b)}});
  try{localStorage.removeItem(cdDK(s))}catch(e){}CDV={f:{},v:{}};rr();scrollTo(0,0);cdUp(rec)}
 async function cdUp(rec){const s=CD[rec.lv]&&CD[rec.lv].find(x=>x.b==rec.b);if(!s||!cdMe()||!cdSrv()||rec.sent)return;
@@ -69,7 +81,7 @@ async function cdUp(rec){const s=CD[rec.lv]&&CD[rec.lv].find(x=>x.b==rec.b);if(!
  try{const r=await chPost({a:"vnop",code:TRKME.code,sid:rec.sid,lv:rec.lv,b:rec.b,ten:rec.ten,so:{ok:rec.fill.filter(x=>x.ok).length,n:rec.fill.filter(x=>x.v).length,all:rec.fill.length},
    it:send.map(x=>({k:x.k,d:"tr",de:x.de,ref:x.ref,rp:x.rp,img:"",v:x.v,key:x.key,st:x.st}))});
   if(r&&r.ok&&r.v){rec.sent=true;rec.msg="";(r.it||[]).forEach(o=>{const x=rec.it.find(y=>y.k==o.k);if(x&&x.st!="ok"){x.st=o.st;x.g=o.g;x.nx=o.nx||""}});
-   const sc=cdScore(s,rec);trkEv({t:"Nộp "+s.t,lv:rec.lv,b:rec.b,s:`${sc.tot}/100${sc.wt?" (tạm tính, "+sc.wt+" câu chờ cô)":""}`})}
+   const sc=cdScore(s,rec);trkEv({t:"Nộp "+s.t,lv:rec.lv,b:rec.b,s:`${sc.tot}/100${sc.wt?" (tạm tính, "+sc.wt+" câu chờ cô)":""}${rec.dur?" · làm "+rec.dur+" phút"+(rec.over?" (hết giờ, tự nộp)":""):""}`})}
   else if(r&&r.err=="no_code")rec.msg="Mã học viên chưa đúng, bài chưa gửi được."}catch(e){}
  cdPut("ct_cdn_"+rec.lv+"_"+s.key,rec);if(CDON)rr()}
 async function cdPoll(force){if(!cdMe()||!cdSrv())return;const L=CD[cdLv()]||[];
@@ -104,14 +116,17 @@ ${sc.items.map((x,i)=>{const k="n"+i,gi=G&&G.its.find(y=>y.k==k);return `<div cl
 <div class="cdsay"><button class="btn o sm" id="cdm_${k}" onclick="cdMic('${k}')">🎤 Nói</button><input class="cdin" value="${cdE(CDV.v[k]||"")}" oninput="cdIn('${k}',this)" placeholder="Nói hoặc gõ một câu đầy đủ" autocomplete="off" autocapitalize="off"></div>${P?(gi.st=="ok"?mark(1):`<span class="chb wt">Khác đáp án</span> <span class="zh">${x.ref}</span>`):""}</div>`}).join("")}
 ${typeof srWarn=="function"&&srWarn()?`<p class="ctx">${srWarn()}</p>`:""}</div>`;return ""}
 function cdForm(s){const G=CDSHOW.prac||null;
- return `${CDPRAC?`<div class="card note">↻ Em đang <b>luyện lại</b>: không tính điểm, không gửi cô. Làm xong bấm "Kiểm tra" để xem câu đúng / sai.</div>`:""}
-${s.secs.map((sc,i)=>cdSec(s,sc,i,G)).join("")}
+ if(!CDPRAC&&s.time&&!CDV.st)return `<div class="card cdstart"><h3>⏱ Thời gian làm bài: ${s.time} phút</h3><p>Đồng hồ bắt đầu chạy khi em bấm <b>Bắt đầu làm bài</b> và vẫn chạy khi em thoát ra hoặc tải lại trang. Hết giờ máy tự nộp bài.</p>
+<p class="ctx">Gợi ý chia thời gian: Điền từ 5 phút · Dịch 15 phút · Trả lời câu hỏi 20 phút · Nói 7 phút · soát lại 3 phút.</p><button class="btn cdgo" onclick="cdStart()">▶ Bắt đầu làm bài</button></div>`;
+ const tm=!CDPRAC&&s.time&&CDV.st;if(tm)setTimeout(()=>{cdTimer();cdTick()},0);
+ return `${tm?`<div class="cdtimer ${cdLeft(s)<=300?"warn":""}" id="cdtm"><span>⏱ Còn lại</span><b>${cdFmt(cdLeft(s))}</b><span class="cdbar"><i style="width:${100*cdLeft(s)/(s.time*60)}%"></i></span></div>`:""}${CDV.over?`<div class="card note bad">⏰ Đã hết giờ. Em không sửa bài được nữa, hãy bấm Nộp bài cho cô.</div>`:""}`+`${CDPRAC?`<div class="card note">↻ Em đang <b>luyện lại</b>: không tính điểm, không gửi cô. Làm xong bấm "Kiểm tra" để xem câu đúng / sai.</div>`:""}
+<fieldset class="cdfs" ${CDV.over&&!CDPRAC?"disabled":""}>${s.secs.map((sc,i)=>cdSec(s,sc,i,G)).join("")}</fieldset>
 <div class="card cdnop">${CDPRAC?`<button class="btn" onclick="cdPracCheck()">✔ Kiểm tra</button> <button class="btn o" onclick="CDPRAC=false;CDSHOW={};CDV=cdDraft(cdSet());rr()">← Xem bài đã nộp</button>`
  :`<p>Làm xong bấm <b>Nộp bài cho cô</b>. Phần máy chấm có điểm ngay; câu khác đáp án và phần trả lời câu hỏi chờ cô chấm, điểm tự cập nhật.</p><button class="btn" onclick="cdNop()">📤 Nộp bài cho cô</button>${cdMe()?"":`<p class="ctx">Cần mã học viên để nộp. Bấm nút là hiện ô nhập mã.</p>`}`}</div>`}
 function cdDone(s,rec){const sc=cdScore(s,rec),lbl={f:"Điền từ",t:"Dịch",q:"Trả lời câu hỏi",n:"Nói"},g=x=>x.g==null||x.g===""?0:+x.g;
  const box=(id,o)=>`<div><b>${o.p}/${o.m}</b><small>${lbl[id]}${o.wt?` · ⏳ ${o.wt} câu chờ cô`:""}</small></div>`;
  const fin=!sc.wt,pass=sc.tot>=s.pass;
- let h=`<div class="card chsum"><h4>📤 Em đã nộp bài lúc ${chT(rec.at)}</h4><div class="chsc cdsc">${Object.entries(sc.o).map(([k,o])=>box(k,o)).join("")}
+ let h=`<div class="card chsum"><h4>📤 Em đã nộp bài lúc ${chT(rec.at)}${rec.dur?` · làm trong ${rec.dur} phút${rec.over?" (hết giờ, máy tự nộp)":""}`:""}</h4><div class="chsc cdsc">${Object.entries(sc.o).map(([k,o])=>box(k,o)).join("")}
 <div class="cdtot ${fin?(pass?"ok":"no"):""}"><b>${sc.tot}/100</b><small>${fin?(pass?"✓ Đạt":"Chưa đạt (cần "+s.pass+")"):"Tạm tính"}</small></div></div>
 ${sc.wt?`<p class="chwt">⏳ Còn <b>${sc.wt} câu</b> chờ cô chấm. Điểm sẽ tự cập nhật.${rec.sent?"":` <b class="bad">Bài chưa gửi được, trang sẽ tự gửi lại.</b>`}</p>`:`<p class="okt">Cô đã chấm xong.</p>`}
 ${rec.msg?`<p class="bad">${rec.msg}</p>`:""}<div class="row"><button class="btn o sm" onclick="cdPoll(1)">↻ Xem cô đã chấm chưa</button></div></div>`;
@@ -161,5 +176,10 @@ setTimeout(()=>cdPoll(),4000);
 .cdpara{margin:10px 0 4px}.cdpara h4{margin:6px 0;color:var(--m)}
 .cdtab{width:100%;border-collapse:collapse;margin:8px 0 12px}.cdtab th{background:#fbf0d2;color:#5c1730;width:90px;padding:6px;border:1px solid var(--b)}.cdtab td{padding:6px 10px;border:1px solid var(--b)}.cdtab td div{margin:2px 0}
 .cdsay{display:flex;gap:8px;align-items:center}.cdsay .cdin{margin:6px 0}
-.cdnop{text-align:center}
+.cdnop{text-align:center}.cdw{padding-bottom:64px}
+.cdfs{border:0;margin:0;padding:0;min-width:0}
+.cdstart{text-align:center;border:2px solid #c9a227}.cdstart h3{color:var(--m);margin:4px 0}.cdgo{font-size:1.15rem;padding:12px 28px;margin-top:6px}
+.cdtimer{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(420px,calc(100% - 24px));box-sizing:border-box;z-index:50;display:flex;align-items:center;gap:10px;background:linear-gradient(120deg,#5c1730,#8e2a4f);color:#fff;border:2px solid #c9a227;border-radius:14px;padding:8px 14px;margin:10px 0;box-shadow:0 6px 16px rgba(60,10,30,.25)}
+.cdtimer b{font-size:1.4rem;font-variant-numeric:tabular-nums;color:#f3d77a;min-width:64px}.cdtimer.warn{background:#a33}.cdtimer.warn b{color:#fff}
+.cdbar{flex:1;height:8px;border-radius:8px;background:rgba(255,255,255,.25);overflow:hidden}.cdbar i{display:block;height:100%;background:#f3d77a;transition:width 1s linear}
 @media(max-width:640px){.cdscale{grid-template-columns:repeat(2,1fr)}.cdscale .cdtot{grid-column:1/-1}.cdtab th{width:64px}.cdsel{margin:4px 2px}}`;document.head.appendChild(st)})();

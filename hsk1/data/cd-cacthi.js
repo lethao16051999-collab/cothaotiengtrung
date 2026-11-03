@@ -1,10 +1,10 @@
 /* ===== Chuyên đề ôn tập · Giáo trình chuẩn HSK 1 (quyển cam) · thêm 03/11/2026 =====
    "Các thì trong tiếng Trung: đã – đang – sẽ" · phạm vi: quyển cam Bài 12–14, quyển xanh Bài 11, 12, 14.
    Giống phiếu giấy làm trên lớp (Phieu-tren-lop-Cac-thi-K49.docx); về nhà học viên làm lại trên web.
-   Mã bài gửi Sổ theo dõi / Chấm bài: cấp 6, bài 101. Thang 100 điểm, đạt từ 80.
+   Mã bài gửi Sổ theo dõi / Chấm bài: cấp 6, bài 101. Thang 100 điểm, đạt từ 80. Thời gian làm bài 50 phút (time), tính từ lúc bấm Bắt đầu; hết giờ tự nộp.
    acc: các câu máy chấm Đúng (bỏ dấu câu, khoảng trắng). Viết gọn: {a|b} = một trong các cách, [x] = có hoặc không. Câu khác → gửi cô chấm. */
 var CD=window.CD||{};
-CD[6]=(CD[6]||[]).concat([{key:"cacthi",after:14,b:101,pass:80,
+CD[6]=(CD[6]||[]).concat([{key:"cacthi",after:14,b:101,pass:80,time:50,
 t:"Chuyên đề: Các thì",zh:"了 · 在……呢 · 要 / 会",sub:"Đã làm gì · Đang làm gì · Sẽ làm gì",
 scope:"Quyển cam Bài 12–14 · Quyển xanh Bài 11, 12, 14",
 remind:[
