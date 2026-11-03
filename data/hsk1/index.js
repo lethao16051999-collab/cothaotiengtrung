@@ -8,4 +8,4 @@ const LD1={};
 /* Vai dùng chung cho mọi cấp (trước đây khai trong file bài HSK1; HSK2 cũng dùng 我, 王老师, 医生) */
 Object.assign(SPN,{"我":["wǒ","Bạn"],"王老师":["Wáng lǎoshī","Cô Vương"],"同学":["tóngxué","Bạn học"],"胡医生":["Hú yīshēng","Bác sĩ Hồ"],"A":["A","Người A"],"B":["B","Người B"],"医生":["yīshēng","Bác sĩ"],"病人":["bìngrén","Bệnh nhân"]});
 /* Danh sách file của cấp này. Thêm bài N: tạo data/hsk1/bNN.js (số bài 2 chữ số, vd b04.js), thêm N vào "bai", tăng "v". */
-var NAP=window.NAP||{};NAP[1]={dir:"data/hsk1/",bai:[1,2,3,4,5,6,7,8,9,10,11,12,14],them:["gp.js","wg.js","nv.js","np01.js","np02.js","np03.js","np04.js","np05.js","np06.js","np07.js","np08.js","np09.js","np10.js","np11.js","np12.js","np14.js"],ts:true,v:4};
+var NAP=window.NAP||{};NAP[1]={dir:"data/hsk1/",bai:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],them:["gp.js","wg.js","nv.js","np01.js","np02.js","np03.js","np04.js","np05.js","np06.js","np07.js","np08.js","np09.js","np10.js","np11.js","np12.js","np13.js","np14.js","np15.js"],ts:true,v:5};

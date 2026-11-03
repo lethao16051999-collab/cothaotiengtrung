@@ -1,7 +1,7 @@
 // node compile.js 1 2 3 ... → ghi data/hsk1/npNN.js từ src/bNN.js; in ký tự ngoài phạm vi từ vựng
 const fs=require('fs'),{py}=require('./pin.js'),V=require('./vocab.json');
 const OUT=__dirname+'/../../data/hsk1/';
-const LESS=[1,2,3,4,5,6,7,8,9,10,11,12,14];
+const LESS=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
 const HAN=/[一-鿿]/;
 const lc=s=>py(s,{lc:true});
 const inl=s=>String(s||'').replace(/\[\[(.+?)\]\]/g,(m,z)=>`<span class="npz"><span class="zh">${z}</span> <small class="opy">${lc(z)}</small></span>`);
