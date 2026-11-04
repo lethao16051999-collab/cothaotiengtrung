@@ -60,15 +60,43 @@ function chEdit(kind,k){const t=GX[kind][k];t.st=null;t.lc=0;rr()}
 gxTrCheck=k=>chCheck("tr",k);
 gxPcSub=k=>chCheck("pc",k);
 
-/* điểm: chỉ lưu khi luyện không có mã (khách); học viên có mã → lưu khi nộp và khi cô chấm xong */
+/* điểm Ngữ pháp (sửa 04/11/2026 theo cô Thảo): chỉ tính khi em làm ĐỦ mọi phần (Drill nếu có, Sắp xếp, Tạo câu/Dịch, Miêu tả tranh)
+   và cô đã chấm xong mọi câu chờ chấm. Điểm = phần thấp nhất → đạt (≥ 80%) khi MỌI phần, kể cả phần cô chấm, đều ≥ 80%.
+   Chưa đủ / còn chờ cô: không có r.gp (chưa tính), r.gps = "thieu" / "cho"; r.gpp = từng phần [mã, tên, %, trạng thái].
+   Khách (không mã): lưu khi làm xong Drill + Sắp xếp + Tạo câu; học viên có mã → lưu khi nộp và khi cô chấm xong. */
+const gpTr=b=>LD&&LD[b]&&LD[b].np?"Tạo câu":"Dịch Việt → Trung";
+function gpDrill(b,r){const L=LD&&LD[b];if(!L||!L.np)return null;const n=L.np.reduce((a,P)=>a+((P.d||[]).length),0);if(!n)return null;
+ return {k:"d",l:"Drill",v:r.gpd!=null?r.gpd:null,st:r.gpd!=null?"ok":"thieu"}}
+function gpFin(r,P){r.gpp=P.map(p=>[p.k,p.l,p.v,p.st]);
+ if(P.length&&P.every(p=>p.st=="ok")){r.gp=Math.min(...P.map(p=>p.v));r.gps="ok"}
+ else{delete r.gp;r.gps=P.some(p=>p.st=="thieu")?"thieu":"cho"}}
 gxSave=chSave;
 function chSave(){if(!GX||GX.prac||chMe())return;
  const done=GX.so.every(s=>s.first!=null)&&GX.tr.every(t=>t.st=="ok"||t.st=="ref");if(!done)return;
- const ok=GX.so.filter(s=>s.first).length+GX.tr.filter(t=>t.st=="ok").length,r=ldN(cur);r.gp=Math.round(ok/(GX.so.length+GX.tr.length)*100);svN(cur,r)}
-function chApply(rec){if(!rec||rec.olv!=olLv)return;const r=ldN(rec.b);let tr=rec.it.filter(x=>x.d=="tr"),pc=rec.it.filter(x=>x.d=="pc");
- const g=x=>x.g==null||x.g===""?0:+x.g;tr=tr.filter(x=>x.st!="bo");pc=pc.filter(x=>x.st!="bo");const nn=rec.so.n+tr.length;
- if(nn){r.gp=Math.round((rec.so.ok+tr.reduce((a,x)=>a+g(x),0))/nn*100);r.gpn=nn}
- r.gpw=rec.it.filter(x=>x.st=="cho").length;if(pc.length&&pc.every(x=>x.st!="cho"))r.gpt=Math.round(pc.reduce((a,x)=>a+g(x),0)/pc.length*100);svN(rec.b,r)}
+ const r=ldN(cur),P=[],dr=gpDrill(cur,r);if(dr)P.push(dr);
+ if(GX.so.length)P.push({k:"so",l:"Sắp xếp câu",v:Math.round(GX.so.filter(s=>s.first).length/GX.so.length*100),st:"ok"});
+ if(GX.tr.length)P.push({k:"tr",l:gpTr(cur),v:Math.round(GX.tr.filter(t=>t.st=="ok").length/GX.tr.length*100),st:"ok"});
+ gpFin(r,P);svN(cur,r)}
+function chApply(rec){if(!rec||rec.olv!=olLv)return;const r=ldN(rec.b),r0=JSON.stringify(r),it=rec.it||[],g=x=>x.g==null||x.g===""?0:+x.g,P=[];
+ const dr=gpDrill(rec.b,r);if(dr)P.push(dr);
+ const sa=rec.so.all!=null?rec.so.all:rec.so.n;
+ if(sa)P.push({k:"so",l:"Sắp xếp câu",v:rec.so.n<sa?null:Math.round(rec.so.ok/sa*100),st:rec.so.n<sa?"thieu":"ok"});
+ [["tr",gpTr(rec.b)],["pc","Miêu tả tranh"]].forEach(([d,l])=>{const a=it.filter(x=>x.d==d);if(!a.length)return;
+  const bo=a.some(x=>x.st=="bo"),cho=a.some(x=>x.st=="cho");
+  P.push({k:d,l,v:bo||cho?null:Math.round(a.reduce((s,x)=>s+g(x),0)/a.length*100),st:bo?"thieu":cho?"cho":"ok"})});
+ const tr=it.filter(x=>x.d=="tr"&&x.st!="bo"),pc=it.filter(x=>x.d=="pc"&&x.st!="bo");r.gpn=rec.so.n+tr.length;
+ r.gpw=it.filter(x=>x.st=="cho").length;if(pc.length&&pc.every(x=>x.st!="cho"))r.gpt=Math.round(pc.reduce((a,x)=>a+g(x),0)/pc.length*100);
+ gpFin(r,P);if(JSON.stringify(r)!=r0)svN(rec.b,r)}
+/* tính lại điểm Ngữ pháp mọi bài đã nộp trên máy theo cách tính mới (mỗi cấp 1 lần mỗi lần mở trang) */
+const CHRE={};function chReAll(){if(CHRE[olLv])return;CHRE[olLv]=1;
+ try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^ct_gxn_\d+_\d+$/.test(k)){const r=chJ(k,null);if(r&&r.it&&r.so)chApply(chFix(r))}}}catch(e){}}
+/* dòng tóm tắt từng phần, dùng ở kết quả nộp bài và Tổng kết */
+function gpLine(r){if(!r||!r.gpp||!r.gpp.length)return "";
+ const s=r.gpp.map(([k,l,v,st])=>`${l}: <b class="${st=="ok"?(v>=80?"okt":"bad"):""}">${st=="ok"?v+"%":st=="cho"?"⏳ chờ cô chấm":"chưa làm đủ"}</b>`).join(" · ");
+ const lack=r.gpp.filter(p=>p[3]=="thieu").map(p=>p[1]),low=r.gpp.filter(p=>p[3]=="ok"&&p[2]<80).map(p=>p[1]);
+ const m=r.gps=="ok"?(r.gp>=80?`✓ <b>Đạt</b> Ngữ pháp: ${r.gp}%.`:`<b class="bad">Chưa đạt</b> Ngữ pháp: ${r.gp}% (phần dưới 80%: ${low.join(", ")}).`)
+  :r.gps=="cho"?`⏳ <b>Chưa tính điểm Ngữ pháp</b>: còn câu chờ cô chấm.`:`<b>Chưa tính điểm Ngữ pháp</b>: em còn thiếu ${lack.join(", ")}.`;
+ return `<div class="gpln"><p>${m}</p><p class="ctx">${s}</p><p class="ctx">Ngữ pháp chỉ tính <b>đạt</b> khi em làm đủ tất cả các phần, cô chấm xong, và <b>mọi phần đều từ 80%</b> trở lên (điểm lấy theo phần thấp nhất).</p></div>`}
 
 /* ---------- nộp bài ---------- */
 const chHas=t=>!!gN(t.v);
@@ -124,12 +152,13 @@ const chLeft=rec=>{const sod=rec.sod||[];return (sod.length?sod.some(v=>v==null)
 /* ---------- giao diện học viên ---------- */
 function chBadge(x){return x.st=="ok"?`<span class="chb ok">✓ ${x.nx&&/chấp nhận/.test(x.nx)?"Đúng (cô đã chấp nhận)":"Đúng · máy chấm"}</span>`:x.st=="cho"?`<span class="chb wt">⏳ Chờ cô chấm</span>`:
  `<span class="chb ${+x.g>=1?"ok":+x.g>0?"mid":"no"}">${chG(+x.g)} ${x.st=="hoc"?"Máy chấm theo lần cô chấm trước":"Cô chấm"}</span>`}
-function chDone(rec){const tr=rec.it.filter(x=>x.d=="tr"&&x.st!="bo"),pc=rec.it.filter(x=>x.d=="pc"&&x.st!="bo"),wt=rec.it.filter(x=>x.st=="cho").length,g=x=>x.g==null||x.g===""?0:+x.g;
+function chDone(rec){chApply(rec);const R=rec.olv==olLv?ldN(rec.b):null,tr=rec.it.filter(x=>x.d=="tr"&&x.st!="bo"),pc=rec.it.filter(x=>x.d=="pc"&&x.st!="bo"),wt=rec.it.filter(x=>x.st=="cho").length,g=x=>x.g==null||x.g===""?0:+x.g;
  const trs=tr.reduce((a,x)=>a+g(x),0),pcs=pc.reduce((a,x)=>a+g(x),0),nn=rec.so.n+tr.length,tot=nn?Math.round((rec.so.ok+trs)/nn*100):null,box=(n,v,l,w)=>`<div${n?"":` class="chno"`}>${n?`<b>${v}/${n}</b>`:`<b>—</b>`}<small>${l}${n?w:" · không làm"}</small></div>`;
  if(!rec.seen){rec.seen=true;chPut(chSK(rec.lv,rec.b),rec)}
  let h=`<div class="card chsum"><h4>📤 Em đã nộp bài lúc ${chFix(rec).parts.map(p=>chT(p.at)).join(" · nộp tiếp ")}</h4>
 <div class="chsc">${box(rec.so.n,rec.so.ok,"Sắp xếp câu","")}${box(tr.length,trs,"Dịch Việt → Trung",tr.some(x=>x.st=="cho")?" (chờ cô)":"")}${rec.it.some(x=>x.d=="pc")?box(pc.length,pcs,"Miêu tả tranh",pc.some(x=>x.st=="cho")?" (chờ cô)":""):""}</div>
-${wt?`<p class="chwt">⏳ Còn <b>${wt} câu</b> chờ cô chấm. Điểm sẽ tự cập nhật khi cô chấm xong.${rec.sent?"":` <b class="bad">Bài chưa gửi được (mạng hoặc máy chủ), trang sẽ tự gửi lại.</b>`}</p>`:`<p class="okt">Cô đã chấm xong. ${tot!=null?`Điểm phần Ngữ pháp (sắp xếp + dịch, ${nn} câu em làm): <b>${tot}%</b>.`:""}</p>`}
+${wt?`<p class="chwt">⏳ Còn <b>${wt} câu</b> chờ cô chấm. Điểm sẽ tự cập nhật khi cô chấm xong.${rec.sent?"":` <b class="bad">Bài chưa gửi được (mạng hoặc máy chủ), trang sẽ tự gửi lại.</b>`}</p>`:`<p class="okt">Cô đã chấm xong các câu em đã nộp.</p>`}
+${R&&R.gpp?gpLine(R):tot!=null?`<p>Điểm (sắp xếp + dịch, ${nn} câu em làm): <b>${tot}%</b>.</p>`:""}
 ${rec.msg?`<p class="bad">${rec.msg}</p>`:""}<div class="row"><button class="btn o sm" onclick="chPoll(1)">↻ Xem cô đã chấm chưa</button></div></div>`;
  if(chLeft(rec))h+=`<div class="card note chleft">Em còn phần chưa làm. Buổi sau có thời gian thì làm tiếp và nộp bổ sung cho cô. <button class="btn sm" onclick="chCont()">➕ Làm tiếp phần chưa làm</button></div>`;
  h+=rec.it.filter(x=>x.st!="bo").map(x=>{const n=+x.k.slice(1)+1;return `<div class="card chit ${x.st=="cho"?"":+x.g>=1||x.st=="ok"?"ok":"no"}"><b>${x.d=="tr"?"Dịch "+n:"Tranh "+n}.</b> ${chE(x.de)}
@@ -159,7 +188,7 @@ function chItem(kind,it,k){const t=GX[kind][k],st=t.st,tr=kind=="tr",lock=st=="o
  return `<div class="card ${tr?"dt":""} ${st=="ok"?"ok":""}">${head}${pic}${box}${fb}<div class="row">${btn}</div></div>`}
 
 const _gxHtml=gxHtml;
-gxHtml=function(L){if(!GX||GX.k!=gxKey()){const rec=chRec();if(rec&&chMe()){GX=null;return chDone(rec)}gxInit()}
+gxHtml=function(L){chReAll();if(!GX||GX.k!=gxKey()){const rec=chRec();if(rec&&chMe()){GX=null;return chDone(rec)}gxInit()}
  chPrep();const rec=chRec();if(rec&&chMe()&&!GX.prac&&!GX.cont){GX=null;CHWAIT=false;return chDone(rec)}
  if(CHWAIT&&chMe()){CHWAIT=false;setTimeout(chNop,300)}
  const d=GXD[GX.k];let h="";
@@ -262,3 +291,5 @@ new MutationObserver(()=>{const p=$("chcode");if(p&&p.textContent=="Đang tải 
 /* mở trang: gửi bài chưa gửi + lấy điểm cô chấm */
 setTimeout(()=>chPoll(),4000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState=="visible")chPoll()});
+/* mở bài nào cũng tính lại điểm Ngữ pháp các bài đã nộp (thanh mục lục bài) */
+if(typeof openL=="function"){const _chOL=openL;openL=function(n){chReAll();return _chOL(n)}}

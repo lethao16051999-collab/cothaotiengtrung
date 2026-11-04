@@ -312,9 +312,10 @@ function acRec(ai,j){if(curRec){try{curRec.stop()}catch(e){}return}
 
 const PN={fc:"Flashcard từ vựng",gp:"Ngữ pháp · Mẫu câu",dt:"Nghe chép chính tả",ns:"Luyện nói"};
 function vSum(L,r){const ks=Object.keys(PN).filter(k=>!(L.gpWip&&k=="gp")),avg=avgOf(r),weak=ks.filter(k=>r[k]!=null&&r[k]<80),todo=ks.filter(k=>r[k]==null);
- const msg=todo.length?`Còn ${todo.length} phần chưa làm: ${todo.map(k=>PN[k]).join(", ")}.`:weak.length?`Cần ôn lại: <b>${weak.map(k=>PN[k]).join(", ")}</b> (dưới 80%).`:`🎉 Hoàn thành Bài ${cur}! Làm test nhanh để chốt bài nhé.`;
+ const gpS=k=>k=="gp"&&r.gp==null?(r.gps=="cho"?"chờ cô chấm":r.gps=="thieu"?"chưa đủ phần":null):null;
+ const msg=todo.length?`Còn ${todo.length} phần chưa xong: ${todo.map(k=>PN[k]+(gpS(k)?" ("+gpS(k)+")":"")).join(", ")}.`:weak.length?`Cần ôn lại: <b>${weak.map(k=>PN[k]).join(", ")}</b> (dưới 80%).`:`🎉 Hoàn thành Bài ${cur}! Làm test nhanh để chốt bài nhé.`;
  return `<div class="card"><div class="big ${avg!=null&&avg>=80&&!todo.length?"ok":"no"}">${avg==null?"—":avg+"%"}</div><p style="text-align:center">${msg}</p></div>
-<div class="card">${ks.map(k=>`<div class="bar"><span>${PN[k]}</span><div class="tr"><i style="width:${r[k]||0}%" class="${r[k]>=80?"ok":"no"}"></i></div><b>${r[k]==null?"chưa làm":r[k]+"%"}</b>${r[k]==null||r[k]<80?`<button class="btn o sm" onclick="lt('${k}')">${r[k]==null?"Làm":"Ôn lại"}</button>`:"<span>✓</span>"}</div>`).join("")}
+<div class="card">${ks.map(k=>`<div class="bar"><span>${PN[k]}</span><div class="tr"><i style="width:${r[k]||0}%" class="${r[k]>=80?"ok":"no"}"></i></div><b>${r[k]==null?(gpS(k)||"chưa làm"):r[k]+"%"}</b>${r[k]==null||r[k]<80?`<button class="btn o sm" onclick="lt('${k}')">${r[k]==null?(gpS(k)?"Xem":"Làm"):"Ôn lại"}</button>`:"<span>✓</span>"}</div>${k=="gp"&&r.gpp&&typeof gpLine=="function"?gpLine(r):""}`).join("")}
 ${r.test!=null?`<div class="bar"><span>Test nhanh</span><div class="tr"><i style="width:${r.test}%" class="${r.test>=80?"ok":"no"}"></i></div><b>${r.test}%</b><span>${r.test>=80?"✓":""}</span></div>`:""}</div>
 <div class="row c"><button class="btn" onclick="sub('ts');openTest(${cur})">📝 Làm test nhanh Bài ${cur}</button><button class="btn o sm" onclick="ask('Xóa toàn bộ kết quả Bài ${cur} trên máy này?',()=>{svN(${cur},{});DTV={};DTR={};DTD=false;NSR={};NSH={};NSM={};nsS=0;delete QS.gp;GX=null;rr()})">Làm lại từ đầu</button></div>`}
 
