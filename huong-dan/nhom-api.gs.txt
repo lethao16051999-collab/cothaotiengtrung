@@ -1,9 +1,12 @@
-/* ===== Nhận xét nhóm · Luyện nói theo nhiệm vụ · thêm 29/10/2026 =====
+/* ===== Nhận xét nhóm · Luyện nói theo nhiệm vụ · thêm 29/10/2026 · bản 2 (04/11/2026): ghép cặp mỗi bạn một máy =====
    CÁCH CÀI: dán toàn bộ đoạn này vào CUỐI file Code.gs (Mã.gs).
+   ĐÃ DÁN BẢN CŨ (29/10)? Xóa đoạn cũ (từ dòng "Nhận xét nhóm · Luyện nói theo nhiệm vụ" đến hết hàm nhNx_) rồi dán đoạn này vào chỗ đó;
+   dòng nhomApi_ trong doPost giữ nguyên. Sau đó BẮT BUỘC triển khai Phiên bản mới.
    Trong hàm doPost(e), thêm dòng sau làm DÒNG ĐẦU TIÊN bên trong hàm (cùng chỗ với nenApi_, chamApi_):
        var _nh = nhomApi_(e); if (_nh) return _nh;
    Lưu › Triển khai › Quản lý tác vụ triển khai › ✏ › Phiên bản: Phiên bản mới › Triển khai (địa chỉ giữ nguyên).
-   Tự tạo trang tính "Nhận xét nhóm": mỗi bạn trong nhóm một dòng (cùng Mã nhóm), cô nhận xét một lần cho cả nhóm. */
+   Tự tạo trang tính "Nhận xét nhóm": mỗi bạn trong nhóm một dòng (cùng Mã nhóm), cô nhận xét một lần cho cả nhóm.
+   Tự tạo trang tính "Ghép cặp": mỗi cặp / nhóm trong ngày một dòng. Bạn đã ở trong một cặp thì bạn khác không chọn được nữa (hết ngày tự bỏ). */
 var NH_SH = "Nhận xét nhóm";
 var NH_HD = ["Mã nhóm", "Thời gian", "Lớp", "Cấp", "Bộ ôn", "Thẻ", "Nhiệm vụ", "Cả nhóm", "Mã", "Họ tên", "Vai", "Trạng thái", "Báo cáo của nhóm",
   "Hoàn thành nhiệm vụ", "Ngữ pháp trọng tâm", "Phát âm · thanh điệu", "Trôi chảy", "Hỏi – đáp, phối hợp", "Báo cáo kết quả",
@@ -13,7 +16,7 @@ var NH_LV = ["Chưa đạt", "Đạt", "Tốt"];
 function nhomApi_(e) {
   var b;
   try { b = JSON.parse(e.postData.contents); } catch (x) { return null; }
-  if (!b || ["nlop", "ngui", "nkq", "ncho", "nnx"].indexOf(b.a) < 0) return null;
+  if (!b || ["nlop", "ngui", "nkq", "ncho", "nnx", "ndat", "nghep", "nroi"].indexOf(b.a) < 0) return null;
   var out;
   try { out = nhRun_(b); } catch (x) { out = { ok: false, err: "loi", msg: String(x) }; }
   out.nh = 1;
@@ -24,6 +27,9 @@ function nhRun_(b) {
   if (b.a == "nlop") return nhLop_(b);
   if (b.a == "nkq") return nhKq_(b);
   if (b.a == "ngui") return nhLock_(function () { return nhGui_(b); });
+  if (b.a == "nghep") return gcGhep_(b);
+  if (b.a == "ndat") return nhLock_(function () { return gcDat_(b); });
+  if (b.a == "nroi") return nhLock_(function () { return gcRoi_(b); });
   if (!nhPass_(b.pass)) return { ok: false, err: "pass" };
   if (b.a == "ncho") return nhCho_(b);
   if (b.a == "nnx") return nhLock_(function () { return nhNx_(b); });
@@ -73,7 +79,10 @@ function nhLop_(b) {
   var hv = [];
   Object.keys(all).forEach(function (k) { var h = all[k]; if (h.cls == me.cls && h.st != "Nghỉ") hv.push({ code: h.code, name: h.name }); });
   hv.sort(function (x, y) { return x.name.split(" ").pop().localeCompare(y.name.split(" ").pop(), "vi"); });
-  return { ok: true, cls: me.cls, hv: hv };
+  /* bạn đã ở trong cặp / nhóm hôm nay: {mã: {pid, by}} */
+  var bz = {};
+  gcToday_(gcRows_(1)).forEach(function (it) { it.js.m.forEach(function (x) { if (x.c) bz[x.c] = { pid: it.pid, by: it.js.by, byc: it.js.byc }; }); });
+  return { ok: true, v2: 1, cls: me.cls, hv: hv, bz: bz };
 }
 
 /* nhóm gửi (hoặc cập nhật) thông tin: tạo / ghi đè các dòng cùng Mã nhóm, giữ nguyên nhận xét của cô */
@@ -87,11 +96,17 @@ function nhGui_(b) {
   var old = i0 >= 0 ? R.d[i0] : null, ev = old ? old.slice(13, 22) : ["", "", "", "", "", "", "", "", ""];
   var at = old ? old[1] : nhNow_(), ms = old ? old[22] : Date.now();
   var ca = g.m.map(function (x) { return x.n + (x.r ? " (" + x.r + ")" : ""); }).join(", ");
-  var js = JSON.stringify({ m: g.m, set: g.set, zh: g.zh, dev: g.dev || "" });
+  var ow = g.ow ? 1 : 0, dev = String(g.dev || "").toUpperCase();
+  var js = JSON.stringify({ m: g.m, set: g.set, zh: g.zh, dev: g.dev || "", ow: ow, pid: g.pid || "" });
+  /* mỗi bạn một máy (ow): báo cáo và trạng thái ghi riêng vào dòng của bạn gửi, dòng các bạn khác giữ nguyên */
+  var cu = {};
+  if (ow) R.d.forEach(function (r) { if (r[0] == g.gid) cu[r[8] ? String(r[8]) : "n:" + r[9]] = { rep: r[12], stt: r[11] }; });
   var rows = g.m.map(function (x) {
+    var key = x.c ? String(x.c).toUpperCase() : (x.t ? "GV" : "n:" + x.n), mine = !ow || (x.c && String(x.c).toUpperCase() == dev), o = cu[key] || {};
     return [g.gid, at, nhTxt_(cls), g.lv, nhTxt_(g.st), g.tid, nhTxt_(g.tt), nhTxt_(ca), x.c || (x.t ? "GV" : ""), nhTxt_(x.n), x.r || "",
-      g.stt || "Đang làm", nhTxt_(g.rep || "")].concat(ev).concat([ms, js]);
+      mine ? (g.stt || "Đang làm") : (o.stt || "Đang làm"), nhTxt_(mine ? (g.rep || "") : (o.rep || ""))].concat(ev).concat([ms, js]);
   });
+  if (g.pid) gcTouch_(g);
   if (i0 >= 0 && n == rows.length) R.sh.getRange(i0 + 2, 1, n, NH_HD.length).setValues(rows);
   else {
     if (i0 >= 0) R.sh.deleteRows(i0 + 2, n);
@@ -122,13 +137,21 @@ function nhCho_(b) {
     var g = G[r[0]];
     if (!g) {
       var js = {}; try { js = JSON.parse(r[23] || "{}"); } catch (x) {}
-      g = G[r[0]] = { gid: r[0], at: +r[22], t: r[1], cls: r[2], lv: +r[3], st: r[4], tid: r[5], tt: r[6], zh: js.zh || "", stt: r[11], rep: r[12], m: [], ev: nhEv_(r) };
+      g = G[r[0]] = { gid: r[0], at: +r[22], t: r[1], cls: r[2], lv: +r[3], st: r[4], tid: r[5], tt: r[6], zh: js.zh || "", stt: r[11], rep: r[12], m: [], ev: nhEv_(r), ow: js.ow ? 1 : 0, _r: [], _n: 0, _d: 0 };
       list.push(g);
     }
     g.m.push({ c: r[8] == "GV" ? "" : r[8], n: r[9], r: r[10], t: r[8] == "GV" ? 1 : 0 });
+    if (g.ow) {
+      if (String(r[12]).trim()) g._r.push(r[9] + ": " + r[12]);
+      if (r[8] && r[8] != "GV") { g._n++; if (r[11] == "Xong") g._d++; }
+    }
+  });
+  list.forEach(function (g) {
+    if (g.ow) { g.rep = g._r.join("\n\n"); g.stt = g._n && g._d == g._n ? "Xong" : g._d ? "Đang làm · " + g._d + "/" + g._n + " bạn xong" : "Đang làm"; }
+    delete g._r; delete g._n; delete g._d;
   });
   if (list.length > 800) list = list.slice(-800);
-  return { ok: true, g: list };
+  return { ok: true, v2: 1, g: list };
 }
 
 /* cô lưu nhận xét: bm = 6 số (0 Chưa đạt, 1 Đạt, 2 Tốt, null chưa chấm), nx = chú thích */
@@ -139,4 +162,104 @@ function nhNx_(b) {
   var val = [txt.concat([has ? tot + "/" + (has * 2) : "", nhTxt_(b.nx || ""), now])];
   R.d.forEach(function (r, i) { if (r[0] == b.gid) { R.sh.getRange(i + 2, 14, 1, 9).setValues(val); n++; } });
   return { ok: n > 0, n: n, at: now };
+}
+
+/* ===== Ghép cặp mỗi bạn một máy (04/11/2026) =====
+   Bạn A (đã nhập mã) chọn bạn cùng lớp vào cặp → dòng "Đang ghép" ở trang tính "Ghép cặp".
+   Máy các bạn trong cặp hỏi "nghep" → nhận cặp, vai, thẻ đang làm. Bạn đã ở trong cặp hôm nay thì không ai chọn được nữa. */
+var GC_SH = "Ghép cặp";
+var GC_HD = ["Ngày", "Mã cặp", "Lớp", "Cấp", "Người lập", "Thành viên", "Mã các bạn", "Trạng thái", "Bộ ôn", "Thẻ", "Nhiệm vụ", "Mã nhóm", "Người bốc", "Cập nhật", "ms", "JSON"];
+function gcDay_() { return Utilities.formatDate(new Date(), "Asia/Ho_Chi_Minh", "yyyy-MM-dd"); }
+function gcD_(v) { return v instanceof Date ? Utilities.formatDate(v, "Asia/Ho_Chi_Minh", "yyyy-MM-dd") : String(v); }
+function gcSheet_() {
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(GC_SH);
+  if (!sh) {
+    sh = ss.insertSheet(GC_SH);
+    sh.getRange("A:P").setNumberFormat("@");
+    sh.getRange(1, 1, 1, GC_HD.length).setValues([GC_HD]).setFontWeight("bold").setBackground("#5c1730").setFontColor("#ffffff");
+    sh.setFrozenRows(1); sh.setColumnWidth(6, 260);
+  }
+  return sh;
+}
+function gcRows_(ro) {
+  var sh = ro ? SpreadsheetApp.getActive().getSheetByName(GC_SH) : gcSheet_();
+  if (!sh) return { sh: null, d: [] };
+  var n = sh.getLastRow();
+  return { sh: sh, d: n > 1 ? sh.getRange(2, 1, n - 1, GC_HD.length).getValues() : [] };
+}
+/* các cặp còn hiệu lực hôm nay */
+function gcToday_(R) {
+  var day = gcDay_(), L = [];
+  R.d.forEach(function (r, i) {
+    if (gcD_(r[0]) != day || r[7] != "Đang ghép") return;
+    var js = {}; try { js = JSON.parse(r[15] || "{}"); } catch (x) {}
+    if (!js.m) js.m = [];
+    L.push({ i: i, r: r, pid: String(r[1]), js: js });
+  });
+  return L;
+}
+function gcHas_(it, c) { return it.js.m.some(function (x) { return x.c && x.c == c; }); }
+function gcWrite_(R, it) {
+  var js = it.js, m = js.m;
+  var row = [gcDay_(), it.pid, nhTxt_(js.cls || ""), js.lv || "", nhTxt_(js.by || ""), nhTxt_(m.map(function (x) { return x.n + (x.r ? " (" + x.r + ")" : ""); }).join(", ")),
+    "|" + m.filter(function (x) { return x.c; }).map(function (x) { return x.c; }).join("|") + "|", it.stt || "Đang ghép",
+    nhTxt_(js.set || ""), js.tid || "", nhTxt_(js.tt || ""), js.gid || "", js.who || "", nhNow_(), String(Date.now()), JSON.stringify(js)];
+  if (it.i >= 0) R.sh.getRange(it.i + 2, 1, 1, GC_HD.length).setValues([row]);
+  else R.sh.getRange(R.sh.getLastRow() + 1, 1, 1, GC_HD.length).setValues([row]);
+}
+/* lập / sửa cặp: b = {code, lv, pid?, m:[{n,c,r,t}]} */
+function gcDat_(b) {
+  var all = nhHvAll_(), meC = String(b.code || "").trim().toUpperCase(), me = all[meC];
+  if (!me) return { ok: false, err: "no_code" };
+  var m = (b.m || []).slice(0, 12).map(function (x) {
+    var c = String(x.c || "").trim().toUpperCase(), h = c && all[c];
+    return { n: h ? h.name : String(x.n || "").replace(/\s+/g, " ").trim().slice(0, 60), c: h ? c : "", r: x.r == "B" ? "B" : x.r == "A" ? "A" : "", t: x.t ? 1 : 0 };
+  }).filter(function (x) { return x.n; });
+  if (!m.some(function (x) { return x.c == meC; })) m.unshift({ n: me.name, c: meC, r: "A", t: 0 });
+  var R = gcRows_();
+  if (R.d.length > 3000) { R.sh.deleteRows(2, 1500); R = gcRows_(); }
+  var L = gcToday_(R), pid = String(b.pid || ""), bad = [];
+  var cur = pid ? L.filter(function (it) { return it.pid == pid && gcHas_(it, meC); })[0] : null;
+  if (!cur) pid = "";
+  var mine = L.filter(function (it) { return it.pid != pid && gcHas_(it, meC); })[0];
+  if (mine) return { ok: false, err: "me_busy", pid: mine.pid, by: mine.js.by || "" };
+  m.forEach(function (x) {
+    if (!x.c || x.c == meC) return;
+    var o = L.filter(function (it) { return it.pid != pid && gcHas_(it, x.c); })[0];
+    if (o) bad.push({ c: x.c, n: x.n, by: o.js.by || "" });
+  });
+  if (bad.length) return { ok: false, err: "busy", bad: bad };
+  var it = cur || { i: -1, pid: "P" + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36), js: { by: me.name, byc: meC } };
+  it.js.m = m; it.js.cls = me.cls; it.js.lv = b.lv || it.js.lv || "";
+  gcWrite_(R, it);
+  return { ok: true, pid: it.pid, m: m, by: it.js.by, byc: it.js.byc };
+}
+/* rời cặp: người lập rời hoặc còn dưới 2 người thì hủy cả cặp */
+function gcRoi_(b) {
+  var c = String(b.code || "").trim().toUpperCase(), R = gcRows_(), L = gcToday_(R), n = 0;
+  L.forEach(function (it) {
+    if ((b.pid && it.pid != b.pid) || !gcHas_(it, c)) return;
+    it.js.m = it.js.m.filter(function (x) { return x.c != c; });
+    if (it.js.byc == c || it.js.m.length < 2) it.stt = "Đã hủy";
+    gcWrite_(R, it); n++;
+  });
+  return { ok: true, n: n };
+}
+/* máy học viên hỏi: hôm nay em có trong cặp nào không, cặp đang làm thẻ nào */
+function gcGhep_(b) {
+  var c = String(b.code || "").trim().toUpperCase(), L = gcToday_(gcRows_(1)).filter(function (it) { return gcHas_(it, c); });
+  L.sort(function (x, y) { return (+y.r[14]) - (+x.r[14]); });
+  var it = L[0];
+  if (!it) return { ok: true, v2: 1, p: null };
+  var j = it.js;
+  return { ok: true, v2: 1, p: { pid: it.pid, lv: +j.lv || 0, cls: j.cls || "", m: j.m, by: j.by || "", byc: j.byc || "", set: j.set || "", tid: j.tid || "", tt: j.tt || "", gid: j.gid || "", who: j.who || "" } };
+}
+/* nhóm vừa bốc / mở thẻ (ngui có pid): ghi thẻ đang làm vào cặp */
+function gcTouch_(g) {
+  var R = gcRows_(1); if (!R.sh) return;
+  var it = gcToday_(R).filter(function (x) { return x.pid == g.pid; })[0];
+  if (!it || (it.js.gid == g.gid && it.js.tid == g.tid)) return;
+  it.js.set = g.set; it.js.tid = g.tid; it.js.tt = g.tt; it.js.gid = g.gid; it.js.who = String(g.dev || "").toUpperCase();
+  if (g.lv) it.js.lv = g.lv;
+  gcWrite_(R, it);
 }

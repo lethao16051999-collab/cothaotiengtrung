@@ -4,13 +4,16 @@
    Mở thẻ nhiệm vụ là gửi nhóm về Google Sheets (trang tính "Nhận xét nhóm"); báo cáo và trạng thái "Xong" tự gửi theo.
    Cô: Quản trị › tab "🎭 Nhận xét nhóm": barem 6 tiêu chí × 3 mức (Tốt / Đạt / Chưa đạt) + nhận xét nhanh + chú thích, tự lưu.
    Nhóm thấy nhận xét của cô ngay trên thẻ (tự cập nhật mỗi 30 giây khi đang mở bộ ôn).
-   Máy chủ: huong-dan/nhom-api.gs.txt (nhomApi_). Nạp SAU js/ontap.js và js/cham.js. ===== */
-const NHV=1;
+   Máy chủ: huong-dan/nhom-api.gs.txt (nhomApi_). Nạp SAU js/ontap.js và js/cham.js.
+   04/11/2026 · Ghép cặp MỖI BẠN MỘT MÁY: bạn đã nhập mã chọn bạn cùng lớp → máy chủ giữ cặp trong ngày (trang tính "Ghép cặp").
+   Máy bạn được chọn tự nhận cặp, vai, và thẻ bạn kia bốc (hỏi "nghep" mỗi 15 giây khi đang mở bộ ôn). Bạn đã ghép thì không ai chọn được nữa.
+   Mỗi máy gửi báo cáo của riêng mình; cô thấy báo cáo từng bạn. Máy chủ bản cũ (không có v2) → vẫn chạy kiểu chung 1 máy. ===== */
+const NHV=2;
 const NHB=[["Hoàn thành nhiệm vụ","Đạt kết quả ghi trên thẻ"],["Ngữ pháp trọng tâm","Dùng đúng mẫu ở mục “Cần dùng”"],["Phát âm · thanh điệu","Rõ âm, đúng thanh"],
  ["Trôi chảy","Nói bằng lời mình, không nhìn mẫu"],["Hỏi – đáp, phối hợp","Hỏi lại, phản hồi bạn, mọi bạn đều nói"],["Báo cáo kết quả","2–3 câu, rõ ý"]];
 const NHL=[["Chưa đạt","no"],["Đạt","mid"],["Tốt","ok"]];
 const NHCHIP=["Nói to, rõ","Còn nhìn mẫu câu","Sai thanh điệu","Sai trật tự từ","Thiếu 了 / 过","Dùng tốt ngữ pháp mới","Hỏi – đáp tự nhiên","Một bạn nói nhiều, một bạn ít"];
-let NHE=null,NHR={},NHBUSY=false,NHSRV=null,NHLAST=0,NHDEB=null,NHPEND=false;
+let NHE=null,NHR={},NHBUSY=false,NHSRV=null,NHLAST=0,NHDEB=null,NHPEND=false,NHN=null,NHSY=0,NHSYB=false,NHPL=null;
 const nhLS=otLS;
 const nhDay=(t)=>{const d=t?new Date(t):new Date(),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
 const nhHm=ms=>{if(!ms)return"";const d=new Date(ms),p=n=>String(n).padStart(2,"0");return `${p(d.getHours())}:${p(d.getMinutes())} ${p(d.getDate())}/${p(d.getMonth()+1)}`};
@@ -25,27 +28,79 @@ const nhPutR=R=>{const ks=Object.keys(R).sort((a,b)=>(R[b].up||0)-(R[a].up||0));
 const nhMap=()=>nhLS("ct_otn_"+olLv)||{};
 function nhRecOf(tid){const M=nhMap()[tid],g=nhG();if(!M||!g||M.sig!=nhSig(g.m)||M.day!=nhDay())return null;return nhRecs()[M.gid]||null}
 const nhNm=x=>x.t?"👩‍🏫 "+esc(x.n):esc(x.n);
-const nhChip=x=>`<span class="nhm ${x.r?"r"+x.r.toLowerCase():""}">${x.r?`<i>${x.r}</i>`:""}${nhNm(x)}</span>`;
+const nhChip=x=>`<span class="nhm ${x.r?"r"+x.r.toLowerCase():""}">${x.r?`<i>${x.r}</i>`:""}${nhNm(x)}${x.c&&nhMe()&&x.c==nhMe().code?" <small>(em)</small>":""}</span>`;
+/* thẻ đã biết trên máy này (mình bốc hoặc đã mở) → không báo lại */
+const nhSeen=gid=>(nhLS("ct_otsee")||[]).includes(gid);
+function nhSee(gid){if(!gid)return;const a=nhLS("ct_otsee")||[];if(!a.includes(gid)){a.push(gid);nhLS("ct_otsee",a.slice(-60))}}
+const nhMyR=g=>{const me=nhMe(),x=g&&me&&g.m.find(y=>y.c==me.code);return x?x.r:""};
 
 /* ---------- soạn nhóm ---------- */
-function nhEdit(){const g=nhG(),me=nhMe();NHE={m:g?JSON.parse(JSON.stringify(g.m)):(me?[{n:me.name,c:me.code,r:"A"}]:[]),txt:""};nhRoster();rr()}
+function nhEdit(){const g=nhG(),me=nhMe();NHE={m:g?JSON.parse(JSON.stringify(g.m)):(me?[{n:me.name,c:me.code,r:"A"}]:[]),txt:"",pid:g&&g.pid||""};if(me&&NHR[me.code]&&!NHR[me.code].busy)delete NHR[me.code];nhRoster();rr()}
 function nhCancel(){NHE=null;rr()}
 const nhNextR=()=>{const a=NHE.m.filter(x=>x.r=="A").length,b=NHE.m.filter(x=>x.r=="B").length;return a<=b?"A":"B"};
 function nhAddN(n,c,t){n=String(n||"").replace(/\s+/g," ").trim();if(!n)return;if(NHE.m.some(x=>(c&&x.c==c)||(!c&&!x.c&&x.n.toLowerCase()==n.toLowerCase())))return;NHE.m.push({n,c:c||"",r:nhNextR(),t:t?1:0});rr()}
 function nhAdd(){const i=$("nhIn");const v=i?i.value:NHE.txt;NHE.txt="";nhAddN(v);setTimeout(()=>{const j=$("nhIn");j&&j.focus()},30)}
-function nhAddC(c){const R=NHR[nhMe()&&nhMe().code]||{},h=(R.hv||[]).find(x=>x.code==c);if(!h)return;const i=NHE.m.findIndex(x=>x.c==c);if(i>=0){NHE.m.splice(i,1);rr()}else nhAddN(h.name,h.code)}
+function nhAddC(c){const R=NHR[nhMe()&&nhMe().code]||{},h=(R.hv||[]).find(x=>x.code==c);if(!h)return;if(nhBz(c))return;const i=NHE.m.findIndex(x=>x.c==c);if(i>=0){NHE.m.splice(i,1);rr()}else nhAddN(h.name,h.code)}
 function nhDel(i){NHE.m.splice(i,1);rr()}
 function nhRole(i,v){NHE.m[i].r=v;rr()}
 function nhCo(on){const i=NHE.m.findIndex(x=>x.t);if(on&&i<0)nhAddN("Cô Thảo","",1);else if(!on&&i>=0)nhDel(i)}
-function nhSave(){if(!NHE)return;const t=$("nhIn");if(t&&t.value.trim())nhAddN(t.value);const m=NHE.m;
+/* bạn đã ghép với người khác hôm nay → {pid, by} */
+function nhBz(c){const me=nhMe(),R=me&&NHR[me.code],b=R&&R.bz&&R.bz[c];return b&&b.pid!=(NHE&&NHE.pid)?b:null}
+function nhSave(){if(!NHE||NHE.busy)return;const t=$("nhIn");if(t&&t.value.trim())nhAddN(t.value);const m=NHE.m;
  if(!m.length)return ask("Em ghi tên ít nhất một bạn nhé.",null,1);
- const go=()=>{const me=nhMe();nhLS("ct_otg_"+olLv,{m,cls:me?me.cls:"",day:nhDay()});NHE=null;if(OTC)nhStart(OTC);rr()};
+ const me=nhMe(),RR=me&&NHR[me.code];if(RR&&RR.busy)return ask("Đang tải danh sách lớp, em chờ vài giây rồi bấm Lưu lại nhé.",null,1);
+ const pair=!!(me&&RR&&RR.v2&&m.some(x=>x.c&&x.c!=me.code));
+ const go=()=>{if(pair)return nhDat(m);const g0=nhG();if(g0&&g0.pid&&me)nhRoi(g0.pid);nhLS("ct_otg_"+olLv,{m,cls:me?me.cls:"",day:nhDay()});NHE=null;if(OTC)nhStart(OTC);rr()};
  if(m.length==1)return ask(`Nhóm chỉ có <b>${esc(m[0].n)}</b>. Em tự đóng cả hai vai? (Lớp lẻ thì tích “Cô cùng đóng một vai”.)`,go);
  if(!m.some(x=>x.r=="A")||!m.some(x=>x.r=="B"))return ask("Nhóm chưa có đủ cả vai A và vai B. Vẫn lưu nhóm?",go);
  go()}
 async function nhRoster(){const me=nhMe();if(!me||!nhApi()||NHR[me.code])return;NHR[me.code]={busy:1};
- try{const r=await nhPost({a:"nlop",code:me.code});NHR[me.code]=r&&r.nh&&r.ok?{hv:r.hv||[],cls:r.cls}:{fail:r&&r.nh?"code":"srv"}}catch(e){NHR[me.code]={fail:"net"}}
+ try{const r=await nhPost({a:"nlop",code:me.code});NHR[me.code]=r&&r.nh&&r.ok?{hv:r.hv||[],cls:r.cls,v2:r.v2,bz:r.bz||{}}:{fail:r&&r.nh?"code":"srv"}}catch(e){NHR[me.code]={fail:"net"}}
  if(NHE)nhKeep(rr)}
+/* ghép cặp mỗi bạn một máy: giữ chỗ các bạn trên máy chủ */
+async function nhDat(m){const me=nhMe();NHE.busy=1;nhKeep(rr);let o=null;
+ try{o=await nhPost({a:"ndat",code:me.code,lv:olLv,pid:NHE.pid||"",m:m.map(x=>({n:x.n,c:x.c||"",r:x.r||"",t:x.t||0}))})}catch(e){}
+ if(NHE)NHE.busy=0;
+ if(o&&o.nh&&o.ok){nhLS("ct_otg_"+olLv,{m:o.m,cls:me.cls,day:nhDay(),pid:o.pid,by:o.by,byc:o.byc});const L=(nhLS("ct_otleft")||[]).filter(x=>x!=o.pid);nhLS("ct_otleft",L);
+  NHE=null;delete NHR[me.code];NHN=null;if(OTC)nhStart(OTC);rr();
+  const oth=o.m.filter(x=>x.c&&x.c!=me.code).map(x=>"<b>"+esc(x.n)+"</b>").join(", ");
+  return ask(`✓ Đã ghép cặp với ${oth}.<br>Bạn ấy mở <b>HSK ${olLv} › 🎲 ${esc(otSet()?otSet().t:"Ôn tập")}</b> trên máy mình là thấy nhóm và vai. Thẻ em bốc sẽ tự hiện trên máy bạn ấy.`,null,1)}
+ delete NHR[me.code];nhRoster();rr();
+ if(o&&o.nh&&o.err=="busy")return ask((o.bad||[]).map(b=>`<b>${esc(b.n)}</b> đã ghép cặp với <b>${esc(b.by)}</b> rồi.`).join("<br>")+"<br>Em chọn bạn khác nhé.",null,1);
+ if(o&&o.nh&&o.err=="me_busy")return ask(`Hôm nay em đang ở trong cặp của <b>${esc(o.by)}</b>. Rời cặp đó để lập cặp mới?`,async()=>{try{await nhPost({a:"nroi",code:me.code,pid:o.pid})}catch(e){}if(NHE)nhDat(m)});
+ ask("Chưa ghép cặp được (mạng yếu hoặc Sổ theo dõi chưa cập nhật). Lưu nhóm trên máy này để <b>cả nhóm dùng chung 1 máy</b>?",()=>{nhLS("ct_otg_"+olLv,{m,cls:me.cls,day:nhDay()});NHE=null;if(OTC)nhStart(OTC);rr()})}
+function nhRoi(pid){const me=nhMe();if(!me||!pid)return;const L=nhLS("ct_otleft")||[];if(!L.includes(pid)){L.push(pid);nhLS("ct_otleft",L.slice(-20))}
+ nhPost({a:"nroi",code:me.code,pid}).catch(()=>{})}
+function nhLeave(){const g=nhG(),me=nhMe();if(!g)return;
+ ask(g.pid?(g.byc==(me&&me.code)?"Hủy cặp này? Máy các bạn trong cặp cũng tự bỏ nhóm, các bạn được chọn lại.":"Rời cặp của "+esc(g.by)+"? Em sẽ không nhận thẻ của cặp này nữa."):"Bỏ nhóm đang ghi trên máy này?",
+  ()=>{if(g.pid)nhRoi(g.pid);nhLS("ct_otg_"+olLv,null);NHN=null;NHPL=null;rr()})}
+/* hỏi máy chủ: em có trong cặp nào hôm nay, cặp đang làm thẻ nào */
+async function nhSync(force){const me=nhMe();if(!me||!nhApi()||!OTON||NHSYB)return;if(!force&&Date.now()-NHSY<12000)return;NHSY=Date.now();NHSYB=true;
+ let o=null;try{o=await nhPost({a:"nghep",code:me.code})}catch(e){}NHSYB=false;
+ if(!(o&&o.nh&&o.ok&&o.v2))return;
+ const p=o.p,left=nhLS("ct_otleft")||[];let ch=false;
+ if(p&&left.includes(p.pid)){nhPost({a:"nroi",code:me.code,pid:p.pid}).catch(()=>{});return}
+ if(!p){NHPL=null;const g=nhG();if(g&&g.pid&&!NHE){nhLS("ct_otg_"+olLv,null);NHN={gone:1,by:g.byc==me.code?"":g.by};ch=true}}
+ else{const lv=p.lv||olLv,K="ct_otg_"+lv,g0=nhLS(K),cur=g0&&g0.day==nhDay()?g0:null,sg=nhSig(p.m);NHPL=p;
+  if(!cur||cur.pid!=p.pid||nhSig(cur.m)!=sg){nhLS(K,{m:p.m,cls:p.cls||me.cls,day:nhDay(),pid:p.pid,by:p.by,byc:p.byc});ch=true;
+   if((!cur||cur.pid!=p.pid)&&p.byc!=me.code&&!(p.gid&&p.who!=me.code&&!nhSeen(p.gid)))NHN={pair:1,p}}
+  if(p.tid&&p.gid){const M=nhLS("ct_otn_"+lv)||{};if(!M[p.tid]||M[p.tid].gid!=p.gid||M[p.tid].sig!=sg){M[p.tid]={gid:p.gid,sig:sg,day:nhDay()};nhLS("ct_otn_"+lv,M)}
+   if(p.who&&p.who!=me.code&&!nhSeen(p.gid)){
+    const a=document.activeElement,typing=a&&(a.tagName=="TEXTAREA"||a.tagName=="INPUT");
+    if(lv==olLv&&!OTC&&!OTALL&&!NHE&&!typing&&otSetOf(p.set)){try{navigator.vibrate&&navigator.vibrate([120,80,120])}catch(e){}nhGo(p);return}
+    NHN={card:1,p};ch=true}}}
+ if(ch){try{navigator.vibrate&&navigator.vibrate(120)}catch(e){}nhSoft()}}
+const otSetOf=k=>OT[olLv]&&OT[olLv].find(s=>s.key==k);
+/* mở đúng thẻ cặp em đang làm */
+function nhGo(p){p=p||(NHN&&NHN.p)||NHPL;if(!p||!p.tid)return;if(NHN&&!NHN.opened)NHN=null;nhSee(p.gid);if((p.lv||olLv)!=olLv||!otSetOf(p.set))return;
+ if(OTON!=p.set){OTON=p.set;OTF=0;OTALL=false;otShuf()}otDraw(p.tid);const me=nhMe();if(p.who&&me&&p.who!=me.code){NHN={opened:1,p};rr()}}
+function nhNote(){const n=NHN,me=nhMe();if(!n)return"";const p=n.p,nm=p?(p.m.find(x=>x.c==p.who)||{}).n||p.by:"",rr0=p?nhMyR({m:p.m}):"";
+ const ok=`<button class="btn o sm" onclick="NHN=null;rr()">Đã hiểu</button>`;
+ if(n.gone)return `<div class="card nhnote"><div>ℹ️ ${n.by?`Cặp của <b>${esc(n.by)}</b> đã được hủy.`:"Cặp của em đã được hủy."} Em có thể lập cặp mới.</div>${ok}</div>`;
+ if(n.opened)return `<div class="card nhnote ok"><div>🔔 <b>${esc(nm)}</b> vừa bốc thẻ này cho cặp em.${rr0?` Em đóng <b>Vai ${rr0}</b>: chỉ lật thẻ vai của em.`:""}</div>${ok}</div>`;
+ if(n.card)return `<div class="card nhnote"><div>🔔 <b>${esc(nm)}</b> vừa bốc <b>Thẻ ${esc(p.tid)} · ${esc(p.tt||"")}</b> cho cặp em.${rr0?` Em đóng <b>Vai ${rr0}</b>.`:""}${(p.lv||olLv)!=olLv?` (ở HSK ${p.lv})`:""}</div>${(p.lv||olLv)==olLv&&otSetOf(p.set)?`<button class="btn sm" onclick="nhGo()">Mở thẻ ngay →</button>`:""}<button class="btn o sm" onclick="NHN=null;nhSee('${esc(p.gid)}');rr()">Để sau</button></div>`;
+ if(n.pair)return `<div class="card nhnote"><div>🤝 <b>${esc(p.by)}</b> đã ghép cặp với em${rr0?` · em đóng <b>Vai ${rr0}</b>`:""}. Bạn bốc thẻ nào, thẻ đó tự hiện trên máy em (em bốc thì máy bạn cũng nhận).</div>${ok}</div>`;
+ return""}
 /* vẽ lại mà không làm mất chữ đang gõ */
 function nhKeep(f){const a=document.activeElement,id=a&&a.id,v=a&&a.value,s=a&&a.selectionStart;f();if(id){const b=$(id);if(b&&b!==a){if(v!=null)b.value=v;b.focus();try{b.setSelectionRange(s,s)}catch(e){}}}}
 function nhEditor(){const me=nhMe(),R=me?NHR[me.code]:null,inG=c=>NHE.m.some(x=>x.c==c),co=NHE.m.some(x=>x.t);
@@ -53,12 +108,19 @@ function nhEditor(){const me=nhMe(),R=me?NHR[me.code]:null,inG=c=>NHE.m.some(x=>
 <p class="otsm">Ghi tên <b>tất cả</b> các bạn cùng làm thẻ này (2 bạn, 3 bạn hay cả nhóm đều được) và chọn vai. Cô nhận xét theo nhóm này, các bạn có mã học viên được lưu vào Sổ theo dõi.</p>
 ${NHE.m.length?`<div class="nhls">${NHE.m.map((x,i)=>`<div class="nhrow"><span class="nhn">${nhNm(x)}${x.c?` <small>${esc(x.c)}</small>`:""}</span>
 <span class="nhrs">${["A","B"].map(r=>`<button class="${x.r==r?"on r"+r.toLowerCase():""}" onclick="nhRole(${i},'${r}')">Vai ${r}</button>`).join("")}</span><button class="nhx" onclick="nhDel(${i})" aria-label="Bỏ ${esc(x.n)}">✕</button></div>`).join("")}</div>`:`<p class="nhem">Chưa có ai trong nhóm.</p>`}
-${me?(R&&R.hv?`<div class="nhrt"><b>Bạn cùng lớp ${esc(R.cls||"")}</b> <small>(chạm để thêm / bỏ)</small></div><div class="nhrc">${R.hv.map(h=>`<button class="${inG(h.code)?"on":""}" onclick="nhAddC('${esc(h.code)}')">${inG(h.code)?"✓ ":""}${esc(h.name)}</button>`).join("")}</div>`
+${me?(R&&R.hv?`<div class="nhrt"><b>Bạn cùng lớp ${esc(R.cls||"")}</b> <small>(chạm để thêm / bỏ)</small></div><div class="nhrc">${R.hv.filter(h=>h.code!=me.code).map(h=>{const bz=!inG(h.code)&&nhBz(h.code);return bz?`<button class="bz" disabled title="Đã ghép cặp với ${esc(bz.by)}">🔒 ${esc(h.name)} <small>· ${bz.byc==h.code?"đã có cặp":"với "+esc(bz.by)}</small></button>`:`<button class="${inG(h.code)?"on":""}" onclick="nhAddC('${esc(h.code)}')">${inG(h.code)?"✓ ":""}${esc(h.name)}</button>`}).join("")}</div>
+${R.v2?`<p class="otsm nhow">📱 <b>Mỗi bạn dùng máy của mình.</b> Bạn em chọn sẽ tự nhận nhóm, vai và thẻ em bốc trên máy bạn ấy. Bạn có 🔒 đã ghép cặp với người khác hôm nay nên không chọn được.</p>`:""}`
  :R&&R.busy?`<p class="otsm">Đang tải danh sách lớp…</p>`:R&&R.fail?`<p class="otsm">${R.fail=="net"?"Chưa tải được danh sách lớp (mạng yếu).":"Chưa có danh sách lớp."} Em gõ tên bạn ở dưới nhé.</p>`:""):`<p class="otsm">💡 Nhập <a href="javascript:void 0" onclick="trkOpen()">🔑 Mã học viên</a> để chọn tên bạn cùng lớp; không thì gõ tên ở dưới.</p>`}
 <div class="row nhin"><input id="nhIn" placeholder="Gõ tên bạn rồi bấm Thêm…" value="${esc(NHE.txt)}" oninput="NHE.txt=this.value" onkeydown="if(event.key=='Enter'){event.preventDefault();nhAdd()}"><button class="btn o sm" onclick="nhAdd()">+ Thêm</button></div>
 <label class="nhco"><input type="checkbox" ${co?"checked":""} onchange="nhCo(this.checked)"> 👩‍🏫 Cô cùng đóng một vai (lớp lẻ)</label>
-<div class="row"><button class="btn" onclick="nhSave()">✓ Lưu nhóm</button>${nhG()?`<button class="btn o" onclick="nhCancel()">Hủy</button>`:""}</div></div>`}
-function nhBarHtml(inTask){const g=nhG();if(NHE)return nhEditor();
+<div class="row"><button class="btn" onclick="nhSave()" ${NHE.busy?"disabled":""}>${NHE.busy?"Đang ghép cặp…":"✓ Lưu nhóm"}</button>${nhG()?`<button class="btn o" onclick="nhCancel()">Hủy</button>`:""}</div></div>`}
+function nhBarHtml(inTask){const g=nhG(),nt=nhNote();if(NHE)return nt+nhEditor();
+ if(g&&g.pid){const r=inTask&&OTC?nhRecOf(OTC):null,p=NHPL&&NHPL.pid==g.pid?NHPL:null,me=nhMe(),mr=nhMyR(g);
+  return nt+`<div class="card nhcard nhbar nhpair"><div class="nhbt"><b>🤝 Cặp em</b> ${g.m.map(nhChip).join("")}</div>
+<div class="nhbs">${r?`<small class="nhst ${r.sent>=r.up?"ok":""}">${r.sent>=r.up?"📤 Cô đã thấy cặp em":"⏳ Đang gửi cho cô…"}</small>`:""}<button class="btn o sm" onclick="nhEdit()">✏ Đổi nhóm</button><button class="btn o sm" onclick="nhLeave()">${g.byc==(me&&me.code)?"✕ Hủy cặp":"🚪 Rời cặp"}</button></div>
+<p class="otsm nhpl">📱 Mỗi bạn một máy · ${g.byc==(me&&me.code)?"em lập cặp":"<b>"+esc(g.by)+"</b> lập cặp"}${mr?` · em đóng <b>Vai ${mr}</b>`:""}${p&&p.tid&&p.tid!=OTC&&(p.lv||olLv)==olLv&&otSetOf(p.set)?` · cặp em đang làm <a href="javascript:void 0" onclick="nhGo()">Thẻ ${esc(p.tid)} · ${esc(p.tt||"")} →</a>`:""}</p></div>`}
+ return nt+nhBarHtml0(inTask)}
+function nhBarHtml0(inTask){const g=nhG();
  if(!g)return `<div class="card nhcard nhnone"><div><b>👥 Ghi tên cặp / nhóm</b><p class="otsm">${inTask?"Ghi tên các bạn cùng làm thẻ này để cô nhận xét nhóm em.":"Trước khi bốc thẻ, ghi tên các bạn trong cặp / nhóm để cô nhận xét."}</p></div><button class="btn" onclick="nhEdit()">👥 Lập cặp / nhóm</button></div>`;
  const r=inTask&&OTC?nhRecOf(OTC):null;
  return `<div class="card nhcard nhbar"><div class="nhbt"><b>👥 Nhóm em</b> ${g.m.map(nhChip).join("")}</div><div class="nhbs">${r?`<small class="nhst ${r.sent>=r.up?"ok":""}">${r.sent>=r.up?"📤 Cô đã thấy nhóm em":NHSRV===false?"⏳ Cô chưa bật phần nhận xét nhóm":"⏳ Đang gửi cho cô…"}</small>`:""}<button class="btn o sm" onclick="nhEdit()">✏ Đổi nhóm</button></div></div>`}
@@ -66,15 +128,16 @@ function nhBarHtml(inTask){const g=nhG();if(NHE)return nhEditor();
 /* ---------- ghi nhận nhóm làm thẻ + gửi ---------- */
 function nhStart(tid){const g=nhG(),set=otSet(),T=set&&set.tasks.find(t=>t.id==tid);if(!g||!T)return;
  const M=nhMap(),sig=nhSig(g.m),R=nhRecs();let cur0=M[tid];
- if(!cur0||cur0.sig!=sig||cur0.day!=nhDay()||!R[cur0.gid]){cur0=M[tid]={gid:"G"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),sig,day:nhDay()};nhLS("ct_otn_"+olLv,M)}
+ if(!cur0||cur0.sig!=sig||cur0.day!=nhDay()){cur0=M[tid]={gid:"G"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),sig,day:nhDay()};nhLS("ct_otn_"+olLv,M)}
  const r=R[cur0.gid]||{gid:cur0.gid,lv:olLv,set:set.key,st:set.t,tid,tt:T.t,zh:T.zh,at:Date.now(),stt:"Đang làm",sent:0};
- r.m=g.m;r.cls=g.cls||"";r.dev=nhMe()?nhMe().code:"";r.rep=(otTxt()[tid]||"").trim();r.up=Date.now();R[r.gid]=r;nhPutR(R);nhFlush()}
+ r.m=g.m;r.cls=g.cls||"";r.dev=nhMe()?nhMe().code:"";r.pid=g.pid||"";r.rep=(otTxt()[tid]||"").trim();r.up=Date.now();R[r.gid]=r;nhPutR(R);nhSee(r.gid);
+ if(NHN&&NHN.p&&NHN.p.gid==r.gid&&!NHN.opened)NHN=null;if(NHPL&&g.pid==NHPL.pid){NHPL.tid=tid;NHPL.gid=r.gid;NHPL.tt=T.t;NHPL.set=set.key}nhFlush()}
 function nhTouch(tid,stt){const r=nhRecOf(tid);if(!r)return;const R=nhRecs(),x=R[r.gid],rep=(otTxt()[tid]||"").trim();if(stt)x.stt=stt;if(rep!=x.rep||stt){x.rep=rep;x.up=Date.now();nhPutR(R)}clearTimeout(NHDEB);NHDEB=setTimeout(nhFlush,stt?10:3000)}
 async function nhFlush(){if(NHBUSY||!nhApi())return;const R=nhRecs(),todo=Object.values(R).filter(r=>!(r.sent>=r.up)).slice(0,6);if(!todo.length)return;NHBUSY=true;let ch=false;
- for(const r of todo){const up=r.up;try{const o=await nhPost({a:"ngui",g:{gid:r.gid,lv:r.lv,set:r.set,st:r.st,tid:r.tid,tt:r.tt,zh:r.zh,m:r.m,cls:r.cls,dev:r.dev,stt:r.stt,rep:r.rep}});
+ for(const r of todo){const up=r.up;try{const o=await nhPost({a:"ngui",g:{gid:r.gid,lv:r.lv,set:r.set,st:r.st,tid:r.tid,tt:r.tt,zh:r.zh,m:r.m,cls:r.cls,dev:r.dev,stt:r.stt,rep:r.rep,pid:r.pid||"",ow:r.pid?1:0}});
   if(o&&o.nh){NHSRV=true;if(o.ok){const R2=nhRecs();if(R2[r.gid]){R2[r.gid].sent=up;if(o.cls)R2[r.gid].cls=o.cls;nhPutR(R2)}ch=true}}else{NHSRV=false;ch=true;break}}catch(e){break}}
  NHBUSY=false;if(ch&&OTON&&!NHE)nhSoft()}
-async function nhPoll(force){if(!nhApi()||!OTON||document.visibilityState=="hidden")return;if(!force&&Date.now()-NHLAST<25000)return;NHLAST=Date.now();
+async function nhPoll(force){if(!nhApi()||!OTON||document.visibilityState=="hidden")return;nhSync(force);if(!force&&Date.now()-NHLAST<25000)return;NHLAST=Date.now();
  nhTouch(OTC||"_");await nhFlush();
  const R=nhRecs(),from=Date.now()-14*864e5,ids=Object.values(R).filter(r=>r.at>from&&r.sent).map(r=>r.gid);if(!ids.length)return;
  try{const o=await nhPost({a:"nkq",gids:ids});if(!(o&&o.nh&&o.ok))return;let ch=false;const R2=nhRecs();
@@ -82,7 +145,7 @@ async function nhPoll(force){if(!nhApi()||!OTON||document.visibilityState=="hidd
   if(ch){nhPutR(R2);try{navigator.vibrate&&navigator.vibrate(120)}catch(e){}nhSoft()}}catch(e){}}
 /* vẽ lại khi không có ai đang gõ */
 function nhSoft(){const a=document.activeElement;if(a&&(a.tagName=="TEXTAREA"||a.tagName=="INPUT")){setTimeout(nhSoft,4000);return}if(OTON&&!cur)rr()}
-setInterval(()=>nhPoll(),30000);
+setInterval(()=>nhPoll(),15000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState=="visible")nhPoll()});
 
 /* ---------- nhận xét của cô (học viên xem) ---------- */
@@ -99,12 +162,18 @@ function nhEvList(){const set=otSet(),R=nhRecs(),rs=Object.values(R).filter(r=>r
 /* ---------- móc vào js/ontap.js ---------- */
 const _nhDeck=otDeck;otDeck=function(){const h=_nhDeck();const i=h.indexOf(`<div class="row otfil">`);const add=nhBarHtml(false)+nhEvList();return i>=0?h.slice(0,i)+add+h.slice(i):add+h};
 const _nhView1=otView1;otView1=function(){let h=_nhView1();const k=`<div class="card"><h3>① Nhận vai</h3>`;const add=nhEvCard(OTC)+nhBarHtml(true);return h.includes(k)?h.replace(k,add+k):add+h};
-const _nhRole=otRole;otRole=function(T,r,open){const h=_nhRole(T,r,open),g=nhG();if(!g)return h;const ns=g.m.filter(x=>x.r==r).map(x=>esc(x.n)).join(", ");
- return ns?h.replace(`<small>Vai ${r}</small>`,`<small>Vai ${r} · <b class="nhwho">${ns}</b></small>`):h};
-const _nhDraw=otDraw;otDraw=function(id){NHE=null;_nhDraw(id);if(OTC)nhStart(OTC)};
+const _nhRole=otRole;otRole=function(T,r,open){let h=_nhRole(T,r,open);const g=nhG();if(!g)return h;const me=nhMe(),W=g.m.filter(x=>x.r==r),ns=W.map(x=>esc(x.n)+(me&&x.c==me.code?" (em)":"")).join(", ");
+ if(ns)h=h.replace(`<small>Vai ${r}</small>`,`<small>Vai ${r} · <b class="nhwho">${ns}</b></small>`);
+ /* mỗi bạn một máy: thẻ vai của bạn kia chỉ mở trên máy bạn ấy */
+ if(g.pid&&me&&W.length&&W.every(x=>x.c&&x.c!=me.code)&&g.m.some(x=>x.c==me.code)){
+  h=h.replace(/<div class="otrb lock">[\s\S]*?<\/div>$/,`<div class="otrb lock"><p>🔒 Thẻ vai ${r} ở trên máy của <b>${W.map(x=>esc(x.n)).join(", ")}</b>.<br>Em hỏi – đáp với bạn để biết thông tin.</p></div></div>`);
+  h=h.replace(/<div class="otrb">[\s\S]*<\/div><\/div>$/,`<div class="otrb lock"><p>🔒 Thẻ vai ${r} ở trên máy của <b>${W.map(x=>esc(x.n)).join(", ")}</b>.</p></div></div>`)}
+ return h};
+const _nhDraw=otDraw;otDraw=function(id){NHE=null;if(NHN&&NHN.opened)NHN=null;_nhDraw(id);if(OTC)nhStart(OTC)};
 const _nhIn=otIn;otIn=function(el){_nhIn(el);nhTouch(OTC)};
 const _nhDone=otDone;otDone=function(){nhTouch(OTC,"Xong");return _nhDone()};
 const _nhOpen=otOpen;otOpen=function(k){NHE=null;_nhOpen(k);setTimeout(()=>nhPoll(1),300)};
+const _nhBack=otBack;otBack=function(){if(NHN&&NHN.opened)NHN=null;return _nhBack()};
 const _nhCopy=otCopy;otCopy=function(){const g=nhG();if(!g)return _nhCopy();const T=otTask(OTC),set=otSet(),x=(otTxt()[OTC]||"").trim();
  if(!x)return ask("Em chưa có nội dung báo cáo để sao chép.",null,1);
  cpTxt(`[HSK ${olLv} · ${set.t} · Nhiệm vụ ${T.id}: ${T.t} ${T.zh}]\nNhóm: ${g.m.map(m=>m.n+(m.r?" ("+m.r+")":"")).join(", ")}\n${x}`)};
@@ -129,7 +198,7 @@ const nhtF=()=>{if(!NHT.data)return[];const d0=NHT.day=="0"?new Date(nhDay()+"T0
 const nhtCnt=()=>nhtF().filter(g=>!g.ev).length;
 async function nhtLoad(quiet){if(NHT.busy||!nhApi())return;NHT.busy=true;NHT.err="";if(!quiet&&GV.tab=="nh")nhtDraw();
  try{const r=await nhPost({a:"ncho",pass:GV.pass,days:30});
-  if(r&&r.nh&&r.ok){NHT.srv=true;NHT.data=(r.g||[]).map(g=>{const q=NHT.q[g.gid];if(q)g.ev={bm:q.bm,nx:q.nx};return g});
+  if(r&&r.nh&&r.ok){NHT.srv=true;NHT.v2=!!r.v2;NHT.data=(r.g||[]).map(g=>{const q=NHT.q[g.gid];if(q)g.ev={bm:q.bm,nx:q.nx};return g});
    /* thứ tự cố định giữa các lần tải: nhóm mới (chưa nhận xét) lên đầu, nhóm cũ giữ chỗ để thẻ không nhảy khi cô đang chấm */
    const nw=NHT.data.filter(g=>!NHT.ord.includes(g.gid)).sort((a,b)=>(!!a.ev-!!b.ev)||b.at-a.at).map(g=>g.gid);NHT.ord=nw.concat(NHT.ord.filter(id=>NHT.data.some(g=>g.gid==id)))}
   else if(r&&r.nh&&r.err=="pass")NHT.err="Mật khẩu chưa đúng.";else{NHT.srv=false;NHT.data=null}
@@ -145,14 +214,15 @@ function nhtHtml(){
 <label>Xem <select onchange="NHT.mode=this.value;nhtDraw()"><option value="all" ${NHT.mode=="all"?"selected":""}>Tất cả nhóm</option><option value="cho" ${NHT.mode=="cho"?"selected":""}>Chưa nhận xét</option></select></label>
 <button class="btn sm" onclick="nhtLoad()" ${NHT.busy?"disabled":""}>${NHT.busy?"Đang tải…":"↻ Tải lại"}</button><small class="chsv" id="nhtsv">${nhtSv()}</small></div>
 <p class="ctx">${all.length} nhóm${GV.cls?" lớp "+gvE(GV.cls):""} · đã nhận xét ${dn}/${all.length}. Trang tự cập nhật nhóm mới mỗi 30 giây. Bấm mức cho từng tiêu chí; nhận xét tự lưu và hiện ngay trên máy của nhóm.</p>`;
+ if(!NHT.v2)h+=`<div class="card nhnote"><div>🆕 <b>Phần ghép cặp mỗi bạn một máy</b> cần cập nhật mã trong Google Sheets (bản 04/11). Chưa cập nhật thì học viên vẫn lập nhóm kiểu dùng chung 1 máy.</div><button class="btn sm" onclick="NHT.srv=false;nhtDraw()">Xem cách cập nhật</button></div>`;
  if(!L.length)return h+`<div class="card"><p>${all.length?"🎉 Cô đã nhận xét hết các nhóm.":"Chưa có nhóm nào"+(NHT.day=="0"?" hôm nay":"")+". Học viên mở bộ “🎲 Ôn tập” › ghi tên cặp / nhóm › bốc thẻ là nhóm hiện ở đây."}</p></div>`;
  return h+L.map(nhtCard).join("")}
 function nhtCard(g){const ev=g.ev||{bm:[null,null,null,null,null,null],nx:""},bm=ev.bm||[],id=gvE(g.gid),nx=(ev.nx||"").split("; ").filter(Boolean),fr=nx.filter(c=>!NHCHIP.includes(c)).join("; "),op=NHT.open[g.gid];
  const has=bm.filter(v=>v!=null),tot=has.reduce((a,v)=>a+v,0);
  return `<div class="card nhtc ${g.ev?"done":""}"><div class="nhth"><div><b>Thẻ ${gvE(g.tid)} · ${gvE(g.tt)}</b> <span class="zh">${gvE(g.zh||"")}</span><small>${gvE(g.cls||"(chưa rõ lớp)")} · ${gvLv(g.lv)} · ${gvE(g.st)} · ${gvT(g.at)}</small></div>
-<span class="nhst2 ${g.stt=="Xong"?"ok":""}">${g.stt=="Xong"?"✓ Xong":"● Đang làm"}</span></div>
+<span class="nhst2 ${g.stt=="Xong"?"ok":""}">${g.stt=="Xong"?"✓ Xong":"● "+gvE(g.stt||"Đang làm")}${g.ow?`<small>📱 mỗi bạn một máy</small>`:""}</span></div>
 <div class="nhtm">${g.m.map(nhChip).join("")}</div>
-${g.rep?`<button class="nhtrb" onclick="NHT.open['${id}']=!NHT.open['${id}'];nhtDraw()">${op?"▲":"▼"} Báo cáo của nhóm</button>${op?`<div class="nhtrep zh">${gvE(g.rep).replace(/\n/g,"<br>")}</div>`:""}`:""}
+${g.rep?`<button class="nhtrb" onclick="NHT.open['${id}']=!NHT.open['${id}'];nhtDraw()">${op?"▲":"▼"} ${g.ow?"Báo cáo của từng bạn":"Báo cáo của nhóm"}</button>${op?`<div class="nhtrep zh">${gvE(g.rep).replace(/\n/g,"<br>")}</div>`:""}`:""}
 <div class="nhtb">${NHB.map((b,i)=>`<div class="nhtr"><div><b>${b[0]}</b><small>${b[1]}</small></div><div class="nhtl">${[2,1,0].map(l=>`<button class="${bm[i]===l?"on "+NHL[l][1]:""}" onclick="nhtSet('${id}',${i},${l})">${NHL[l][0]}</button>`).join("")}</div></div>`).join("")}</div>
 <div class="nhtq"><span>⚡ Đặt nhanh cả 6:</span><button onclick="nhtAll('${id}',2)">Tốt</button><button onclick="nhtAll('${id}',1)">Đạt</button>${has.length?`<b class="nhtt">${tot}/${has.length*2}</b>`:""}</div>
 <div class="chgc">${NHCHIP.map(c=>`<button class="${nx.includes(c)?"on":""}" onclick="nhtChip('${id}',this.textContent)">${gvE(c)}</button>`).join("")}
@@ -173,11 +243,11 @@ window.addEventListener("beforeunload",e=>{if(Object.keys(NHT.q).length){nhtSave
 let NHCODE="";
 function nhtSetup(){setTimeout(()=>{const p=$("nhcode");if(p&&!NHCODE)fetch("huong-dan/nhom-api.gs.txt?v="+NHV).then(r=>r.text()).then(t=>{NHCODE=t;const q=$("nhcode");if(q)q.textContent=t}).catch(()=>{const q=$("nhcode");if(q)q.textContent="(Không tải được đoạn mã. Cô lấy file nhom-api.gs.txt Claude gửi trong chat.)"});else if(p)p.textContent=NHCODE},50);
  return `<div class="card"><h3>Cài phần Nhận xét nhóm vào Google Sheets (làm 1 lần)</h3>
-<ol><li>Mở Google Sheets "Sổ theo dõi học viên" › Tiện ích mở rộng › Apps Script. Dán đoạn mã bên dưới vào <b>cuối</b> file Code.gs (Mã.gs).</li>
+<ol><li>Mở Google Sheets "Sổ theo dõi học viên" › Tiện ích mở rộng › Apps Script. Dán đoạn mã bên dưới vào <b>cuối</b> file Code.gs (Mã.gs).<br><b>Đã dán bản cũ (29/10):</b> xóa đoạn cũ (từ dòng “Nhận xét nhóm · Luyện nói theo nhiệm vụ” đến hết hàm <code>nhNx_</code>) rồi dán đoạn mới vào chỗ đó; dòng <code>nhomApi_</code> trong doPost giữ nguyên (bỏ qua bước 2).</li>
 <li>Trong hàm <code>doPost(e)</code>, thêm dòng này ở <b>đầu</b> hàm (ngay dưới dòng chamApi_):<br><code>var _nh = nhomApi_(e); if (_nh) return _nh;</code></li>
 <li>Lưu › Triển khai › Quản lý tác vụ triển khai › ✏ › Phiên bản: <b>Phiên bản mới</b> › Triển khai (địa chỉ giữ nguyên).</li>
 <li>Quay lại đây bấm ↻ Tải lại. Trang tính "Nhận xét nhóm" tự tạo khi có nhóm đầu tiên.</li></ol>
-<div class="row"><button class="btn sm" onclick="nhtCopy()">📋 Sao chép đoạn mã</button><button class="btn o sm" onclick="nhtLoad()">↻ Tải lại</button></div>
+<div class="row"><button class="btn sm" onclick="nhtCopy()">📋 Sao chép đoạn mã</button><button class="btn o sm" onclick="nhtLoad()">↻ Tải lại</button>${NHT.data?`<button class="btn o sm" onclick="NHT.srv=true;nhtDraw()">← Về danh sách nhóm</button>`:""}</div>
 <pre class="chcode" id="nhcode">${NHCODE?gvE(NHCODE):"Đang tải đoạn mã…"}</pre></div>`}
 function nhtCopy(){const go=t=>{try{navigator.clipboard.writeText(t).then(()=>ask("Đã sao chép đoạn mã.",null,1),()=>ask("Trình duyệt chặn sao chép: cô bôi đen đoạn mã rồi Ctrl+C.",null,1))}catch(e){ask("Cô bôi đen đoạn mã rồi Ctrl+C.",null,1)}};
  if(NHCODE)go(NHCODE);else fetch("huong-dan/nhom-api.gs.txt?v="+NHV).then(r=>r.text()).then(t=>{NHCODE=t;go(t)})}
@@ -204,6 +274,12 @@ function nhtCopy(){const go=t=>{try{navigator.clipboard.writeText(t).then(()=>as
 .nhin{gap:8px;margin:8px 0}.nhin input{flex:1;min-width:160px;border-radius:12px;border:1px solid var(--b);padding:8px 12px;font:inherit;background:var(--c);color:var(--t)}
 .nhco{display:flex;gap:8px;align-items:center;margin:6px 0 10px;cursor:pointer}
 .nhwho{color:var(--m)}
+.nhrc button.bz{opacity:.55;cursor:not-allowed;background:var(--k)}.nhrc button.bz small{color:var(--sub)}
+.nhow{background:#fff7dd;border-radius:10px;padding:6px 10px;color:#3a2a10!important}
+.nhpair{background:#fffaf0}.nhpl{flex-basis:100%;margin:2px 0 0}.nhpl a{font-weight:700}
+.nhnote{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#fff1d6;border:2px solid #c9a227;color:#3a2a10}.nhnote>div{flex:1;min-width:200px}
+.nhnote.ok{background:#e9f6ec;border-color:#3b8a4a;color:#1d2a1f}
+.nhst2 small{display:block;font-weight:400;color:var(--sub);text-align:right}
 .nhevcard{background:#f2faf3;border-color:#3b8a4a;color:#1d2a1f}.nhevcard h3{margin-top:0;color:#2f7a3d}
 .nhev{display:grid;gap:8px}.nhevs{display:flex;gap:10px;align-items:baseline}.nhevs b{font-size:1.5rem;color:#2f7a3d}.nhevs small{color:#4a5a4c}
 .nhevt{border-collapse:collapse;width:100%;max-width:460px}.nhevt td{padding:4px 6px;border-bottom:1px solid rgba(0,0,0,.08)}.nhevt td:last-child{text-align:right}
