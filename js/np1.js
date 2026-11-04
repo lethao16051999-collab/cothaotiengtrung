@@ -44,7 +44,9 @@ window.npPick=function(i,j,x){const L=LD[cur],D=L.np[i].d[j];if(NP.d[i+"-"+j])re
  rr()};
 window.npRedo=function(i){Object.keys(NP.d).forEach(k=>{if(k.split("-")[0]==i)delete NP.d[k]});npPut();rr()};
 function npScore(L){let n=0,ok=0,all=0;L.np.forEach((P,i)=>(P.d||[]).forEach((D,j)=>{all++;const s=NP.d[i+"-"+j];if(s){n++;if(s.ok)ok++}}));
- if(all&&n==all){const r=ldN(cur);r.gpd=Math.round(ok/all*100);svN(cur,r)}}
+ if(all&&n==all){const r=ldN(cur);r.gpd=Math.round(ok/all*100);svN(cur,r);
+  /* tính lại điểm Ngữ pháp: drill là một phần bắt buộc */
+  try{const rec=chRec();if(rec&&chMe())chApply(rec);else if(GX&&!GX.prac)chSave()}catch(e){}}}
 window.npOpen=function(i,m){NP.o[i]=m;npPut();rr();setTimeout(()=>{const e=document.getElementById("npx"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})},60)};
 window.npGo=function(i){const e=document.getElementById("np"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})};
 /* ---------- Bậc 2 · Sắp xếp (cùng dữ liệu GXD.so, cùng hàm chấm gxSoCheck) ---------- */
@@ -72,7 +74,7 @@ function npPoint(L,i,done){const P=L.np[i],st=NP.o[i],d=GXD[GX.k],so=[],tr=[];
   h+=done?`<div class="card note">📤 Phần này em đã nộp, kết quả ở cuối trang.</div>`:tr.map((k,n)=>chItem("tr",d.tr[k],k).replace(/<b>\d+\.<\/b>/,`<b>Câu ${n+1}.</b>`)).join("")}
  if(i<L.np.length-1)h+=`<div class="row c npnx"><button class="btn o sm" onclick="npGo(${i+1})">Sang điểm ${i+2}: ${String(L.np[i+1].h).replace(/<[^>]+>/g,"")} ↓</button></div>`;
  return h}
-function npHtml(L){npMig();npLoad();
+function npHtml(L){npMig();npLoad();if(typeof chReAll=="function")chReAll();
  if(!GX||GX.k!=gxKey())gxInit();chPrep();
  const rec=chRec(),done=!!(rec&&chMe()&&!GX.prac&&!GX.cont);
  if(CHWAIT&&chMe()){CHWAIT=false;setTimeout(chNop,300)}
@@ -89,7 +91,7 @@ function npHtml(L){npMig();npLoad();
  else{if(!GX.prac&&typeof trkOn=="function"&&trkOn())h+=`<div class="card res chnop"><p>Phần Sắp xếp + Tạo câu: đã làm <b>${dn}/${all}</b> câu. Máy chỉ chấm được câu trùng đáp án; câu em viết khác, <b>cô sẽ chấm</b> khi em nộp bài.</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 Nộp bài cho cô</button></div><small class="ctx">Cần <b>mã học viên</b> cô Thảo đã gửi. Bấm nộp, nhập mã, bài em làm vẫn giữ nguyên.</small></div>`;
   const nS=GX.so.filter(s=>s.first!=null).length,nT=GX.tr.filter(t=>t.st=="ok"||t.st=="ref").length,tot=GX.so.length+GX.tr.length;
   if(tot&&nS+nT==tot){const ok=GX.so.filter(s=>s.first).length+GX.tr.filter(t=>t.st=="ok").length,pct=Math.round(ok/tot*100);
-   h+=`<div class="card res"><div class="big ${pct>=80?"ok":"no"}">${pct}%</div><p style="text-align:center">Máy chấm được ${ok}/${tot} câu (sắp xếp + tạo câu trùng đáp án).${GX.prac?" Bài luyện lại không tính điểm.":""}</p><div class="row c"><button class="btn o" onclick="const p=GX.prac;GX=null;gxInit();chPrep();GX.prac=p;rr()">↻ Làm lại toàn bộ</button>${nextBtn("gp")}</div></div>`}
+   const R=ldN(cur);h+=`<div class="card res"><div class="big ${pct>=80?"ok":"no"}">${pct}%</div><p style="text-align:center">Máy chấm được ${ok}/${tot} câu (sắp xếp + tạo câu trùng đáp án).${GX.prac?" Bài luyện lại không tính điểm.":""}</p>${!GX.prac&&typeof gpLine=="function"?gpLine(R):""}<div class="row c"><button class="btn o" onclick="const p=GX.prac;GX=null;gxInit();chPrep();GX.prac=p;rr()">↻ Làm lại toàn bộ</button>${nextBtn("gp")}</div></div>`}
   else h+=`<p class="ctx">Phần Sắp xếp + Tạo câu: đã làm ${nS+nT}/${tot} câu.</p><div class="row c">${nextBtn("gp")}</div>`}
  return h}
 const _vGp=vGp;
