@@ -38,7 +38,7 @@ function bcTitle(les){if(!les)return"";const T=((typeof LTS!="undefined"&&LTS[le
  return gvLv(les.lv)+" · Bài "+les.b+(T?" ("+String(T).split("|")[0]+")":"")}
 
 /* các phần cần làm của bài (giống khung Nhắc bài) — null nếu chưa biết */
-function bcParts(lv,b){if(typeof NB_P12=="undefined"||typeof LDS=="undefined")return null;
+function bcParts(lv,b){if(lv==7)return[["rd","Luyện đọc"],["fc","Từ vựng"],["test","Đề TOCFL thi thật"]];if(typeof NB_P12=="undefined"||typeof LDS=="undefined")return null;
  if(typeof napOk=="function"&&!napOk(lv)){if(!BC["nap"+lv]){BC["nap"+lv]=1;napLv(lv).then(()=>{GV.tab=="bc"&&gvDraw()},()=>{})}return null}
  const L=(LDS[lv]||{})[b];if(!L)return null;
  return(lv>=4&&lv!=6?NB_P45:NB_P12).filter(p=>p[0]!="test"||(L.tsort&&L.tlis)).filter(p=>p[0]!="rd"||(L.texts&&L.texts.length)).map(p=>[p[0],p[2]])}
