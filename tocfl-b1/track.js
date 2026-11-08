@@ -54,7 +54,7 @@ function exam(n,o){const that=o.mode==="that",pct=o.pct;
 const pc=v=>`<b class="${v>=80?"ttok":"ttno"}">${v}%</b>`;
 function line(n){const r=J(key(n),{})||{},p=[];
  if(r.rd!=null)p.push("Luyện đọc "+pc(r.rd));if(r.fc!=null)p.push("Từ vựng "+pc(r.fc));
- if(r.test!=null)p.push(`Đề thi thật ${pc(r.test)} (Nghe ${r.nghe||0}/25 · Đọc ${r.doc||0}/25)`);if(r.ltap!=null)p.push("Đề luyện tập "+pc(r.ltap));
+ if(r.test!=null)p.push(`Đề ${pc(r.test)} (Nghe ${r.nghe||0}/25 · Đọc ${r.doc||0}/25)`);
  return p.join(" · ")}
 function bar(n){return `<div class="ttbar" data-n="${n}">${barIn(n)}</div>`}
 function barIn(n){const l=line(n);return (l?`📊 <b>Kết quả của em:</b> ${l}`:`📊 Chưa có kết quả bài này.`)+(inn()?`<span class="ttwho">👤 ${E(ME.name)} · đang lưu tiến trình</span>`:`<span class="ttwho">Chỉ lưu trên máy này. <a onclick="TT.open()">🔑 Nhập mã học viên</a> để lưu cho cô và học tiếp trên máy khác.</span>`)}
