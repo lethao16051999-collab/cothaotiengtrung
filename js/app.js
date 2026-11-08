@@ -111,6 +111,31 @@ const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i
 const np=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z一-鿿]/g,"");
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
 function simi(a,b){if(!b.length)return 0;const d=Array(a.length+1).fill(0).map(()=>Array(b.length+1).fill(0));for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=a[i-1]==b[j-1]?d[i-1][j-1]+1:Math.max(d[i-1][j],d[i][j-1]);return Math.round(d[a.length][b.length]/b.length*100)}
+/* So sánh bài gõ với đáp án: tô đỏ chữ gõ sai/thừa, tô xanh chữ đúng/còn thiếu ở đáp án, kèm dòng "Sai 1 chữ: 经 → 轻".
+   dfHtml(han, py, typed): gõ chữ Hán thì so với han; gõ pinyin thì so từng chữ cái với py (bỏ dấu thanh). */
+const dfIsH=c=>/[一-鿿]/.test(c);
+const dfTk=(s,h)=>[...String(s||"")].map(c=>({c,k:h?(dfIsH(c)?c:""):np(c)}));
+function dfAlign(a,b){const n=a.length,m=b.length,d=Array(n+1).fill(0).map(()=>Array(m+1).fill(0));
+ for(let i=0;i<=n;i++)d[i][0]=i;for(let j=0;j<=m;j++)d[0][j]=j;
+ for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)d[i][j]=Math.min(d[i-1][j-1]+(a[i-1]==b[j-1]?0:1),d[i-1][j]+1,d[i][j-1]+1);
+ const A=Array(n).fill("ok"),B=Array(m).fill("ok"),ops=[];let i=n,j=m;
+ while(i>0||j>0){if(i>0&&j>0&&a[i-1]==b[j-1]&&d[i][j]==d[i-1][j-1]){i--;j--}
+  else if(j>0&&d[i][j]==d[i][j-1]+1){B[j-1]="ext";ops.unshift(["e",b[j-1]]);j--}
+  else if(i>0&&d[i][j]==d[i-1][j]+1){A[i-1]="mis";ops.unshift(["m",a[i-1]]);i--}
+  else{A[i-1]="sub";B[j-1]="sub";ops.unshift(["s",b[j-1],a[i-1]]);i--;j--}}
+ return {A,B,ops,dist:d[n][m]}}
+function dfLine(T,cls){let k=0;return T.map(t=>t.k?`<span class="df-${cls[k++]}">${esc(t.c)}</span>`:esc(t.c)).join("")}
+function dfHtml(han,py,typed){const v=String(typed||"").trim();if(!v)return `<div class="dfx"><small>Em chưa gõ câu này.</small></div>`;
+ const h=dfIsH(v)||!py,M=dfTk(h?han:py,h),S=dfTk(v,h),a=M.filter(t=>t.k).map(t=>t.k),b=S.filter(t=>t.k).map(t=>t.k);
+ if(!b.length)return `<div class="dfx"><small>${h?"Câu này cần gõ chữ Hán.":"Em chưa gõ chữ nào đọc được."}</small></div>`;
+ const R=dfAlign(a,b);if(!R.dist)return "";
+ let sum="";if(h&&R.dist<=Math.max(3,Math.ceil(a.length/3))){const s=R.ops.filter(o=>o[0]=="s"),m=R.ops.filter(o=>o[0]=="m"),e=R.ops.filter(o=>o[0]=="e"),p=[];
+  if(s.length)p.push(`sai ${s.length} chữ: `+s.map(o=>`<span class="zh"><span class="df-sub">${esc(o[1])}</span> → <span class="df-g">${esc(o[2])}</span></span>`).join(", "));
+  if(m.length)p.push(`thiếu `+m.map(o=>`<span class="zh df-g">${esc(o[1])}</span>`).join(" "));
+  if(e.length)p.push(`thừa `+e.map(o=>`<span class="zh df-sub">${esc(o[1])}</span>`).join(" "));
+  sum=p.join(" · ");sum=sum.charAt(0).toUpperCase()+sum.slice(1)}
+ else if(h)sum=`Khác đáp án ${R.dist} chữ`;else sum="Phần tô đỏ là chỗ gõ sai hoặc thừa";
+ return `<div class="dfx"><div class="dfs">🔎 ${sum}</div><div class="dfr"><span class="dfl">Em gõ:</span> <span class="${h?"zh":""}">${dfLine(S,R.B)}</span></div><div class="dfr"><span class="dfl">Đáp án:</span> <span class="${h?"zh":""}">${dfLine(M,R.A.map(c=>c=="sub"?"g":c))}</span></div></div>`}
 
 /* ===== Danh sách bài ===== */
 let cur=null,tcur=null,ltab="bk",fcI=0,fcShow=false;
@@ -180,7 +205,7 @@ function vGp(L){if(L.gpWip)return `<div class="card note">📐 <b>Mục Ngữ ph
 
 let DTV={},DTR={},DTD=false;
 function vDt(L,r){return `<div class="card note">Nghe từng câu rồi gõ lại cả câu bằng <b>pinyin không dấu</b> (ví dụ: <i>laoshi nin hao</i>) hoặc <b>chữ Hán</b>. Không cần gõ dấu câu. Mỗi câu nghe lại được nhiều lần.</div>`+
- L.dt.map((x,i)=>{const st=DTR[i];return `<div class="card dt ${DTD?(st?"ok":"no"):""}"><b>${i+1}.</b> ${bS(x[0],"🔊 Nghe")}<input value="${esc(DTV[i]||"")}" oninput="DTV[${i}]=this.value" placeholder="Gõ điều bạn nghe được" autocomplete="off" autocapitalize="off" ${DTD?"disabled":""}>${DTD?`<div class="ans">${st?"✓":"✗"} <span class="zh">${x[0]}</span> <span class="py">· ${x[1]}</span></div>`:""}</div>`}).join("")+
+ L.dt.map((x,i)=>{const st=DTR[i];return `<div class="card dt ${DTD?(st?"ok":"no"):""}"><b>${i+1}.</b> ${bS(x[0],"🔊 Nghe")}<input value="${esc(DTV[i]||"")}" oninput="DTV[${i}]=this.value" placeholder="Gõ điều bạn nghe được" autocomplete="off" autocapitalize="off" ${DTD?"disabled":""}>${DTD?`<div class="ans">${st?"✓":"✗"} <span class="zh">${x[0]}</span> <span class="py">· ${x[1]}</span></div>${st?"":dfHtml(x[0],x[1],DTV[i])}`:""}</div>`}).join("")+
  (DTD?`<div class="card res"><div class="big ${r.dt>=80?"ok":"no"}">${r.dt}%</div><div class="row c"><button class="btn o" onclick="DTV={};DTR={};DTD=false;rr()">↻ Làm lại</button>${nextBtn("dt")}</div></div>`:`<button class="btn" onclick="dtCheck()">Chấm điểm</button>`)}
 function dtCheck(){const L=LD[cur];let ok=0;L.dt.forEach((x,i)=>{const v=np(DTV[i]||"");DTR[i]=!!v&&(v===np(x[0])||v===np(x[1]));if(DTR[i])ok++});DTD=true;const r=ldN(cur);r.dt=Math.round(ok/L.dt.length*100);svN(cur,r);rr()}
 

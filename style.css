@@ -285,3 +285,11 @@ button:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visib
 .nv-opt button small{color:var(--sub);font-size:.75rem}.nv-opt button.ok{border-color:#2e8b57;background:rgba(46,139,87,.12)}.nv-opt button.no{border-color:#c0392b;background:rgba(192,57,43,.1)}
 .nv-fb{margin:10px 0}.nv-fb.ok{color:#2e8b57}.nv-fb.no{color:#c0392b}.nv-go{justify-content:center;margin:16px 0}
 @media(max-width:480px){.nv-grid{grid-template-columns:1fr}.nv-av{width:64px;height:64px}.nv-av.sm{width:44px;height:44px}}
+/* So sánh bài gõ với đáp án (dfHtml) */
+.dfx{margin-top:10px;padding:10px 12px;background:#fff7f2;border:1px dashed #e4b9a8;border-radius:12px;line-height:1.9}
+.dfs{font-weight:700;color:#7a1f35;margin-bottom:4px}.dfr{font-size:1.05rem}.dfl{display:inline-block;min-width:64px;color:var(--sub,#7a6a60);font-size:.9rem}
+.dfx .zh{font-size:1.25rem}.df-ok{color:inherit}
+.df-sub,.df-ext{color:#b23a48;font-weight:800;background:#fde2e2;border-radius:4px;padding:0 2px}.df-ext{text-decoration:line-through}
+.df-mis,.df-g{color:#2e7d4f;font-weight:800;background:#dff1e6;border-radius:4px;padding:0 2px}
+
+.dt input:disabled,.tin:disabled{color:var(--t);-webkit-text-fill-color:var(--t);opacity:1}
