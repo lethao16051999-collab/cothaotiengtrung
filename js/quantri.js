@@ -10,7 +10,8 @@
    Nạp SAU js/theodoi.js, cham.js, nhom.js, baocao.js. ===== */
 const QT_TH=["CN","T2","T3","T4","T5","T6","T7"],QT_KT=["Nghe","Nói","Đọc","Đọc chữ Hán","Tương tác"],QT_LV=["Tốt","Khá","Đạt","Cần cố gắng"];
 const QT_TS_ST=["Mới hỏi","Đã tư vấn","Học thử","Đã đăng ký","Không học"],QT_TS_NG=["Facebook","TikTok","YouTube","Zalo","Người quen giới thiệu","Học viên cũ","Khác"];
-const QT_K={hoc:"Học bài",on:"Ôn tập",kt:"Kiểm tra"},QT_L6=[1,2,3,9,10,11,12,13,14,15];
+const QT_K={hoc:"Học bài",on:"Ôn tập",kt:"Kiểm tra"},QT_L6=[1,2,3,9,10,11,12,13,14,15],QT_L7=[1,2],QT_T7=["開學了","八折起"]; /* QT_L7 = các bài đã có trên trang tocfl-b1/ (cấp 7), thêm bài mới thì thêm số và tên vào đây */
+const qtWebReq=w=>+String(w).split("-")[0]==7?"làm Luyện đọc, Từ vựng và đề TOCFL chế độ Thi thật, đạt từ 80%.":"làm đủ các phần, bao gồm cả test nhanh đạt từ 80%.";
 /* lộ trình cô gửi 01/11/2026 (chỉ dùng khi máy chủ / máy này chưa có lộ trình của lớp đó) */
 const QT_SEED={
  "K49 HSK1":{days:[2,5],time:"20:30",lv:6,an:{n:21,d:"2026-10-30"},off:[],ex:[],s:[
@@ -97,8 +98,8 @@ const qtHv=cls=>GV.data.hv.filter(h=>h.cls==cls&&h.st!="Nghỉ").sort((a,b)=>a.n
 const qtTime=L=>L&&L.time?L.time:"";
 
 /* ---------- bài trên web ---------- */
-function qtLesOpts(){const o=[];[1,2,3,4,5].forEach(lv=>{const b=(typeof NAP!="undefined"&&NAP[lv]&&NAP[lv].bai)||Object.keys((LDS||{})[lv]||{}).map(Number);b.forEach(n=>o.push(lv+"-"+n))});QT_L6.forEach(n=>o.push("6-"+n));return o}
-function qtLesT(w,short){if(!w)return"";const [lv,b]=w.split("-").map(Number);const T=((typeof LTS!="undefined"&&LTS[lv])||[])[b-1];
+function qtLesOpts(){const o=[];[1,2,3,4,5].forEach(lv=>{const b=(typeof NAP!="undefined"&&NAP[lv]&&NAP[lv].bai)||Object.keys((LDS||{})[lv]||{}).map(Number);b.forEach(n=>o.push(lv+"-"+n))});QT_L6.forEach(n=>o.push("6-"+n));QT_L7.forEach(n=>o.push("7-"+n));return o}
+function qtLesT(w,short){if(!w)return"";const [lv,b]=w.split("-").map(Number);const T=lv==7?QT_T7[b-1]:((typeof LTS!="undefined"&&LTS[lv])||[])[b-1];
  return(lv==6?"GT chuẩn HSK1":gvLv(lv))+" · Bài "+b+(!short&&T?" ("+String(T).split("|")[0]+")":"")}
 /* lớp học song song 2 quyển HSK1 (thêm 02/11/2026, lớp K49): 📙 bìa CAM = Giáo trình chuẩn (cấp web 6), 📘 bìa XANH = New HSK 1 (cấp web 1).
    Lớp "2 quyển" = lộ trình ghi cấp GT chuẩn hoặc có bài web 6-…; buổi không gắn bài web mà ghi "Chủ đề…" / "3.0" coi là quyển xanh.
@@ -213,7 +214,7 @@ function qtEnMsg(c,x){const e=QT.d.en[c+"|"+x.d]||{},w=e.w!=null?e.w:x.s.w,han=e
  const nb=qtSched(qtL(c)).find(y=>y.d&&y.d>x.d);
  if(qtTwo(c)){const B={cam:[],xanh:[],"":[]};
   if(w){const k=qtBk(w),bn=String(w).split("-")[1];
-   B[k].push(`• Trên web cô Thảo${k?` (mục "${QT_BK[k].web}")`:""}: ${k?qtNoBk(qtLesT(w)):qtLesT(w)} — làm đủ các phần, bao gồm cả test nhanh đạt từ 80%.`);
+   B[k].push(`• Trên web cô Thảo${k?` (mục "${QT_BK[k].web}")`:""}: ${k?qtNoBk(qtLesT(w)):qtLesT(w)} — ${qtWebReq(w)}`);
    B[k].push(`• Ghi từ vựng bài ${bn}${k?" quyển "+(k=="cam"?"cam":"xanh"):""} vào vở, mỗi chữ 2-3 dòng + đặt câu với từ đó, buổi sau cô sẽ kiểm tra đột xuất.`)}
   else{const k=qtBk("",x.s);if(k)B[k].push(`• Ôn lại bài hôm nay: ${qtSesC(x.s)}.`)}
   if(nb){const k=qtBk(nb.s.w,nb.s),t=nb.s.w?(k?qtNoBk(qtLesT(nb.s.w)):qtLesT(nb.s.w)):qtSesC(nb.s);if(t)B[k].push(`• Chuẩn bị buổi sau (${qtTD(nb.d)}): ${t}.`)}
@@ -223,7 +224,7 @@ function qtEnMsg(c,x){const e=QT.d.en[c+"|"+x.d]||{},w=e.w!=null?e.w:x.s.w,han=e
   if(L.length==2)L.push("• Ôn lại bài hôm nay.");
   while(L[L.length-1]==="")L.pop();
   if(han)L.push(`⏰ Hạn nộp: hết ngày ${qtTD(han)}.`);L.push("Các em nhìn đúng màu bìa để mở đúng quyển nhé!");return L.join("\n")}
- if(w){const bn=String(w).split("-")[1];L.push(`• Trên web cô Thảo: ${qtLesT(w)} — làm đủ các phần, bao gồm cả test nhanh đạt từ 80%.`);
+ if(w){const bn=String(w).split("-")[1];L.push(`• Trên web cô Thảo: ${qtLesT(w)} — ${qtWebReq(w)}`);
   L.push(`• Ghi từ vựng của bài ${bn} vào vở, mỗi chữ 2-3 dòng + đặt câu với từ đó, buổi sau cô sẽ kiểm tra đột xuất.`)}
  if(e.x)String(e.x).split(/\n+/).filter(Boolean).forEach(s=>L.push("• "+s.trim()));
  if(!w&&!e.x)L.push("• Ôn lại bài hôm nay.");
@@ -318,7 +319,7 @@ function qtKtNx(c,d,code,v){const K=qtKtGet(c,d,code);K.r[code].nx=v;qtPut("kt",
 
 /* ---------- sửa lộ trình ---------- */
 function qtEdSec(c,L,S){const o=L||{days:[],time:"",lv:1,an:null,off:[],ex:[],s:[]},op=QT.ui.ed==c,T=qtToday(),fx=qtFixed(o);
- const lvs=[[1,"HSK 1"],[6,"GT chuẩn HSK1"],[2,"HSK 2"],[3,"HSK 3"],[4,"HSK 4"],[5,"Mở rộng H4"]];
+ const lvs=[[1,"HSK 1"],[6,"GT chuẩn HSK1"],[2,"HSK 2"],[3,"HSK 3"],[4,"HSK 4"],[5,"Mở rộng H4"],[7,"TOCFL B1"]];
  return `<details class="card qted" ${op?"open":""} ontoggle="QT.ui.ed=this.open?${qtJ(c)}:null"><summary><b>🗓 Lộ trình lớp ${gvE(c)}</b> <small>(${S.length} buổi · sửa, thêm buổi, báo nghỉ)</small></summary>
 ${fx?"":`<div class="card note">Lớp <b>không có lịch cố định</b>: cô điền ngày ở cột <b>Ngày</b> cho từng buổi (buổi chưa có ngày sẽ không hiện ở Hôm nay / Chốt tuần). Muốn ngày tự tính thì tick thứ học bên dưới và điền mốc.</div>`}
 <div class="qtedg"><div class="qtf"><span>Lịch học <small class="ctx">(không tick thứ nào = lịch linh hoạt)</small></span><div class="qtdays">${[1,2,3,4,5,6,0].map(d=>`<label><input type="checkbox" ${(o.days||[]).includes(d)?"checked":""} onchange="qtEd(${qtJ(c)},'day',${d},this.checked)">${QT_TH[d]}</label>`).join("")}</div></div>
