@@ -32,12 +32,43 @@ function sayCmp(tgt,heard){const a=sayCh(tgt),b=sayCh(heard),n=a.length,m=b.leng
  while(i<n&&j<m){const s=P[i][j].s;if(s&&d[i][j]==d[i+1][j+1]+s){mk[i]=s;if(s==1)hv[j]=a[i];else ton.push([a[i],pyTone(P[i][j].a),hv[j],pyTone(P[i][j].b)]);i++;j++}else if(d[i+1][j]>=d[i][j+1])i++;else j++}
  return{m:Math.min(100,Math.round(d[0][0]/n*100)),mk,hv,ton}}
 const SAYC={k:null,v:null};
+/* 08/11: máy nghe hay trả giờ dạng số (10:10, (9:00)), %, số thập phân, và đôi khi chữ tiếng Anh.
+   srFix: đổi về cách viết tiếng Trung (10:10 → 10点10分, 9:00 → 9点, 50% → 百分之50, 3.5 → 3点五), bỏ ngoặc.
+   sayVar: thêm phương án theo câu mẫu (点30分 → 点半, 点15分 → 点一刻, 整, 2000 → 二千 thay vì 二零零零).
+   Chữ Latin/tiếng Anh: bỏ khi chấm (câu mẫu không có chữ Latin); nếu máy chỉ nghe ra tiếng Anh thì báo cách sửa máy. */
+const SRD="零一二三四五六七八九";
+function srFix(s){return String(s||"").replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/[()（）\[\]【】]/g," ")
+ .replace(/(\d),(?=\d{3}\b)/g,"$1")
+ .replace(/(\d{1,2})\s*[:：]\s*(\d{2})(?:\s*[:：]\s*\d{2})?/g,(x,h,m)=>m=="00"?h+"点":h+"点"+m+"分")
+ .replace(/(\d+(?:\.\d+)?)\s*[%％]/g,"百分之$1")
+ .replace(/(\d+)\.(\d+)/g,(x,a,b)=>a+"点"+[...b].map(c=>SRD[c]).join(""))
+ .replace(/\s{2,}/g," ").trim()}
+function sayBig(n){n=+n;if(n<1000)return sayNum(String(n));const u=["千","百","十",""];
+ const sec=x=>{let o="",z=false;String(x).padStart(4,"0").split("").forEach((c,i)=>{if(c!="0"){o+=(z&&o?"零":"")+SRD[c]+u[i];z=false}else z=true});return o};
+ const w=Math.floor(n/1e4),r=n%1e4;if(!w)return sec(r);return sec(w).replace(/^一十/,"十")+"万"+(r?(r<1000?"零":"")+sec(r):"")}
+function sayVar(c,tgt){let v=c;
+ if(/半/.test(tgt))v=v.replace(/点30分/g,"点半");
+ if(/刻/.test(tgt))v=v.replace(/点15分/g,"点一刻").replace(/点45分/g,"点三刻");
+ if(/整/.test(tgt))v=v.replace(/(\d点)(?![\d零一二三四五六七八九十])/g,"$1整");
+ v=v.replace(/点0(\d)分/g,(x,d)=>/点零/.test(tgt)?x:"点"+d+"分");
+ if(/[千万]/.test(tgt))v=v.replace(/\d{4,8}/g,x=>x[0]=="0"?x:sayBig(x));
+ return v==c?[c]:[c,v]}
+const SAY_LAT=/[A-Za-z]/;
 function sayRes(heard,tgt,alts){const key=tgt+"\u0001"+heard+"\u0001"+(alts||[]).join("\u0002");if(SAYC.k===key)return SAYC.v;
- let best=null;[heard,...(alts||[])].filter((x,i,l)=>x&&l.indexOf(x)==i).forEach((c,ci)=>{const r=sayCmp(tgt,c);r.t=c;if(!best||r.m>best.m)best=r});SAYC.k=key;SAYC.v=best;return best}
+ const keepLat=SAY_LAT.test(tgt);let best=null,zh=false,lat=false;
+ [heard,...(alts||[])].map(srFix).filter((x,i,l)=>x&&l.indexOf(x)==i).forEach(c0=>{
+  if(/[一-鿿]|\d/.test(c0))zh=true;if(SAY_LAT.test(c0))lat=true;
+  const c=keepLat?c0:c0.replace(/[A-Za-z][A-Za-z'’\-]*/g," ").replace(/\s{2,}/g," ").trim();
+  sayVar(c,tgt).forEach(v=>{const r=sayCmp(tgt,v);r.t=v;if(!best||r.m>best.m)best=r})});
+ if(!best){best=sayCmp(tgt,"");best.t=""}
+ best.raw=srFix(heard);best.en=!keepLat&&lat&&!zh;SAYC.k=key;SAYC.v=best;return best}
+const SAY_EN=()=>`<div class="saynote">⚠ Máy đang nghe theo <b>tiếng Anh</b> nên không ra chữ Hán. Cách sửa: `+(typeof SR_IOS!="undefined"&&SR_IOS
+ ?`<b>iPhone/iPad</b>: Cài đặt › Cài đặt chung › Bàn phím › Bàn phím › Thêm bàn phím mới › <b>Tiếng Trung (Giản thể)</b>, bật <b>Đọc chính tả</b>; tải lại trang rồi bấm 🎤.`
+ :`<b>Android</b>: Cài đặt › Ngôn ngữ và bàn phím (hoặc Quản lý chung) › Nhập bằng giọng nói: chọn <b>Google</b>, thêm ngôn ngữ <b>中文 (普通话)</b>. <b>Máy tính</b>: dùng Chrome hoặc Edge bản mới. Nói to, rõ bằng tiếng Trung.`)+`</div>`;
 /* % giống câu mẫu */
 const sayPct=(heard,tgt,alts)=>sayRes(heard,tgt,alts).m;
 /* "Máy nghe được": chữ đọc đúng âm hiện theo chữ của câu mẫu */
-function sayHeard(heard,tgt,alts){const r=sayRes(heard,tgt,alts);return r.hv.length?esc(r.hv.join("")):esc(r.t)}
+function sayHeard(heard,tgt,alts){const r=sayRes(heard,tgt,alts);if(r.en)return esc(r.raw)+SAY_EN();return r.hv.length?esc(r.hv.join("")):esc(r.t||r.raw)}
 /* câu mẫu tô màu: xanh đúng, cam sai thanh, đỏ thiếu / sai âm; kèm dòng ghi chú sai thanh */
 function sayMark(tgt,heard,alts){const r=sayRes(heard,tgt,alts);let k=0;
  const h=[...tgt].map(c=>/[一-鿿A-Za-z]/.test(c)?`<span class="${({1:"g",.5:"o",0:"r"})[r.mk[k++]||0]}">${c}</span>`:c).join("");
@@ -47,7 +78,7 @@ function nameHint(s,cls){if(!s||typeof SPN!="object")return "";const got=[];
  Object.keys(SPN).filter(k=>k.length>=2&&!/[、，,]/.test(k)&&SPN[k]&&/^[A-ZĀÁǍÀĒÉĚÈŌÓǑÒ]/.test(SPN[k][0]||"")&&s.includes(k)).sort((x,y)=>y.length-x.length).forEach(k=>{if(!got.some(g=>g.includes(k)))got.push(k)});
  return got.length?`<div class="nmh ${cls||""}">🏷 Tên riêng: ${got.map(k=>`<span><b class="zh">${k}</b> ${SPN[k][0]}</span>`).join(" · ")}</div>`:""}
 /* bọc srListen: tải bảng phiên âm khi bấm 🎤, chờ bảng sẵn sàng rồi mới chấm */
-(function(){const o=srListen;srListen=function(done,fail){pyLoad();return o((t,a)=>pyReady(()=>done(t,a)),fail)}})();
+(function(){const o=srListen;srListen=function(done,fail){pyLoad();return o((t,a)=>pyReady(()=>done(srFix(t),(a||[]).map(srFix))),fail)}})();
 (function(){const st=document.createElement("style");st.textContent=`
 .out .o{color:#c66a00;font-weight:700;background:#fff1d6;border-radius:4px}
 .saynote{font:400 .88rem/1.6 var(--ui,Nunito,system-ui,sans-serif);color:#8a4b00;margin-top:4px;line-height:1.6}

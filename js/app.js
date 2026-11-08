@@ -269,7 +269,7 @@ function srListen(done,fail){
  try{document.querySelectorAll("audio").forEach(a=>{if(!a.paused){a.pause();wait=Math.max(wait,SR_IOS?350:0)}})}catch(e){}
  if(SR_IOS){if(srBusy&&srInst){try{srInst.onresult=null;srInst.stop()}catch(e){}wait=Math.max(wait,700)}
   const gap=Date.now()-srEndT;if(gap<400)wait=Math.max(wait,400-gap)}
- const live=()=>{const el=document.getElementById("srLive");if(el)el.textContent=(txt+sess)||"…"};
+ const live=()=>{const el=document.getElementById("srLive");if(el)el.textContent=(typeof srFix=="function"?srFix(txt+sess):(txt+sess))||"…"};
  const shut=()=>{closed=true;clearInterval(tm);clearTimeout(kill);clearTimeout(wd);curRec=null;recOn=null};
  const finish=()=>{if(closed)return;shut();
   if(s){s.onresult=s.onerror=s.onend=null;if(SR_IOS){if(srBusy&&srInst===s){try{s.stop()}catch(e){}}}else{try{s.abort()}catch(e){}if(srInst===s)srInst=null}}
