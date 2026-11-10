@@ -33,7 +33,7 @@ function gxHtml(L){if(!GX||GX.k!=gxKey())gxInit();const d=GXD[GX.k];let h="";
  h+=d.so.map((it,k)=>{const s=GX.so[k],ok=s.st===true,bad=s.st===false;
   return `<div class="card q ${ok?"ok":bad?"no":""}"><b>Câu ${k+1}.</b><div class="slots">${s.ch.map((i,j)=>gxTok(it.t[i],ok?"disabled":`onclick="gxMv(${k},'c',${j})"`)).join("")}</div><div class="bank">${s.pool.map((i,j)=>gxTok(it.t[i],`onclick="gxMv(${k},'p',${j})"`)).join("")}</div>
 ${ok?`<div class="okt">✓ Đúng rồi!</div><div class="zh hd">${it.f}</div><div class="py" style="color:var(--m)">${it.p}</div>`:bad?`<div class="bad">✗ Chưa đúng. ${it.e}</div>`:""}
-<div class="row">${ok?"":`<button class="btn sm" onclick="gxSoCheck(${k})">Kiểm tra</button>`}${bad?`<button class="btn o sm" onclick="gxSoReset(${k})">↻ Làm lại câu này</button><button class="btn o sm" onclick="GX.so[${k}].show=!GX.so[${k}].show;rr()">${s.show?"Ẩn":"Xem"} đáp án</button>`:""}</div>
+<div class="row">${ok?"":`<button class="btn sm" onclick="gxSoCheck(${k})">Kiểm tra</button>`}${bad?`<button class="btn o sm" onclick="gxSoReset(${k})">↻ Làm lại câu này</button>${GX.redo?"":`<button class="btn o sm" onclick="GX.so[${k}].show=!GX.so[${k}].show;rr()">${s.show?"Ẩn":"Xem"} đáp án</button>`}`:""}</div>
 ${bad&&s.show?`<div class="ans"><span class="zh hd">${it.f}</span><br><span class="py">${it.p}</span></div>`:""}</div>`}).join("");
  h+=`<div class="card note"><b>Dạng 2 · Dịch Việt → Trung</b><br>Gõ câu tiếng Trung bằng <b>chữ Hán</b> (hoặc pinyin không dấu, ví dụ: <i>women haishi dache qu ba</i>). Không cần gõ dấu câu.</div>`;
  h+=d.tr.map((it,k)=>{const t=GX.tr[k],st=t.st;

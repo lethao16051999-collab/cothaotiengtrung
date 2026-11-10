@@ -51,10 +51,10 @@ window.npOpen=function(i,m){NP.o[i]=m;npPut();rr();setTimeout(()=>{const e=docum
 window.npGo=function(i){const e=document.getElementById("np"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})};
 /* ---------- Bậc 2 · Sắp xếp (cùng dữ liệu GXD.so, cùng hàm chấm gxSoCheck) ---------- */
 function npSo(k,n){const it=GXD[GX.k].so[k],s=GX.so[k],ok=s.st===true,bad=s.st===false;
- if(s.sub)return `<div class="card chsub"><b>Câu ${n}.</b> <span class="chwt">📤 Đã nộp lần trước.</span></div>`;
+ if(s.sub)return `<div class="card chsub"><b>Câu ${n}.</b> <span class="chwt">${GX.redo?"✓ Đúng từ lần trước.":"📤 Đã nộp lần trước."}</span></div>`;
  return `<div class="card q ${ok?"ok":bad?"no":""}"><b>Câu ${n}.</b>${it.vi?` <span class="vi">${it.vi}</span>`:""}<div class="slots">${s.ch.map((i,j)=>gxTok(it.t[i],ok?"disabled":`onclick="gxMv(${k},'c',${j})"`)).join("")}</div><div class="bank">${s.pool.map((i,j)=>gxTok(it.t[i],`onclick="gxMv(${k},'p',${j})"`)).join("")}</div>
 ${ok?`<div class="okt">✓ Đúng rồi!</div><div class="zh hd">${it.f}</div><div class="py" style="color:var(--m)">${it.p}</div>`:bad?`<div class="bad">✗ Chưa đúng. ${it.e||""}</div>`:""}
-<div class="row">${ok?"":`<button class="btn sm" onclick="gxSoCheck(${k})">Kiểm tra</button>`}${bad?`<button class="btn o sm" onclick="gxSoReset(${k})">↻ Làm lại câu này</button><button class="btn o sm" onclick="GX.so[${k}].show=!GX.so[${k}].show;rr()">${s.show?"Ẩn":"Xem"} đáp án</button>`:""}</div>
+<div class="row">${ok?"":`<button class="btn sm" onclick="gxSoCheck(${k})">Kiểm tra</button>`}${bad?`<button class="btn o sm" onclick="gxSoReset(${k})">↻ Làm lại câu này</button>${GX.redo?"":`<button class="btn o sm" onclick="GX.so[${k}].show=!GX.so[${k}].show;rr()">${s.show?"Ẩn":"Xem"} đáp án</button>`}`:""}</div>
 ${bad&&s.show?`<div class="ans"><span class="zh hd">${it.f}</span><br><span class="py">${it.p}</span></div>`:""}</div>`}
 /* ---------- một điểm ngữ pháp ---------- */
 function npPoint(L,i,done){const P=L.np[i],st=NP.o[i],d=GXD[GX.k],so=[],tr=[];
@@ -79,7 +79,7 @@ function npHtml(L){npMig();npLoad();if(typeof chReAll=="function")chReAll();
  const rec=chRec(),done=!!(rec&&chMe()&&!GX.prac&&!GX.cont);
  if(CHWAIT&&chMe()){CHWAIT=false;setTimeout(chNop,300)}
  const d=GXD[GX.k];let h=`<div class="card note npintro">📐 Mỗi điểm ngữ pháp học theo 4 bước: <b>đọc lý thuyết</b> → <b>Bậc 1 Drill</b> (chọn đáp án) → <b>Bậc 2 Sắp xếp</b> → <b>Bậc 3 Tạo câu</b>. Bạn nào đã nắm chắc có thể bấm <b>Bỏ qua lý thuyết</b>.</div>`;
- if(GX.cont)h+=`<div class="card note">➕ Em đang <b>làm tiếp phần chưa làm</b>. Câu đã nộp được khóa lại. Làm xong bấm <b>Nộp tiếp</b> ở cuối. <button class="btn o sm" onclick="GX=null;rr()">← Xem bài đã nộp</button></div>`;
+ if(GX.cont)h+=chContBan();
  else if(GX.prac)h+=`<div class="card note">↻ Em đang <b>luyện lại</b>, không tính điểm, không gửi cô. <button class="btn o sm" onclick="GX=null;rr()">← Xem bài đã nộp</button></div>`;
  else if(!done&&!chMe()&&typeof trkOn=="function"&&trkOn())h+=`<div class="card trkban"><span>🔑 Học viên lớp cô Thảo nhập <b>mã học viên</b> để nộp bài, cô chấm các câu Tạo câu máy chưa chấm được.</span><button class="btn sm" onclick="trkOpen()">Nhập mã</button></div>`;
  h+=`<div class="nptoc">${L.np.map((P,i)=>{const nD=(P.d||[]).length,dn=(P.d||[]).filter((_,j)=>NP.d[i+"-"+j]).length;return `<button class="${NP.o[i]?(nD&&dn<nD?"half":"on"):""}" onclick="npGo(${i})">${NP.o[i]&&(!nD||dn==nD)?"✓ ":""}${i+1}. ${String(P.h).replace(/<[^>]+>/g,"")}</button>`}).join("")}</div>`;
@@ -87,7 +87,7 @@ function npHtml(L){npMig();npLoad();if(typeof chReAll=="function")chReAll();
  if(!done&&d.pc&&d.pc.length){h+=`<div class="npb npbx"><span>Thử thách</span> Miêu tả tranh</div><div class="card note">Xem tranh, đọc yêu cầu rồi viết câu bằng <b>chữ Hán</b> hoặc <b>pinyin không dấu</b>. Cô chấm: đúng nội dung tranh + dùng đúng cấu trúc.</div>`;h+=d.pc.map((it,k)=>chItem("pc",it,k)).join("")}
  if(done)return h+`<div class="npb npbx"><span>Kết quả</span> Bài em đã nộp (Sắp xếp + Tạo câu)</div>`+chDone(rec).replace(/Dịch Việt → Trung/g,"Tạo câu").replace(/<b>Dịch (\d+)\.<\/b>/g,"<b>Tạo câu $1.</b>");
  const all=GX.so.length+GX.tr.length+GX.pc.length,dn=GX.so.filter(s=>s.first!=null).length+GX.tr.concat(GX.pc).filter(chHas).length;
- if(chOn())h+=`<div class="card res chnop"><p>Phần Sắp xếp + Tạo câu: đã làm <b>${dn}/${all}</b> câu.${dn<all?" Hết giờ thì em vẫn nộp được, phần chưa làm không tính điểm.":""}</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 ${GX.cont?"Nộp tiếp cho cô":"Nộp bài cho cô"}</button></div></div>`;
+ if(chOn())h+=`<div class="card res chnop"><p>Phần Sắp xếp + Tạo câu: đã làm <b>${dn}/${all}</b> câu.${dn<all?" Hết giờ thì em vẫn nộp được, phần chưa làm không tính điểm.":""}</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 ${chNopLbl()}</button></div></div>`;
  else{if(!GX.prac&&typeof trkOn=="function"&&trkOn())h+=`<div class="card res chnop"><p>Phần Sắp xếp + Tạo câu: đã làm <b>${dn}/${all}</b> câu. Máy chỉ chấm được câu trùng đáp án; câu em viết khác, <b>cô sẽ chấm</b> khi em nộp bài.</p><div class="row c"><button class="btn" onclick="chNop()" ${chReady()?"":"disabled"}>📤 Nộp bài cho cô</button></div><small class="ctx">Cần <b>mã học viên</b> cô Thảo đã gửi. Bấm nộp, nhập mã, bài em làm vẫn giữ nguyên.</small></div>`;
   const nS=GX.so.filter(s=>s.first!=null).length,nT=GX.tr.filter(t=>t.st=="ok"||t.st=="ref").length,tot=GX.so.length+GX.tr.length;
   if(tot&&nS+nT==tot){const ok=GX.so.filter(s=>s.first).length+GX.tr.filter(t=>t.st=="ok").length,pct=Math.round(ok/tot*100);
