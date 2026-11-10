@@ -14,8 +14,9 @@ const h4St=()=>{H.trS=H.trS||{};H.trH=H.trH||{};H.trN=H.trN||{};H.trSa=H.trSa||{
 const h4Refs=it=>it.a.concat([it.r[0]]);
 const h4Hit=(it,v)=>h4Refs(it).some(a=>gH(a)===gH(v))||gN(it.r[1])===gN(v);
 const h4Has=k=>!!gN(H.tr[k]||"");
+const h4Same=k=>!!(H.redo&&H.trOld&&H.trOld[k]&&(!h4Has(k)||chKey(H.tr[k])==H.trOld[k].key));
 const h4Sod=()=>{const L=HL(),so=ldN(cur).so||{};return L.so.map((_,k)=>so[k]==null?null:so[k]===1)};
-function h4Clear(prac){const L=HL();H.tr={};H.trS={};H.trH={};H.trN={};H.trSa={};H.prac=!!prac;H.cont=false;h4SoInit(L)}
+function h4Clear(prac){const L=HL();H.tr={};H.trS={};H.trH={};H.trN={};H.trSa={};H.prac=!!prac;H.cont=false;H.redo=0;H.trOld={};h4SoInit(L)}
 function h4GuestSave(k,ok){if(H.prac||chMe())return;h4Save(r=>{r.trk=r.trk||{};if(r.trk[k]==null)r.trk[k]=ok?1:0;h4GpScore(r)})}
 
 h4TrCk=function(k){h4St();const it=HL().tr[k],v=H.tr[k]||"";if(!gN(v))return ask("Em hãy viết câu dịch trước khi kiểm tra.",null,1);
@@ -31,31 +32,41 @@ window.h4cEdit=function(k){h4St();H.trS[k]=null;H.trS["lc"+k]=0;rr()};
 
 /* ---------- nộp ---------- */
 const h4Ready=()=>{const L=HL(),rec=H.cont?chFix(chRec()):null,old=rec&&rec.sod||[];
- return h4Sod().some((v,k)=>v!=null&&old[k]==null)||L.tr.some((_,k)=>h4Has(k)&&H.trS[k]!="sub")};
+ return h4Sod().some((v,k)=>v!=null&&old[k]==null)||L.tr.some((_,k)=>h4Has(k)&&H.trS[k]!="sub"&&!h4Same(k))};
 window.h4Nop=function(){if(!chMe()){if(!h4Srv())return;H4W=true;return trkOpen()}H4W=false;h4St();
  if(!h4Ready())return ask("Em làm ít nhất một câu rồi mới nộp nhé.",null,1);
+ if(H.redo){const nU=HL().tr.filter((_,k)=>h4Same(k)).length;
+  return ask(`Nộp lần ${H.redo} cho cô?${nU?`<br>Còn <b>${nU} câu em chưa sửa</b>: các câu này giữ điểm lần trước, lần sau em vẫn làm lại được.`:""}`,h4NopGo)}
  const L=HL(),bS0=h4Sod().filter(v=>v==null).length,bT=L.tr.filter((_,k)=>!h4Has(k)).length,miss=[bS0?bS0+" câu sắp xếp":"",bT?bT+" câu dịch":""].filter(Boolean);
  ask(`${H.cont?"Nộp tiếp phần em vừa làm":"Nộp bài cho cô"}? Sau khi nộp em <b>không sửa được</b> câu đã nộp.${miss.length?`<br>Em chưa làm: <b>${miss.join(", ")}</b>. Phần chưa làm không tính điểm, buổi sau em vẫn nộp tiếp được.`:""}`,h4NopGo)};
-function h4NopGo(){const L=HL(),lv=chLv(),b=cur,sid="N"+trkId(),now=Date.now();h4St();
- L.tr.forEach((it,k)=>{const st=H.trS[k];if(st=="sub")return;if(!h4Has(k)){H.trS[k]="bo";return}if(st=="ok"||st=="cho")return;
+function h4NopGo(){const lan=H.redo||0,L=HL(),lv=chLv(),b=cur,sid=(lan?"R"+lan+"-":"N")+trkId(),now=Date.now();h4St();
+ L.tr.forEach((it,k)=>{const st=H.trS[k];if(st=="sub")return;if(h4Same(k)){H.trS[k]="sub";return}if(!h4Has(k)){H.trS[k]="bo";return}if(st=="ok"||st=="cho")return;
   const Ln=chLearn("t"+k,H.tr[k]);if(h4Hit(it,H.tr[k])||(Ln&&Ln.g>=1)){H.trS[k]="ok";if(Ln&&Ln.g>=1&&!h4Hit(it,H.tr[k]))H.trS["lc"+k]=1}else H.trS[k]="cho"});
  const it=L.tr.map((x,k)=>{const st=H.trS[k];return {k:"t"+k,d:"tr",de:x.vi,ref:x.r[0],rp:x.r[1],img:"",v:String(H.tr[k]||"").trim(),key:chKey(H.tr[k]||""),st,g:st=="ok"?1:null,
   nx:H.trS["lc"+k]?"Cô đã chấp nhận cách viết này":"",h:(H.trH[k]||[]).map(trkTxt),sid:st=="bo"?"":sid}}).filter(x=>x.st!="sub"),sod=h4Sod();
  let rec=H.cont?chFix(chRec()):null;
  if(rec){rec.sod=(rec.sod||[]).length?rec.sod.map((v,i)=>v!=null?v:sod[i]):sod;
-  it.forEach(x=>{const o=rec.it.find(y=>y.k==x.k);if(o&&o.st=="bo"&&x.st!="bo")Object.assign(o,x)});
-  rec.so={ok:rec.sod.filter(v=>v===true).length,n:rec.sod.filter(v=>v!=null).length,all:L.so.length};rec.parts.push({sid,at:now,sent:false});rec.seen=true}
+  it.forEach(x=>{const o=rec.it.find(y=>y.k==x.k);if(!o)return;
+   if(lan){if(x.st!="bo"){(rec.hist=rec.hist||[]).push({k:o.k,v:o.v,g:o.g,nx:o.nx||"",lan:o.lan||1});Object.assign(o,x,{lan})}}
+   else if(o.st=="bo"&&x.st!="bo")Object.assign(o,x)});
+  if(lan)rec.lan=lan;
+  rec.so={ok:rec.sod.filter(v=>v===true).length,n:rec.sod.filter(v=>v!=null).length,all:L.so.length};rec.parts.push(lan?{sid,at:now,sent:false,lan}:{sid,at:now,sent:false});rec.seen=true}
  else rec={sid,at:now,lv,olv:olLv,b,ten:chTen(),so:{ok:sod.filter(v=>v===true).length,n:sod.filter(v=>v!=null).length,all:L.so.length},sod,it,parts:[{sid,at:now,sent:false}],seen:true};
  chPut(chSK(lv,b),rec);chApply(rec);h4Clear(false);rr();chUp(rec)}
 window.h4cCont=function(){const rec=chFix(chRec());if(!rec)return;h4Clear(false);H.cont=true;
  rec.it.forEach(x=>{if(x.st=="bo")return;const k=+x.k.slice(1);H.tr[k]=x.v;H.trS[k]="sub"});rr()};
 window.h4cPrac=function(){h4Clear(true);rr()};
+/* làm lại câu cô chấm ½ / ✗ (lần 2, 3…) đến khi đạt */
+window.h4cRedo=function(){const rec=chFix(chRec());if(!rec)return;chRedoInit(rec);h4Clear(false);H.cont=true;H.redo=rec.lan+1;
+ rec.it.forEach(x=>{if(x.st=="bo")return;const k=+x.k.slice(1);H.tr[k]=x.v;if(chOkIt(x))H.trS[k]="sub";else H.trOld[k]={v:x.v,key:x.key,g:x.g,nx:x.nx||""}});
+ if(!Object.keys(H.trOld).length){h4Clear(false);rr();return ask("Các câu dịch em đã đúng hết. Phần chưa đạt là Sắp xếp câu (Dạng A), máy tính theo lần làm đầu nên cô sẽ chữa cùng em trên lớp.",null,1)}
+ rr();scrollTo(0,0)};
 
 /* ---------- giao diện ---------- */
 function h4Item(it,k){const st=H.trS[k],v=H.tr[k]||"",lock=st&&st!="hint";
  const refH=`<div class="ans"><b>Đáp án tham khảo:</b><div class="zh">${it.r[0]} ${bS(it.r[0])}</div><div class="py" style="display:block">${it.r[1]}</div></div>`;
  let fb="",btn="";
- if(st=="sub")return `<div class="card q chsub"><b>Câu ${k+1}.</b> ${it.vi}<textarea class="tin h4ta" rows="2" disabled>${esc(v)}</textarea><div class="chwt">📤 Câu này em đã nộp lần trước.</div></div>`;
+ if(st=="sub")return `<div class="card q chsub"><b>Câu ${k+1}.</b> ${it.vi}<textarea class="tin h4ta" rows="2" disabled>${esc(v)}</textarea><div class="chwt">${H.redo?"✓ Câu này em đã đúng từ lần trước.":"📤 Câu này em đã nộp lần trước."}</div></div>`;
  if(st=="ok"){fb=`<div class="okt">✓ Đúng rồi!${H.trS["lc"+k]?" (Cô đã chấp nhận cách viết này.)":" Khớp với đáp án."}</div>`+refH;btn=`<button class="btn o sm" onclick="h4cEdit(${k})">${h4On()?"✎ Sửa":"↻ Làm lại"}</button>`}
  else if(st=="hint"){fb=`<div class="chhint"><b>🔎 Máy soát giúp em:</b><ul>${H.trH[k].map(x=>`<li>${x}</li>`).join("")}</ul><small>Đây chỉ là gợi ý. Em sửa rồi bấm Kiểm tra lại, hoặc giữ nguyên và gửi cô chấm.</small></div>`;
   btn=`<button class="btn sm" onclick="h4TrCk(${k})">Kiểm tra lại</button><button class="btn o sm" onclick="h4cSend(${k})">${h4On()?"Giữ nguyên, gửi cô chấm":"Giữ nguyên"}</button>`}
@@ -65,19 +76,20 @@ function h4Item(it,k){const st=H.trS[k],v=H.tr[k]||"",lock=st&&st!="hint";
    +(gui&&!H.trSa[k]?`<div class="row"><button class="btn o sm" onclick="H.trSa[${k}]=1;rr()">👁 Xem đáp án tham khảo</button><small class="ctx">Nên nộp cho cô chấm trước rồi hãy xem.</small></div>`:refH);
   btn=`<button class="btn o sm" onclick="h4cEdit(${k})">↻ Làm lại</button>`}
  else btn=`<button class="btn sm" onclick="h4TrCk(${k})">Kiểm tra</button>`;
- return `<div class="card q ${st=="ok"?"ok":""}"><b>Câu ${k+1}.</b> ${it.vi}<div class="ctx">Gợi ý cấu trúc: <span class="zh">${it.g}</span></div>
+ return `<div class="card q ${st=="ok"?"ok":""}"><b>Câu ${k+1}.</b> ${it.vi}<div class="ctx">Gợi ý cấu trúc: <span class="zh">${it.g}</span></div>${st!="ok"&&H.trOld?chOldBox(H.trOld[k]):""}
 <textarea class="tin h4ta" rows="2" id="h4tr-${k}" oninput="H.tr[${k}]=this.value" ${lock?"disabled":""} placeholder="Viết câu tiếng Trung…">${esc(v)}</textarea>${fb}<div class="row">${btn}</div></div>`}
 
-function h4Done(rec){let o=chDone(rec).replace(/onclick="chCont\(\)"/g,'onclick="h4cCont()"');
- const i=o.lastIndexOf(`<div class="row c"><button class="btn o" onclick="GX=null;gxInit()`);if(i>0)o=o.slice(0,i);
- return o+`<div class="row c"><button class="btn o" onclick="h4cPrac()">↻ Luyện lại (không tính điểm, không gửi cô)</button></div>`+h4Next("gp")}
+function h4Done(rec){let o=chDone(rec).replace(/onclick="chCont\(\)"/g,'onclick="h4cCont()"').replace(/onclick="chRedo\(\)"/g,'onclick="h4cRedo()"');
+ const i=o.lastIndexOf(`<div class="row c">`);if(i>0)o=o.slice(0,i);
+ return o+(chDone.pass?`<div class="row c"><button class="btn o" onclick="h4cPrac()">↻ Luyện lại (không tính điểm, không gửi cô)</button></div>`:"")+h4Next("gp")}
 
 h4Gp=function(L,r){h4St();const rec=chRec();
  if(rec&&chMe()&&!H.prac&&!H.cont){H4W=false;const o=_h4Gp(L,r),a=o.indexOf(`<div class="card note"><b>Dạng A`);return (a>0?o.slice(0,a):"")+h4Done(rec)}
  if(H4W&&chMe()){H4W=false;setTimeout(h4Nop,300)}
  const o=_h4Gp(L,r),a=o.indexOf(`<div class="card note"><b>Dạng A`),bI=o.indexOf(`<div class="card note"><b>Dạng B`);
  let h=a>0?o.slice(0,a):"";
- if(H.cont)h+=`<div class="card note">➕ Em đang <b>làm tiếp phần chưa làm</b>. Câu đã nộp được khóa lại. Làm xong bấm <b>Nộp tiếp</b> ở cuối. <button class="btn o sm" onclick="H.cont=false;rr()">← Xem bài đã nộp</button></div>`;
+ if(H.cont)h+=H.redo?`<div class="card note chredo">🔁 Em đang <b>làm lần ${H.redo}</b>: chỉ làm lại các câu dịch cô chấm ½ / ✗. Câu đúng đã khóa lại. Đọc kỹ nhận xét của cô, sửa xong bấm <b>📤 Nộp lần ${H.redo} cho cô</b> ở cuối. <button class="btn o sm" onclick="h4Clear0()">← Xem bài đã nộp</button></div>`
+  :`<div class="card note">➕ Em đang <b>làm tiếp phần chưa làm</b>. Câu đã nộp được khóa lại. Làm xong bấm <b>Nộp tiếp</b> ở cuối. <button class="btn o sm" onclick="H.cont=false;rr()">← Xem bài đã nộp</button></div>`;
  else if(H.prac)h+=`<div class="card note">↻ Em đang <b>luyện lại</b>, không tính điểm, không gửi cô.${rec&&chMe()?` <button class="btn o sm" onclick="h4Clear0()">← Xem bài đã nộp</button>`:""}</div>`;
  else if(!chMe()&&h4Srv())h+=`<div class="card trkban"><span>🔑 Học viên lớp cô Thảo nhập <b>mã học viên</b> để nộp bài, cô chấm câu dịch cho em.</span><button class="btn sm" onclick="trkOpen()">Nhập mã</button></div>`;
  else if(chMe())h+=`<div class="card note">📤 Làm xong dạng A và B thì bấm <b>Nộp bài cho cô</b> ở cuối. Câu máy chưa chấm được cô sẽ chấm.</div>`;
@@ -85,7 +97,7 @@ h4Gp=function(L,r){h4St();const rec=chRec();
  h+=`<div class="card note"><b>Dạng B · Dịch câu Việt → Trung</b><br>Viết bằng <b>chữ Hán</b> (hoặc pinyin không dấu). Câu trùng đáp án máy chấm luôn; câu viết khác, máy soát lỗi gợi ý rồi gửi cô chấm (một câu có thể có nhiều cách dịch đúng).</div>`;
  h+=L.tr.map((it,k)=>h4Item(it,k)).join("");
  const sod=h4Sod(),all=L.so.length+L.tr.length,dn=sod.filter(v=>v!=null).length+L.tr.filter((_,k)=>h4Has(k)).length;
- const card=lb=>`<div class="card res chnop"><p>Đã làm <b>${dn}/${all}</b> câu.${lb}</p><div class="row c"><button class="btn" onclick="h4Nop()" ${h4Ready()?"":"disabled"}>📤 ${H.cont?"Nộp tiếp cho cô":"Nộp bài cho cô"}</button></div>`;
+ const card=lb=>`<div class="card res chnop"><p>Đã làm <b>${dn}/${all}</b> câu.${lb}</p><div class="row c"><button class="btn" onclick="h4Nop()" ${h4Ready()?"":"disabled"}>📤 ${H.redo?`Nộp lần ${H.redo} cho cô`:H.cont?"Nộp tiếp cho cô":"Nộp bài cho cô"}</button></div>`;
  if(h4On())h+=card(dn<all?" Hết giờ thì em vẫn nộp được, phần chưa làm không tính điểm.":"")+`</div>`;
  else{if(!H.prac&&h4Srv())h+=card(" Máy chỉ chấm được câu trùng đáp án; câu em viết khác, <b>cô sẽ chấm</b> khi em nộp bài.")+`<small class="ctx">Cần <b>mã học viên</b> cô Thảo đã gửi. Bấm nộp, nhập mã, bài em làm vẫn giữ nguyên.</small></div>`;
   const ok=sod.filter(v=>v===true).length+L.tr.filter((_,k)=>H.trS[k]=="ok").length,dd=sod.filter(v=>v!=null).length+L.tr.filter((_,k)=>H.trS[k]=="ok"||H.trS[k]=="ref").length;

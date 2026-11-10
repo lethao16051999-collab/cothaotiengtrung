@@ -56,7 +56,9 @@ function bcStu(h,W,les,cls,ses){const D=GV.data,inW=t=>t>=W.s&&t<W.e;
  if(les){const r=D.tt.find(x=>x.code==h.code&&x.lv==les.lv&&x.b==les.b),P=bcParts(les.lv,les.b)||Object.keys(PNM).filter(k=>k!="test"&&r&&r[k]!=null).map(k=>[k,PNM[k]]);
   const done=P.filter(p=>r&&r[p[0]]!=null);R.avg=r&&r.avg!=null?Math.round(r.avg):null;
   R.miss=P.filter(p=>!r||r[p[0]]==null).map(p=>p[1]);R.low=done.filter(p=>r[p[0]]<80).map(p=>p[1]+" "+Math.round(r[p[0]])+"%");
-  R.st=!done.length?"no":R.miss.length||R.low.length?"low":"ok"}
+  R.st=!done.length?"no":R.miss.length||R.low.length?"low":"ok";
+  /* kết quả Ngữ pháp cô chấm (lần mới nhất, kèm điểm lần 1 và số lần làm lại) · thêm 10/11/2026 */
+  const ge=D.tc.filter(x=>x.code==h.code&&x.t=="Kết quả Ngữ pháp"&&x.lv==les.lv&&x.b==les.b).sort((a,b)=>b.at-a.at)[0];if(ge)R.gpev=ge.s}
  else R.st=days>=3?"ok":days>=1?"low":"no";
  if(R.st=="no"&&!days&&!h.last)R.never=1;
  return R}
@@ -69,7 +71,8 @@ function bcMsg(h,R,W,cls){const ph=(BCS.to[cls]||"ph")=="ph",ng=ph?"con":"em",L=
  if(R.les){const t=bcTitle(R.les);
   if(R.st=="ok")L.push(`• Bài về nhà ${t}: ✅ ${ng} đã hoàn thành`+(R.avg!=null?`, điểm trung bình ${R.avg}%`:"")+".");
   else if(R.st=="low"){let s=`• Bài về nhà ${t}: 🟠 ${ng} mới làm một phần`;const x=[];if(R.miss.length)x.push("còn thiếu "+R.miss.join(", "));if(R.low.length)x.push("chưa đạt 80%: "+R.low.join(", "));L.push(s+(x.length?" — "+x.join("; "):"")+".")}
-  else L.push(`• Bài về nhà ${t}: ❌ ${ng} chưa làm.`)}
+  else L.push(`• Bài về nhà ${t}: ❌ ${ng} chưa làm.`);
+  if(R.gpev)L.push(`• Ngữ pháp (cô chấm): ${R.gpev}.`)}
  L.push(R.days?`• Ôn bài trên web: ${R.days} ngày${R.min?`, khoảng ${R.min} phút`:""}.`:R.never?`• ${ph?"Con":"Em"} chưa đăng nhập web ôn bài bằng mã học viên lần nào.`:`• Tuần này ${ng} chưa vào web ôn bài.`);
  if(R.tests.length)L.push(`• Bài test: `+R.tests.map(t=>`${gvLv(t.lv)} Bài ${t.b} được ${t.s}`).join("; ")+".");
  if(R.weakSec.length)L.push(`• Phần ${ng} hay sai: ${R.weakSec.join(", ")} — cô sẽ chữa lại trên lớp.`);
