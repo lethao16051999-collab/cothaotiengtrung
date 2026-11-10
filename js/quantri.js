@@ -10,7 +10,7 @@
    Nạp SAU js/theodoi.js, cham.js, nhom.js, baocao.js. ===== */
 const QT_TH=["CN","T2","T3","T4","T5","T6","T7"],QT_KT=["Nghe","Nói","Đọc","Đọc chữ Hán","Tương tác"],QT_LV=["Tốt","Khá","Đạt","Cần cố gắng"];
 const QT_TS_ST=["Mới hỏi","Đã tư vấn","Học thử","Đã đăng ký","Không học"],QT_TS_NG=["Facebook","TikTok","YouTube","Zalo","Người quen giới thiệu","Học viên cũ","Khác"];
-const QT_K={hoc:"Học bài",on:"Ôn tập",kt:"Kiểm tra"},QT_L6=[1,2,3,9,10,11,12,13,14,15],QT_L7=[1,2],QT_T7=["開學了","八折起"]; /* QT_L7 = các bài đã có trên trang tocfl-b1/ (cấp 7), thêm bài mới thì thêm số và tên vào đây */
+const QT_K={hoc:"Học bài",on:"Ôn tập",kt:"Kiểm tra"},QT_L6=[1,2,3,9,10,11,12,13,14,15],QT_L7=[1,2,3],QT_T7=["開學了","八折起","外套帶了沒有？"]; /* QT_L7 = các bài đã có trên trang tocfl-b1/ (cấp 7), thêm bài mới thì thêm số và tên vào đây */
 const qtWebReq=w=>+String(w).split("-")[0]==7?"làm Luyện đọc, Từ vựng và đề TOCFL, đạt từ 80%.":"làm đủ các phần, bao gồm cả test nhanh đạt từ 80%.";
 /* lộ trình cô gửi 01/11/2026 (chỉ dùng khi máy chủ / máy này chưa có lộ trình của lớp đó) */
 const QT_SEED={
