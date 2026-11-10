@@ -45,9 +45,9 @@ function reading(n,i,ok,total){const a=RQ[n]=RQ[n]||{};if(i in a)return;a[i]=ok;
  const pct=Math.round(Object.values(a).filter(Boolean).length/total*100);save(n,r=>{r.rd=Math.max(r.rd||0,pct)});delete RQ[n]}
 function fill(n,gi,ok,tot,groups){const a=FL[n]=FL[n]||{};a[gi]=[ok,tot];if(Object.keys(a).length<groups)return;
  const v=Object.values(a),pct=Math.round(v.reduce((s,x)=>s+x[0],0)/v.reduce((s,x)=>s+x[1],0)*100);save(n,r=>{r.fc=Math.max(r.fc||0,pct)})}
-function exam(n,o){const that=o.mode==="that",pct=o.pct;
+function exam(n,o){const that=o.mode==="that"||o.mode==="lai",pct=o.pct;
  save(n,r=>{if(that){r.test=Math.max(r.test||0,pct);r.nghe=Math.max(r.nghe||0,o.L);r.doc=Math.max(r.doc||0,o.R)}else r.ltap=Math.max(r.ltap||0,pct)});
- const e={t:"Nộp test",lv:LV,b:n,s:`${o.score}/50 (Nghe ${o.L}/25 · Đọc ${o.R}/25) · ${that?"Thi thật":"Luyện tập"}`};
+ const e={t:"Nộp test",lv:LV,b:n,s:`${o.score}/50 (Nghe ${o.L}/25 · Đọc ${o.R}/25) · ${o.mode==="lai"?`Làm lại câu sai (lần ${o.lan})`:that?"Thi thật":"Luyện tập"}${o.lan>1&&o.s1!=null?` · lần 1: ${o.s1}/50`:""}${o.lan>1?(o.pct>=80?" · Đạt":" · Chưa đạt"):""}`};
  if(inn()){ev(e);o.wrong.forEach(w=>err(n,w[0],w[1],w[2],w[3]));flush()}else HOLD=[e,n,o.wrong]}
 
 /* ---------- hiển thị ---------- */
@@ -113,5 +113,5 @@ addEventListener("pagehide",()=>{tick();flush(true)});
 const st=document.createElement("style");st.textContent=`.ttbar{margin-top:.6rem;padding:.5rem .7rem;border-radius:.6rem;background:var(--c2);font-size:.9rem}.ttbar a{cursor:pointer;text-decoration:underline}.ttwho{display:block;color:var(--mut);font-size:.82rem}.ttok{color:var(--ok)}.ttno{color:var(--bad)}.ttchip{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:0 .5rem;background:var(--badb);color:var(--bad)}.ttchip.ok{background:var(--okb);color:var(--ok)}`;document.head.appendChild(st);
 badge();setName();
 if(inn()){const d=new Date().toDateString();if(J("ct_trk_day","")!==d){put("ct_trk_day",d);ev({t:"Vào trang"})}adopt();soon(2000)}
-return{reading,fill,exam,bar,chip,note,open,paint};
+return{reading,fill,exam,bar,chip,note,open,paint,me:()=>ME,api:()=>API,post,ev,err,save,flush,key};
 })();
