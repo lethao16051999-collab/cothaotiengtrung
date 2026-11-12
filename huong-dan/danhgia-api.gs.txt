@@ -1,0 +1,84 @@
+/* ===== Đánh giá giữa khóa / cuối khóa · thêm 12/11/2026 =====
+   Chép kết quả tab 🎓 Đánh giá (⚙ Quản trị trên web) thành trang tính "Đánh giá khóa": mỗi học viên × mỗi đợt một dòng.
+   (Dữ liệu gốc vẫn lưu ở trang "Quản trị (dữ liệu)" như lộ trình; trang này để cô xem, lọc, in.)
+   CẦN CÀI TRƯỚC: đoạn quantri-api.gs.txt (dùng chung mật khẩu ô B1 trang "Cài đặt").
+   CÁCH CÀI (làm một lần):
+   1. Google Sheets "Sổ theo dõi học viên" › Tiện ích mở rộng › Apps Script.
+   2. Dán toàn bộ đoạn này vào CUỐI file Code.gs (Mã.gs).
+   3. Trong hàm doPost(e), thêm dòng sau ngay dưới dòng  var _qt = quantriApi_(e); if (_qt) return _qt;
+         var _dg = danhgiaApi_(e); if (_dg) return _dg;
+   4. Lưu › Triển khai › Quản lý tác vụ triển khai › ✏ › Phiên bản: Phiên bản mới › Triển khai (địa chỉ giữ nguyên).
+   5. Trên web: ⚙ Quản trị › 🎓 Đánh giá › bấm "↻ Chép lại toàn bộ". Dòng xanh "Đã chép sang trang tính Đánh giá khóa" là xong.
+   Cô KHÔNG sửa tay các cột trên trang này (lần sau web chép đè). Muốn sửa điểm thì sửa trên web.
+   Cô được thêm cột ở BÊN PHẢI cột "Khóa" (ghi chú riêng), web không đụng tới. */
+var DG_SH = "Đánh giá khóa";
+var DG_HD = ["Lớp", "Đợt", "Ngày ĐG", "Mã HV", "Họ tên", "Nghe", "Đọc", "Viết", "Tổng hợp (%)",
+  "Phát âm", "Lưu loát", "Từ vựng – NP", "Phản xạ", "Khẩu ngữ (%)", "Chuyên cần", "Bài về nhà web",
+  "Thái độ", "Kết quả", "Điểm mạnh", "Cần cải thiện", "Khóa tiếp theo", "Nhận xét", "Đã gửi phiếu", "Cập nhật", "Khóa"];
+
+function danhgiaApi_(e) {
+  var b;
+  try { b = JSON.parse(e.postData.contents); } catch (x) { return null; }
+  if (!b || b.a !== "dgsheet") return null;
+  var out;
+  try {
+    if (!dgPass_(b.pass)) out = { ok: false, err: "pass" };
+    else {
+      var l = LockService.getScriptLock(); l.waitLock(20000);
+      try { out = dgWrite_(b.rows || [], b.dels || []); } finally { l.releaseLock(); }
+    }
+  } catch (x) { out = { ok: false, err: "loi", msg: String(x) }; }
+  out.dg = 1;
+  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}
+function dgPass_(p) {
+  var sh = SpreadsheetApp.getActive().getSheetByName("Cài đặt");
+  var v = sh ? String(sh.getRange("B1").getValue()).trim() : "";
+  return !!v && String(p || "").trim() === v;
+}
+function dgSheet_() {
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(DG_SH), n = DG_HD.length;
+  if (!sh) {
+    sh = ss.insertSheet(DG_SH);
+    sh.getRange(1, 1, 1, n).setValues([DG_HD]).setFontWeight("bold").setBackground("#5c1730").setFontColor("#ffffff").setWrap(true);
+    sh.setFrozenRows(1); sh.setFrozenColumns(5);
+    sh.getRange(1, 1, 1000, n).setNumberFormat("@");
+    sh.setColumnWidth(5, 170);
+    [19, 20, 22].forEach(function (c) { sh.setColumnWidth(c, 260); });
+    sh.hideColumns(n);
+  }
+  return sh;
+}
+/* rows: [{key, v:[...23 ô]}] — ghi đè dòng cùng khóa, thêm dòng mới; dels: ["lớp|loại|ngày|"] xóa các dòng của đợt đã xóa */
+function dgWrite_(rows, dels) {
+  var sh = dgSheet_(), n = DG_HD.length, last = sh.getLastRow();
+  var keys = last > 1 ? sh.getRange(2, n, last - 1, 1).getValues().map(function (r) { return String(r[0]); }) : [];
+  var now = Utilities.formatDate(new Date(), "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm"), add = [], saved = 0, removed = 0;
+  rows.forEach(function (it) {
+    if (!it || !it.key || !it.v) return;
+    var v = it.v.slice(0, n - 2).map(function (x) { return String(x == null ? "" : x).slice(0, 2000); });
+    while (v.length < n - 2) v.push("");
+    v.push(now); v.push(String(it.key));
+    var i = keys.indexOf(String(it.key));
+    if (i >= 0) sh.getRange(i + 2, 1, 1, n).setValues([v]);
+    else { add.push(v); keys.push(String(it.key)); }
+    saved++;
+  });
+  if (add.length) sh.getRange(sh.getLastRow() + 1, 1, add.length, n).setValues(add);
+  if (dels.length) {
+    for (var i = keys.length - 1; i >= 0; i--) {
+      for (var j = 0; j < dels.length; j++) if (dels[j] && keys[i].indexOf(dels[j]) === 0) { sh.deleteRow(i + 2); removed++; break; }
+    }
+  }
+  if (saved) {
+    var m = sh.getLastRow();
+    if (m > 2) sh.getRange(2, 1, m - 1, n).sort([{ column: 1, ascending: true }, { column: 3, ascending: true }, { column: 5, ascending: true }]);
+    if (m > 1) {
+      var kq = sh.getRange(2, 18, m - 1, 1), vals = kq.getValues(), bg = vals.map(function (r) {
+        return [r[0] === "ĐẠT" ? "#e3f1e8" : r[0] === "CHƯA ĐẠT" ? "#f8e1e4" : null];
+      });
+      kq.setBackgrounds(bg).setFontWeight("bold");
+    }
+  }
+  return { ok: true, saved: saved, removed: removed };
+}
