@@ -293,3 +293,13 @@ button:focus-visible,.opt:focus-visible,input:focus-visible,textarea:focus-visib
 .df-mis,.df-g{color:#2e7d4f;font-weight:800;background:#dff1e6;border-radius:4px;padding:0 2px}
 
 .dt input:disabled,.tin:disabled{color:var(--t);-webkit-text-fill-color:var(--t);opacity:1}
+
+/* Hướng dẫn gõ phiên âm + nút dấu thanh (12/11/2026) */
+.pyguide{border:2px solid var(--g);border-radius:14px;padding:12px 14px;margin:12px 0;background:var(--c2,var(--c))}
+.pyguide p{margin:6px 0}.pyt{border-collapse:collapse;margin:6px 0;min-width:260px}.pyt th,.pyt td{border:1px solid var(--b);padding:5px 12px;text-align:center}
+.pyt td:nth-child(2){font-size:1.25rem;font-weight:700;color:var(--m)}.pyguide code{background:var(--apri,#f3e2b0);padding:1px 6px;border-radius:6px;font-size:1rem}
+.pyl{margin:6px 0;padding-left:20px}.pyl li{margin:3px 0}.pytrow{margin-top:8px}.pytrow .tin{max-width:240px}#pytryr{margin-top:4px;min-height:1.4em}
+.pybar{display:flex;gap:4px;justify-content:center;margin-top:6px;flex-wrap:wrap}
+.pybar button{min-width:34px;height:34px;border:1px solid var(--b);border-radius:8px;background:var(--k);color:var(--t);font-size:1.1rem;font-weight:700;cursor:pointer;touch-action:manipulation}
+.pybar button:active{background:var(--g);color:#2b1a20}
+.tvi .pybar{flex-wrap:nowrap;gap:3px}.tvi .pybar button{flex:1;min-width:0;padding:0;font-size:1rem}

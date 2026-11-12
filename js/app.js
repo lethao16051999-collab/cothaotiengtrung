@@ -359,6 +359,35 @@ const pyClean=x=>String(x||"").replace(/\s*[(（][^)）]*[)）]/g,"").trim();
 function pyScore(want,inp,hz){want=pyClean(want);if(/儿/.test(hz||"")&&!/er/.test(pyParse(want).base))inp=String(inp||"").normalize("NFD").replace(/e[\u0300-\u0304]?r[0-5]?(?![a-z])/gi,"r");const g=pyParse(inp);if(!g.base)return 0;let best=0;
  const alts=new Set([want]);if(/一/.test(hz||""))["yī","yí","yì"].forEach(t=>alts.add(want.replace(/y[īíìǐ]/,t)));if(/不/.test(hz||""))["bù","bú"].forEach(t=>alts.add(want.replace(/b[úù]/,t)));
  alts.forEach(a=>{const w=pyParse(a);if(g.base===w.base)best=Math.max(best,g.tn===w.tn?2:1)});return best}
+/* Gõ phiên âm: số thanh tự đổi thành dấu (lao3shi1 → lǎoshī), v → ü; hàng nút ā á ǎ à ü dưới ô đang gõ. */
+const TMK={a:"āáǎà",e:"ēéěè",i:"īíǐì",o:"ōóǒò",u:"ūúǔù","ü":"ǖǘǚǜ"};
+function pySyl(s,t){s=s.replace(/u:|v/g,"ü").replace(/U:|V/g,"Ü");t=+t;if(!(t>=1&&t<=4))return s;const lo=s.toLowerCase();
+ let i=lo.indexOf("a");if(i<0)i=lo.indexOf("e");if(i<0)i=lo.indexOf("ou");if(i<0)for(let k=lo.length-1;k>=0;k--)if("iouü".includes(lo[k])){i=k;break}
+ if(i<0)return s;const m=TMK[lo[i]][t-1];return s.slice(0,i)+(s[i]!==lo[i]?m.toUpperCase():m)+s.slice(i+1)}
+const pyMark=x=>String(x).replace(/([a-zA-ZüÜ:]+)([0-5])/g,(_,a,t)=>pySyl(a,t));
+function pyLive(el){if(!/[0-5]/.test(el.value))return;const p=el.selectionStart==null?el.value.length:el.selectionStart,b=pyMark(el.value.slice(0,p));el.value=b+pyMark(el.value.slice(p));try{el.setSelectionRange(b.length,b.length)}catch(e){}}
+function pyBar(el){let b=$("pybar");if(!b){b=document.createElement("div");b.id="pybar";b.className="pybar";
+  b.innerHTML=[["1","ā","Thanh 1"],["2","á","Thanh 2"],["3","ǎ","Thanh 3"],["4","à","Thanh 4"],["ü","ü","Chữ ü"]].map(([k,l,t])=>`<button type="button" data-k="${k}" title="${t}" aria-label="${t}">${l}</button>`).join("");
+  b.addEventListener("pointerdown",e=>e.preventDefault());b.addEventListener("mousedown",e=>e.preventDefault());
+  b.addEventListener("click",e=>{const t=e.target.closest("button"),inp=b.previousElementSibling;if(!t||!inp||inp.disabled)return;
+   const p=inp.selectionStart==null?inp.value.length:inp.selectionStart,q=inp.selectionEnd==null?p:inp.selectionEnd;
+   inp.value=inp.value.slice(0,p)+t.dataset.k+inp.value.slice(q);try{inp.setSelectionRange(p+1,p+1)}catch(x){}
+   inp.dispatchEvent(new Event("input",{bubbles:true}));inp.focus()})}
+ if(b.previousElementSibling!==el)el.after(b)}
+document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.matches&&t.matches(".tvin,.pytry")&&!t.disabled)pyBar(t)});
+function pyTry(el){pyLive(el);const r=$("pytryr"),v=el.value.trim();if(!r)return;if(!v){r.innerHTML="";return}
+ const sc=pyScore("nǐ hǎo",v,"你好");r.innerHTML=sc==2?`<span class="okt">✓ Đúng rồi: ${esc(v)}. Em gõ như vậy khi làm bài.</span>`:sc==1?`<span class="half">½ Đúng âm, sai thanh. 你好 là thanh 3 + thanh 3: ni3hao3</span>`:`<span class="bad">Chưa đúng, em gõ thử: ni3hao3</span>`}
+const PYGUIDE=`<div class="pyguide"><b>⌨️ Cách gõ phiên âm (em đọc trước khi làm)</b>
+<p>Gõ chữ cái, rồi gõ <b>số thanh ngay sau mỗi âm tiết</b>. Máy tự đổi số thành dấu. Trên điện thoại có thể bấm nút <b>ā á ǎ à ü</b> hiện ngay dưới ô đang gõ.</p>
+<table class="pyt"><tr><th>Thanh</th><th>Phiên âm</th><th>Em gõ</th></tr>
+<tr><td>Thanh 1</td><td>mā</td><td><code>ma1</code></td></tr><tr><td>Thanh 2</td><td>má</td><td><code>ma2</code></td></tr>
+<tr><td>Thanh 3</td><td>mǎ</td><td><code>ma3</code></td></tr><tr><td>Thanh 4</td><td>mà</td><td><code>ma4</code></td></tr>
+<tr><td>Thanh nhẹ</td><td>ma</td><td><code>ma</code> (không số)</td></tr></table>
+<ul class="pyl"><li>Từ 2 chữ: số đặt sau <b>từng</b> âm tiết: 老师 lǎoshī → <code>lao3shi1</code>; 谢谢 xièxie → <code>xie4xie</code></li>
+<li>Chữ <b>ü</b> gõ bằng <b>v</b>: 女 nǚ → <code>nv3</code>; 绿 lǜ → <code>lv4</code></li>
+<li>Từ có 儿: 一会儿 yíhuìr → <code>yi2hui4r</code></li>
+<li>Không cần dấu cách, chữ hoa hay thường đều được. Gõ thẳng có dấu (lǎoshī) cũng được.</li></ul>
+<div class="pytrow"><label>Gõ thử: <b class="zh">你好</b></label><input class="tin pytry" placeholder="ví dụ: ni3hao3" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" oninput="pyTry(this)"><div id="pytryr"></div></div></div>`;
 const tVPick=L=>{const seen=new Set(),ok=[];L.words.forEach((w,i)=>{if(seen.has(w[0]))return;seen.add(w[0]);ok.push(i)});return ok};
 const nfmt=x=>String(Math.round(x*10)/10).replace(".",",");
 function openTest(n){tStop();tcur=n;T=null;rr();scrollTo(0,0)}
@@ -369,7 +398,7 @@ function testView(){const L=LD[tcur];
 function tIntro(L){let nm="";try{nm=localStorage.getItem("ct_name")||""}catch(e){}
  const hv=tHasV(L),nv=hv?tVPick(L).length:0;
  return `<div class="card"><b>Bài kiểm tra Bài ${tcur} · ${tMin(L)} phút</b>
-<p>${hv?`<b>Phần Chữ Hán (làm trước, thang 10):</b> nhìn chữ Hán, gõ phiên âm cả ${nv} từ mới của bài; xong phần này mới làm các phần sau.<br><b>Phần Nghe – nói – cấu trúc câu (thang 10):</b><br>`:""}Phần 1A: ${L.tsort.length} câu sắp xếp thành câu đúng.<br>Phần 1B: ${L.tlis.length} câu nghe và chọn cách đáp lại / hiểu ý (mỗi câu nghe tối đa 2 lượt).<br>Phần 2: nói 5 lượt lấy ngẫu nhiên từ phần Luyện nói, <b>không có gợi ý</b>, mỗi lượt được nói <b>tối đa 2 lần</b>.<br>Mỗi phần đạt từ 8/10. Hết giờ bài tự nộp.</p>
+<p>${hv?`<b>Phần Chữ Hán (làm trước, thang 10):</b> nhìn chữ Hán, gõ phiên âm cả ${nv} từ mới của bài; xong phần này mới làm các phần sau.<br><b>Phần Nghe – nói – cấu trúc câu (thang 10):</b><br>`:""}Phần 1A: ${L.tsort.length} câu sắp xếp thành câu đúng.<br>Phần 1B: ${L.tlis.length} câu nghe và chọn cách đáp lại / hiểu ý (mỗi câu nghe tối đa 2 lượt).<br>Phần 2: nói 5 lượt lấy ngẫu nhiên từ phần Luyện nói, <b>không có gợi ý</b>, mỗi lượt được nói <b>tối đa 2 lần</b>.<br>Mỗi phần đạt từ 8/10. Hết giờ bài tự nộp.</p>${hv?PYGUIDE:""}
 <label><b>Họ và tên học sinh <span class="bad">*</span></b></label><input class="tin" id="tname" value="${esc(nm)}" placeholder="Nhập họ và tên của em" autocomplete="name" oninput="try{localStorage.setItem('ct_name',this.value)}catch(e){};$('tnerr').hidden=true"><div class="bad" id="tnerr" hidden>Em cần điền họ và tên trước khi bắt đầu.</div>
 <p><b>Em chọn cách làm bài:</b></p><div class="row"><button class="btn sm ${TPY?"":"o"}" onclick="TPY=true;rr()">Có pinyin</button><button class="btn sm ${TPY?"o":""}" onclick="TPY=false;rr()">Chỉ chữ Hán (pinyin hiện khi chấm)</button></div>
 <p class="ctx">Phần nói cần Google Chrome hoặc Microsoft Edge và cho phép dùng micro.</p><button class="btn" onclick="tStart()">▶ Bắt đầu làm bài</button></div>`}
@@ -393,9 +422,9 @@ function tPlay(k){const q=T.li[k];if(T.done||q.plays>=2)return;q.plays++;say(LD[
 function tBody(L){const d=T.done;let h="";
  if(d)h+=tResult(L);else h+=`<div class="timer" id="tm">${tClock()}</div>`;
  if(T.vw.length){const nv=T.vw.length;
-  h+=`<h3 class="ab-h">Phần Từ vựng · Nhìn chữ Hán, gõ phiên âm (${nv} điểm)</h3><p class="ctx">Gõ pinyin có dấu (<b>huí</b>) hoặc số thanh (<b>hui2</b>); <b>ü</b> gõ là <b>v</b> (lǜ = lv4). Khoảng cách, chữ hoa không quan trọng. Đúng cả âm và thanh được 1 điểm, đúng âm sai thanh được ½ điểm. Bấm Enter để sang ô sau.</p><div class="tvgrid">`;
+  h+=`<h3 class="ab-h">Phần Từ vựng · Nhìn chữ Hán, gõ phiên âm (${nv} điểm)</h3><p class="ctx">Gõ số thanh sau mỗi âm tiết: <b>ma1 ma2 ma3 ma4</b> → mā má mǎ mà, thanh nhẹ không gõ số (<b>lao3shi1</b> → lǎoshī); <b>ü</b> gõ là <b>v</b> (lv4 → lǜ). Hoặc bấm nút <b>ā á ǎ à ü</b> dưới ô. Khoảng cách, chữ hoa không quan trọng. Đúng cả âm và thanh được 1 điểm, đúng âm sai thanh được ½ điểm. Bấm Enter để sang ô sau.</p><div class="tvgrid">`;
   T.vw.forEach((wi,k)=>{const w=L.words[wi],sc=T.vsc[k];
-   h+=`<div class="tvi ${d?(sc==2?"ok":sc==1?"half":"no"):""}" id="tq-vw-${k}"><div class="zh tvh">${w[0]}</div>${d?`<div class="tvans">${T.vin[k]?esc(T.vin[k]):"<i>(bỏ trống)</i>"}</div><div class="${sc==2?"okt":sc==1?"half":"bad"}">${sc==2?"✓ Đúng":sc==1?"½ Sai thanh điệu":"✗ Sai"}</div>${sc<2?`<div class="py">${w[1]}</div>`:""}<small>${w[3]}</small>`:`<input class="tin tvin" id="tv${k}" value="${esc(T.vin[k]||"")}" ${T.vok?"disabled":""} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="pinyin" oninput="T.vin[${k}]=this.value" onkeydown="if(event.key=='Enter'&&!event.isComposing){event.preventDefault();const n=$('tv${k+1}');n?n.focus():this.blur()}">`}</div>`});
+   h+=`<div class="tvi ${d?(sc==2?"ok":sc==1?"half":"no"):""}" id="tq-vw-${k}"><div class="zh tvh">${w[0]}</div>${d?`<div class="tvans">${T.vin[k]?esc(T.vin[k]):"<i>(bỏ trống)</i>"}</div><div class="${sc==2?"okt":sc==1?"half":"bad"}">${sc==2?"✓ Đúng":sc==1?"½ Sai thanh điệu":"✗ Sai"}</div>${sc<2?`<div class="py">${w[1]}</div>`:""}<small>${w[3]}</small>`:`<input class="tin tvin" id="tv${k}" value="${esc(T.vin[k]||"")}" ${T.vok?"disabled":""} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="pinyin" oninput="pyLive(this);T.vin[${k}]=this.value" onkeydown="if(event.key=='Enter'&&!event.isComposing){event.preventDefault();const n=$('tv${k+1}');n?n.focus():this.blur()}">`}</div>`});
   h+=`</div>`;
   if(!T.vok&&!d){h+=`<div class="row c"><button class="btn" onclick="tVDone()">Xong phần từ vựng → làm tiếp</button></div>`;return h}
   if(!d)h+=`<p class="ctx" style="text-align:center">✔ Đã khóa phần từ vựng, kết quả hiện khi nộp bài.</p>`}
