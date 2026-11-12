@@ -4,7 +4,7 @@ let NAVO=false;
 const navH4=()=>olLv>=4;
 const navTabs=()=>navH4()?H4T:LTABS;
 const navCur=()=>navH4()?H.t:ltab;
-const navKey=t=>navH4()?H4K[t]:t=="bk"?"rd":(["fc","gp","dt","ns"].includes(t)?t:null);
+const navKey=t=>navH4()?H4K[t]:t=="bk"?"rd":t=="tn"?"test":(["fc","gp","dt","ns"].includes(t)?t:null);
 const navLvName=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
 function navAvg(r){const ks=navH4()?["fc","gp","dt","ns","vt"]:["rd","fc","gp","dt","ns"],v=ks.map(k=>r[k]).filter(x=>x!=null);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null}
 function navLessons(){const D=LDS[olLv]||{};return Object.keys(D).map(Number).filter(n=>D[n]).sort((a,b)=>a-b)}

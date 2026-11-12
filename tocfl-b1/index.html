@@ -411,7 +411,7 @@ function setLesson(n){N=+n;C=D.L[N];W=C.words;}
 const BK=s=>'bai-'+N+(s?'-'+s:'');
 const CN='零一二三四五六七八九十';
 const lessonZh=n=>'第'+(n<=10?CN[n]:'十'+CN[n-10])+'課';
-const TABS=[['bai-khoa','① Bài khóa · Luyện đọc'],['tu-vung','② Từ vựng'],['ngu-phap','③ Ngữ pháp'],['luyen-de','④ Luyện đề TOCFL']];
+const TABS=[['bai-khoa','① Bài khóa · Luyện đọc'],['tu-vung','② Từ vựng'],['ngu-phap','③ Ngữ pháp'],['luyen-de','④ Test nhanh · Luyện đề TOCFL'],['tien-do','⑤ Xem tiến độ hiện tại']];
 
 function route(){
   stopAll();closeShow(true);
@@ -420,7 +420,7 @@ function route(){
   const ok=n=>D.L[n]?(setLesson(n),true):false;
   if((m=h.match(/^bai-(\d+)-tu-vung-w(\d+)$/))&&ok(m[1])){lesson('tu-vung','hoc');openShow(Math.min(W.length-1,Math.max(0,+m[2]-1)));return}
   if((m=h.match(/^bai-(\d+)-tu-vung-luyen$/))&&ok(m[1])){lesson('tu-vung','luyen')}
-  else if((m=h.match(/^bai-(\d+)(?:-(tu-vung|ngu-phap|luyen-de))?$/))&&ok(m[1]))lesson(m[2]||'bai-khoa');
+  else if((m=h.match(/^bai-(\d+)(?:-(tu-vung|ngu-phap|luyen-de|tien-do))?$/))&&ok(m[1]))lesson(m[2]||'bai-khoa');
   else home();
   window.scrollTo(0,0);
 }
@@ -432,7 +432,7 @@ function home(){
   <section class="card hero">
     <span class="pill">TOCFL Band B · 進階級 (B1)</span>
     <h1>Luyện thi TOCFL B1 theo giáo trình <span class="zh">當代中文課程 3</span></h1>
-    <p>Mỗi bài gồm: Bài khóa & luyện đọc → Từ vựng (trình chiếu từng từ + luyện đục lỗ) → Ngữ pháp → Luyện đề mô phỏng TOCFL (nghe + đọc hiểu). Bài luyện đề làm như đi thi thật, <b>đạt từ 80%</b>.</p>
+    <p>Mỗi bài gồm: Bài khóa & luyện đọc → Từ vựng (trình chiếu từng từ + luyện đục lỗ) → Ngữ pháp → Test nhanh · Luyện đề mô phỏng TOCFL (nghe + đọc hiểu) → Xem tiến độ hiện tại. Bài luyện đề làm như đi thi thật, <b>đạt từ 80%</b>.</p>
     <p class="muted">Bấm <b>🎙 Giọng đọc</b> ở góc trên để chọn giọng Đài Loan nam / nữ.</p>
   </section>
   <section class="card">
@@ -467,7 +467,7 @@ function lesson(tab,sub){
   </section>
   <div class="sub">
     <div class="tabs">${TABS.map(([k,t])=>`<button data-k="${k}" class="${k===tab?'on':''}">${t}</button>`).join('')}</div>
-    <div class="tog ${tab==='luyen-de'?'hide':''}"><span>Hiển thị:</span>
+    <div class="tog ${tab==='luyen-de'||tab==='tien-do'?'hide':''}"><span>Hiển thị:</span>
       <label><input type="checkbox" id="tpy" ${st.py?'checked':''}> Pinyin</label>
       <label><input type="checkbox" id="tvi" ${st.vi?'checked':''}> Tiếng Việt</label>
     </div>
@@ -476,7 +476,28 @@ function lesson(tab,sub){
   $$('.tabs button',app).forEach(b=>b.onclick=()=>{location.hash=b.dataset.k==='bai-khoa'?BK():BK(b.dataset.k)});
   const tp=$('#tpy'),tv=$('#tvi');
   if(tp){tp.onchange=()=>{st.py=tp.checked;store.set('tb_py',st.py);applyTog()};tv.onchange=()=>{st.vi=tv.checked;store.set('tb_vi',st.vi);applyTog()};}
-  ({'bai-khoa':paneText,'tu-vung':()=>paneVocab(sub||'hoc'),'ngu-phap':paneGrammar,'luyen-de':paneExam})[tab]();
+  ({'bai-khoa':paneText,'tu-vung':()=>paneVocab(sub||'hoc'),'ngu-phap':paneGrammar,'luyen-de':paneExam,'tien-do':paneProgress})[tab]();
+}
+
+/* ---------- ⑤ XEM TIẾN ĐỘ HIỆN TẠI (12/11/2026) · đọc kết quả bài từ ct_hsk7_b{N} (track.js) ---------- */
+function paneProgress(){
+  let r={};try{r=JSON.parse(localStorage.getItem('ct_hsk7_b'+N)||'{}')||{}}catch(e){}
+  const P=[['bai-khoa','① Luyện đọc bài khóa',r.rd],['tu-vung-luyen','② Từ vựng · luyện đục lỗ',r.fc],['luyen-de','④ Test nhanh · Luyện đề TOCFL',r.test!=null?r.test:r.ltap]];
+  const done=P.filter(x=>x[2]!=null),avg=done.length?Math.round(done.reduce((a,x)=>a+x[2],0)/done.length):null;
+  const todo=P.filter(x=>x[2]==null),weak=done.filter(x=>x[2]<80);
+  const msg=todo.length?`Còn ${todo.length} phần chưa làm: ${todo.map(x=>x[1].slice(2)).join(', ')}.`:weak.length?`Cần ôn lại: <b>${weak.map(x=>x[1].slice(2)).join(', ')}</b> (dưới 80%).`:`🎉 Em đã hoàn thành Bài ${N}! Học tiếp bài sau nhé.`;
+  const go=k=>`location.hash='${k==='bai-khoa'?'bai-'+N:'bai-'+N+'-'+k}'`;
+  $('#pane').innerHTML=`<section class="card">
+    <h2>📈 Tiến độ hiện tại · Bài ${N}</h2>
+    <div class="res-big" style="margin:.6rem 0"><div class="score">${avg==null?'—':avg+'%'}</div><div><span class="badge ${avg!=null&&!todo.length&&!weak.length?'ok':'bad'}">${avg!=null&&!todo.length&&!weak.length?'ĐẠT ✔':'Chưa xong'}</span></div></div>
+    <p>${msg}</p>
+    <div class="bars">${P.map(([k,t,v],i)=>(i==2?`<div class="row"><div>③ Ngữ pháp <span class="muted">(tự xem đáp án, không chấm điểm)</span></div><b><button class="btn o s" onclick="${go('ngu-phap')}">Xem</button></b></div>`:'')+`<div class="row"><div>${t}<div class="bar"><i class="${v!=null&&v<80?'w':''}" style="width:${v||0}%"></i></div></div><b>${v==null?'chưa làm':v+'%'}</b></div>
+      ${v==null||v<80?`<div style="margin:-.2rem 0 .5rem"><button class="btn o s" onclick="${go(k)}">${v==null?'Làm ngay':'Ôn lại'} →</button></div>`:''}`).join('')}
+    </div>
+    ${r.test!=null&&(r.nghe!=null||r.doc!=null)?`<p class="muted">Đề thi thật tốt nhất: 聽力 Nghe <b>${r.nghe??'—'}/25</b> · 閱讀 Đọc <b>${r.doc??'—'}/25</b></p>`:''}
+    <div class="note ttnote" style="margin-top:.6rem">${TT.note()}</div>
+  </section>
+  ${D.L[N+1]?`<div style="text-align:center;margin:1rem 0"><a class="btn" href="#bai-${N+1}">Học tiếp Bài ${N+1} →</a></div>`:''}`;
 }
 
 function mcqHTML(list,prefix){

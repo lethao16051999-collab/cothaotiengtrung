@@ -5,12 +5,12 @@ LV[4]=LT4.length;LDS[4]=LD4;LTS[4]=LT4;
 if(typeof LD5!="undefined"){LV[5]=LT5.length;LDS[5]=LD5;LTS[5]=LT5}
 const HL=()=>LDS[olLv][cur];
 const lvN=l=>l==5?"Mở rộng H4":"HSK "+l;
-const H4T=[["tv","🌱 Khởi động · Từ vựng"],["bk","📖 Bài khóa"],["gp","📐 Ngữ pháp"],["nd","🎧 Nghe – Đọc"],["ns","🗣 Nói"],["vt","✍️ Viết"],["sum","🎯 Tổng kết"]];
+const H4T=[["tv","🌱 Khởi động · Từ vựng"],["bk","📖 Bài khóa"],["gp","📐 Ngữ pháp"],["nd","🎧 Nghe – Đọc"],["ns","🗣 Nói"],["vt","✍️ Viết"],["tn","📝 Test nhanh"],["sum","📈 Xem tiến độ hiện tại"]];
 const H4K={tv:"fc",gp:"gp",nd:"dt",ns:"ns",vt:"vt"};
 const H4N={fc:"Từ vựng (thẻ từ + cụm từ)",gp:"Ngữ pháp",dt:"Nghe – Đọc",ns:"Nói (đóng vai)",vt:"Viết"};
 /* 03/11/2026 (từ HSK4 Bài 3): bài có L.nv thì thêm phần "🧩 Nhiệm vụ" (任务活动 của sách) trước Tổng kết */
 H4K.nv="nv";H4N.nv="Nhiệm vụ (任务活动)";
-function h4Tabs(L){const i=H4T.findIndex(t=>t[0]=="nv");if(L&&L.nv){if(i<0)H4T.splice(H4T.length-1,0,["nv","🧩 Nhiệm vụ"])}else if(i>=0)H4T.splice(i,1)}
+function h4Tabs(L){const i=H4T.findIndex(t=>t[0]=="nv");if(L&&L.nv){if(i<0)H4T.splice(H4T.findIndex(t=>t[0]=="tn"),0,["nv","🧩 Nhiệm vụ"])}else if(i>=0)H4T.splice(i,1)}
 let H={};
 function h4Reset(){const L=HL()||{};H={t:"tv",py:false,vi:false,fcI:0,fcS:false,fcF:-1,show:{},wm:{},cm:{},cmD:{},so:null,tr:{},trS:{},gpPy:false,gpVi:false,ndPy:false,n1:{},n1D:{},n2:{},n2D:{},d1:{},d2:[null,null,null,null],d2D:false,role:(L.roles||[]).map(x=>x[1]),rpR:{},rpM:{},rec:null,recK:null,rt:{txt:"",done:false,sec:0},tk:{txt:"",done:false,sec:0},v1t:null,v1D:false,para:null,paraD:false,self:{},cz:{},lx:null,lxD:{},nvs:0,nvd:{txt:"",done:false,sec:0}};h4Tabs(L)}
 h4Reset();
@@ -22,6 +22,9 @@ const pct=(a,b)=>b?Math.round(a/b*100):null;
 const h4Save=f=>{const r=ldN(cur);f(r);svN(cur,r)};
 function h4t(t){if(H.rec)try{H.rec.stop()}catch(e){}H.t=t;rr();const e=$("ltabs");if(e)e.scrollIntoView({block:"nearest"})}
 const h4Next=k=>{const i=H4T.findIndex(t=>t[0]==k);return i<H4T.length-1?`<div class="row"><button class="btn" onclick="h4t('${H4T[i+1][0]}')">Tiếp: ${H4T[i+1][1]} →</button></div>`:""};
+/* Phần 6 "Test nhanh" (12/11/2026): HSK4 / Mở rộng H4 chưa có đề test nhanh — giữ chỗ trong mục lục, khi có đề thì nối vào đây */
+function h4Tn(L,r){return `<div class="card" style="text-align:center"><div style="font-size:2.4rem">📝</div><h3 style="margin:.3rem 0">Test nhanh · ${lvN(olLv)} · Bài ${cur}</h3>
+<p>Bài test nhanh theo dạng đề HSK 4 (nghe, đọc, viết) <b>đang được cô Thảo soạn</b>.</p><p style="color:var(--sub)">Trong lúc chờ, em ôn lại các phần còn dưới 80% ở mục <b>Xem tiến độ hiện tại</b>.</p></div>`+h4Next("tn")}
 let h4HP=true,h4HV=true;try{const a=localStorage.getItem("ct_h4hpy"),b=localStorage.getItem("ct_h4hvi");if(a!=null)h4HP=a=="1";if(b!=null)h4HV=b=="1"}catch(e){}
 function h4PvT(k){if(k=="p")h4HP=!h4HP;else h4HV=!h4HV;try{localStorage.setItem("ct_h4hpy",h4HP?"1":"0");localStorage.setItem("ct_h4hvi",h4HV?"1":"0")}catch(e){}rr()}
 const h4PvBar=()=>`<div class="pvbar"><span>Hiển thị:</span><button class="tg ${h4HP?"":"on"}" onclick="h4PvT('p')" aria-pressed="${!h4HP}">${h4HP?"☐":"☑"} Pinyin</button><button class="tg ${h4HV?"":"on"}" onclick="h4PvT('v')" aria-pressed="${!h4HV}">${h4HV?"☐":"☑"} Tiếng Việt</button><small>áp dụng cho mọi phần của bài</small></div>`;
@@ -38,7 +41,7 @@ const h4CopyBtn=id=>`<button class="btn o sm" onclick="h4Copy('${id}')">📋 Sao
 function h4View(){const L=HL(),r=ldN(cur);
  return `<div class="lhead"><span class="no">${cur}</span><div><small>${lvN(olLv)} · Bài ${cur} · Trung cấp</small><div class="zh lt2">${L.t}</div><small>${L.tp}</small><div>${L.vi}</div></div>${vBtn()}</div>
 ${vBar()}<div class="stb" id="ltabs">${H4T.map(t=>{const k=H4K[t[0]],v=k?r[k]:null;return `<button class="${t[0]==H.t?"on":""}" onclick="h4t('${t[0]}')">${t[1]}${v!=null?` <i class="sc ${v>=80?"ok":"no"}">${v}%</i>`:""}</button>`}).join("")}</div>
-${h4PvBar()}<div class="stack h4 ${h4HP?"hidepy h4nopy":""} ${h4HV?"hidevi h4novi":""}" id="lbody">${({tv:h4Tv,bk:h4Bk,gp:h4Gp,nd:h4Nd,ns:h4Ns,vt:h4Vt,nv:h4Nv,sum:h4Sum})[H.t](L,r)}</div>`}
+${h4PvBar()}<div class="stack h4 ${h4HP?"hidepy h4nopy":""} ${h4HV?"hidevi h4novi":""}" id="lbody">${({tv:h4Tv,bk:h4Bk,gp:h4Gp,nd:h4Nd,ns:h4Ns,vt:h4Vt,nv:h4Nv,tn:h4Tn,sum:h4Sum})[H.t](L,r)}</div>`}
 
 /* ---------- 1. Khởi động · Từ vựng ---------- */
 function h4Tv(L,r){const W=L.warm,ws=L.words.map((w,j)=>j).filter(j=>H.fcF<0||L.words[j][4]==H.fcF);
@@ -297,7 +300,7 @@ crumbDraw=function(){const s=SUBS.find(x=>x[0]==SUBC),c=$("crumb");if(!c)return;
  c.innerHTML=`<a onclick="go('home')">Trang chủ</a> › <a onclick="goSub('ol')">Học tiếng Trung</a> › `+(inL?`<a onclick="closeL()">${s[1]}</a> › ${lvN(olLv)} · Bài ${cur}`:inT?`${s[1]} › ${lvN(olLv)} · Bài ${tcur}`:s[1]);
  $("lh2").textContent=s[1]};
 const _h4DrawOl=drawOl;drawOl=function(){if(olLv<4||cur)return _h4DrawOl();
- $("lp-ol").innerHTML=lvBar()+(olLv==5?`<div class="card note"><b>Mở rộng H4</b> · Dùng lại từ vựng và ngữ pháp trọng tâm của HSK 4 theo <b>chủ đề đời sống</b> (nhận nhà, khu dân cư, phòng tập, sinh hoạt ngoài giờ), kèm các <b>task thực tế</b> để nói và viết.</div>`:"")+`<div class="card"><b>${lvN(olLv)} · Trung cấp — mỗi bài gồm 7 phần:</b><br>${H4T.map(t=>`<span class="pill">${t[1]}</span>`).join("")}<p>Khác với HSK 1–2: nghe trước rồi mới xem chữ, phiên âm ẩn mặc định, có thêm phần đọc hiểu, nói tự do và viết đoạn văn. Tổng kết theo mục tiêu bài học.</p><small style="color:var(--sub)">Tiến độ lưu trên máy này.</small></div>`+lessons("ol")};
+ $("lp-ol").innerHTML=lvBar()+(olLv==5?`<div class="card note"><b>Mở rộng H4</b> · Dùng lại từ vựng và ngữ pháp trọng tâm của HSK 4 theo <b>chủ đề đời sống</b> (nhận nhà, khu dân cư, phòng tập, sinh hoạt ngoài giờ), kèm các <b>task thực tế</b> để nói và viết.</div>`:"")+`<div class="card"><b>${lvN(olLv)} · Trung cấp — mỗi bài gồm các phần:</b><br>${H4T.map(t=>`<span class="pill">${t[1]}</span>`).join("")}<p>Khác với HSK 1–2: nghe trước rồi mới xem chữ, phiên âm ẩn mặc định, có thêm phần đọc hiểu, nói tự do và viết đoạn văn. Tổng kết theo mục tiêu bài học.</p><small style="color:var(--sub)">Tiến độ lưu trên máy này.</small></div>`+lessons("ol")};
 const _h4DrawTs=drawTs;drawTs=function(){if(olLv<4)return _h4DrawTs();if(tcur){tcur=null}
  $("lp-ts").innerHTML=lvBar()+`<div class="card"><b>Bài test nhanh ${lvN(olLv)}</b><p>Sẽ làm theo dạng đề HSK 4 (nghe, đọc, viết) sau khi cô duyệt 7 phần của Bài 1. Hiện em làm phần ôn luyện tại mục <a href="#" onclick="goSub('ol');return false">Ôn luyện theo bài</a>.</p></div>`};
 
