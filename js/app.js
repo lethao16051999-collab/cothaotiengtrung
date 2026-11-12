@@ -153,7 +153,7 @@ function drawTs(){if(tcur){$("lp-ts").innerHTML=testView();return}
  $("lp-ts").innerHTML=lvBar()+`<div class="card"><b>Bài test nhanh HSK ${olLv} theo bài</b><p>Kiểm tra vận dụng: sắp xếp câu, nghe hiểu, nói theo tình huống. 15 điểm, đạt từ 12/15 (80%).</p></div>`+lessons("ts")}
 
 /* ===== Trang bài học ===== */
-const LTB0=[["bk","📖 Bài khóa"],["fc","🃏 Flashcard"],["gp","📐 Ngữ pháp · Mẫu câu"],["dt","🎧 Nghe chép"],["ns","🗣 Luyện nói"],["sum","📊 Tổng kết"]],LTABS=[];
+const LTB0=[["bk","📖 Bài khóa"],["fc","🃏 Flashcard"],["gp","📐 Ngữ pháp · Mẫu câu"],["dt","🎧 Nghe chép"],["ns","🗣 Luyện nói"],["tn","📝 Test nhanh"],["sum","📈 Xem tiến độ hiện tại"]],LTABS=[];
 /* Bài nào có warm (Khởi động) / act (Hoạt động trên lớp) thì tự thêm phần tương ứng */
 function setTabs(L){LTABS.length=0;if(L&&L.warm)LTABS.push(["wu","🔥 Khởi động"]);LTB0.forEach(t=>{LTABS.push(t);if(t[0]=="ns"&&L&&L.act)LTABS.push(["hd","🎭 Hoạt động"])})}
 setTabs(null);
@@ -163,9 +163,17 @@ function lt(t){ltab=t;rr();const e=$("ltabs");if(e)e.scrollIntoView({block:"near
 function lessonView(){const L=LD[cur],r=ldN(cur);setTabs(L);if(!LTABS.some(t=>t[0]==ltab))ltab="bk";
  return `
 <div class="lhead"><span class="no">${cur}</span><div><small>HSK ${olLv} · Bài ${cur}</small><div class="zh lt2">${L.t}</div><small>${L.tp}</small><div>${L.vi}</div></div>${vBtn()}</div>
-${vBar()}<div class="stb" id="ltabs">${LTABS.map(t=>`<button class="${t[0]==ltab?"on":""}" onclick="lt('${t[0]}')">${t[1]}${r[t[0]]!=null?` <i class="sc ${r[t[0]]>=80?"ok":"no"}">${r[t[0]]}%</i>`:""}</button>`).join("")}</div>
-${pvBar()}<div class="stack ${hidePy?"hidepy":""} ${hideVi?"hidevi":""}" id="lbody">${({wu:vWu,hd:vHd,bk:vBk,fc:vFc,gp:vGp,dt:vDt,ns:vNs,sum:vSum})[ltab](L,r)}</div>`}
+${vBar()}<div class="stb" id="ltabs">${LTABS.map(t=>`<button class="${t[0]==ltab?"on":""}" onclick="lt('${t[0]}')">${t[1]}${tsc(r,t[0])!=null?` <i class="sc ${tsc(r,t[0])>=80?"ok":"no"}">${tsc(r,t[0])}%</i>`:""}</button>`).join("")}</div>
+${pvBar()}<div class="stack ${hidePy?"hidepy":""} ${hideVi?"hidevi":""}" id="lbody">${({wu:vWu,hd:vHd,bk:vBk,fc:vFc,gp:vGp,dt:vDt,ns:vNs,tn:vTn,sum:vSum})[ltab](L,r)}</div>`}
 const nextBtn=k=>{const i=LTABS.findIndex(t=>t[0]==k);return i<LTABS.length-1?`<button class="btn" onclick="lt('${LTABS[i+1][0]}')">Tiếp: ${LTABS[i+1][1]} →</button>`:""};
+/* Phần "Test nhanh" trong mục lục bài: giới thiệu + nút vào bài test (điểm lấy từ r.test) */
+const tsc=(r,k)=>k=="tn"?r.test:r[k];
+function vTn(L,r){const t=r.test;
+ return `<div class="card" style="text-align:center"><div style="font-size:2.4rem">📝</div><h3 style="margin:.3rem 0">Test nhanh · Bài ${cur}</h3>
+<p>Kiểm tra vận dụng toàn bài trong <b>${tMin(L)} phút</b>: nghe, sắp xếp câu, cấu trúc câu${tHasV(L)?" và gõ phiên âm từ vựng":""}.</p>
+${t!=null?`<div class="big ${t>=80?"ok":"no"}">${t}%</div><p>Kết quả lần gần nhất${t>=80?" · ✓ Đạt":" · chưa đạt 80%, làm lại nhé"}</p>`:`<p style="color:var(--sub)">Em chưa làm test bài này.</p>`}
+<div class="row c"><button class="btn" onclick="sub('ts');openTest(${cur})">${t!=null?"🔁 Làm lại":"▶ Bắt đầu"} Test nhanh Bài ${cur}</button></div></div>
+<div class="row c">${nextBtn("tn")}</div>`}
 
 let hidePy=false,hideVi=false;try{hidePy=localStorage.getItem("ct_hpy")=="1";hideVi=localStorage.getItem("ct_hvi")=="1"}catch(e){}
 function pvT(k){if(k=="p")hidePy=!hidePy;else hideVi=!hideVi;try{localStorage.setItem("ct_hpy",hidePy?"1":"0");localStorage.setItem("ct_hvi",hideVi?"1":"0")}catch(e){}rr()}
