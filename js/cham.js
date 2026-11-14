@@ -273,11 +273,15 @@ function chgHtml(){
  if(CHG.srv===false||!CHG.data)return chgSetup();
  const rows=CHG.data.filter(x=>!GV.cls||x.cls==GV.cls),pend=x=>x.st=="Chờ cô";
  const bais={};rows.forEach(x=>{const k=x.lv+"-"+x.b;(bais[k]=bais[k]||{lv:x.lv,b:x.b,ten:x.ten,n:0,p:0,sv:new Set()});bais[k].n++;if(pend(x))bais[k].p++;bais[k].sv.add(x.code)});
- const list=Object.values(bais).sort((a,b)=>b.p-a.p||a.lv-b.lv||a.b-b.b);
- if(!list.length)return `<div class="card"><p>Chưa có bài nộp nào${GV.cls?" của lớp "+chE(GV.cls):""} trong ${Math.max(GV.days,30)} ngày qua.</p><button class="btn sm" onclick="chgLoad()">↻ Tải lại</button></div>`;
- if(!CHG.bai||!bais[CHG.bai])CHG.bai=list[0].lv+"-"+list[0].b;
+ const all=Object.values(bais).sort((a,b)=>a.lv-b.lv||a.b-b.b);
+ if(!all.length)return `<div class="card"><p>Chưa có bài nộp nào${GV.cls?" của lớp "+chE(GV.cls):""} trong ${Math.max(GV.days,30)} ngày qua.</p><button class="btn sm" onclick="chgLoad()">↻ Tải lại</button></div>`;
+ /* chế độ "Câu chờ chấm": danh sách bài chỉ còn bài có câu chờ chấm; bài đang mở vừa chấm xong vẫn giữ đến khi cô chọn bài khác */
+ const list=CHG.mode=="all"?all:all.filter(x=>x.p||x.lv+"-"+x.b==CHG.bai);
+ const modeSel=`<label>Xem <select onchange="CHG.mode=this.value;chgDraw()"><option value="cho" ${CHG.mode=="cho"?"selected":""}>Câu chờ chấm</option><option value="all" ${CHG.mode=="all"?"selected":""}>Tất cả (sửa điểm đã chấm)</option></select></label>`;
+ if(!list.length)return `<div class="gvbar chgbar">${modeSel}<button class="btn sm" onclick="chgLoad()" ${CHG.busy?"disabled":""}>${CHG.busy?"Đang tải…":"↻ Tải lại"}</button></div><div class="card"><p class="okt">🎉 Cô đã chấm hết, không còn bài nào chờ chấm${GV.cls?" của lớp "+chE(GV.cls):""}.</p><p class="ctx">Muốn xem lại hoặc sửa điểm bài đã chấm, cô chọn Xem › "Tất cả".</p></div>`;
+ if(!CHG.bai||!list.some(x=>x.lv+"-"+x.b==CHG.bai))CHG.bai=list[0].lv+"-"+list[0].b;
  const B=bais[CHG.bai];let h=`<div class="gvbar chgbar"><label>Bài <select onchange="CHG.bai=this.value;chgDraw()">${list.map(x=>`<option value="${x.lv}-${x.b}" ${x.lv+"-"+x.b==CHG.bai?"selected":""}>${chgLvN(x.lv)} · ${x.b>100?"":"Bài "+x.b}${x.ten?(x.b>100?"":" · ")+chE(x.ten):""} — ${x.p?x.p+" câu chờ chấm":"đã chấm xong"} (${x.sv.size} bạn)</option>`).join("")}</select></label>
-<label>Xem <select onchange="CHG.mode=this.value;chgDraw()"><option value="cho" ${CHG.mode=="cho"?"selected":""}>Câu chờ chấm</option><option value="all" ${CHG.mode=="all"?"selected":""}>Tất cả (sửa điểm đã chấm)</option></select></label>
+${modeSel}
 <label class="gvck"><input type="checkbox" ${CHG.hide?"checked":""} onchange="CHG.hide=this.checked;chgDraw()"> Ẩn tên (chiếu lên lớp)</label>
 <button class="btn sm" onclick="chgLoad()" ${CHG.busy?"disabled":""}>${CHG.busy?"Đang tải…":"↻ Tải lại"}</button><small class="chsv">${CHG.saving?"Đang lưu…":Object.keys(CHG.q).length?"Chưa lưu…":CHG.saved?"✓ Đã lưu "+chT(CHG.saved).split(" ")[0]:""}</small></div>`;
  const R=rows.filter(x=>x.lv+"-"+x.b==CHG.bai),ks=[...new Set(R.map(x=>x.k))].sort((a,b)=>("tqnp".indexOf(a[0])-"tqnp".indexOf(b[0]))||(+a.slice(1))-(+b.slice(1)));
