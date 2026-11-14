@@ -88,6 +88,13 @@ async function login(){const el=G("ttcode"),code=(el&&el.value||"").trim().toUpp
  adopt();ev({t:"Vào học (nhập mã)"});
  if(HOLD.length){const[e,n,w]=HOLD;HOLD=[];ev(e);w.forEach(x=>err(n,x[0],x[1],x[2],x[3]))}
  close();badge();paint();flush()}
+/* tải tiến trình từ máy khác (14/11/2026): mở trang / quay lại trang thì hỏi Sheet, gộp giữ phần tốt hơn */
+let PULLT=0;
+async function pull(force){if(!inn()||BUSY)return;if(!force&&Date.now()-PULLT<60000)return;PULLT=Date.now();
+ let r;try{r=await post({a:"login",code:ME.code})}catch(e){return}
+ if(!r||!r.ok)return;const sv=r.prog||{};let ch=false;
+ Object.keys(sv).forEach(k=>{const loc=J(k,null),m=merge(sv[k],loc);if(JSON.stringify(m)!==JSON.stringify(loc)){put(k,m);ch=true}if(JSON.stringify(m)!==JSON.stringify(sv[k]))dirty(k)});
+ if(ch)paint();flush()}
 async function out(){if(pending())await flush();try{["ct_trk_me","ct_trk_q","ct_trk_dirty","ct_trk_last","ct_trk_s","ct_name","tb_name"].forEach(k=>localStorage.removeItem(k));
  for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(KEY.test(k))localStorage.removeItem(k)}}catch(e){}
 ME=null;SS=null;Q={ev:[],err:[]};DIRTY=[];LAST=0;MSG="";close();badge();paint()}
@@ -107,11 +114,11 @@ function tick(){if(!inn())return;const c=ctx();if(SS&&(!c||c.t!=SS.t||c.lv!=SS.l
 ["pointerdown","keydown","scroll","touchstart"].forEach(t=>addEventListener(t,()=>{ACT=Date.now()},{passive:true}));
 setInterval(tick,15000);
 if(SS&&inn()){end()}
-addEventListener("visibilitychange",()=>{if(document.visibilityState=="hidden"){tick();flush(true)}else soon(1500)});
+addEventListener("visibilitychange",()=>{if(document.visibilityState=="hidden"){tick();flush(true)}else{soon(1500);pull()}});
 addEventListener("pagehide",()=>{tick();flush(true)});
 
 const st=document.createElement("style");st.textContent=`.ttbar{margin-top:.6rem;padding:.5rem .7rem;border-radius:.6rem;background:var(--c2);font-size:.9rem}.ttbar a{cursor:pointer;text-decoration:underline}.ttwho{display:block;color:var(--mut);font-size:.82rem}.ttok{color:var(--ok)}.ttno{color:var(--bad)}.ttchip{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:0 .5rem;background:var(--badb);color:var(--bad)}.ttchip.ok{background:var(--okb);color:var(--ok)}`;document.head.appendChild(st);
 badge();setName();
-if(inn()){const d=new Date().toDateString();if(J("ct_trk_day","")!==d){put("ct_trk_day",d);ev({t:"Vào trang"})}adopt();soon(2000)}
+if(inn()){const d=new Date().toDateString();if(J("ct_trk_day","")!==d){put("ct_trk_day",d);ev({t:"Vào trang"})}adopt();soon(2000);setTimeout(()=>pull(true),1200)}
 return{reading,fill,exam,bar,chip,note,open,paint,me:()=>ME,api:()=>API,post,ev,err,save,flush,key};
 })();
