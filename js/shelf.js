@@ -10,7 +10,7 @@ const SHELF=[
  {l:5,img:"img/bia-hsk4.webp",t:"Mở rộng H4",s:"Trung cấp · đời sống"},
  {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:10,tot:15},
  {href:"luyen-viet-hsk6/",img:"",t:"HSK 6 · Viết",s:"Viết đoạn văn ứng dụng",zh:"写作",c:"#7a1f3d",n:11,tot:14,unit:"loại đã có"},
- {href:"on-hsk5/",img:"",t:"Ôn HSK 5",s:"Luyện đề thật HSK真题集 五级",zh:"五级",c:"#9b2c50",n:4,tot:5,unit:"đề đã có"},
+ {href:"on-hsk5/",img:"",t:"Ôn HSK 5",s:"Ôn đề · Luyện viết (看图写作)",zh:"五级",c:"#9b2c50",n:4,tot:5,unit:"đề đã có"},
  {href:"tocfl-b1/",img:"",t:"TOCFL B1",s:"Đương đại 3 · 當代中文課程3",zh:"華語",c:"#5c1730",n:3,tot:12}];
 /* tocfl-b1/ = trang luyện TOCFL B1 theo 當代中文課程3: bài khóa, từ vựng trình chiếu, ngữ pháp, đề 50 câu (05/11/2026); n = số bài đã có */
 /* on-hsk5/ = trang Ôn HSK 5, danh sách các trang luyện đề 1–2, 3, 4 (30/10/2026) */

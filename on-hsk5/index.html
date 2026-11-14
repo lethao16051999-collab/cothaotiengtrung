@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="vi"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- Trang Ôn HSK 5: danh sách các trang luyện đề HSK真题集 五级 (2014). Mở từ "Ôn luyện theo bài" trên trang chính.
-     Thêm đề mới: thêm một mục vào mảng DE trong script bên dưới. -->
+<!-- Trang Ôn HSK 5 (mở từ "Ôn luyện theo bài" trên trang chính), 2 mục:
+     1. Ôn đề HSK 5: mảng DE (đề HSK真题集 五级 2014).  2. Luyện kĩ năng viết: mảng VIET (2.1 Mô tả tranh = ta-tranh.html, 2.2 Viết đoạn văn). -->
 <title>Ôn HSK 5 – Cô Thảo tiếng Trung</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,6 +49,12 @@ body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15
 .go{color:var(--plum);font-weight:700;white-space:nowrap}
 .de.soon{opacity:.6;pointer-events:none}
 .note{color:var(--muted);font-size:13px}
+/* Mục lớn (1. Ôn đề · 2. Luyện viết) và mục con trong Luyện viết */
+.sec{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.sec>h2{margin:0;font-size:20px;color:var(--plum);display:flex;align-items:center;gap:10px}
+.sec>h2 .num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--plum);color:#fff;display:grid;place-items:center;font-size:15px}
+.sec>p{margin:-6px 0 0;color:var(--muted);font-size:14px}
+.sub{font-size:15px;font-weight:700;color:var(--fg);margin:6px 0 0}
 @media (max-width:520px){.de{grid-template-columns:auto minmax(0,1fr)}.go{grid-column:2}.head h1{font-size:22px}}
 @media (prefers-reduced-motion:reduce){.de{transition:none}.de:hover{transform:none}}
 </style>
@@ -58,9 +64,18 @@ body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15
   <a class="back" href="../">← Trang cô Thảo tiếng Trung</a>
   <div class="head">
     <div class="seal"><span class="zh">五级</span><small>HSK 5</small></div>
-    <div><h1>Ôn HSK 5</h1><p>Luyện theo bộ đề thật <span class="zh">HSK真题集 五级</span> (2014): từ vựng trọng điểm, dạng bài hay sai và luyện viết của từng đề.</p></div>
+    <div><h1>Ôn HSK 5</h1><p>Ôn bộ đề thật <span class="zh">HSK真题集 五级</span> (2014) và luyện riêng kĩ năng viết.</p></div>
   </div>
-  <div class="list" id="list"></div>
+  <section class="sec" aria-labelledby="h-de">
+    <h2 id="h-de"><span class="num">1</span>Ôn đề HSK 5</h2>
+    <p>Luyện theo từng đề thật: từ vựng trọng điểm, dạng bài hay sai và phần viết của đề.</p>
+    <div class="list" id="list"></div>
+  </section>
+  <section class="sec" aria-labelledby="h-viet">
+    <h2 id="h-viet"><span class="num">2</span>Luyện kĩ năng viết</h2>
+    <p>Luyện riêng phần Viết (câu 99, câu 100) theo từng dạng.</p>
+    <div class="list" id="viet"></div>
+  </section>
   <p class="note">Mỗi trang lưu tiến độ ngay trên máy của em (XP, sao, sổ lỗi sai).</p>
 </main>
 <script>
@@ -70,7 +85,17 @@ const DE=[
  {code:"Đề 3",ma:"H51223",href:"../thu-thach-hsk5-de3.html",t:"Thử thách HSK5 · Đề 3",d:"Điền từ vào đoạn văn, chọn câu đúng, đọc hiểu, flashcard 4 chủ đề × 30 từ."},
  {code:"Đề 1–2",ma:"H51221–22",href:"../thu-thach-hsk5.html",t:"Thử thách từ vựng HSK5",d:"11 cặp từ dễ nhầm, 43 từ trọng tâm, 3 trò ôn tập và bài test gõ phiên âm."},
 ];
+/* Luyện kĩ năng viết: thêm dạng mới vào mảng VIET; để href trống = "Sắp ra mắt" */
+const VIET=[
+ {code:"2.1",ma:"看图写作",href:"ta-tranh.html",t:"Mô tả tranh (看图写作)",d:"Câu 100: hành động cốt lõi khi tả tranh, flashcard, luyện dịch và viết đoạn văn theo tranh."},
+ {code:"2.2",ma:"写短文",href:"",t:"Viết đoạn văn",d:"Câu 99: viết đoạn văn khoảng 80 chữ từ 5 từ cho sẵn."},
+];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const card=x=>`<a class="de ${x.href?"":"soon"}" ${x.href?`href="${x.href}"`:'aria-disabled="true"'}>
+  <span class="code">${esc(x.code)}<small class="zh">${esc(x.ma)}</small></span>
+  <span><b>${esc(x.t)}${x.tag?`<span class="tag">${esc(x.tag)}</span>`:""}</b><p>${esc(x.d)}</p></span>
+  <span class="go">${x.href?"Mở →":"Sắp ra mắt"}</span></a>`;
+document.getElementById("viet").innerHTML=VIET.map(card).join("");
 document.getElementById("list").innerHTML=DE.map(x=>`<a class="de ${x.href?"":"soon"}" ${x.href?`href="${x.href}"`:'aria-disabled="true"'}>
   <span class="code">${esc(x.code)}<small>${esc(x.ma)}</small></span>
   <span><b>${esc(x.t)}${x.tag?`<span class="tag">${esc(x.tag)}</span>`:""}</b><p>${esc(x.d)}</p></span>
