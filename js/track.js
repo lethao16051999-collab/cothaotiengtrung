@@ -38,6 +38,23 @@ async function trkFlush(beacon){if(!trkIn()||TRKBUSY||!trkPending())return;
  }catch(e){TRKMSG="Chưa gửi được (có thể đang mất mạng). Trang sẽ tự gửi lại."}
  TRKBUSY=false;trkBadge();if(trkPending()&&!TRKMSG)trkSoon(30000)}
 
+/* ---------- tải tiến trình từ máy khác (thêm 14/11/2026) ----------
+   Trước đây máy chỉ nhận kết quả từ Sheet khi nhập mã hoặc khi đang có bài cần gửi, nên làm trên máy tính
+   rồi mở điện thoại vẫn thấy kết quả cũ. Nay: mỗi lần mở trang và mỗi lần quay lại trang (cách nhau ≥ 1 phút)
+   đều hỏi Sheet, gộp với kết quả trên máy (giữ phần tốt hơn), rồi gửi lại phần máy này tốt hơn. */
+let TRKPULL=0;
+async function trkPull(force){if(!trkIn()||TRKBUSY)return;if(!force&&Date.now()-TRKPULL<60000)return;TRKPULL=Date.now();
+ let r;try{r=await trkPost({a:"login",code:TRKME.code})}catch(e){return}
+ if(!r||!r.ok){if(r&&(r.err=="off"||r.err=="no_code")){TRKMSG=r.err=="off"?"Mã học viên đã tạm ngừng. Em hỏi cô Thảo nhé.":"Mã học viên không còn đúng. Em hỏi cô Thảo nhé.";trkBadge()}return}
+ let ch=false;const sv=r.prog||{};
+ Object.keys(sv).forEach(k=>{const loc=trkJ(k,null),m=trkMerge(sv[k],loc);
+  if(JSON.stringify(m)!==JSON.stringify(loc)){trkPut(k,m);ch=true}
+  if(JSON.stringify(m)!==JSON.stringify(sv[k]))trkDirty(k)});
+ /* đang làm dở bài test thì không vẽ lại trang (tránh mất câu đang làm); mở bài khác là thấy kết quả mới */
+ const busyTest=typeof T!="undefined"&&T&&!T.done&&typeof SUBC!="undefined"&&SUBC=="ts";
+ if(ch&&!busyTest&&typeof rr=="function")rr();
+ trkPut("ct_trk_last",TRKLAST=Date.now());trkFlush()}
+
 /* ---------- đăng nhập bằng mã ---------- */
 async function trkLogin(){const el=$("trkcode"),code=(el&&el.value||"").trim().toUpperCase();
  if(!code){trkBox("Em hãy nhập mã học viên cô Thảo đã gửi.");return}
@@ -104,7 +121,8 @@ function trkTick(){if(!trkIn())return;const c=trkCtx();
 setInterval(trkTick,15000);
 /* phiên học dở từ lần trước (đóng trang đột ngột) */
 if(TRKSESS&&Date.now()-(TRKSESS.at||0)>0){const s=TRKSESS;if(s.sec>=30&&trkIn()){TRKQ.ev.push({id:trkId(),t:s.t,lv:s.lv,b:s.b,p:(s.p||[]).join(", "),m:Math.round(s.sec/6)/10,at:s.at});trkPut("ct_trk_q",TRKQ)}TRKSESS=null;try{localStorage.removeItem("ct_trk_s")}catch(e){}}
-addEventListener("visibilitychange",()=>{if(document.visibilityState=="hidden"){trkTick();trkFlush(true)}else trkSoon(1500)});
+addEventListener("visibilitychange",()=>{if(document.visibilityState=="hidden"){trkTick();trkFlush(true)}else{trkSoon(1500);trkPull()}});
+addEventListener("pageshow",e=>{if(e.persisted)trkPull()});
 addEventListener("pagehide",()=>{trkTick();trkFlush(true)});
 
 /* ---------- gắn vào các phần chấm điểm (HSK1, HSK2) ---------- */
@@ -143,5 +161,5 @@ if(typeof testView=="function"){const _tv=testView;testView=function(){return tr
 @media(max-width:900px){.trkme{flex:none;margin-left:auto;margin-right:6px;padding:6px 10px}.trkme span{max-width:64px}.trkl{display:none}.trks{display:inline}}@media(max-width:380px){.trkme span{display:none!important}.trkme{padding:6px 9px;margin-right:4px}}`;document.head.appendChild(st)})();
 
 trkBadge();
-if(trkIn()){const d=new Date().toDateString();if(trkJ("ct_trk_day","")!==d){trkPut("ct_trk_day",d);trkEv({t:"Vào trang"})}trkSoon(2000)}
+if(trkIn()){const d=new Date().toDateString();if(trkJ("ct_trk_day","")!==d){trkPut("ct_trk_day",d);trkEv({t:"Vào trang"})}setTimeout(()=>trkPull(true),1200)}
 if(typeof rr=="function"&&trkOn())rr();
