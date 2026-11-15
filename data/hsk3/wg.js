@@ -1,4 +1,4 @@
-/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–16 =====
+/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–17 =====
    [mẹo nhớ theo bộ thủ, [câu ví dụ, pinyin, nghĩa]]. Câu ví dụ dùng từ HSK1–2 và các bài HSK3 đã học. */
 var WG=Object.assign(window.WG||{},{
 "3-1":{
@@ -451,4 +451,32 @@ var WG=Object.assign(window.WG||{},{
 "半天":["半: nửa. 天: ngày. Nửa ngày; khẩu ngữ: một lúc lâu.",["我等了你半天了！","Wǒ děngle nǐ bàntiān le!","Mình đợi bạn mãi rồi!"]],
 "脸":["Bộ <b>月</b> (cơ thể) + 佥: mặt, khuôn mặt.",["她的脸红了。","Tā de liǎn hóng le.","Mặt cô ấy đỏ lên."]],
 "大人":["大: lớn. 人: người. Người lớn (đọc dàren, 人 nhẹ).",["这个电影大人和孩子都喜欢。","Zhège diànyǐng dàren hé háizi dōu xǐhuan.","Bộ phim này người lớn và trẻ con đều thích."]],
-"喜爱":["喜: vui thích. 爱: yêu. Yêu thích (trang trọng hơn 喜欢).",["这是孩子们最喜爱的游戏。","Zhè shì háizimen zuì xǐ'ài de yóuxì.","Đây là trò chơi bọn trẻ yêu thích nhất."]]}});
+"喜爱":["喜: vui thích. 爱: yêu. Yêu thích (trang trọng hơn 喜欢).",["这是孩子们最喜爱的游戏。","Zhè shì háizimen zuì xǐ'ài de yóuxì.","Đây là trò chơi bọn trẻ yêu thích nhất."]]},
+"3-17":{
+"向":["Mái nhà có ô cửa sổ 口 nhìn ra ngoài: hướng về. 向前走: đi về phía trước. 向……学习: học hỏi từ ….",["我们要向他学习。","Wǒmen yào xiàng tā xuéxí.","Chúng ta phải học hỏi anh ấy."]],
+"楼梯":["楼: tầng lầu (bộ <b>木</b>). 梯: thang (bộ <b>木</b>, thang làm bằng gỗ). Cầu thang bộ.",["电梯坏了，我们走楼梯吧。","Diàntī huài le, wǒmen zǒu lóutī ba.","Thang máy hỏng rồi, chúng ta đi cầu thang bộ nhé."]],
+"害怕":["害: hại. 怕: sợ (bộ <b>忄</b> tâm). Sợ bị hại = sợ hãi.",["我妹妹害怕小狗。","Wǒ mèimei hàipà xiǎo gǒu.","Em gái tôi sợ chó con."]],
+"生气":["生: sinh ra. 气: khí, hơi. Trong người sinh ra cục tức = giận.",["别生气了，我不是故意的。","Bié shēngqì le, wǒ bú shì gùyì de.","Đừng giận nữa, mình không cố ý."]],
+"常见":["常: thường. 见: thấy. Thường thấy, thường gặp.",["这是一个很常见的问题。","Zhè shì yí ge hěn cháng jiàn de wèntí.","Đây là một vấn đề rất thường gặp."]],
+"聪明":["聪: thính tai (bộ <b>耳</b>). 明: sáng mắt (日 + 月). Tai thính mắt sáng = thông minh.",["这个孩子很聪明。","Zhège háizi hěn cōngming.","Đứa trẻ này rất thông minh."]],
+"错":["Bộ <b>钅</b> (kim loại) + 昔: đồng hồ, tiền nong lẫn lộn = sai. 做错, 写错, 出错.",["这个字你写错了。","Zhège zì nǐ xiěcuò le.","Chữ này bạn viết sai rồi."]],
+"认为":["认: nhận (bộ <b>讠</b>). 为: là. Nhận định là = cho rằng.",["我认为这个办法很好。","Wǒ rènwéi zhège bànfǎ hěn hǎo.","Tôi cho rằng cách này rất hay."]],
+"到处":["到: đến. 处: chỗ. Đến mọi chỗ = khắp nơi.",["春天到了，到处都是花。","Chūntiān dào le, dàochù dōu shì huā.","Mùa xuân đến, khắp nơi đều là hoa."]],
+"继续":["继: nối (bộ <b>纟</b> sợi). 续: nối tiếp (bộ <b>纟</b>). Nối sợi tiếp = tiếp tục.",["休息一下，然后继续工作。","Xiūxi yíxià, ránhòu jìxù gōngzuò.","Nghỉ một lát rồi làm tiếp."]],
+"同意":["同: cùng. 意: ý. Cùng một ý = đồng ý.",["妈妈同意我去中国留学。","Māma tóngyì wǒ qù Zhōngguó liúxué.","Mẹ đồng ý cho tôi đi du học Trung Quốc."]],
+"可":["Khẩu ngữ = 可是: nhưng. Đứng đầu vế sau.",["我想去，可没有时间。","Wǒ xiǎng qù, kě méiyǒu shíjiān.","Mình muốn đi, nhưng không có thời gian."]],
+"屋子":["屋: nhà, phòng (bộ <b>尸</b> mái che + 至 đến). 子: hậu tố. Căn phòng.",["这间屋子很干净。","Zhè jiān wūzi hěn gānjìng.","Căn phòng này rất sạch."]],
+"有关":["有: có. 关: liên quan. 跟……有关: có liên quan đến ….",["这件事跟你有关。","Zhè jiàn shì gēn nǐ yǒuguān.","Việc này có liên quan đến bạn."]],
+"关机":["关: đóng, tắt. 机: máy (bộ <b>木</b>). Tắt máy. Ngược lại: 开机.",["上课的时候请关机。","Shàngkè de shíhou qǐng guānjī.","Trong giờ học xin tắt máy."]],
+"前天":["前: trước. 天: ngày. Ngày trước hôm qua = hôm kia. Ngược lại: 后天.",["我前天去了一趟超市。","Wǒ qiántiān qùle yí tàng chāoshì.","Hôm kia tôi đi siêu thị một chuyến."]],
+"留学":["留: ở lại. 学: học. Ở lại nước ngoài học = du học. 留学生: lưu học sinh.",["她明年要去中国留学。","Tā míngnián yào qù Zhōngguó liúxué.","Năm sau cô ấy sẽ sang Trung Quốc du học."]],
+"国家":["国: nước (bộ <b>囗</b> biên giới bao quanh). 家: nhà. Nhà của cả nước = quốc gia.",["你去过哪些国家？","Nǐ qùguo nǎxiē guójiā?","Bạn đã đi những nước nào?"]],
+"比如":["比: so. 如: như. So như = ví dụ. Đứng trước các ví dụ.",["我喜欢吃水果，比如苹果、香蕉。","Wǒ xǐhuan chī shuǐguǒ, bǐrú píngguǒ, xiāngjiāo.","Tôi thích ăn hoa quả, ví dụ táo, chuối."]],
+"查":["Bộ <b>木</b> trên + 旦: soi xét kỹ = tra, kiểm tra. 查词典: tra từ điển.",["这个字我不认识，我查一下。","Zhège zì wǒ bú rènshi, wǒ chá yíxià.","Chữ này tôi không biết, để tôi tra."]],
+"有用":["有: có. 用: dùng. Có thể dùng được = hữu ích. Ngược lại: 没用.",["这本书对我很有用。","Zhè běn shū duì wǒ hěn yǒuyòng.","Quyển sách này rất có ích với tôi."]],
+"容易":["容: chứa (bộ <b>宀</b>). 易: dễ. Dễ dàng. Ngược lại: 难.",["这个问题很容易。","Zhège wèntí hěn róngyì.","Câu hỏi này rất dễ."]],
+"回答":["回: quay lại. 答: đáp (bộ <b>⺮</b> tre: thẻ tre ghi lời đáp). Đáp lại = trả lời.",["请回答我的问题。","Qǐng huídá wǒ de wèntí.","Xin hãy trả lời câu hỏi của tôi."]],
+"方向":["方: phương. 向: hướng. Phương hướng.",["我们走错方向了。","Wǒmen zǒucuò fāngxiàng le.","Chúng ta đi sai hướng rồi."]],
+"只有":["只: chỉ. 有: có. Chỉ có. 只有……才……: chỉ có … thì mới ….",["只有努力，才能成功。","Zhǐyǒu nǔlì, cái néng chénggōng.","Chỉ có cố gắng thì mới thành công."]],
+"真正":["真: thật. 正: đúng. Thật sự, chân chính.",["他是我真正的朋友。","Tā shì wǒ zhēnzhèng de péngyou.","Anh ấy là người bạn thực sự của tôi."]],
+"难题":["难: khó. 题: đề, câu hỏi (bộ <b>页</b>). Câu hỏi khó = vấn đề nan giải.",["这道数学题是个难题。","Zhè dào shùxué tí shì ge nántí.","Bài toán này là một bài khó."]]}});
