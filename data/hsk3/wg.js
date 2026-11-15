@@ -1,4 +1,4 @@
-/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–14 =====
+/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–15 =====
    [mẹo nhớ theo bộ thủ, [câu ví dụ, pinyin, nghĩa]]. Câu ví dụ dùng từ HSK1–2 và các bài HSK3 đã học. */
 var WG=Object.assign(window.WG||{},{
 "3-1":{
@@ -397,4 +397,31 @@ var WG=Object.assign(window.WG||{},{
 "最后":["最: nhất. 后: sau. Sau cùng = cuối cùng.",["最后一个节目是唱歌。","Zuìhòu yí ge jiémù shì chàng gē.","Tiết mục cuối cùng là hát."]],
 "一块儿":["一: một. 块: khối, chỗ. Cùng một chỗ = cùng nhau (khẩu ngữ, giống 一起).",["我们一块儿去吃饭吧。","Wǒmen yíkuàir qù chī fàn ba.","Chúng mình cùng đi ăn nhé."]],
 "网站":["网: mạng (lưới). 站: trạm, trang. Trang web.",["这个网站可以学汉语。","Zhège wǎngzhàn kěyǐ xué Hànyǔ.","Trang web này có thể học tiếng Trung."]],
-"视频":["视: nhìn (bộ <b>礻</b> + 见). 频: tần số. Đoạn phim, video.",["我在网上看了一个视频。","Wǒ zài wǎng shang kànle yí ge shìpín.","Tôi đã xem một video trên mạng."]]}});
+"视频":["视: nhìn (bộ <b>礻</b> + 见). 频: tần số. Đoạn phim, video.",["我在网上看了一个视频。","Wǒ zài wǎng shang kànle yí ge shìpín.","Tôi đã xem một video trên mạng."]]},
+"3-15":{
+"蓝":["Bộ <b>艹</b> (cỏ) trên + 监: cây chàm nhuộm vải → màu xanh lam. 蓝天: trời xanh.",["今天的天特别蓝。","Jīntiān de tiān tèbié lán.","Hôm nay trời xanh đặc biệt."]],
+"段":["Bên phải bộ <b>殳</b> (cầm gậy gõ): chặt ra từng đoạn. 一段时间: một khoảng thời gian.",["我在北京住过一段时间。","Wǒ zài Běijīng zhùguo yí duàn shíjiān.","Tôi từng sống ở Bắc Kinh một thời gian."]],
+"附近":["附: bám vào (bộ <b>阝</b>). 近: gần (bộ <b>辶</b> đi). Bám sát gần đó = lân cận.",["我家附近有一个超市。","Wǒ jiā fùjìn yǒu yí ge chāoshì.","Gần nhà tôi có một siêu thị."]],
+"马路":["马: ngựa. 路: đường (bộ <b>足</b>). Đường cho ngựa xe chạy = đường cái.",["过马路的时候要小心。","Guò mǎlù de shíhou yào xiǎoxīn.","Khi qua đường phải cẩn thận."]],
+"平时":["平: bằng phẳng, bình thường. 时: lúc (bộ <b>日</b>). Lúc bình thường = thường ngày.",["你平时几点起床？","Nǐ píngshí jǐ diǎn qǐchuáng?","Bình thường bạn mấy giờ dậy?"]],
+"放学":["放: thả ra (bộ <b>攵</b>). 学: học. Thả học sinh về = tan học.",["孩子们四点半放学。","Háizimen sì diǎn bàn fàngxué.","Bọn trẻ tan học lúc bốn rưỡi."]],
+"游戏":["游: bơi, chơi (bộ <b>氵</b>). 戏: trò, kịch (bộ <b>戈</b>). Trò chơi. 做游戏 / 玩游戏.",["孩子们在草地上做游戏。","Háizimen zài cǎodì shang zuò yóuxì.","Bọn trẻ chơi trò chơi trên bãi cỏ."]],
+"老人":["老: già. 人: người. Người già.",["这个小区有很多老人。","Zhège xiǎoqū yǒu hěn duō lǎorén.","Khu này có nhiều người già."]],
+"根据":["根: rễ cây (bộ <b>木</b>). 据: dựa vào (bộ <b>扌</b>). Dựa vào gốc rễ = căn cứ vào.",["老师根据我们的水平上课。","Lǎoshī gēnjù wǒmen de shuǐpíng shàngkè.","Cô giáo dạy theo trình độ của chúng tôi."]],
+"了解":["了: hiểu rõ (đọc liǎo). 解: tháo gỡ, giải. Gỡ ra cho rõ = hiểu rõ, tìm hiểu.",["我不太了解这个城市。","Wǒ bú tài liǎojiě zhège chéngshì.","Tôi không hiểu rõ thành phố này lắm."]],
+"可是":["可: có thể. 是: là. Đứng đầu vế sau, giống 但是: nhưng.",["我很想去，可是没有时间。","Wǒ hěn xiǎng qù, kěshì méiyǒu shíjiān.","Tôi rất muốn đi, nhưng không có thời gian."]],
+"以上":["以: lấy làm mốc. 上: trên. Từ mốc trở lên. 十岁以上: từ 10 tuổi trở lên.",["这个学校有一千个以上的学生。","Zhège xuéxiào yǒu yìqiān ge yǐshàng de xuésheng.","Trường này có hơn một nghìn học sinh."]],
+"有名":["有: có. 名: tên. Có tên tuổi = nổi tiếng.",["这家饭馆很有名。","Zhè jiā fànguǎn hěn yǒumíng.","Nhà hàng này rất nổi tiếng."]],
+"景点":["景: cảnh (bộ <b>日</b> trên: có nắng mới thấy cảnh). 点: điểm. Điểm ngắm cảnh = điểm du lịch.",["北京有很多有名的景点。","Běijīng yǒu hěn duō yǒumíng de jǐngdiǎn.","Bắc Kinh có nhiều điểm du lịch nổi tiếng."]],
+"游客":["游: đi chơi (bộ <b>氵</b>). 客: khách (bộ <b>宀</b> mái nhà). Khách đi chơi = du khách.",["夏天这里的游客特别多。","Xiàtiān zhèlǐ de yóukè tèbié duō.","Mùa hè ở đây du khách rất đông."]],
+"外地":["外: ngoài. 地: đất (bộ <b>土</b>). Đất bên ngoài = nơi khác. 外地人: người nơi khác.",["他是外地人，不太了解这里。","Tā shì wàidì rén, bú tài liǎojiě zhèlǐ.","Anh ấy là người nơi khác, không rành ở đây."]],
+"聊":["Bộ <b>耳</b> (tai): nghe nhau nói → trò chuyện. 聊天儿: tán gẫu.",["我们边喝茶边聊。","Wǒmen biān hē chá biān liáo.","Chúng ta vừa uống trà vừa nói chuyện."]],
+"南京":["南: nam. 京: kinh đô. Kinh đô phía nam = Nam Kinh (so với 北京 phía bắc).",["南京有两千年以上的历史。","Nánjīng yǒu liǎngqiān nián yǐshàng de lìshǐ.","Nam Kinh có lịch sử hơn 2000 năm."]],
+"河":["Bộ <b>氵</b> (nước) + 可 (đọc gần hé): dòng nước = sông.",["我家旁边有一条河。","Wǒ jiā pángbiān yǒu yì tiáo hé.","Cạnh nhà tôi có một con sông."]],
+"关系":["关: cửa, liên quan. 系: buộc, nối (bộ <b>糸</b>). Nối liền nhau = quan hệ. 跟……有关系.",["这件事跟我没有关系。","Zhè jiàn shì gēn wǒ méiyǒu guānxi.","Chuyện này không liên quan đến tôi."]],
+"养":["Trên là 羊 (con dê) biến thể: chăn nuôi dê → nuôi, nuôi dưỡng.",["她家养了一只小狗。","Tā jiā yǎngle yì zhī xiǎo gǒu.","Nhà cô ấy nuôi một chú chó nhỏ."]],
+"黄河":["黄: màu vàng. 河: sông. Nước sông có màu vàng = Hoàng Hà.",["黄河是中国很重要的河。","Huáng Hé shì Zhōngguó hěn zhòngyào de hé.","Hoàng Hà là con sông rất quan trọng của Trung Quốc."]],
+"西北":["西: tây. 北: bắc. Tiếng Trung nói tây trước bắc: 西北 = tây bắc (giống tiếng Việt).",["我的老家在中国西北。","Wǒ de lǎojiā zài Zhōngguó xīběi.","Quê tôi ở tây bắc Trung Quốc."]],
+"经过":["经: đi qua (bộ <b>纟</b>). 过: qua (bộ <b>辶</b>). Đi qua, trải qua.",["去学校要经过一个公园。","Qù xuéxiào yào jīngguò yí ge gōngyuán.","Đến trường phải đi qua một công viên."]],
+"草地":["草: cỏ (bộ <b>艹</b>). 地: đất. Đất có cỏ = bãi cỏ.",["孩子们在草地上玩儿。","Háizimen zài cǎodì shang wánr.","Bọn trẻ chơi trên bãi cỏ."]],
+"遇见":["遇: gặp (bộ <b>辶</b> đi đường). 见: thấy. Đang đi thì gặp = tình cờ gặp.",["我在超市遇见了我的老师。","Wǒ zài chāoshì yùjiànle wǒ de lǎoshī.","Tôi tình cờ gặp cô giáo ở siêu thị."]]}});
