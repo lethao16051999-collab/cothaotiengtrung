@@ -61,6 +61,10 @@ function bcStu(h,W,les,cls,ses){const D=GV.data,inW=t=>t>=W.s&&t<W.e;
   const ge=D.tc.filter(x=>x.code==h.code&&x.t=="Kết quả Ngữ pháp"&&x.lv==les.lv&&x.b==les.b).sort((a,b)=>b.at-a.at)[0];if(ge)R.gpev=ge.s}
  else R.st=days>=3?"ok":days>=1?"low":"no";
  if(R.st=="no"&&!days&&!h.last)R.never=1;
+ /* Ôn thi HSK 3.0 (on-thi/ketqua.js, lv 21–26): dạng yếu nhất trong tuần = dạng có điểm lần gần nhất thấp nhất, dưới 80% · thêm 16/11/2026 */
+ const ot={};tc.filter(x=>x.t=="Ôn thi").sort((a,b)=>a.at-b.at).forEach(x=>{const m=/^(.*?) · (\d+)%/.exec(String(x.s||""));if(m)ot[m[1]]=+m[2]});
+ const otw=Object.keys(ot).filter(k=>ot[k]<80).sort((a,b)=>ot[a]-ot[b])[0];if(otw)R.otWeak=otw+" ("+ot[otw]+"%)";
+ const th=tc.filter(x=>x.t=="Thi thử HSK").sort((a,b)=>b.at-a.at)[0];if(th)R.otThi=String(th.s||"");
  return R}
 
 /* tin nhắn gửi phụ huynh / học viên */
@@ -75,6 +79,8 @@ function bcMsg(h,R,W,cls){const ph=(BCS.to[cls]||"ph")=="ph",ng=ph?"con":"em",L=
   if(R.gpev)L.push(`• Ngữ pháp (cô chấm): ${R.gpev}.`)}
  L.push(R.days?`• Ôn bài trên web: ${R.days} ngày${R.min?`, khoảng ${R.min} phút`:""}.`:R.never?`• ${ph?"Con":"Em"} chưa đăng nhập web ôn bài bằng mã học viên lần nào.`:`• Tuần này ${ng} chưa vào web ôn bài.`);
  if(R.tests.length)L.push(`• Bài test: `+R.tests.map(t=>`${gvLv(t.lv)} Bài ${t.b} được ${t.s}`).join("; ")+".");
+ if(R.otThi)L.push(`• Thi thử: ${R.otThi}.`);
+ if(R.otWeak)L.push(`• Ôn thi – dạng yếu nhất: ${R.otWeak} — ${ng} cần luyện lại dạng này.`);
  if(R.weakSec.length)L.push(`• Phần ${ng} hay sai: ${R.weakSec.join(", ")} — cô sẽ chữa lại trên lớp.`);
  const nt=(BCS.note[W.key+"|"+h.code]||"").trim();if(nt)L.push(`Nhận xét của cô: ${nt}`);
  L.push("");
