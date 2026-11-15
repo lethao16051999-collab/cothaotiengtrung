@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="css/hsk4.css?v=6">
 <link rel="stylesheet" href="css/nav.css?v=2">
 <link rel="stylesheet" href="css/cham.css?v=5">
-<link rel="stylesheet" href="css/home.css?v=4">
+<link rel="stylesheet" href="css/home.css?v=5">
 <link rel="stylesheet" href="css/np.css?v=2">
 </head><body>
 <header><div class="logo"><img alt="Logo" src="img/logo.webp">Cô Thảo tiếng Trung</div><nav id="nav"></nav><button id="mbtn" aria-label="Mở menu" onclick="mMenu()">☰</button></header>
@@ -21,7 +21,7 @@
 <button class="hm-b" onclick="pptOpen()"><span class="hm-i">📊</span><span class="hm-t">PPT giáo trình</span><span class="hm-a">›</span></button>
 <button class="hm-b" onclick="goSub('ol')"><span class="hm-i">📖</span><span class="hm-t">Học tiếng Trung</span><span class="hm-a">›</span></button>
 <button class="hm-b" onclick="goSub('gm')"><span class="hm-i">🎮</span><span class="hm-t">Game chữ Hán</span><span class="hm-a">›</span></button>
-<button class="hm-b" onclick="goSub('ts')"><span class="hm-i">📝</span><span class="hm-t">Test nhanh</span><span class="hm-a">›</span></button>
+<button class="hm-b" id="hm-ot" onclick="otOpen()"><span class="hm-i">🎯</span><span class="hm-t">Ôn thi<small>HSK 1–6 · Nói (HSK 3.0)</small></span><span class="hm-a">›</span></button>
 </div></div>
 </section>
 
@@ -72,7 +72,7 @@
 <p id="st"></p><p><small>Từ mẫu. Từ vựng đầy đủ theo bài sẽ bổ sung khi có dữ liệu.</small></p></div>
 <div class="lp" id="lp-bt"><h3>Bộ thủ tiếng Trung</h3><div class="grid"><div class="card"><h3>30 bộ thông dụng</h3><p>Học từng bộ: ý nghĩa, ví dụ, chữ thường gặp.</p><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>60 bộ thủ</h3><p>Mở rộng sau khi xong 30 bộ đầu.</p><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>Hướng dẫn viết</h3><p>Thứ tự nét và cách viết từng bộ.</p><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>Ôn tập bộ thủ</h3><p>Bài ôn và kiểm tra sau mỗi nhóm bộ.</p><span class="pill">Sắp ra mắt</span></div></div></div>
 <div class="lp" id="lp-py"><h3>Phiên âm cơ bản</h3><div class="grid"><div class="card"><h3>Thanh mẫu</h3><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>Vận mẫu</h3><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>Thanh điệu</h3><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>Ghép vần &amp; luyện đọc</h3><span class="pill">Sắp ra mắt</span></div></div></div>
-<div class="lp" id="lp-hk"><h3>HSKK – Luyện thi nói</h3><div class="grid"><div class="card"><h3>Sơ cấp</h3><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>Trung cấp</h3><span class="pill">Sắp ra mắt</span></div><div class="card"><h3>Cao cấp</h3><span class="pill">Sắp ra mắt</span></div></div></div>
+<div class="lp" id="lp-hk"><h3>Luyện thi nói</h3><div class="card"><p>Theo đề HSK mới (3.0), bài thi nói đi cùng HSK 3–6 (thay HSKK). Phần luyện nói nằm trong mục <b>🎯 Ôn thi</b> ở trang chủ, dành cho học viên có mã.</p><button class="btn" onclick="otOpen()">Mở Ôn thi →</button></div></div>
 <div class="lp" id="lp-gm"><h3>Game ôn từ</h3><div class="grid"><a class="card" href="vuon-chu-ong-vang.html" style="text-decoration:none;color:inherit"><h3>🐝 Vườn Chữ Ong Vàng</h3><p>HSK1 3.0 · Bài 1–15 và 10 chủ đề bổ trợ. Bài test nhanh và 4 trò chơi nhớ mặt chữ Hán, có meme vui.</p><span class="pill">Mở trò chơi →</span></a><a class="card" href="vuon-chu-ong-vang-hsk2.html" style="text-decoration:none;color:inherit"><h3>🐝 Vườn Chữ Ong Vàng · HSK2</h3><p>HSK2 3.0 · Bài 1–3. Bài test nhanh và 4 trò chơi nhớ mặt chữ Hán, có meme vui.</p><span class="pill">Mở trò chơi →</span></a></div></div>
 </section>
 
@@ -122,7 +122,7 @@
 <script src="js/np1.js?v=3"></script>
 <script src="js/nhom.js?v=2"></script>
 <script src="js/lop.js?v=2"></script>
-<script src="js/home.js?v=1"></script>
+<script src="js/home.js?v=2"></script>
 <script src="data/ppt.js?v=6"></script>
 <script src="js/ppt.js?v=2"></script>
 <script src="js/nhac.js?v=2"></script>
