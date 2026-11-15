@@ -1,4 +1,4 @@
-/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–17 =====
+/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–18 =====
    [mẹo nhớ theo bộ thủ, [câu ví dụ, pinyin, nghĩa]]. Câu ví dụ dùng từ HSK1–2 và các bài HSK3 đã học. */
 var WG=Object.assign(window.WG||{},{
 "3-1":{
@@ -479,4 +479,34 @@ var WG=Object.assign(window.WG||{},{
 "方向":["方: phương. 向: hướng. Phương hướng.",["我们走错方向了。","Wǒmen zǒucuò fāngxiàng le.","Chúng ta đi sai hướng rồi."]],
 "只有":["只: chỉ. 有: có. Chỉ có. 只有……才……: chỉ có … thì mới ….",["只有努力，才能成功。","Zhǐyǒu nǔlì, cái néng chénggōng.","Chỉ có cố gắng thì mới thành công."]],
 "真正":["真: thật. 正: đúng. Thật sự, chân chính.",["他是我真正的朋友。","Tā shì wǒ zhēnzhèng de péngyou.","Anh ấy là người bạn thực sự của tôi."]],
-"难题":["难: khó. 题: đề, câu hỏi (bộ <b>页</b>). Câu hỏi khó = vấn đề nan giải.",["这道数学题是个难题。","Zhè dào shùxué tí shì ge nántí.","Bài toán này là một bài khó."]]}});
+"难题":["难: khó. 题: đề, câu hỏi (bộ <b>页</b>). Câu hỏi khó = vấn đề nan giải.",["这道数学题是个难题。","Zhè dào shùxué tí shì ge nántí.","Bài toán này là một bài khó."]]},
+"3-18":{
+"怎样":["怎: sao (bộ <b>心</b>). 样: dáng (bộ <b>木</b>). Ra dáng sao = thế nào (= 怎么样).",["你们怎样过春节？","Nǐmen zěnyàng guò Chūnjié?","Các bạn đón Tết thế nào?"]],
+"过节":["过: trải qua. 节: lễ. Trải qua ngày lễ = đón lễ, ăn Tết.",["我们一起过节吧。","Wǒmen yìqǐ guòjié ba.","Chúng ta cùng đón lễ nhé."]],
+"节":["Bộ <b>⺮</b> (tre) + 卩: đốt tre → ngày lễ, tiết. 春节, 节日.",["今天是什么节？","Jīntiān shì shénme jié?","Hôm nay là lễ gì?"]],
+"节日":["节: lễ. 日: ngày. Ngày lễ.",["春节是中国最重要的节日。","Chūnjié shì Zhōngguó zuì zhòngyào de jiérì.","Tết là ngày lễ quan trọng nhất của Trung Quốc."]],
+"联欢":["联: liên kết (bộ <b>耳</b>). 欢: vui (bộ <b>欠</b>). Cùng nhau vui = liên hoan. 联欢晚会: dạ hội liên hoan.",["公司晚上有联欢晚会。","Gōngsī wǎnshang yǒu liánhuān wǎnhuì.","Tối nay công ty có dạ hội liên hoan."]],
+"大概":["大: lớn. 概: khái quát (bộ <b>木</b>). Nói khái quát = khoảng, đại khái.",["他大概三十岁。","Tā dàgài sānshí suì.","Anh ấy khoảng 30 tuổi."]],
+"春节":["春: mùa xuân. 节: lễ. Lễ mùa xuân = Tết Nguyên đán.",["春节的时候大家都回家。","Chūnjié de shíhou dàjiā dōu huí jiā.","Dịp Tết mọi người đều về nhà."]],
+"阿姨":["阿: tiền tố gọi thân mật (bộ <b>阝</b>). 姨: dì (bộ <b>女</b>). Cô, dì (gọi phụ nữ lớn tuổi hơn).",["阿姨，您好！","Āyí, nín hǎo!","Cháu chào cô ạ!"]],
+"叔叔":["叔: chú (bên phải 又 bàn tay). Lặp lại = chú (gọi đàn ông lớn tuổi hơn bố mình ít).",["叔叔，谢谢您！","Shūshu, xièxie nín!","Cháu cảm ơn chú ạ!"]],
+"收":["Bộ <b>攵</b> (tay cầm gậy) + 丩: thu gom lại = nhận, thu. 收下: nhận lấy.",["我收到了你的信。","Wǒ shōudàole nǐ de xìn.","Mình đã nhận được thư của bạn."]],
+"总":["Trên 丷 + 口, dưới 心: gom về một mối = luôn luôn, tổng.",["他总是迟到。","Tā zǒngshì chídào.","Anh ấy luôn đến muộn."]],
+"起":["Bộ <b>走</b> (đi) + 己: đứng dậy đi. Sau động từ: 说起 = nói đến.",["我常常想起小时候的事。","Wǒ chángcháng xiǎngqǐ xiǎoshíhou de shì.","Tôi hay nhớ đến chuyện hồi nhỏ."]],
+"见面":["见: gặp. 面: mặt. Gặp mặt. Không nói 见面你, mà nói 跟你见面.",["我们明天见面吧。","Wǒmen míngtiān jiànmiàn ba.","Mai chúng ta gặp nhau nhé."]],
+"矿泉水":["矿: khoáng (bộ <b>石</b>). 泉: suối (白 + 水). 水: nước. Nước suối khoáng.",["请给我一瓶矿泉水。","Qǐng gěi wǒ yì píng kuàngquánshuǐ.","Cho tôi một chai nước khoáng."]],
+"刚刚":["刚: vừa (bộ <b>刂</b> dao). Lặp lại nhấn mạnh = vừa mới.",["我刚刚到家。","Wǒ gānggāng dào jiā.","Tôi vừa mới về đến nhà."]],
+"出发":["出: ra. 发: phát. Ra đi = xuất phát.",["我们早上八点出发。","Wǒmen zǎoshang bā diǎn chūfā.","Chúng ta xuất phát lúc 8 giờ sáng."]],
+"不久":["不: không. 久: lâu. Không lâu, chẳng bao lâu.",["不久以后，他就回国了。","Bùjiǔ yǐhòu, tā jiù huí guó le.","Không lâu sau, anh ấy về nước."]],
+"发生":["发: phát ra. 生: sinh. Phát sinh = xảy ra.",["这里发生了什么事？","Zhèlǐ fāshēngle shénme shì?","Ở đây đã xảy ra chuyện gì?"]],
+"刚":["Bộ <b>刂</b> (dao) + 冈: vừa, vừa mới. 刚 + V.",["我刚来中国几个月。","Wǒ gāng lái Zhōngguó jǐ ge yuè.","Tôi mới đến Trung Quốc mấy tháng."]],
+"只要":["只: chỉ. 要: cần. Chỉ cần. 只要……就……",["只要你来，我就很高兴。","Zhǐyào nǐ lái, wǒ jiù hěn gāoxìng.","Chỉ cần bạn đến là mình vui rồi."]],
+"学期":["学: học. 期: kỳ (bộ <b>月</b>). Học kỳ.",["这个学期我有五门课。","Zhège xuéqī wǒ yǒu wǔ mén kè.","Học kỳ này tôi có 5 môn."]],
+"毕业":["毕: kết thúc. 业: nghiệp (việc học). Học xong = tốt nghiệp.",["她明年大学毕业。","Tā míngnián dàxué bìyè.","Năm sau cô ấy tốt nghiệp đại học."]],
+"出生":["出: ra. 生: sinh. Sinh ra.",["我是在河内出生的。","Wǒ shì zài Hénèi chūshēng de.","Tôi sinh ra ở Hà Nội."]],
+"过去":["过: qua. 去: đi. Thời gian đã qua = quá khứ.",["过去的事情就别想了。","Guòqù de shìqing jiù bié xiǎng le.","Chuyện đã qua thì đừng nghĩ nữa."]],
+"懂得":["懂: hiểu (bộ <b>忄</b>). 得: được. Hiểu ra (đạo lý).",["他懂得很多道理。","Tā dǒngde hěn duō dàolǐ.","Anh ấy hiểu nhiều đạo lý."]],
+"坚持":["坚: chắc (bộ <b>土</b>). 持: giữ (bộ <b>扌</b> tay). Giữ chắc = kiên trì.",["学外语要坚持每天练习。","Xué wàiyǔ yào jiānchí měi tiān liànxí.","Học ngoại ngữ phải kiên trì luyện mỗi ngày."]],
+"完成":["完: xong (bộ <b>宀</b>). 成: thành. Làm xong = hoàn thành.",["我已经完成作业了。","Wǒ yǐjīng wánchéng zuòyè le.","Tôi đã làm xong bài tập rồi."]],
+"目标":["目: mắt. 标: tiêu, mốc (bộ <b>木</b>). Cái mốc mắt nhắm tới = mục tiêu.",["我今年的目标是通过HSK3。","Wǒ jīnnián de mùbiāo shì tōngguò HSK sān.","Mục tiêu năm nay của tôi là đỗ HSK3."]],
+"发展":["发: phát. 展: mở rộng (bộ <b>尸</b>). Phát triển.",["这个城市发展得很快。","Zhège chéngshì fāzhǎn de hěn kuài.","Thành phố này phát triển rất nhanh."]]}});
