@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Trang Ôn thi HSK 3.0 (mở từ nút "Ôn thi" ở trang chủ). Chỉ học viên đã nhập mã (ct_trk_me) mới vào được.
      Mỗi cấp HSK1–6 có 4 mục: ① Tìm hiểu đề ② Luyện theo dạng ③ Thi thử ④ Xem tiến độ hiện tại.
-     HSK3–6 có thêm bài thi Nói (口语, thay cho HSKK cũ). Dữ liệu: data.js. Tiến độ từng dạng: ct_ot_<cấp>_<mã dạng> = {best,first,n}. -->
+     HSK3–6 có thêm bài thi Nói (口语, thay cho HSKK cũ). Dữ liệu: data.js. Lưu kết quả: ketqua.js (OTKQ.dang / OTKQ.thi). Tiến độ từng dạng / đề thi thử: ct_ot_<cấp>_<mã> = {best,first,n,last}. -->
 <title>Ôn thi HSK – Cô Thảo tiếng Trung</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -91,6 +91,13 @@ a.de:hover,a.de:focus-visible{border-color:var(--plum);transform:translateY(-2px
 .btn{display:inline-block;background:var(--plum);color:#fff;text-decoration:none;font-weight:700;border-radius:999px;padding:10px 22px}
 .btn.o{background:none;color:var(--plum);border:1px solid var(--plum)}
 .note{color:var(--muted);font-size:13px}
+.vd{display:block;font-family:var(--f-zh);font-size:13px;color:var(--fg);opacity:.8;margin-top:2px}
+.vd::before{content:"VD đề mẫu: ";font-family:var(--f-body);color:var(--muted);opacity:1}
+.dw{display:flex;flex-direction:column;gap:0}
+.dw.need .de{border-color:#e7b9b9;border-bottom-left-radius:0;border-bottom-right-radius:0}
+.onl{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#FBEDED;border:1px solid #e7b9b9;border-top:0;border-radius:0 0 14px 14px;padding:7px 16px;font-size:13px;color:var(--no);text-decoration:none;font-weight:600}
+.onl:hover,.onl:focus-visible{background:#F7E0E0;outline:none}
+.mini{display:inline-block;font-size:12px;font-weight:700;color:var(--plum);border:1px solid var(--plum);border-radius:999px;padding:1px 10px;text-decoration:none;margin-left:6px;white-space:nowrap}
 @media (max-width:620px){
  .lvs{grid-template-columns:repeat(3,minmax(0,1fr))}
  .de{grid-template-columns:auto minmax(0,1fr)}.go{grid-column:2}
@@ -111,7 +118,8 @@ a.de:hover,a.de:focus-visible{border-color:var(--plum);transform:translateY(-2px
   <div id="app"></div>
   <p class="note">Ôn thi dành cho học viên đang học với cô Thảo. Kết quả lưu trên máy của em và gửi về sổ theo dõi của cô.</p>
 </main>
-<script src="data.js?v=1"></script>
+<script src="data.js?v=2"></script>
+<script src="ketqua.js?v=1"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -154,48 +162,57 @@ function paneDe(lv,L){
   let h=`<h2><span class="num">Viết</span>Bài thi viết (笔试) · ${L.n} câu · ~${L.t} phút</h2>
   <table><thead><tr><th>Phần</th><th>Câu</th><th>Dạng bài</th></tr></thead><tbody>`;
   L.sec.forEach(s=>{h+=`<tr class="sk"><td colspan="3">${s[0]} · ${s[2].reduce((a,d)=>a+cnt(d.c),0)} câu · ${s[1]} phút</td></tr>`;
-    s[2].forEach(d=>h+=`<tr><td class="k">${esc(d.p)}</td><td class="c">${esc(d.c)}</td><td>${esc(d.d)}</td></tr>`)});
-  h+=`</tbody></table>`;
+    s[2].forEach(d=>h+=`<tr><td class="k">${esc(d.p)}</td><td class="c">${esc(d.c)}</td><td>${esc(d.d)}${d.vd?`<span class="vd">${esc(d.vd)}</span>`:""}</td></tr>`)});
+  h+=`</tbody></table>
+  <div class="box"><p><b>Thang điểm:</b> Hán khảo quốc tế (CTI) chưa công bố thang điểm chính thức cho đề 3.0. Trên web, mỗi dạng và mỗi đề thi thử tính theo <b>%</b>; <b>đạt khi từ 80%</b>. Cô sẽ cập nhật thang điểm khi có thông báo chính thức.</p>
+  <p class="note">Kỳ thi HSK 3.0 chính thức đầu tiên (HSK1–6): <b>13/12/2026</b>. Em nhớ hỏi điểm thi xem kỳ mình đăng ký là đề 3.0 hay đề cũ 2.0.</p></div>`;
   if(L.noi){h+=`<h2><span class="num">Nói</span>Bài thi nói (口语) · ~${L.noi.t} phút${L.noi.cb?` (gồm ${L.noi.cb} phút chuẩn bị)`:""}</h2>
-  <p class="hint">Theo đề 3.0, từ HSK3 trở lên bắt buộc đăng ký và thi Nói cùng bài viết (thay cho HSKK trước đây).</p>
-  <table><thead><tr><th>Phần</th><th>Số câu</th><th>Dạng bài</th></tr></thead><tbody>${L.noi.d.map(d=>`<tr><td class="k">${esc(d.p)}</td><td class="c">${esc(d.c||"–")}</td><td>${esc(d.d)}</td></tr>`).join("")}</tbody></table>${L.noi.x?`<p class="note" style="margin:0">${esc(L.noi.x)}</p>`:""}`}
+  <p class="hint">Theo đề 3.0, từ HSK3 trở lên có bài thi Nói theo đúng cấp (口语三级–六级), đăng ký cùng bài viết – thay cho HSKK sơ / trung / cao cấp trước đây.</p>
+  <table><thead><tr><th>Phần</th><th>Số câu</th><th>Dạng bài</th></tr></thead><tbody>${L.noi.d.map(d=>`<tr><td class="k">${esc(d.p)}</td><td class="c">${esc(d.c||"–")}</td><td>${esc(d.d)}${d.vd?`<span class="vd">${esc(d.vd)}</span>`:""}${d.x?`<span class="note" style="display:block">${esc(d.x)}</span>`:""}</td></tr>`).join("")}</tbody></table>${L.noi.x?`<p class="note" style="margin:0">${esc(L.noi.x)}</p>`:""}`}
   else h+=`<div class="box"><p>HSK${lv} không có bài thi Nói. Phần thi nói bắt đầu từ HSK3.</p></div>`;
   h+=`<h2><span class="num">💡</span>Mẹo làm bài của cô</h2>${TIP[lv]?`<div class="box gold">${TIP[lv]}</div>`:`<div class="box"><p class="note">Cô đang soạn mẹo cho từng phần của HSK${lv}.</p></div>`}`;
   return h;
 }
 /* ② Luyện theo dạng */
-const card=(d,lv)=>{const p=prog(lv,d.k),on=!!d.href;
-  return `<${on?"a":"div"} class="de ${on?"":"soon"}" ${on?`href="${esc(d.href)}"`:'aria-disabled="true"'}>
+const onl=(d,lv)=>d.on?{t:d.ont||"Bài liên quan",href:d.on}:ONL[lv];
+const card=(d,lv)=>{const p=prog(lv,d.k),on=!!d.href,need=p&&p.best<80,o=need&&onl(d,lv);
+  return `<div class="dw ${need?"need":""}"><${on?"a":"div"} class="de ${on?"":"soon"}" ${on?`href="${esc(d.href)}"`:'aria-disabled="true"'}>
   <span class="code">${esc(d.sk)} ${esc(d.p.replace("Phần ",""))}<small>${d.c?(/câu/.test(d.c)?esc(d.c):"Câu "+esc(d.c)):"&nbsp;"}</small></span>
-  <span><b>${esc(d.d)}${p?`<span class="tag">${p.best}%</span>`:""}</b>${d.x?`<p>${esc(d.x)}</p>`:""}</span>
-  <span class="go">${on?"Luyện →":"Sắp ra mắt"}</span></${on?"a":"div"}>`};
+  <span><b>${esc(d.d)}${p?`<span class="tag" style="${need?"background:#FBEDED;color:var(--no)":""}">${p.best}%</span>`:""}</b>${d.vd?`<span class="vd">${esc(d.vd)}</span>`:""}${d.x?`<p>${esc(d.x)}</p>`:""}</span>
+  <span class="go">${on?(need?"Làm lại →":"Luyện →"):"Sắp ra mắt"}</span></${on?"a":"div"}>${o?`<a class="onl" href="${esc(o.href)}"><span>Dưới 80% – ôn lại trước khi làm tiếp</span><span>📘 ${esc(o.t)} →</span></a>`:""}</div>`};
 function paneDang(lv,L){
-  let h=`<p class="hint" style="margin:0">Mỗi dạng: <b>Mẹo nhận dạng → Luyện câu mẫu → 📝 Test nhanh → 📈 Xem tiến độ</b>. Đạt khi từ 80% trở lên; chưa đạt thì làm lại câu sai.</p>`;
+  let h=`<p class="hint" style="margin:0">Mỗi dạng: <b>Mẹo nhận dạng → Luyện câu mẫu → 📝 Test nhanh → 📈 Xem tiến độ</b>. Đạt khi từ 80% trở lên; chưa đạt thì làm lại câu sai. Câu sai tự vào mục <b>Lỗi sai</b> và sổ theo dõi của cô; dạng dưới 80% có nút ôn lại bài liên quan.</p>`;
   L.sec.forEach(s=>{h+=`<div class="grp">${{Nghe:"🎧",Đọc:"📖",Viết:"✍️"}[s[0]]} ${s[0]} <small>${s[2].length} dạng</small></div><div class="list">${s[2].map(d=>card({...d,sk:s[0]},lv)).join("")}</div>`});
   if(L.noi){h+=`<div class="grp">🎤 Nói <small>${L.noi.d.length} dạng</small></div>
-  <div class="box gold flow"><span>Nghe / xem đề</span>→<span>Đồng hồ chuẩn bị</span>→<span>Ghi âm</span>→<span>Máy chấm sơ bộ</span>→<span>Cô chấm lại</span>→<span>Nghe câu mẫu</span></div>
+  <div class="box gold flow"><span>Nghe / xem đề</span>→<span>Đồng hồ chuẩn bị</span>→<span>Ghi âm</span>→<span>Nộp cô chấm</span>→<span>Xem câu trả lời mẫu (bật/tắt pinyin)</span></div>
+  <p class="note" style="margin:-6px 0 0">Bài ghi âm tốt cô gom vào <b>kho video luyện nói</b> của từng bạn.</p>
   <div class="list">${L.noi.d.map(d=>card({...d,sk:"Nói"},lv)).join("")}</div>`}
   return h;
 }
 /* ③ Thi thử */
 function paneThi(lv,L){
   const T=THI[lv]||[];
-  let h=`<div class="box"><p><b>Thi thử full đề HSK${lv} (3.0)</b>: ${L.n} câu · ${L.t} phút${L.noi?` + Nói ~${L.noi.t} phút`:""}. Có đồng hồ, hết giờ máy tự nộp. Điểm từng phần gửi về sổ theo dõi của cô.</p></div>`;
+  let h=`<div class="box"><p><b>Thi thử full đề HSK${lv} (3.0)</b>: ${L.n} câu · ${L.t} phút${L.noi?` + Nói ~${L.noi.t} phút`:""}. Có đồng hồ, hết giờ máy tự nộp. Điểm từng phần gửi về sổ theo dõi của cô.</p>
+  <p><b>Làm lại đến khi đạt:</b> dưới 80% thì chưa mở đáp án – em làm lại các câu sai (lần 2, 3…) đến khi đạt. Câu sai được đưa vào mục <b>Lỗi sai</b>.</p></div>`;
   const moi=T.filter(x=>x.tag!="Đề 2.0"),cu=T.filter(x=>x.tag=="Đề 2.0");
   h+=`<div class="list">${moi.length?moi.map(x=>thiCard(x)).join(""):`<div class="de soon"><span class="code">Đề 1<small>3.0</small></span><span><b>Đề thi thử HSK${lv} số 1</b><p>Đề theo cấu trúc mới, cô đang soạn.</p></span><span class="go">Sắp ra mắt</span></div>`}</div>`;
   if(cu.length)h+=`<div class="grp">📚 Ôn đề cũ (dạng 2.0) <small>vẫn dùng để luyện từ vựng, đọc, viết</small></div><div class="list">${cu.map(x=>thiCard(x)).join("")}</div>`;
   return h;
 }
-const thiCard=x=>`<a class="de" href="${esc(x.href)}"><span class="code">Đề<small>${esc(x.tag||"3.0")}</small></span><span><b>${esc(x.t)}</b><p>${esc(x.d)}</p></span><span class="go">Mở →</span></a>`;
+const thiCard=x=>{const p=x.k?prog(st.lv,x.k):null;return `<a class="de" href="${esc(x.href)}"><span class="code">Đề<small>${esc(x.tag||"3.0")}</small></span><span><b>${esc(x.t)}${p?`<span class="tag" style="${p.best<80?"background:#FBEDED;color:var(--no)":""}">${p.best}%</span>`:""}</b><p>${esc(x.d)}</p></span><span class="go">${p&&p.best<80?"Làm lại →":"Mở →"}</span></a>`};
 /* ④ Xem tiến độ hiện tại */
 function paneTd(lv,L){
   const D=allDang(L);let lam=0,dat=0;
   const rows=D.map(d=>{const p=prog(lv,d.k);if(p){lam++;if(p.best>=80)dat++}
-    return `<tr><td class="k">${esc(d.sk)} ${esc(d.p.replace("Phần ",""))}</td><td>${esc(d.d)}</td><td>${p?`<span class="pct ${p.best>=80?"ok":"no"}">${p.best}%</span><small class="lan">${p.n} lần · lần 1: ${p.first}%</small>`:`<span class="pct na">Chưa làm</span>`}</td></tr>`}).join("");
+    return `<tr><td class="k">${esc(d.sk)} ${esc(d.p.replace("Phần ",""))}</td><td>${esc(d.d)}</td><td>${p?`<span class="pct ${p.best>=80?"ok":"no"}">${p.best}%</span><small class="lan">${p.n} lần · lần 1: ${p.first}%</small>${p.best<80?`<a class="mini" style="margin:2px 0 0" href="${esc(onl(d,lv).href)}">Ôn lại</a>`:""}`:`<span class="pct na">Chưa làm</span>`}</td></tr>`}).join("");
   const yeu=D.map(d=>({d,p:prog(lv,d.k)})).filter(x=>x.p&&x.p.best<80).sort((a,b)=>a.p.best-b.p.best).slice(0,3);
+  const T=(THI[lv]||[]).filter(x=>x.k).map(x=>({x,p:prog(lv,x.k)}));
   return `<div class="sum"><span class="chip">Đã luyện <b>${lam}/${D.length}</b> dạng</span><span class="chip">Đạt (≥80%) <b>${dat}</b></span></div>
-  ${yeu.length?`<div class="box gold"><p><b>Dạng cần ôn lại:</b> ${yeu.map(x=>`${esc(x.d.sk)} ${esc(x.d.p.replace("Phần ",""))} (${x.p.best}%)`).join(" · ")}</p></div>`:""}
+  ${yeu.length?`<div class="box gold"><p><b>Dạng yếu nhất:</b> ${esc(yeu[0].d.sk)} ${esc(yeu[0].d.p.replace("Phần ",""))} – ${esc(yeu[0].d.d)} (<span class="pct no">${yeu[0].p.best}%</span>)<a class="mini" href="${esc(onl(yeu[0].d,lv).href)}">📘 Ôn lại</a></p>${yeu.length>1?`<p class="note">Cần ôn tiếp: ${yeu.slice(1).map(x=>`${esc(x.d.sk)} ${esc(x.d.p.replace("Phần ",""))} (${x.p.best}%)`).join(" · ")}</p>`:""}</div>`:""}
+  <h2><span class="num">1</span>Điểm theo từng dạng</h2>
   <table><thead><tr><th>Dạng</th><th>Nội dung</th><th>Điểm tốt nhất</th></tr></thead><tbody>${rows}</tbody></table>
+  <h2><span class="num">2</span>Điểm thi thử</h2>
+  ${T.length?`<table><thead><tr><th>Đề</th><th>Điểm tốt nhất</th></tr></thead><tbody>${T.map(({x,p})=>`<tr><td>${esc(x.t)}</td><td>${p?`<span class="pct ${p.best>=80?"ok":"no"}">${p.best}%</span><small class="lan">${p.n} lần · lần 1: ${p.first}%</small>`:`<span class="pct na">Chưa làm</span>`}</td></tr>`).join("")}</tbody></table>`:`<div class="box"><p class="note">Đề thi thử HSK${lv} (3.0) cô đang soạn. Có đề là điểm hiện ở đây.</p></div>`}
   ${lam?"":`<p class="note" style="margin:0">Em chưa luyện dạng nào của HSK${lv}. Vào ② Luyện theo dạng để bắt đầu.</p>`}`;
 }
 
