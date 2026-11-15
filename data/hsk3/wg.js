@@ -1,4 +1,4 @@
-/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–15 =====
+/* ===== Flashcard · Hướng dẫn viết – HSK3 Bài 1–16 =====
    [mẹo nhớ theo bộ thủ, [câu ví dụ, pinyin, nghĩa]]. Câu ví dụ dùng từ HSK1–2 và các bài HSK3 đã học. */
 var WG=Object.assign(window.WG||{},{
 "3-1":{
@@ -424,4 +424,31 @@ var WG=Object.assign(window.WG||{},{
 "西北":["西: tây. 北: bắc. Tiếng Trung nói tây trước bắc: 西北 = tây bắc (giống tiếng Việt).",["我的老家在中国西北。","Wǒ de lǎojiā zài Zhōngguó xīběi.","Quê tôi ở tây bắc Trung Quốc."]],
 "经过":["经: đi qua (bộ <b>纟</b>). 过: qua (bộ <b>辶</b>). Đi qua, trải qua.",["去学校要经过一个公园。","Qù xuéxiào yào jīngguò yí ge gōngyuán.","Đến trường phải đi qua một công viên."]],
 "草地":["草: cỏ (bộ <b>艹</b>). 地: đất. Đất có cỏ = bãi cỏ.",["孩子们在草地上玩儿。","Háizimen zài cǎodì shang wánr.","Bọn trẻ chơi trên bãi cỏ."]],
-"遇见":["遇: gặp (bộ <b>辶</b> đi đường). 见: thấy. Đang đi thì gặp = tình cờ gặp.",["我在超市遇见了我的老师。","Wǒ zài chāoshì yùjiànle wǒ de lǎoshī.","Tôi tình cờ gặp cô giáo ở siêu thị."]]}});
+"遇见":["遇: gặp (bộ <b>辶</b> đi đường). 见: thấy. Đang đi thì gặp = tình cờ gặp.",["我在超市遇见了我的老师。","Wǒ zài chāoshì yùjiànle wǒ de lǎoshī.","Tôi tình cờ gặp cô giáo ở siêu thị."]]},
+"3-16":{
+"脏":["Bộ <b>月</b> (thịt, cơ thể) + 庄: người lấm lem = bẩn.",["你的鞋太脏了，快去洗洗。","Nǐ de xié tài zāng le, kuài qù xǐxi.","Giày của bạn bẩn quá, mau đi rửa đi."]],
+"可爱":["可: đáng, có thể. 爱: yêu. Đáng để yêu = đáng yêu.",["这只小狗真可爱。","Zhè zhī xiǎo gǒu zhēn kě'ài.","Chú chó con này đáng yêu thật."]],
+"一会儿":["一: một. 会儿: lúc. Một lúc, một lát. 一会儿……一会儿……: lúc thì … lúc thì ….",["请等一会儿，我马上来。","Qǐng děng yíhuìr, wǒ mǎshàng lái.","Xin đợi một lát, tôi đến ngay."]],
+"脚":["Bộ <b>月</b> (cơ thể) + 却: bộ phận đi lại = chân, bàn chân.",["我的脚有点儿疼。","Wǒ de jiǎo yǒudiǎnr téng.","Chân tôi hơi đau."]],
+"照顾":["照: chiếu, soi (bộ <b>灬</b> lửa dưới). 顾: trông nom (bộ <b>页</b> đầu). Để mắt trông nom = chăm sóc.",["妈妈病了，我在家照顾她。","Māma bìng le, wǒ zài jiā zhàogù tā.","Mẹ ốm, tôi ở nhà chăm sóc mẹ."]],
+"好像":["好: tốt, rất. 像: giống (bộ <b>亻</b>). Rất giống = dường như.",["他好像不太高兴。","Tā hǎoxiàng bú tài gāoxìng.","Anh ấy dường như không vui lắm."]],
+"认得":["认: nhận (bộ <b>讠</b> lời nói). 得: được. Nhận ra được, quen biết.",["你还认得我吗？","Nǐ hái rènde wǒ ma?","Bạn còn nhận ra tôi không?"]],
+"周末":["周: tuần. 末: cuối (bộ <b>木</b>, nét ngang trên dài: ngọn cây = phần cuối). Cuối tuần.",["周末你想去哪儿玩儿？","Zhōumò nǐ xiǎng qù nǎr wánr?","Cuối tuần bạn muốn đi đâu chơi?"]],
+"动物园":["动物: động vật. 园: vườn (bộ <b>囗</b> rào quanh). Vườn động vật = sở thú.",["孩子们都喜欢去动物园。","Háizimen dōu xǐhuan qù dòngwùyuán.","Bọn trẻ đều thích đi sở thú."]],
+"动物":["动: động (bộ <b>力</b> sức). 物: vật (bộ <b>牛</b>). Vật biết cử động = động vật.",["你最喜欢什么动物？","Nǐ zuì xǐhuan shénme dòngwù?","Bạn thích con vật nào nhất?"]],
+"大熊猫":["大: lớn. 熊: gấu (bộ <b>灬</b>). 猫: mèo (bộ <b>犭</b>). Gấu to giống mèo = gấu trúc.",["大熊猫喜欢吃竹子。","Dàxióngmāo xǐhuan chī zhúzi.","Gấu trúc thích ăn tre."]],
+"奇怪":["奇: lạ. 怪: quái (bộ <b>忄</b> tâm: thấy lạ trong lòng). Kỳ lạ.",["这个人说话很奇怪。","Zhège rén shuōhuà hěn qíguài.","Người này nói chuyện rất kỳ lạ."]],
+"其实":["其: cái đó. 实: thực (bộ <b>宀</b>). Cái thực ra là = thực ra.",["他看起来很年轻，其实已经五十岁了。","Tā kàn qǐlai hěn niánqīng, qíshí yǐjīng wǔshí suì le.","Ông ấy trông rất trẻ, thực ra đã 50 tuổi rồi."]],
+"竹子":["竹: hai cành tre có lá = cây tre (dạng bộ <b>⺮</b> trên đầu chữ 笔, 等…).",["这里有很多竹子。","Zhèlǐ yǒu hěn duō zhúzi.","Ở đây có rất nhiều tre."]],
+"国宝":["国: nước. 宝: báu (bộ <b>宀</b> + 玉 ngọc: ngọc cất trong nhà). Báu vật của nước = quốc bảo.",["大熊猫是中国的国宝。","Dàxióngmāo shì Zhōngguó de guóbǎo.","Gấu trúc là quốc bảo của Trung Quốc."]],
+"全":["人 trên + 王 (ngọc) dưới: ngọc nguyên vẹn = toàn bộ. 全世界: toàn thế giới.",["全班同学都来了。","Quán bān tóngxué dōu lái le.","Cả lớp đều đến rồi."]],
+"野生":["野: đồng hoang (bộ <b>里</b>). 生: sống. Sống ngoài hoang = hoang dã.",["这里有很多野生动物。","Zhèlǐ yǒu hěn duō yěshēng dòngwù.","Ở đây có nhiều động vật hoang dã."]],
+"关于":["关: liên quan. 于: ở, về. 关于 + N: về …. Nhớ: 关于 đặt trước danh từ.",["这是一本关于中国历史的书。","Zhè shì yì běn guānyú Zhōngguó lìshǐ de shū.","Đây là một quyển sách về lịch sử Trung Quốc."]],
+"饱":["Bộ <b>饣</b> (ăn) + 包 (bao bọc): ăn đầy bụng = no.",["我吃饱了，谢谢！","Wǒ chībǎo le, xièxie!","Tôi ăn no rồi, cảm ơn!"]],
+"张":["Bộ <b>弓</b> (cung) + 长: kéo căng dây cung = giương, mở ra. 张嘴: há miệng. Cũng là lượng từ: 一张照片.",["请张开嘴，我看看。","Qǐng zhāngkāi zuǐ, wǒ kànkan.","Hãy há miệng ra, để tôi xem."]],
+"嘴":["Bộ <b>口</b> (miệng) + 觜: cái miệng.",["他的嘴很大。","Tā de zuǐ hěn dà.","Miệng cậu ấy rất to."]],
+"身边":["身: thân mình. 边: bên (bộ <b>辶</b>). Bên cạnh mình.",["妈妈一直在我身边。","Māma yìzhí zài wǒ shēnbiān.","Mẹ luôn ở bên cạnh tôi."]],
+"半天":["半: nửa. 天: ngày. Nửa ngày; khẩu ngữ: một lúc lâu.",["我等了你半天了！","Wǒ děngle nǐ bàntiān le!","Mình đợi bạn mãi rồi!"]],
+"脸":["Bộ <b>月</b> (cơ thể) + 佥: mặt, khuôn mặt.",["她的脸红了。","Tā de liǎn hóng le.","Mặt cô ấy đỏ lên."]],
+"大人":["大: lớn. 人: người. Người lớn (đọc dàren, 人 nhẹ).",["这个电影大人和孩子都喜欢。","Zhège diànyǐng dàren hé háizi dōu xǐhuan.","Bộ phim này người lớn và trẻ con đều thích."]],
+"喜爱":["喜: vui thích. 爱: yêu. Yêu thích (trang trọng hơn 喜欢).",["这是孩子们最喜爱的游戏。","Zhè shì háizimen zuì xǐ'ài de yóuxì.","Đây là trò chơi bọn trẻ yêu thích nhất."]]}});
