@@ -34,6 +34,11 @@ body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15
 .me{font-size:13px;color:var(--muted)}
 .me b{color:var(--plum)}
 /* chọn cấp */
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mode button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 6px;font:inherit;font-weight:700;color:var(--plum);cursor:pointer}
+.mode button.on{background:var(--plum);border-color:var(--plum);color:#fff}
+.mode small{display:block;font-weight:400;font-size:11px;opacity:.85}
+.lvs.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .lvs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
 .lv{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 4px;text-align:center;cursor:pointer;font:inherit;color:inherit;line-height:1.25}
 .lv b{display:block;font-size:17px;color:var(--plum)}
@@ -139,17 +144,36 @@ if(!ME){
 $("me").innerHTML=`👤 <b>${esc(ME.name)}</b>${ME.cls?" · "+esc(ME.cls):""}`;
 
 const TABS=[["de","① Tìm hiểu đề"],["dang","② Luyện theo dạng"],["thi","③ Thi thử"],["td","④ Xem tiến độ hiện tại"]];
-let st=J("ct_ot_ui",{lv:1,tab:"de"});
+let st=J("ct_ot_ui",{lv:1,tab:"de"});if(!st.mode)st.mode="hsk";if(!st.klv)st.klv=5;
 const m=/^#hsk([1-6])(?:\/(de|dang|thi|td))?$/.exec(location.hash);
-if(m){st.lv=+m[1];if(m[2])st.tab=m[2]}
+if(m){st.mode="hsk";st.lv=+m[1];if(m[2])st.tab=m[2]}
+const mk=/^#hskk([3-6])$/.exec(location.hash);if(mk){st.mode="hskk";st.klv=+mk[1]}
 
 const allDang=L=>{const o=[];L.sec.forEach(s=>s[2].forEach(d=>o.push({...d,sk:s[0]})));if(L.noi)L.noi.d.forEach(d=>o.push({...d,sk:"Nói"}));return o};
 const prog=(lv,k)=>J(`ct_ot_${lv}_${k}`,null);
 
+const MODE=()=>`<div class="mode" role="tablist"><button data-mode="hsk" class="${st.mode=="hsk"?"on":""}">📝 Ôn thi HSK<small>HSK 1–6 · bài viết</small></button><button data-mode="hskk" class="${st.mode=="hskk"?"on":""}">🎤 Ôn thi HSKK<small>Thi nói · HSKK 3–6</small></button></div>`;
+/* Tài liệu HSKK theo cấp (16/11/2026). Thêm tài liệu: bổ sung vào mảng của cấp đó. */
+const HSKK={
+ 3:[],
+ 4:[],
+ 5:[{t:"Phần 3 · 回答问题 — Kho đề thật theo chủ đề",p:"87 lần ra đề thật (01/2024 – 09/2026), 15 chủ đề, 7 nhóm đề. Mỗi đề: đồng hồ chuẩn bị – nói, cách giải, sơ đồ ý chính, bài nói mẫu 2′30″ (bật/tắt pinyin, dịch).",href:"hskk/hskk5-tra-loi-cau-hoi.html",tag:"Phần 3"}],
+ 6:[]};
+function drawK(){
+  const lv=st.klv,L=OT[lv];put("ct_ot_ui",st);
+  history.replaceState(null,"",`#hskk${lv}`);
+  let h=MODE()+`<div class="lvs k4" role="tablist" aria-label="Chọn cấp HSKK">${[3,4,5,6].map(i=>`<button class="lv ${i==lv?"on":""}" role="tab" aria-selected="${i==lv}" data-klv="${i}"><b>HSKK${i}</b><small>口语${"三四五六"[i-3]}级</small></button>`).join("")}</div>`;
+  h+=`<div class="sum"><span class="chip">🎤 Thi nói ~${L.noi.t} phút</span><span class="chip">Gồm ${L.noi.cb} phút chuẩn bị</span><span class="chip">${L.noi.d.length} phần</span></div>`;
+  h+=`<h2><span class="num">1</span>Cấu trúc đề HSKK${lv} (khung 3.0)</h2><table><thead><tr><th>Phần</th><th>Số câu</th><th>Dạng bài</th></tr></thead><tbody>${L.noi.d.map(d=>`<tr><td class="k">${esc(d.p)}</td><td class="c">${esc(d.c||"–")}</td><td>${esc(d.d)}${d.x?`<small style="display:block;color:var(--muted);margin-top:2px">⏱ ${esc(d.x)}</small>`:""}</td></tr>`).join("")}</tbody></table>`;
+  const T=HSKK[lv]||[];
+  h+=`<h2><span class="num">2</span>Tài liệu luyện nói HSKK${lv}</h2><div class="list">${T.length?T.map(x=>`<a class="de" href="${esc(x.href)}"><span class="code">${esc(x.tag)}<small>HSKK${lv}</small></span><span><b>${esc(x.t)}</b><p>${esc(x.p)}</p></span><span class="go">Mở →</span></a>`).join(""):`<div class="de soon"><span class="code">HSKK${lv}</span><span><b>Tài liệu luyện nói HSKK${lv}</b><p>Cô đang soạn.</p></span><span class="go">Sắp ra mắt</span></div>`}</div>`;
+  app.innerHTML=h;
+}
 function draw(){
+  if(st.mode=="hskk")return drawK();
   const lv=st.lv,L=OT[lv];put("ct_ot_ui",st);
   history.replaceState(null,"",`#hsk${lv}/${st.tab}`);
-  let h=`<div class="lvs" role="tablist" aria-label="Chọn cấp">${[1,2,3,4,5,6].map(i=>`<button class="lv ${i==lv?"on":""}" role="tab" aria-selected="${i==lv}" data-lv="${i}"><b>HSK${i}</b><small>${OT[i].ten}</small>${OT[i].noi?`<br><span class="mic">+ Nói</span>`:""}</button>`).join("")}</div>`;
+  let h=MODE()+`<div class="lvs" role="tablist" aria-label="Chọn cấp">${[1,2,3,4,5,6].map(i=>`<button class="lv ${i==lv?"on":""}" role="tab" aria-selected="${i==lv}" data-lv="${i}"><b>HSK${i}</b><small>${OT[i].ten}</small>${OT[i].noi?`<br><span class="mic">+ Nói</span>`:""}</button>`).join("")}</div>`;
   h+=`<div class="sum"><span class="chip">Bài viết: <b>${L.n} câu</b> · ${L.t} phút</span>${L.sec.map(s=>`<span class="chip">${s[0]} ${s[2].reduce((a,d)=>a+cnt(d.c),0)} câu · ${s[1]}'</span>`).join("")}${L.noi?`<span class="chip">🎤 Nói ~${L.noi.t} phút</span>`:""}<span class="chip">Từ vựng: <b>${L.tu.toLocaleString("vi")}</b> từ</span></div>`;
   h+=`<div class="tabs" role="tablist">${TABS.map(t=>`<button class="tab ${t[0]==st.tab?"on":""}" role="tab" aria-selected="${t[0]==st.tab}" data-tab="${t[0]}">${t[1]}</button>`).join("")}</div>`;
   h+=`<div class="pane">${({de:paneDe,dang:paneDang,thi:paneThi,td:paneTd})[st.tab](lv,L)}</div>`;
@@ -216,10 +240,12 @@ function paneTd(lv,L){
   ${lam?"":`<p class="note" style="margin:0">Em chưa luyện dạng nào của HSK${lv}. Vào ② Luyện theo dạng để bắt đầu.</p>`}`;
 }
 
-app.addEventListener("click",e=>{const b=e.target.closest("[data-lv],[data-tab]");if(!b)return;
+app.addEventListener("click",e=>{const k=e.target.closest("[data-mode],[data-klv]");if(k){if(k.dataset.mode)st.mode=k.dataset.mode;else st.klv=+k.dataset.klv;draw();return}
+  const b=e.target.closest("[data-lv],[data-tab]");if(!b)return;
   if(b.dataset.lv){st.lv=+b.dataset.lv}else st.tab=b.dataset.tab;draw();
   if(b.dataset.tab)document.querySelector(".tabs").scrollIntoView({block:"nearest"})});
-window.addEventListener("hashchange",()=>{const m=/^#hsk([1-6])(?:\/(de|dang|thi|td))?$/.exec(location.hash);if(m){st.lv=+m[1];if(m[2])st.tab=m[2];draw()}});
+window.addEventListener("hashchange",()=>{const k=/^#hskk([3-6])$/.exec(location.hash);if(k){st.mode="hskk";st.klv=+k[1];draw();return}
+  const m=/^#hsk([1-6])(?:\/(de|dang|thi|td))?$/.exec(location.hash);if(m){st.mode="hsk";st.lv=+m[1];if(m[2])st.tab=m[2];draw()}});
 draw();
 })();
 </script>
