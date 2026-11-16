@@ -1,4 +1,4 @@
-// node compile.js 1 2 3 ... → ghi data/hsk2/npNN.js từ src/bNN.js; in ký tự ngoài phạm vi từ vựng
+// node compile.js → sinh đủ 15 bài HSK2 từ src/bNN.js, gộp vào data/hsk2/np.js; in ký tự ngoài phạm vi từ vựng
 const fs=require('fs'),{py}=require('./pin.js'),V=require('./vocab.json');
 const OUT=__dirname+'/../../data/hsk2/';
 const LESS=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
@@ -47,4 +47,8 @@ const o=GXD["2-${n}"]||{};GXD["2-${n}"]={so:${JSON.stringify(so)},tr:${JSON.stri
  console.log(`Bài ${n}: ${np.length} điểm · drill ${nd} · sắp xếp ${so.length} · tạo câu ${tr.length} · ${(js.length/1024).toFixed(1)} KB`);
  const mk=Object.keys(miss);if(mk.length)console.log('  ⚠ ngoài phạm vi:',mk.map(c=>c+'('+[...new Set(miss[c])].slice(0,2).join(';')+')').join(' '));
 }
-const args=process.argv.slice(2).map(Number);(args.length?args:LESS).forEach(n=>{try{build(n)}catch(e){console.log('Bài',n,'LỖI',e.message)}});
+LESS.forEach(n=>{try{build(n)}catch(e){console.log('Bài',n,'LỖI',e.message)}});
+// gộp 15 bài vào một file data/hsk2/np.js (trang Claude giới hạn 512 file)
+const parts=LESS.map(n=>OUT+'np'+String(n).padStart(2,'0')+'.js').filter(f=>fs.existsSync(f));
+fs.writeFileSync(OUT+'np.js',parts.map(f=>fs.readFileSync(f,'utf8')).join(''));parts.forEach(f=>fs.unlinkSync(f));
+console.log('→ data/hsk2/np.js',(fs.statSync(OUT+'np.js').size/1024).toFixed(1),'KB');
