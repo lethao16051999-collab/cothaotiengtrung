@@ -23,4 +23,4 @@ Object.assign(SPN,{"杨同乐":["Yáng Tónglè","Dương Đồng Lạc"]});
 const GPN="Ngữ pháp lấy từ mục Lớp học của Tiểu Ngữ (小语讲堂) trong sách, kèm lỗi người Việt hay mắc.";
 const LD2={};
 /* Danh sách file của cấp này (tải khi học viên mở HSK 2, js/kho.js). Thêm bài N: tạo data/hsk2/bNN.js, thêm N vào "bai", tăng "v". */
-var NAP=window.NAP||{};NAP[2]={dir:"data/hsk2/",bai:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],them:["wg.js","ot.js"],ts:true,v:5};
+var NAP=window.NAP||{};NAP[2]={dir:"data/hsk2/",bai:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],them:["wg.js","ot.js","np01.js","np02.js","np03.js","np04.js","np05.js","np06.js","np07.js","np08.js","np09.js","np10.js","np11.js","np12.js","np13.js","np14.js","np15.js"],ts:true,v:6};
