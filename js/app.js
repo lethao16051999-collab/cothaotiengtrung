@@ -373,7 +373,12 @@ function pySyl(s,t){s=s.replace(/u:|v/g,"ü").replace(/U:|V/g,"Ü");t=+t;if(!(t>
  let i=lo.indexOf("a");if(i<0)i=lo.indexOf("e");if(i<0)i=lo.indexOf("ou");if(i<0)for(let k=lo.length-1;k>=0;k--)if("iouü".includes(lo[k])){i=k;break}
  if(i<0)return s;const m=TMK[lo[i]][t-1];return s.slice(0,i)+(s[i]!==lo[i]?m.toUpperCase():m)+s.slice(i+1)}
 const pyMark=x=>String(x).replace(/([a-zA-ZüÜ:]+)([0-5])/g,(_,a,t)=>pySyl(a,t));
-function pyLive(el){if(!/[0-5]/.test(el.value))return;const p=el.selectionStart==null?el.value.length:el.selectionStart,b=pyMark(el.value.slice(0,p));el.value=b+pyMark(el.value.slice(p));try{el.setSelectionRange(b.length,b.length)}catch(e){}}
+let pyIME=false;
+document.addEventListener("compositionstart",e=>{const t=e.target;if(t&&t.matches&&t.matches(".tvin,.pytry"))pyIME=true},true);
+document.addEventListener("compositionend",e=>{const t=e.target;if(!(t&&t.matches&&t.matches(".tvin,.pytry")))return;pyIME=false;setTimeout(()=>t.dispatchEvent(new Event("input",{bubbles:true})),0)},true);
+function pyWarn(el){const b=$("pybar");if(!b||b.previousElementSibling!==el)return;let w=$("pywarn");const on=/[\u3400-\u9fff]/.test(el.value);
+ if(!on){if(w)w.remove();return}if(!w){w=document.createElement("div");w.id="pywarn";w.className="pywarn";w.innerHTML="⚠️ Em đang dùng bàn phím tiếng Trung. Hãy bấm 🌐 đổi sang bàn phím <b>tiếng Anh</b> rồi gõ lại, ví dụ <code>zhu1</code>.";b.after(w)}}
+function pyLive(el){if(pyIME)return;pyWarn(el);if(!/[0-5]/.test(el.value))return;const p=el.selectionStart==null?el.value.length:el.selectionStart,b=pyMark(el.value.slice(0,p));el.value=b+pyMark(el.value.slice(p));try{el.setSelectionRange(b.length,b.length)}catch(e){}}
 function pyBar(el){let b=$("pybar");if(!b){b=document.createElement("div");b.id="pybar";b.className="pybar";
   b.innerHTML=[["1","ā","Thanh 1"],["2","á","Thanh 2"],["3","ǎ","Thanh 3"],["4","à","Thanh 4"],["ü","ü","Chữ ü"]].map(([k,l,t])=>`<button type="button" data-k="${k}" title="${t}" aria-label="${t}">${l}</button>`).join("");
   b.addEventListener("pointerdown",e=>e.preventDefault());b.addEventListener("mousedown",e=>e.preventDefault());
@@ -386,7 +391,7 @@ document.addEventListener("focusin",e=>{const t=e.target;if(t&&t.matches&&t.matc
 function pyTry(el){pyLive(el);const r=$("pytryr"),v=el.value.trim();if(!r)return;if(!v){r.innerHTML="";return}
  const sc=pyScore("nǐ hǎo",v,"你好");r.innerHTML=sc==2?`<span class="okt">✓ Đúng rồi: ${esc(v)}. Em gõ như vậy khi làm bài.</span>`:sc==1?`<span class="half">½ Đúng âm, sai thanh. 你好 là thanh 3 + thanh 3: ni3hao3</span>`:`<span class="bad">Chưa đúng, em gõ thử: ni3hao3</span>`}
 const PYGUIDE=`<div class="pyguide"><b>⌨️ Cách gõ phiên âm (em đọc trước khi làm)</b>
-<p>Gõ chữ cái, rồi gõ <b>số thanh ngay sau mỗi âm tiết</b>. Máy tự đổi số thành dấu. Trên điện thoại có thể bấm nút <b>ā á ǎ à ü</b> hiện ngay dưới ô đang gõ.</p>
+<p>📱 Dùng bàn phím <b>tiếng Anh</b> (hoặc tiếng Việt), <b>không dùng bàn phím tiếng Trung 拼音</b>.</p><p>Gõ chữ cái, rồi gõ <b>số thanh ngay sau mỗi âm tiết</b>. Máy tự đổi số thành dấu. Trên điện thoại có thể bấm nút <b>ā á ǎ à ü</b> hiện ngay dưới ô đang gõ.</p>
 <table class="pyt"><tr><th>Thanh</th><th>Phiên âm</th><th>Em gõ</th></tr>
 <tr><td>Thanh 1</td><td>mā</td><td><code>ma1</code></td></tr><tr><td>Thanh 2</td><td>má</td><td><code>ma2</code></td></tr>
 <tr><td>Thanh 3</td><td>mǎ</td><td><code>ma3</code></td></tr><tr><td>Thanh 4</td><td>mà</td><td><code>ma4</code></td></tr>
