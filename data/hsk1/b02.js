@@ -20,7 +20,9 @@ texts:[
 words:[
 ["请问","qǐngwèn","động từ","xin hỏi",0],["你","nǐ","đại từ","bạn, anh, chị, em… (ngôi thứ hai số ít)",0],["叫","jiào","động từ","gọi là, tên là",0],["什么","shénme","đại từ","gì, cái gì",0],["名字","míngzi","danh từ","tên",0],["我","wǒ","đại từ","tôi, mình… (ngôi thứ nhất số ít)",0],
 ["不","bù","phó từ","không",1],["是","shì","động từ","là",1],["对不起","duìbuqǐ","động từ","xin lỗi",1],["没关系","méi guānxi","","không sao, không có gì",1],["没事","méishì","động từ","không sao, không có gì",1],
-["很","hěn","phó từ","rất",2],["高兴","gāoxìng","tính từ","vui, vui vẻ",2],["认识","rènshi","động từ","quen, làm quen",2],["也","yě","phó từ","cũng",2]],
+["很","hěn","phó từ","rất",2],["高兴","gāoxìng","tính từ","vui, vui vẻ",2],["认识","rènshi","động từ","quen, làm quen",2],["也","yě","phó từ","cũng",2],
+/* Thẻ bổ sung (không phải từ mới của bài): chữ trong bài khóa đã học ở bài trước · w[4]=-1, w[5]=nhãn */
+["你好","nǐ hǎo","","xin chào, chào bạn",-1,"Ôn · Bài 1"]],
 rhyme:{a:"2-7",n:"Luyện âm j – q (jiā, jiǎn, jǐ / qī) và giữ đúng thanh 3 trong jiǎn, jǐ.",l:[
 ["七加一，再减一，","Qī jiā yī, zài jiǎn yī,","Bảy cộng một, lại trừ một."],
 ["加完减完等于几？","Jiāwán jiǎnwán děngyú jǐ?","Cộng xong trừ xong thì bằng mấy?"],

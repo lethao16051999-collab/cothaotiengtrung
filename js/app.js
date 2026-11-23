@@ -187,10 +187,10 @@ ${x.l.map((y,j)=>`<div class="dl">${sp(y[0])}<div class="bub" id="bub${i}-${j}" 
 <p class="ctx">🎧 Hiện đang dùng giọng đọc máy của trình duyệt. File nghe giáo trình sẽ được gắn vào sau. Chạm vào từng câu để nghe riêng câu đó.</p>`+nextBtn("bk")}
 
 function vFc(L,r){const w=L.words[fcI],k=r.fck||{},n=L.words.length,m=Object.values(k).filter(x=>x).length;
- return `<div class="fc" onclick="fcShow=!fcShow;rr()">${fcShow?`<div><div class="h">${w[0]}</div><div class="py">${w[1]}</div><b class="vi">${w[3]}</b>${w[2]?`<br><small class="vi">(${w[2]})</small>`:""}</div>`:`<div><div class="h">${w[0]}</div><small style="color:var(--sub)">Chạm để lật thẻ</small></div>`}</div>
+ return `<div class="fc" onclick="fcShow=!fcShow;rr()">${fcShow?`<div><div class="h">${w[0]}</div><div class="py">${w[1]}</div><b class="vi">${w[3]}</b>${w[2]?`<br><small class="vi">(${w[2]})</small>`:""}${w[5]?`<br><span class="fctag">${w[5]}</span>`:""}</div>`:`<div><div class="h">${w[0]}</div>${w[5]?`<span class="fctag">${w[5]}</span><br>`:""}<small style="color:var(--sub)">Chạm để lật thẻ</small></div>`}</div>
 <div class="row c">${bS(w[0],"🔊 Nghe")}<button class="btn o" onclick="fcNx(-1)">←</button><button class="btn" onclick="fcMk(1)">✓ Đã nhớ</button><button class="btn o" onclick="fcMk(0)">✗ Chưa nhớ</button><button class="btn o" onclick="fcNx(1)">→</button></div>
 <p>Thẻ ${fcI+1}/${n} · Đã nhớ ${m}/${n}${r.fc==null?` · Đánh dấu đủ ${n} thẻ để tính điểm`:` · Điểm: <b>${r.fc}%</b>`}</p>
-<div class="chips">${L.words.map((x,j)=>`<span class="chip ${k[j]===1?"ok":k[j]===0?"no":""} ${j==fcI?"cur":""}" onclick="fcI=${j};fcShow=false;rr()">${x[0]}</span>`).join("")}</div>
+<div class="chips">${L.words.map((x,j)=>`${x[5]&&!(L.words[j-1]||[])[5]?`<span class="fcsep">Thẻ bổ sung · chữ trong bài khóa đã học, số đếm</span>`:""}<span class="chip ${x[5]?"ex":""} ${k[j]===1?"ok":k[j]===0?"no":""} ${j==fcI?"cur":""}" onclick="fcI=${j};fcShow=false;rr()">${x[0]}</span>`).join("")}</div>
 <div class="row"><button class="btn o sm" onclick="fcOnlyNo()">Chỉ ôn thẻ chưa nhớ</button></div>`+(r.fc!=null?nextBtn("fc"):"")}
 function fcNx(d){const n=LD[cur].words.length;fcI=(fcI+d+n)%n;fcShow=false;rr()}
 function fcMk(v){const r=ldN(cur),n=LD[cur].words.length;r.fck=r.fck||{};r.fck[fcI]=v;if(Object.keys(r.fck).length>=n)r.fc=Math.round(Object.values(r.fck).filter(x=>x).length/n*100);svN(cur,r);fcNx(1)}
@@ -401,7 +401,7 @@ const PYGUIDE=`<div class="pyguide"><b>⌨️ Cách gõ phiên âm (em đọc tr
 <li>Từ có 儿: 一会儿 yíhuìr → <code>yi2hui4r</code></li>
 <li>Không cần dấu cách, chữ hoa hay thường đều được. Gõ thẳng có dấu (lǎoshī) cũng được.</li></ul>
 <div class="pytrow"><label>Gõ thử: <b class="zh">你好</b></label><input class="tin pytry" placeholder="ví dụ: ni3hao3" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" oninput="pyTry(this)"><div id="pytryr"></div></div></div>`;
-const tVPick=L=>{const seen=new Set(),ok=[];L.words.forEach((w,i)=>{if(seen.has(w[0]))return;seen.add(w[0]);ok.push(i)});return ok};
+const tVPick=L=>{const seen=new Set(),ok=[];L.words.forEach((w,i)=>{if(seen.has(w[0])||w[5])return;seen.add(w[0]);ok.push(i)});return ok};
 const nfmt=x=>String(Math.round(x*10)/10).replace(".",",");
 function openTest(n){tStop();tcur=n;T=null;rr();scrollTo(0,0)}
 function tStop(){if(TIV){clearInterval(TIV);TIV=null}try{speechSynthesis.cancel()}catch(e){}}
