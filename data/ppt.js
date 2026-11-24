@@ -2,7 +2,7 @@
    Cách gắn link: dán link vào giữa hai dấu "" đúng số bài, ví dụ  1:"https://www.canva.com/design/....../view",
    Bài nào để trống "" thì trang hiện "Sắp có". Tên bài lấy tự động từ giáo trình trên trang. */
 var PPT_LINK={
- hsk1:{1:"",2:"",3:"ppt/hsk1-b03.html",4:"ppt/hsk1-b04.html",5:"",6:"",7:"",8:"",9:"",10:"",11:"",12:"",13:"",14:"",15:""},
+ hsk1:{1:"",2:"",3:"ppt/hsk1-b03.html",4:"ppt/hsk1-b04.html",5:"ppt/hsk1-b05.html",6:"",7:"",8:"",9:"",10:"",11:"",12:"",13:"",14:"",15:""},
  hsk2:{1:"ppt/hsk2-b01.html",2:"",3:"",4:"",5:"ppt/hsk2-b05.html",6:"ppt/hsk2-b06.html",7:"ppt/hsk2-b07.html",8:"",9:"",10:"",11:"",12:"",13:"",14:"",15:""},
  hsk3:{1:"ppt/hsk3-b01.html",2:"ppt/hsk3-b02.html",3:"ppt/hsk3-b03.html",4:"",5:"",6:"ppt/hsk3-b06.html",7:"",8:"",9:"",10:"",11:"ppt/hsk3-b11.html",12:"ppt/hsk3-b12.html",13:"",14:"",15:"",16:"",17:"",18:""}
 };
