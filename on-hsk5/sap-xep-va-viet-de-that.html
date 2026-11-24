@@ -92,6 +92,20 @@ table.pt{width:100%;border-collapse:collapse;background:var(--card);border:1px s
 .jump a{text-decoration:none;color:var(--plum2);border:1.5px solid var(--chipb);background:var(--chip);padding:8px 12px;border-radius:999px;font-weight:600;font-size:14px;min-height:40px;display:inline-flex;align-items:center}
 h2.nhom{margin-top:34px;padding-bottom:6px;border-bottom:2px solid var(--gold);scroll-margin-top:130px}
 h3{font-size:17px;margin:18px 0 8px}
+.clock{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line)}
+.clock .lbl{font-weight:600;font-size:14px;color:var(--mute)}
+.clock b{font:800 20px/1 "Be Vietnam Pro",sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.5px;color:var(--ink)}
+.clock.run{border-color:var(--plum2)}.clock.run b{color:var(--plum2)}
+.clock.warn{border-color:var(--gold);background:var(--chip)}.clock.warn b{color:#a06b00}
+.clock.end{border-color:var(--bad);background:var(--badbg);animation:blink 1s steps(2) infinite}.clock.end b{color:var(--bad)}
+@keyframes blink{50%{opacity:.45}}
+.tpanel{flex-basis:100%;display:grid;gap:10px;padding:10px 0 4px}
+.tpanel[hidden]{display:none}
+.tpre,.tset{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tpre span,.tset label,.tset span{color:var(--mute);font-size:14px}
+.tpre button{font-size:14px;min-height:40px}
+.tpre button.on{background:var(--plum);border-color:var(--plum);color:#fff}
+.tset input{width:84px;font:600 18px "Be Vietnam Pro",sans-serif;padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);text-align:center}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(max-width:600px){.chip{font-size:20px;padding:9px 12px}.score{font-size:16px}}
 </style>
@@ -106,7 +120,18 @@ h3{font-size:17px;margin:18px 0 8px}
 <div class="bar">
  <span class="score" id="score">Đúng <b>0</b> / 0 câu đã chấm</span>
  <span class="meter" aria-hidden="true"><i id="meter"></i></span>
+ <button class="clock" id="clk" aria-expanded="false" aria-controls="tpanel" title="Đồng hồ bấm giờ"><span class="lbl">Bấm giờ</span><b id="tdisp">15:00</b></button>
  <button class="gold" id="copy">Copy kết quả gửi cô</button>
+ <div class="tpanel" id="tpanel" hidden>
+  <div class="tpre"><span>Chọn nhanh:</span>
+   <button data-min="1">1 phút · 1 câu sắp xếp</button>
+   <button data-min="8">8 phút · câu 91–98</button>
+   <button data-min="15">15 phút · 1 bài câu 99</button>
+   <button data-min="40">40 phút · cả phần Viết</button>
+  </div>
+  <div class="tset"><label for="tmin">Hoặc tự cài:</label><input id="tmin" type="number" min="1" max="180" step="1" inputmode="numeric"><span>phút</span>
+   <button class="main" id="tstart">Bắt đầu</button><button id="tpause">Tạm dừng</button><button id="treset">Đặt lại</button></div>
+ </div>
 </div>
 <nav id="nav" class="scroll main-nav" aria-label="Phần thi"></nav>
 <nav id="subnav" class="scroll sub-nav" aria-label="Mục sắp xếp câu"></nav>
@@ -232,6 +257,34 @@ document.addEventListener('input',e=>{
  else if(t.id==='ten'){S.name=t.value;save()}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('fix')){const it=ITEMS[e.target.dataset.n];if(grade(it))rerender(it.n)}});
+
+/* ---- Đồng hồ đếm ngược ---- */
+const T={min:15,left:900,end:0,timer:0,running:false,done:false};
+try{const m=+localStorage.getItem(KEY+'-tmin');if(m>0)T.min=m}catch(e){}
+T.left=T.min*60;
+const fmt=s=>{s=Math.max(0,Math.ceil(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+String(m).padStart(2,'0'):String(m).padStart(2,'0'))+':'+String(x).padStart(2,'0')};
+function tPaint(){
+ const c=$('#clk');$('#tdisp').textContent=fmt(T.left);
+ c.classList.toggle('run',T.running&&T.left>60);c.classList.toggle('warn',T.running&&T.left<=60&&T.left>0);c.classList.toggle('end',T.done);
+ c.querySelector('.lbl').textContent=T.done?'Hết giờ!':T.running?'Còn lại':'Bấm giờ';
+ $('#tmin').value=T.min;$('#tstart').textContent=T.running?'Đang chạy':(T.left<T.min*60&&!T.done?'Chạy tiếp':'Bắt đầu');
+ document.querySelectorAll('.tpre button').forEach(b=>b.classList.toggle('on',+b.dataset.min===T.min));
+ document.title=T.running?fmt(T.left)+' · Luyện viết HSK5':'Luyện viết HSK5';
+}
+function beep(){try{const A=window.AudioContext||window.webkitAudioContext;const a=T.ac||(T.ac=new A());[0,.45,.9].forEach(d=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.0001,a.currentTime+d);g.gain.exponentialRampToValueAtTime(.3,a.currentTime+d+.02);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+d+.35);o.start(a.currentTime+d);o.stop(a.currentTime+d+.4)})}catch(e){}}
+function tick(){T.left=(T.end-Date.now())/1000;if(T.left<=0){T.left=0;T.running=false;T.done=true;clearInterval(T.timer);beep();toast('Hết giờ! Dừng bút và bấm Kiểm tra nhé')}tPaint()}
+function tStart(){if(T.running)return;if(T.done||T.left<=0){T.left=T.min*60;T.done=false}
+ try{const A=window.AudioContext||window.webkitAudioContext;if(!T.ac)T.ac=new A();T.ac.resume()}catch(e){}
+ T.end=Date.now()+T.left*1000;T.running=true;clearInterval(T.timer);T.timer=setInterval(tick,250);tPaint()}
+function tPause(){if(!T.running)return;tick();T.running=false;clearInterval(T.timer);tPaint()}
+function tReset(){T.running=false;T.done=false;clearInterval(T.timer);T.left=T.min*60;tPaint()}
+function tSet(m){m=Math.round(+m);if(!(m>=1&&m<=180)){toast('Cài từ 1 đến 180 phút');tPaint();return}T.min=m;try{localStorage.setItem(KEY+'-tmin',m)}catch(e){}tReset()}
+$('#clk').addEventListener('click',()=>{const p=$('#tpanel');p.hidden=!p.hidden;$('#clk').setAttribute('aria-expanded',String(!p.hidden))});
+document.querySelectorAll('.tpre button').forEach(b=>b.addEventListener('click',()=>{tSet(b.dataset.min);tStart()}));
+$('#tmin').addEventListener('change',e=>{if(+e.target.value!==T.min)tSet(e.target.value)});
+$('#tmin').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(+e.target.value!==T.min)tSet(e.target.value);tStart()}});
+$('#tstart').addEventListener('click',tStart);$('#tpause').addEventListener('click',tPause);$('#treset').addEventListener('click',tReset);
+tPaint();
 $('#ten').value=S.name||'';
 addEventListener('hashchange',()=>{show();scrollTo(0,0)});
 show();
