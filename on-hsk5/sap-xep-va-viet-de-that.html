@@ -31,6 +31,11 @@ header p{margin:8px 0 0;max-width:62ch;opacity:.92}
 nav{display:flex;gap:6px;overflow-x:auto;padding:12px max(5vw,16px) 0}
 nav a{flex:none;text-decoration:none;color:var(--ink);padding:10px 14px;border-radius:999px;border:1px solid var(--line);font-weight:600;font-size:15px;background:var(--card)}
 nav a.on{background:var(--plum);border-color:var(--plum);color:#fff}
+nav.main-nav a{font-size:17px;padding:12px 20px}
+nav.sub-nav{padding-top:10px}
+nav[hidden]{display:none}
+nav.sub-nav a{font-size:14px;padding:8px 13px;background:transparent}
+nav.sub-nav a.on{background:var(--gold);border-color:var(--gold);color:#2b1d0a}
 nav a small{opacity:.75;font-weight:400;margin-left:4px}
 main{padding:16px max(5vw,16px) 64px;max-width:900px}
 .intro{color:var(--mute);margin:6px 0 14px}
@@ -103,7 +108,8 @@ h3{font-size:17px;margin:18px 0 8px}
  <span class="meter" aria-hidden="true"><i id="meter"></i></span>
  <button class="gold" id="copy">Copy kết quả gửi cô</button>
 </div>
-<nav id="nav" class="scroll"></nav>
+<nav id="nav" class="scroll main-nav" aria-label="Phần thi"></nav>
+<nav id="subnav" class="scroll sub-nav" aria-label="Mục sắp xếp câu"></nav>
 <main id="main"></main>
 <div class="toast" id="toast" role="status"></div>
 <script>
@@ -126,7 +132,11 @@ function renderScore(){
  let ok=0,done=0;for(const n in S.res){done++;if(S.res[n])ok++}
  $('#score').innerHTML='Đúng <b>'+ok+'</b> / '+done+' câu đã chấm <span style="font-weight:400;color:var(--mute)">(tổng '+total+')</span>';
  $('#meter').style.width=(done?ok/total*100:0)+'%';
- $('#nav').innerHTML=D.secs.map(s=>{const[o,d]=secStat(s.id);return '<a href="#'+s.id+'" class="'+(cur===s.id?'on':'')+'">'+esc(s.title)+(s.id==='viet'||s.guide?'':'<small>'+o+'/'+d+'</small>')+'</a>'}).join('');
+ const sx=D.secs.filter(s=>s.id!=='viet'), inSx=sx.some(s=>s.id===cur);
+ let so=0,sd=0;sx.forEach(s=>{const[o,d]=secStat(s.id);so+=o;sd+=d});
+ $('#nav').innerHTML='<a href="#'+(inSx?cur:sx[0].id)+'" class="'+(inSx?'on':'')+'">Sắp xếp câu<small>'+so+'/'+sd+'</small></a><a href="#viet" class="'+(cur==='viet'?'on':'')+'">Viết câu 99</a>';
+ $('#subnav').hidden=!inSx;
+ $('#subnav').innerHTML=sx.map(s=>{const[o,d]=secStat(s.id);return '<a href="#'+s.id+'" class="'+(cur===s.id?'on':'')+'">'+esc(s.title)+(s.guide?'':'<small>'+o+'/'+d+'</small>')+'</a>'}).join('');
 }
 
 function chipHTML(it,i){return '<button class="chip" data-n="'+it.n+'" data-i="'+i+'">'+esc(it.f[i])+'</button>'}
