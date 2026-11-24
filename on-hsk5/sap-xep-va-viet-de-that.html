@@ -115,8 +115,24 @@ h3{font-size:17px;margin:18px 0 8px}
 .kz{font-size:19px;line-height:1.6}
 .knoi{display:flex;flex-wrap:wrap;gap:6px}.knoi span{background:var(--chip);border:1px solid var(--chipb);border-radius:8px;padding:4px 10px;font-size:17px}
 .khint{color:var(--mute);font-size:14px;margin:8px 0 0}
+.menubtn{white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:8px;border-radius:999px;font-size:16px;padding:0 16px;min-height:48px;margin-right:4px}
+.scrim{position:fixed;inset:0;background:rgba(20,10,8,.45);z-index:40}
+.scrim[hidden],.drawer[hidden]{display:none}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:min(320px,86vw);background:var(--card);z-index:41;box-shadow:6px 0 24px rgba(0,0,0,.25);overflow-y:auto;padding:0 0 24px;animation:slidein .2s ease-out}
+@keyframes slidein{from{transform:translateX(-100%)}to{transform:none}}
+.dhead{position:sticky;top:0;background:var(--plum);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-size:18px}
+.dhead button{background:transparent;color:#fff;border-color:rgba(255,255,255,.5);min-height:40px}
+.dsec{font-weight:800;color:var(--plum2);padding:16px 16px 6px;font-size:15px;border-top:1px solid var(--line)}
+.dsec:first-of-type{border-top:0}
+.ditem{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:11px 16px;min-height:44px;color:var(--ink);text-decoration:none;font-weight:600;font-size:15px;border-left:4px solid transparent}
+.ditem small{color:var(--mute);font-weight:400}
+.ditem.sub{padding-left:24px;font-weight:500}
+.ditem:hover{background:var(--chip)}
+.ditem.on{border-left-color:var(--gold);background:var(--chip)}
+.ditem:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
+body.noscroll{overflow:hidden}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-@media(max-width:600px){.chip{font-size:20px;padding:9px 12px}.score{font-size:16px}}
+@media(max-width:600px){nav.main-nav a{font-size:15px;padding:10px 14px}.menubtn{padding:0 12px;font-size:15px}.chip{font-size:20px;padding:9px 12px}.score{font-size:16px}}
 </style>
 </head>
 <body>
@@ -143,7 +159,11 @@ h3{font-size:17px;margin:18px 0 8px}
  </div>
 </div>
 <nav id="nav" class="scroll main-nav" aria-label="Phần thi"></nav>
-<nav id="subnav" class="scroll sub-nav" aria-label="Mục sắp xếp câu"></nav>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Mục lục" hidden>
+ <div class="dhead"><b>Mục lục</b><button id="dclose" aria-label="Đóng mục lục">Đóng</button></div>
+ <div id="dlist"></div>
+</aside>
 <main id="main"></main>
 <div class="toast" id="toast" role="status"></div>
 <script>
@@ -169,8 +189,11 @@ function renderScore(){
  const sx=D.secs.filter(s=>s.id!=='viet'), inSx=sx.some(s=>s.id===cur);
  let so=0,sd=0;sx.forEach(s=>{const[o,d]=secStat(s.id);so+=o;sd+=d});
  $('#nav').innerHTML='<a href="#'+(inSx?cur:sx[0].id)+'" class="'+(inSx?'on':'')+'">Sắp xếp câu<small>'+so+'/'+sd+'</small></a><a href="#viet" class="'+(cur==='viet'?'on':'')+'">Viết câu 99</a>';
- $('#subnav').hidden=!inSx;
- $('#subnav').innerHTML=sx.map(s=>{const[o,d]=secStat(s.id);return '<a href="#'+s.id+'" class="'+(cur===s.id?'on':'')+'">'+esc(s.title)+(s.guide?'':'<small>'+o+'/'+d+'</small>')+'</a>'}).join('');
+ $('#nav').insertAdjacentHTML('afterbegin','<button class="menubtn" data-menu aria-controls="drawer" aria-expanded="'+(!$('#drawer').hidden)+'"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Mục lục</button>');
+ const groups=[...new Set(D.viet.map(v=>v.nhom))];
+ $('#dlist').innerHTML='<div class="dsec">Sắp xếp câu</div>'+sx.map(s=>{const[o,d]=secStat(s.id);return '<a href="#'+s.id+'" class="ditem'+(cur===s.id?' on':'')+'"><span>'+esc(s.title)+'</span>'+(s.guide?'':'<small>'+o+'/'+d+'</small>')+'</a>'}).join('')+
+  '<div class="dsec">Viết câu 99</div><a href="#viet" class="ditem" data-goto="kchung"><span>Khung chung cho mọi đề</span></a>'+
+  groups.map((g,i)=>'<a href="#viet" class="ditem sub" data-goto="g'+i+'"><span>'+esc(g.replace(/^Nhóm (\d) · /,'$1. '))+'</span></a>').join('');
 }
 
 function chipHTML(it,i){return '<button class="chip" data-n="'+it.n+'" data-i="'+i+'">'+esc(it.f[i])+'</button>'}
@@ -202,11 +225,10 @@ function rerender(n){const it=ITEMS[n];const el=$('#q'+n);if(el)el.outerHTML=qHT
 function vietHTML(){
  const groups=[...new Set(D.viet.map(v=>v.nhom))];
  const kc=D.kc, row=(r,i)=>'<li><span class="role">'+esc(r[0])+'</span><span class="zh kz">'+esc(r[1])+'</span></li>';
- let h='<details class="kbox" open><summary>Khung chung cho mọi đề câu 99</summary>'+
+ let h='<details class="kbox" id="kchung" open><summary>Khung chung cho mọi đề câu 99</summary>'+
   '<ol class="kbuoc">'+kc.buoc.map(b=>'<li><b>'+esc(b[0])+'</b><span>'+esc(b[1])+'</span></li>').join('')+'</ol>'+
   '<div class="kh">Khung 6 câu</div><ol class="kframe">'+kc.khung.map(row).join('')+'</ol>'+
   '<div class="kh">Từ nối dùng được cho mọi bài</div><div class="knoi">'+kc.noi.map(n=>'<span class="zh">'+esc(n)+'</span>').join('')+'</div></details>';
- h+='<div class="jump">'+groups.map((g,i)=>'<a href="#viet" data-jump="g'+i+'">'+esc(g.split(' · ')[1]||g)+'</a>').join('')+'</div>';
  let last='';
  D.viet.forEach(v=>{const k=v.k;
   if(v.nhom!==last){last=v.nhom;h+='<h2 class="nhom" id="g'+groups.indexOf(v.nhom)+'">'+esc(v.nhom)+'</h2>';
@@ -242,7 +264,12 @@ function show(){
 }
 
 document.addEventListener('click',e=>{
- const j=e.target.closest('[data-jump]');if(j){e.preventDefault();const el=document.getElementById(j.dataset.jump);if(el)el.scrollIntoView({behavior:'smooth'});return}
+ if(e.target.closest('[data-menu]')){openDrawer(true);return}
+ if(e.target.closest('#dclose')||e.target.id==='scrim'){openDrawer(false);return}
+ const di=e.target.closest('.ditem');if(di){openDrawer(false);const g=di.dataset.goto;
+  if(g){e.preventDefault();const go=(bh)=>{const el=document.getElementById(g);if(el){if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({behavior:bh||'smooth'})}};
+   if(cur!=='viet'){window._pend=go;location.hash='viet'}else go()}
+  return}
  const b=e.target.closest('button');if(!b)return;
  if(b.classList.contains('chip')){
   const n=+b.dataset.n,i=+b.dataset.i,p=S.placed[n]||(S.placed[n]=[]);
@@ -300,8 +327,12 @@ $('#tmin').addEventListener('change',e=>{if(+e.target.value!==T.min)tSet(e.targe
 $('#tmin').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(+e.target.value!==T.min)tSet(e.target.value);tStart()}});
 $('#tstart').addEventListener('click',tStart);$('#tpause').addEventListener('click',tPause);$('#treset').addEventListener('click',tReset);
 tPaint();
+function openDrawer(o){const d=$('#drawer'),s=$('#scrim');d.hidden=!o;s.hidden=!o;document.body.classList.toggle('noscroll',o);
+ const b=document.querySelector('[data-menu]');if(b)b.setAttribute('aria-expanded',String(o));
+ if(o){const f=d.querySelector('.ditem.on')||d.querySelector('.ditem');if(f)f.focus()}else if(b)b.focus()}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#drawer').hidden)openDrawer(false)});
 $('#ten').value=S.name||'';
-addEventListener('hashchange',()=>{show();scrollTo(0,0)});
+addEventListener('hashchange',()=>{show();scrollTo(0,0);if(window._pend){const f=window._pend;window._pend=null;requestAnimationFrame(()=>f('auto'))}});
 show();
 }
 </script>
