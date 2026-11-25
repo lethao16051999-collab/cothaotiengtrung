@@ -20,6 +20,9 @@
    vw.querySelector(".ppt-vf").onclick=()=>{try{const f=vw.querySelector("iframe");(f.requestFullscreen||f.webkitRequestFullscreen).call(f)}catch(e){}}}
   vw.querySelector("b").textContent=t;vw.querySelector("iframe").src=u;vw.classList.add("on");close();document.documentElement.style.overflow="hidden"}
  function shut(){if(!vw)return;vw.classList.remove("on");vw.querySelector("iframe").src="about:blank";document.documentElement.style.overflow="";try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}}
- window.pptOpen=function(){if(!box)make();home();box.classList.add("on")};
+ /* 25/11/2026: PPT chỉ dành cho học viên đã nhập mã. Chưa có mã → mở ô nhập mã, nhập xong tự mở lại PPT. */
+ window.pptOpen=function(){if(typeof trkIn=="function"&&!trkIn()){window.PPT_AFTER=1;if(typeof trkBox=="function")trkBox("📊 PPT giáo trình dành cho học viên của cô. Em nhập mã học viên để xem.");else if(typeof trkOpen=="function")trkOpen();return}
+  if(!box)make();home();box.classList.add("on")};
+ setTimeout(()=>{if(typeof trkBadge!="function")return;const o=trkBadge;trkBadge=function(){o.apply(this,arguments);if(window.PPT_AFTER&&trkIn()){window.PPT_AFTER=0;setTimeout(()=>window.pptOpen(),600)}}},0);
  document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(vw&&vw.classList.contains("on"))shut();else if(box)close()}});
 })();
