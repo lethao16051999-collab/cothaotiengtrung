@@ -9,12 +9,12 @@ const SHELF=[
  {l:4,img:"img/bia-hsk4.webp",t:"HSK 4",s:"Trung cấp · du học"},
  {l:5,img:"img/bia-hsk4.webp",t:"Mở rộng H4",s:"Trung cấp · đời sống"},
  {href:"hsk1/",img:"img/bia-hsk1-chuan.webp",t:"HSK1",s:"Giáo trình chuẩn (标准教程)",n:14,tot:15},
- {href:"luyen-viet-hsk6/",img:"",t:"HSK 6 · Viết",s:"Viết đoạn văn ứng dụng",zh:"写作",c:"#7a1f3d",n:11,tot:14,unit:"loại đã có"},
+ {href:"on-thi-hsk6/",img:"",t:"Ôn thi HSK6 3.0",s:"Ôn luyện · Luyện đề · Sổ tay",zh:"六级",c:"#7a1f3d",n:3,tot:3,unit:"phần"},
  {href:"on-hsk5/",img:"",t:"Ôn HSK 5",s:"Ôn đề · Luyện viết (看图写作)",zh:"五级",c:"#9b2c50",n:4,tot:5,unit:"đề đã có"},
  {href:"tocfl-b1/",img:"",t:"TOCFL B1",s:"Đương đại 3 · 當代中文課程3",zh:"華語",c:"#5c1730",n:5,tot:12}];
 /* tocfl-b1/ = trang luyện TOCFL B1 theo 當代中文課程3: bài khóa, từ vựng trình chiếu, ngữ pháp, đề 50 câu (05/11/2026); n = số bài đã có */
 /* on-hsk5/ = trang Ôn HSK 5, danh sách các trang luyện đề 1–2, 3, 4 (30/10/2026) */
-/* luyen-viet-hsk6/ = trang luyện viết HSK6 3.0 phần 1 (27/10/2026); n = số loại văn bản đã đủ 5 phần */
+/* on-thi-hsk6/ = mục Ôn thi HSK6 3.0 (25/11/2026): on-tap.html (lộ trình + 3 phần) và trang luyện viết luyen-viet-hsk6/ (27/10/2026) xếp vào Phần 1 · Ôn luyện (Viết) */
 /* Cuốn có href = trang ôn tập riêng (thư mục hsk1/, 24/10/2026); chỉ hiện ở Ôn luyện theo bài */
 const shN=l=>typeof lvN=="function"?lvN(l):"HSK "+l;
 function shCount(l){if(typeof napOk=="function"&&!napOk(l))return napBai(l).length;const D=LDS[l]||{};return Object.keys(D).filter(n=>D[n]).length}
