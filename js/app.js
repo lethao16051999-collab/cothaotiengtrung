@@ -139,7 +139,7 @@ function dfHtml(han,py,typed){const v=String(typed||"").trim();if(!v)return `<di
 
 /* ===== Danh sách bài ===== */
 let cur=null,tcur=null,ltab="bk",fcI=0,fcShow=false;
-function rr(){plStop();SPK=[];drawOl();drawTs();crumbDraw()}
+function rr(){plStop();if(window.vdStop)vdStop();SPK=[];drawOl();drawTs();crumbDraw()}
 function setLv(l){olLv=l;window.NVOPEN=false;LD=LDS[l]||{};cur=null;tcur=null;rr()}
 function avgOf(r){const v=["fc","gp","dt","ns"].map(k=>r[k]).filter(x=>x!=null);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null}
 function lessons(mode){return `<div class="lessons">${mode=="ol"&&window.NVH&&NVH[olLv]?NVH[olLv].card():""}${Array.from({length:LV[olLv]},(_,k)=>{const n=k+1,ok=!!LD[n],t=LTS[olLv]&&LTS[olLv][k]?LTS[olLv][k].split("|"):null,r=ok?ldN(n):{};
@@ -155,7 +155,7 @@ function drawTs(){if(tcur){$("lp-ts").innerHTML=testView();return}
 /* ===== Trang bài học ===== */
 const LTB0=[["bk","📖 Bài khóa"],["fc","🃏 Flashcard"],["gp","📐 Ngữ pháp · Mẫu câu"],["dt","🎧 Nghe chép"],["ns","🗣 Luyện nói"],["tn","📝 Test nhanh"],["sum","📈 Xem tiến độ hiện tại"]],LTABS=[];
 /* Bài nào có warm (Khởi động) / act (Hoạt động trên lớp) thì tự thêm phần tương ứng */
-function setTabs(L){LTABS.length=0;if(L&&L.warm)LTABS.push(["wu","🔥 Khởi động"]);LTB0.forEach(t=>{LTABS.push(t);if(t[0]=="ns"&&L&&L.act)LTABS.push(["hd","🎭 Hoạt động"])})}
+function setTabs(L){LTABS.length=0;if(L&&L.warm)LTABS.push(["wu","🔥 Khởi động"]);LTB0.forEach(t=>{LTABS.push(t);if(t[0]=="ns"&&L&&L.act)LTABS.push(["hd","🎭 Hoạt động"]);if(t[0]=="ns"&&L&&L.vd)LTABS.push(["vd","🎙 Vấn đáp"])})}
 setTabs(null);
 function openL(n){cur=n;window.NVOPEN=false;setTabs(LD[n]);ltab=LD[n]&&LD[n].warm?"wu":"bk";WU={};ACR={};ACS={};ACRL={};fcI=0;fcShow=false;DTV={};DTR={};DTD=false;NSR={};NSH={};NSM={};nsS=0;delete QS.gp;GX=null;rr();scrollTo(0,0)}
 function closeL(){cur=null;rr()}
@@ -164,7 +164,7 @@ function lessonView(){const L=LD[cur],r=ldN(cur);setTabs(L);if(!LTABS.some(t=>t[
  return `
 <div class="lhead"><span class="no">${cur}</span><div><small>HSK ${olLv} · Bài ${cur}</small><div class="zh lt2">${L.t}</div><small>${L.tp}</small><div>${L.vi}</div></div>${vBtn()}</div>
 ${vBar()}<div class="stb" id="ltabs">${LTABS.map(t=>`<button class="${t[0]==ltab?"on":""}" onclick="lt('${t[0]}')">${t[1]}${tsc(r,t[0])!=null?` <i class="sc ${tsc(r,t[0])>=80?"ok":"no"}">${tsc(r,t[0])}%</i>`:""}</button>`).join("")}</div>
-${pvBar()}<div class="stack ${hidePy?"hidepy":""} ${hideVi?"hidevi":""}" id="lbody">${({wu:vWu,hd:vHd,bk:vBk,fc:vFc,gp:vGp,dt:vDt,ns:vNs,tn:vTn,sum:vSum})[ltab](L,r)}</div>`}
+${pvBar()}<div class="stack ${hidePy?"hidepy":""} ${hideVi?"hidevi":""}" id="lbody">${({wu:vWu,hd:vHd,vd:(L,r)=>window.vVd?vVd(L,r):"",bk:vBk,fc:vFc,gp:vGp,dt:vDt,ns:vNs,tn:vTn,sum:vSum})[ltab](L,r)}</div>`}
 const nextBtn=k=>{const i=LTABS.findIndex(t=>t[0]==k);return i<LTABS.length-1?`<button class="btn" onclick="lt('${LTABS[i+1][0]}')">Tiếp: ${LTABS[i+1][1]} →</button>`:""};
 /* Phần "Test nhanh" trong mục lục bài: giới thiệu + nút vào bài test (điểm lấy từ r.test) */
 const tsc=(r,k)=>k=="tn"?r.test:r[k];
