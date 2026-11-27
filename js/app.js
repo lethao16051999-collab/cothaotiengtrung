@@ -140,13 +140,14 @@ function dfHtml(han,py,typed){const v=String(typed||"").trim();if(!v)return `<di
 /* ===== Danh sách bài ===== */
 let cur=null,tcur=null,ltab="bk",fcI=0,fcShow=false;
 function rr(){plStop();if(window.vdStop)vdStop();SPK=[];drawOl();drawTs();crumbDraw()}
-function setLv(l){olLv=l;window.NVOPEN=false;LD=LDS[l]||{};cur=null;tcur=null;rr()}
+function setLv(l){olLv=l;window.NVOPEN=false;window.VDOPEN=false;LD=LDS[l]||{};cur=null;tcur=null;rr()}
 function avgOf(r){const v=["fc","gp","dt","ns"].map(k=>r[k]).filter(x=>x!=null);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null}
-function lessons(mode){return `<div class="lessons">${mode=="ol"&&window.NVH&&NVH[olLv]?NVH[olLv].card():""}${Array.from({length:LV[olLv]},(_,k)=>{const n=k+1,ok=!!LD[n],t=LTS[olLv]&&LTS[olLv][k]?LTS[olLv][k].split("|"):null,r=ok?ldN(n):{};
+function lessons(mode){return `<div class="lessons">${mode=="ol"&&window.NVH&&NVH[olLv]?NVH[olLv].card():""}${mode=="ol"&&window.VDH&&VDH[olLv]?VDH[olLv].card():""}${Array.from({length:LV[olLv]},(_,k)=>{const n=k+1,ok=!!LD[n],t=LTS[olLv]&&LTS[olLv][k]?LTS[olLv][k].split("|"):null,r=ok?ldN(n):{};
  const sc=mode=="ts"?r.test:avgOf(r);
  return `<div class="ls ${ok?"go":""}" ${ok?`onclick="${mode=="ts"?"openTest":"openL"}(${n})"`:""}><b>Bài ${n}</b>${t?`<span class="zh lt" title="${t[1]}">${t[0]}</span>`:""}<small>${ok?(sc!=null?`<i class="sc ${sc>=80?"ok":"no"}">${sc}%</i>`:(mode=="ts"?"Làm test →":"Vào học →")):"Sắp ra mắt"}</small></div>`}).join("")}</div>`}
 function drawOl(){if(cur){$("lp-ol").innerHTML=lessonView();return}
  if(window.NVOPEN&&window.NVH&&NVH[olLv]){$("lp-ol").innerHTML=NVH[olLv].view();return}
+ if(window.VDOPEN&&window.VDH&&VDH[olLv]){$("lp-ol").innerHTML=VDH[olLv].view();return}
  const cv=document.querySelectorAll("img.bk")[olLv-1];
  $("lp-ol").innerHTML=lvBar()+`<div class="bookrow">${cv?`<img class="bk" src="${cv.src}" alt="Bìa giáo trình New HSK ${olLv}">`:""}<div class="card"><b>Mỗi bài ôn gồm:</b><br>${PARTS.map((p,k)=>`<span class="pill">${k+1}. ${p}</span>`).join("")}<p>Cuối bài, hệ thống tổng kết kết quả. Phần nào dưới 80% sẽ được ghi rõ để ôn lại.</p><small style="color:var(--sub)">Tiến độ lưu trên máy này.</small></div></div>`+lessons("ol")}
 function drawTs(){if(tcur){$("lp-ts").innerHTML=testView();return}

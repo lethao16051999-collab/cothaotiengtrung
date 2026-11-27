@@ -5,7 +5,8 @@
    Không gọi rr() trong lúc chạy (rr dựng lại cả trang); rr() / đổi tab / đóng bài sẽ tự dừng phiên (vdStop). ===== */
 (function(){
 const K="ct_vd",TL={h:"Hỏi",d:"Đối đáp",t:"Tình huống",o:"Ôn bài trước"};
-let CFG={tm:"auto",show:0,mix:0};try{Object.assign(CFG,JSON.parse(localStorage.getItem(K)||"{}"))}catch(e){}
+let CFG={tm:"auto",show:0,mix:0,sel:[],cnt:"all"};
+/* sel: các bài đã chọn ở Vấn đáp tổng hợp; cnt: số câu ("all" hoặc 10/20/30 câu ngẫu nhiên) */try{Object.assign(CFG,JSON.parse(localStorage.getItem(K)||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem(K,JSON.stringify(CFG))}catch(e){}};
 const q$=id=>document.getElementById(id);
 const E=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
@@ -36,9 +37,11 @@ const qText=(it,force)=>{if(it.k=="t")return `<div class="vd-sit">💬 ${E(it.q)
  if(!force&&!CFG.show)return `<div class="vd-ear" aria-label="Đang nghe">🎧<small>Nghe và trả lời</small></div>`;
  return `<div class="vd-hz zh">${E(it.q)}</div><div class="vd-py py">${E(it.qp)}</div>${it.vi?`<div class="vd-vi vi">${E(it.vi)}</div>`:""}`};
 function card(){if(!S)return"";const it=S.list[S.i],n=S.list.length;
+ if(S.ph=="end"&&S.multi)return `<div class="vd-end"><div style="font-size:3rem">🎉</div><h3>Xong ${n} câu vấn đáp!</h3><p>Các bài: ${S.bs.join(", ")}. Luyện thêm một lượt với chế độ ẩn chữ để nhớ lâu hơn nhé.</p>
+<div class="row c"><button class="btn" onclick="vdMixGo()">🔁 Luyện lại các bài này</button><button class="btn o" onclick="vdStop(1)">📚 Chọn bài khác</button></div></div>`;
  if(S.ph=="end")return `<div class="vd-end"><div style="font-size:3rem">🎉</div><h3>Xong ${n} câu vấn đáp Bài ${S.n}!</h3><p>Em đã luyện ${S.done} lượt bài này. Muốn nhớ lâu, luyện thêm một lượt nữa với chế độ ẩn chữ nhé.</p>
 <div class="row c"><button class="btn" onclick="vdGo(0)">🔁 Luyện lại</button><button class="btn o" onclick="vdGo(1)">🔀 Luyện lại, trộn câu</button></div></div>`;
- const tag=`<div class="vd-top"><span class="pill">Câu ${S.i+1}/${n}</span><span class="pill">${TL[it.k]||""}</span>${it.n?`<span class="pill">👉 ${E(it.n)}</span>`:""}</div>`;
+ const tag=`<div class="vd-top"><span class="pill">Câu ${S.i+1}/${n}</span>${S.multi?`<span class="pill">Bài ${it.b}</span>`:""}<span class="pill">${TL[it.k]||""}</span>${it.n?`<span class="pill">👉 ${E(it.n)}</span>`:""}</div>`;
  if(S.ph=="ask")return tag+qText(it)+`<div class="vd-st">🔊 Đang đọc câu hỏi…</div>`;
  if(S.ph=="ans"){const T=tOf(it),l=Math.max(0,Math.ceil(S.left/1000)),pc=Math.max(0,S.left/(T*1000));
   return tag+qText(it)+`<div class="vd-ring" style="--p:${pc}"><b id="vd-sec">${l}</b><small>giây</small></div><div class="vd-st">🗣 Em trả lời to thành tiếng!</div>`}
@@ -51,14 +54,16 @@ function tickRing(){const it=S.list[S.i],T=tOf(it),r=document.querySelector(".vd
 const opt=(k,v,lab)=>`<button class="tg ${String(CFG[k])==String(v)?"on":""}" onclick="vdSet('${k}','${v}')">${lab}</button>`;
 function setup(L){const n=L.vd.length,r=typeof ldN=="function"?ldN(cur):{};
  return `<div class="card note"><b>🎙 Vấn đáp rảnh tay · ${n} câu</b><p>Máy đọc câu hỏi 2 lần, em trả lời to thành tiếng trong thời gian đếm ngược. Hết giờ, đáp án mẫu hiện lên để em tự so, rồi máy tự chuyển câu. Em không cần bấm gì, cứ nghe và nói.</p>${r.vdn?`<small>Em đã luyện ${r.vdn} lượt bài này.</small>`:""}</div>
-<div class="card vd-set"><div class="vd-opt"><span>Lúc máy hỏi:</span>${opt("show",0,"🙈 Ẩn chữ (luyện nghe)")}${opt("show",1,"👀 Hiện chữ Hán + pinyin")}</div>
-<div class="vd-opt"><span>Thời gian trả lời:</span>${opt("tm","auto","Tự động (8–15 giây)")}${[5,10,15,20,30].map(s=>opt("tm",s,s+" giây")).join("")}</div>
-<div class="vd-opt"><span>Thứ tự câu:</span>${opt("mix",0,"Theo thứ tự")}${opt("mix",1,"🔀 Trộn câu")}</div>
+<div class="card vd-set">${opts()}
 <div class="row c"><button class="btn vd-go" onclick="vdGo()">▶ Bắt đầu vấn đáp</button></div><small class="ctx">Mẹo: đặt điện thoại ra xa, bật loa to. Giọng đọc chỉnh ở nút 🔊 Giọng đọc phía trên.</small></div>`}
+function opts(){return `<div class="vd-opt"><span>Lúc máy hỏi:</span>${opt("show",0,"🙈 Ẩn chữ (luyện nghe)")}${opt("show",1,"👀 Hiện chữ Hán + pinyin")}</div>
+<div class="vd-opt"><span>Thời gian trả lời:</span>${opt("tm","auto","Tự động (8–15 giây)")}${[5,10,15,20,30].map(s=>opt("tm",s,s+" giây")).join("")}</div>
+<div class="vd-opt"><span>Thứ tự câu:</span>${opt("mix",0,"Theo thứ tự")}${opt("mix",1,"🔀 Trộn câu")}</div>`}
 function list(L){return `<details class="card vd-list"><summary><b>📋 Xem trước danh sách câu hỏi</b></summary><ol>${L.vd.map(it=>`<li><span class="pill">${TL[it.k]}</span> ${it.k=="t"?E(it.q):`<span class="zh">${E(it.q)}</span> <span class="py">${E(it.qp)}</span>`}<br><small>→ <span class="zh">${E(it.a)}</span> <span class="py">${E(it.ap)}</span></small></li>`).join("")}</ol></details>`}
-window.vVd=function(L){if(S&&S.n===cur)return `<div class="card vd-box" id="vd-box"><div id="vd-stage">${card()}</div><div id="vd-ctl">${ctl()}</div></div>`;
+window.vVd=function(L){if(S&&!S.multi&&S.n===cur)return `<div class="card vd-box" id="vd-box"><div id="vd-stage">${card()}</div><div id="vd-ctl">${ctl()}</div></div>`;
  return `<div id="vd-box">${setup(L)}</div>${list(L)}`+(typeof nextBtn=="function"?`<div class="row c">${nextBtn("vd")}</div>`:"")};
-window.vdSet=function(k,v){CFG[k]=k=="tm"&&v!="auto"?+v:(k=="tm"?v:+v);save();const L=LD[cur],b=q$("vd-box");if(b&&L)b.outerHTML=`<div id="vd-box">${setup(L)}</div>`};
+window.vdSet=function(k,v){CFG[k]=(k=="tm"||k=="cnt")&&v=="all"||v=="auto"?v:+v;save();
+ if(q$("vd-mixset")){mixPaint();return}const L=LD[cur],b=q$("vd-box");if(b&&L)b.outerHTML=`<div id="vd-box">${setup(L)}</div>`};
 
 /* ---------- chạy ---------- */
 async function run(tok){while(S&&S.tok===tok&&S.i<S.list.length){const it=S.list[S.i];
@@ -71,7 +76,7 @@ async function run(tok){while(S&&S.tok===tok&&S.i<S.list.length){const it=S.list
   beep();S.ph="show";paint();
   const hold=Math.min(9000,4000+hzN(it.a)*250);if(!(await wait(hold,tok)))return;
   S.i++}
- if(S&&S.tok===tok){S.ph="end";S.done=1;try{const r=ldN(cur);r.vdn=(r.vdn||0)+1;svN(cur,r);S.done=r.vdn}catch(e){}wake(false);paint()}}
+ if(S&&S.tok===tok){S.ph="end";S.done=1;if(!S.multi)try{const r=ldN(cur);r.vdn=(r.vdn||0)+1;svN(cur,r);S.done=r.vdn}catch(e){}wake(false);paint()}}
 window.vdGo=function(mix){const L=LD[cur];if(!L||!L.vd)return;if(mix!=null){CFG.mix=mix;save()}
  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state=="suspended")AC.resume()}catch(e){}
  const tok=(S?S.tok:0)+1;S={L,n:cur,list:CFG.mix?shuffle(L.vd):L.vd.slice(),i:0,ph:"ask",st:"run",left:0,tok,done:0};
@@ -85,7 +90,38 @@ function restart(){const tok=S.tok+1;S.tok=tok;S.st="run";try{speechSynthesis.ca
 window.vdAgain=function(){if(!S||S.ph=="end")return;restart()};
 window.vdNext=function(){if(!S||S.ph=="end")return;S.i++;restart()};
 function stopAll(){if(!S)return;S=null;try{speechSynthesis.cancel()}catch(e){}wake(false)}
-window.vdStop=function(ui){stopAll();if(ui){const L=LD[cur],b=q$("vd-box");if(b&&L){b.outerHTML=`<div id="vd-box">${setup(L)}</div>`;const lb=q$("lbody");if(lb&&!document.querySelector(".vd-list"))lb.insertAdjacentHTML("beforeend",list(L))}}};
+window.vdStop=function(ui){const m=S&&S.multi;stopAll();if(ui&&m){if(typeof rr=="function")rr();return}if(ui){const L=LD[cur],b=q$("vd-box");if(b&&L){b.outerHTML=`<div id="vd-box">${setup(L)}</div>`;const lb=q$("lbody");if(lb&&!document.querySelector(".vd-list"))lb.insertAdjacentHTML("beforeend",list(L))}}};
+/* ---------- Vấn đáp tổng hợp: chọn nhiều bài (ô ở đầu danh sách bài, cạnh "Bài mở đầu") ---------- */
+const vdLs=()=>Object.keys(LD).map(Number).filter(n=>LD[n]&&LD[n].vd).sort((a,b)=>a-b);
+const selOk=()=>{const ok=vdLs();return (CFG.sel||[]).filter(n=>ok.includes(n))};
+const estMin=list=>Math.max(1,Math.round(list.reduce((a,it)=>a+tOf(it)+10,0)/60));
+function pool(){return selOk().flatMap(n=>LD[n].vd.map((it,i)=>Object.assign({b:n,_i:i},it)))}
+function mixSet(){const ls=vdLs(),sel=selOk(),P=pool(),N=CFG.cnt=="all"?P.length:Math.min(+CFG.cnt,P.length);
+ const qb=(lab,a,b)=>`<button class="tg" onclick="vdSelR(${a},${b})">${lab}</button>`;
+ return `<div id="vd-mixset"><div class="card vd-set"><div class="vd-opt"><span>Chọn bài (bấm để chọn/bỏ):</span></div>
+<div class="vd-bais">${ls.map(n=>{const t=LTS[olLv]&&LTS[olLv][n-1]?LTS[olLv][n-1].split("|")[0]:"";return `<button class="vd-bai ${sel.includes(n)?"on":""}" onclick="vdSel(${n})"><b>Bài ${n}</b><span class="zh">${E(t)}</span><small>${LD[n].vd.length} câu</small></button>`}).join("")}</div>
+<div class="vd-opt"><span>Chọn nhanh:</span>${qb("Tất cả",1,99)}${qb("Bài 1–5",1,5)}${qb("Bài 6–10",6,10)}${qb("Bài 11–15",11,15)}${qb("Bỏ chọn",0,0)}</div>
+<div class="vd-opt"><span>Số câu:</span>${opt("cnt","all","Tất cả")}${[10,20,30].map(c=>opt("cnt",c,c+" câu ngẫu nhiên")).join("")}</div>
+${opts()}
+<div class="vd-sum">${sel.length?`Đã chọn <b>${sel.length} bài</b> · sẽ hỏi <b>${N} câu</b> · khoảng <b>${estMin(P.slice(0,N))} phút</b>`:`Em chưa chọn bài nào.`}</div>
+<div class="row c"><button class="btn vd-go" onclick="vdMixGo()" ${sel.length?"":"disabled"}>▶ Bắt đầu vấn đáp</button></div><small class="ctx">Mẹo: đặt điện thoại ra xa, bật loa to. Mỗi câu có ghi “Bài mấy” để em biết câu đó ở bài nào.</small></div></div>`}
+function mixPaint(){const b=q$("vd-box");if(b)b.innerHTML=mixSet()}
+window.vdSel=function(n){let a=selOk();a=a.includes(n)?a.filter(x=>x!=n):a.concat(n).sort((x,y)=>x-y);CFG.sel=a;save();mixPaint()};
+window.vdSelR=function(a,b){CFG.sel=vdLs().filter(n=>n>=a&&n<=b);save();mixPaint()};
+window.vdMixOpen=function(){window.NVOPEN=false;window.VDOPEN=true;cur=null;rr();window.scrollTo(0,0)};
+window.vdMixClose=function(){window.VDOPEN=false;rr()};
+window.vdMixGo=function(){let P=pool();if(!P.length)return;
+ if(CFG.cnt!="all"&&+CFG.cnt<P.length){P=shuffle(P).slice(0,+CFG.cnt);if(!CFG.mix)P.sort((x,y)=>x.b-y.b||x._i-y._i)}
+ else if(CFG.mix)P=shuffle(P);
+ try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state=="suspended")AC.resume()}catch(e){}
+ const tok=(S?S.tok:0)+1;S={multi:1,bs:[...new Set(P.map(x=>x.b))].sort((a,b)=>a-b),list:P,i:0,ph:"ask",st:"run",left:0,tok,done:0};
+ const b=q$("vd-box");if(!b)return;b.className="card vd-box";b.innerHTML=`<div id="vd-stage">${card()}</div><div id="vd-ctl">${ctl()}</div>`;
+ wake(true);b.scrollIntoView({block:"nearest"});run(tok)};
+window.VDH=window.VDH||{};
+VDH[1]={card:()=>vdLs().length?`<div class="ls go vd-ls" onclick="vdMixOpen()"><b>🎙 Vấn đáp tổng hợp</b><span class="vd-mini">Chọn bài muốn ôn · nghe câu hỏi · trả lời to</span><small>${vdLs().reduce((a,n)=>a+LD[n].vd.length,0)} câu · ${vdLs().length} bài · Vào luyện →</small></div>`:"",
+ view:()=>`<div class="row"><button class="btn o" onclick="vdMixClose()">← Danh sách bài</button></div>
+<div class="card note"><b>🎙 Vấn đáp tổng hợp HSK 1</b><p>Em chọn một hoặc nhiều bài muốn ôn. Máy đọc câu hỏi 2 lần, em trả lời to thành tiếng trong thời gian đếm ngược. Hết giờ, đáp án mẫu hiện lên, rồi máy tự chuyển câu. Em không cần bấm gì, cứ nghe và nói.</p></div>
+<div id="vd-box">${mixSet()}</div>`};
 document.addEventListener("visibilitychange",()=>{if(S&&!document.hidden&&S.st=="run")wake(true)});
 
 const st=document.createElement("style");st.textContent=`
@@ -101,6 +137,12 @@ const st=document.createElement("style");st.textContent=`
 .vd-ring b{font:900 3rem "Be Vietnam Pro",sans-serif;line-height:1}.vd-ring small{color:var(--sub)}
 .vd-ans{background:var(--k);border:2px solid var(--g);border-radius:14px;padding:10px;margin:12px auto 4px;max-width:640px}.vd-ans>small{font-weight:700;color:var(--sub)}
 .vd-st{color:var(--sub);margin-top:8px}.vd-ctl{margin-top:10px}.vd-go{font-size:1.1rem;padding:14px 26px}
+.vd-bais{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin:6px 0 10px}
+.vd-bai{border:2px solid var(--b);background:var(--k);border-radius:12px;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t);font:inherit}
+.vd-bai b{font-size:1rem}.vd-bai .zh{font-size:.85rem;line-height:1.2;text-align:center}.vd-bai small{color:var(--sub);font-size:.75rem}
+.vd-bai.on{background:var(--g);border-color:var(--g);color:#fff}.vd-bai.on small{color:#fff}
+.vd-sum{text-align:center;margin:10px 0 4px;font-size:1.05rem}.vd-go[disabled]{opacity:.45;cursor:not-allowed}
+.vd-ls{grid-column:1/-1;background:linear-gradient(135deg,var(--k),var(--c));border:2px solid var(--g)}.vd-mini{display:block;font-size:1rem;margin:4px 0}
 .vd-list ol{padding-left:22px}.vd-list li{margin:8px 0;line-height:1.5}.vd-list .zh{font-size:1.1rem}.vd-list .py{color:var(--m)}
 .hidepy .vd-box .py{display:block}`;document.head.appendChild(st);
 })();
